@@ -1,0 +1,50 @@
+{
+  "name": "scamnemesis",
+  "version": "1.0.0",
+  "description": "Fraud reporting system with ML-powered duplicate detection",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "worker:duplicate-detection": "tsx workers/duplicate-detection-worker.ts",
+    "db:migrate": "psql $DATABASE_URL -f database/migrations/001_duplicate_detection.sql",
+    "db:seed": "tsx database/seed.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "axios": "^1.6.2",
+    "bullmq": "^4.15.0",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4",
+    "ioredis": "^5.3.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "jest": "^29.7.0",
+    "prisma": "^5.7.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "fraud-detection",
+    "duplicate-detection",
+    "machine-learning",
+    "scam-reporting"
+  ],
+  "author": "",
+  "license": "MIT"
+}

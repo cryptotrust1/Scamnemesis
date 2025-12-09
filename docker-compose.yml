@@ -1,0 +1,476 @@
+# =============================================================================
+# Scamnemesis - Docker Compose for Development
+# =============================================================================
+# Usage:
+#   docker-compose up -d                    # Start all services
+#   docker-compose --profile monitoring up  # Include monitoring stack
+#   docker-compose --profile admin up       # Include admin tools
+#   docker-compose logs -f backend          # View logs
+#   docker-compose down -v                  # Stop and remove volumes
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # ===========================================================================
+  # REVERSE PROXY
+  # ===========================================================================
+  traefik:
+    image: traefik:v3.0
+    container_name: scamnemesis-traefik
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # FRONTEND (Next.js)
+  # ===========================================================================
+  frontend:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: scamnemesis-frontend
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:3000
+    volumes:
+      - ./services/frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3001:3001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`demo.scamnemesis.local`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3001"
+    depends_on:
+      - backend
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # BACKEND API (Node.js/TypeScript)
+  # ===========================================================================
+  backend:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: scamnemesis-backend
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-scamnemesis_dev_password}@postgres:5432/scamnemesis
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - S3_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
+      - S3_BUCKET=scamnemesis
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-in-production}
+      - TYPESENSE_HOST=typesense
+      - TYPESENSE_PORT=8108
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-dev-typesense-key}
+      - ML_SERVICE_URL=http://ml-service:8000
+    volumes:
+      - ./services/backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.scamnemesis.local`)"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # DATABASE (PostgreSQL + pgvector)
+  # ===========================================================================
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: scamnemesis-postgres
+    environment:
+      POSTGRES_DB: scamnemesis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-scamnemesis_dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # CACHE & MESSAGE QUEUE (Redis)
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: scamnemesis-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # SEARCH ENGINE (Typesense)
+  # ===========================================================================
+  typesense:
+    image: typesense/typesense:0.25.2
+    container_name: scamnemesis-typesense
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-dev-typesense-key}
+      - TYPESENSE_ENABLE_CORS=true
+    volumes:
+      - typesense_data:/data
+    ports:
+      - "8108:8108"
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # OBJECT STORAGE (MinIO - S3 compatible)
+  # ===========================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: scamnemesis-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - scamnemesis
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: scamnemesis-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set myminio http://minio:9000 minioadmin minioadmin;
+      mc mb myminio/scamnemesis --ignore-existing;
+      mc anonymous set download myminio/scamnemesis/public;
+      exit 0;
+      "
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # ML SERVICE (Python FastAPI - Face, Embeddings, NER)
+  # ===========================================================================
+  ml-service:
+    build:
+      context: ./services/ml
+      dockerfile: Dockerfile
+    container_name: scamnemesis-ml
+    environment:
+      - POSTGRES_URL=postgresql://postgres:${POSTGRES_PASSWORD:-scamnemesis_dev_password}@postgres:5432/scamnemesis
+      - REDIS_URL=redis://redis:6379
+      - MODEL_CACHE_DIR=/models
+      - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
+    volumes:
+      - ml_models:/models
+      - ./services/ml:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - scamnemesis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ===========================================================================
+  # WORKERS
+  # ===========================================================================
+  image-worker:
+    build:
+      context: ./services/workers/image
+      dockerfile: Dockerfile
+    container_name: scamnemesis-image-worker
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - S3_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-scamnemesis_dev_password}@postgres:5432/scamnemesis
+    volumes:
+      - ./services/workers/image:/app
+    depends_on:
+      - redis
+      - minio
+      - postgres
+    networks:
+      - scamnemesis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  crawler-worker:
+    build:
+      context: ./services/workers/crawler
+      dockerfile: Dockerfile
+    container_name: scamnemesis-crawler-worker
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-scamnemesis_dev_password}@postgres:5432/scamnemesis
+    volumes:
+      - ./services/workers/crawler:/app
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - scamnemesis
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  ocr-worker:
+    build:
+      context: ./services/workers/ocr
+      dockerfile: Dockerfile
+    container_name: scamnemesis-ocr-worker
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-scamnemesis_dev_password}@postgres:5432/scamnemesis
+      - OCR_LANGUAGES=eng+slk+ces+deu+rus+ukr
+    volumes:
+      - ./services/workers/ocr:/app
+    depends_on:
+      - redis
+      - minio
+      - postgres
+    networks:
+      - scamnemesis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  # ===========================================================================
+  # VIRUS SCANNING
+  # ===========================================================================
+  clamav:
+    image: clamav/clamav:stable
+    container_name: scamnemesis-clamav
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks:
+      - scamnemesis
+
+  # ===========================================================================
+  # WORDPRESS (for plugin development)
+  # ===========================================================================
+  wordpress:
+    image: wordpress:6.4-php8.2-apache
+    container_name: scamnemesis-wordpress
+    environment:
+      - WORDPRESS_DB_HOST=wordpress-db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD:-wordpress}
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - ./plugins/scamnemesis-wp:/var/www/html/wp-content/plugins/scamnemesis
+      - wordpress_data:/var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wordpress.rule=Host(`wp.scamnemesis.local`)"
+    depends_on:
+      - wordpress-db
+    networks:
+      - scamnemesis
+    profiles:
+      - wordpress
+
+  wordpress-db:
+    image: mysql:8.0
+    container_name: scamnemesis-wordpress-db
+    environment:
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=${WP_DB_PASSWORD:-wordpress}
+      - MYSQL_ROOT_PASSWORD=${WP_DB_ROOT_PASSWORD:-rootpassword}
+    volumes:
+      - wordpress_db_data:/var/lib/mysql
+    networks:
+      - scamnemesis
+    profiles:
+      - wordpress
+
+  # ===========================================================================
+  # ADMIN TOOLS (optional)
+  # ===========================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: scamnemesis-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@scamnemesis.local
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - scamnemesis
+    profiles:
+      - admin
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: scamnemesis-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - scamnemesis
+    profiles:
+      - admin
+
+  # ===========================================================================
+  # MONITORING (optional)
+  # ===========================================================================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: scamnemesis-prometheus
+    volumes:
+      - ./config/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    networks:
+      - scamnemesis
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: scamnemesis-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3030:3000"
+    networks:
+      - scamnemesis
+    profiles:
+      - monitoring
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    container_name: scamnemesis-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+    networks:
+      - scamnemesis
+    profiles:
+      - monitoring
+
+# ===========================================================================
+# VOLUMES
+# ===========================================================================
+volumes:
+  postgres_data:
+    name: scamnemesis_postgres_data
+  redis_data:
+    name: scamnemesis_redis_data
+  ml_models:
+    name: scamnemesis_ml_models
+  pgadmin_data:
+    name: scamnemesis_pgadmin_data
+  typesense_data:
+    name: scamnemesis_typesense_data
+  minio_data:
+    name: scamnemesis_minio_data
+  clamav_data:
+    name: scamnemesis_clamav_data
+  wordpress_data:
+    name: scamnemesis_wordpress_data
+  wordpress_db_data:
+    name: scamnemesis_wordpress_db_data
+  prometheus_data:
+    name: scamnemesis_prometheus_data
+  grafana_data:
+    name: scamnemesis_grafana_data
+
+# ===========================================================================
+# NETWORKS
+# ===========================================================================
+networks:
+  scamnemesis:
+    name: scamnemesis_network
+    driver: bridge
