@@ -1,0 +1,1317 @@
+openapi: 3.1.0
+info:
+  title: Scamnemesis API
+  version: 1.0.0
+  description: |
+    API pre fraud-report & search systém Scamnemesis.
+
+    ## Autentifikácia
+    API používa JWT tokeny. Získajte token cez `/auth/token` endpoint.
+
+    ## Rate Limiting
+    - Basic users: 100 requests/hour
+    - Standard users: 500 requests/hour
+    - Gold users: 2000 requests/hour
+    - API keys: configurable
+
+    ## Maskovanie
+    Odpovede sú automaticky maskované podľa role používateľa.
+
+servers:
+  - url: https://api.scamnemesis.com/v1
+    description: Production
+  - url: https://api-staging.scamnemesis.com/v1
+    description: Staging
+
+tags:
+  - name: Auth
+    description: Autentifikácia a autorizácia
+  - name: Reports
+    description: Fraud reporty
+  - name: Search
+    description: Vyhľadávanie
+  - name: Images
+    description: Obrazové súbory a face search
+  - name: Admin
+    description: Administračné operácie
+  - name: Webhooks
+    description: Webhook endpoints
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  # ==================== AUTH ====================
+  /auth/token:
+    post:
+      tags: [Auth]
+      summary: Získať JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PasswordLogin'
+                - $ref: '#/components/schemas/ApiKeyLogin'
+            examples:
+              password:
+                summary: Login s heslom
+                value:
+                  grant_type: password
+                  email: user@example.com
+                  password: secretpassword
+              api_key:
+                summary: Login s API kľúčom
+                value:
+                  grant_type: api_key
+                  api_key: sk_live_abc123...
+      responses:
+        '200':
+          description: Úspešná autentifikácia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+              example:
+                access_token: eyJhbGciOiJIUzI1NiIs...
+                token_type: Bearer
+                expires_in: 3600
+                refresh_token: dGhpcyBpcyBhIHJlZnJlc2g...
+                scopes:
+                  - reports:read
+                  - reports:write
+                  - search:read
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Obnoviť JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token obnovený
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+
+  # ==================== REPORTS ====================
+  /reports:
+    post:
+      tags: [Reports]
+      summary: Vytvoriť nový fraud report
+      description: |
+        Vytvorí nový report. Report bude v stave `pending` až kým admin neschváli.
+
+        Minimálne 1 identifikátor páchateľa je povinný.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/ReportCreate'
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  maxItems: 10
+      responses:
+        '201':
+          description: Report vytvorený
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportCreateResponse'
+              example:
+                id: rpt_abc123xyz
+                status: pending
+                created_at: '2024-01-15T14:32:00Z'
+                duplicate_check:
+                  has_duplicates: true
+                  cluster_id: dc_xyz789
+                  match_count: 2
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+    get:
+      tags: [Reports]
+      summary: Zoznam reportov
+      description: Vracia reporty podľa filtrov. Výsledky sú maskované podľa role.
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected, all]
+            default: approved
+        - name: fraud_type
+          in: query
+          schema:
+            type: string
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Zoznam reportov
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportList'
+
+  /reports/{id}:
+    get:
+      tags: [Reports]
+      summary: Detail reportu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail reportu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+              example:
+                id: rpt_abc123xyz
+                status: approved
+                incident:
+                  fraud_type: romance_scam
+                  date: '2024-01-10'
+                  location:
+                    city: Bratislava
+                    country: SK
+                  financial_loss:
+                    amount: 5400
+                    currency: EUR
+                  summary: Met person on dating app...
+                perpetrator:
+                  name: Vlxxxxxx Gxxa
+                  phone: '+421 9** *** 678'
+                  email: j*****@fake.com
+                financial:
+                  iban: 'SK89 **** **** **** **** **26'
+                  bank_name: Tatra Banka
+                created_at: '2024-01-15T14:32:00Z'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reports/{id}/comments:
+    get:
+      tags: [Reports]
+      summary: Komentáre k reportu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Zoznam komentárov
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+
+    post:
+      tags: [Reports]
+      summary: Pridať komentár
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  maxLength: 2000
+      responses:
+        '201':
+          description: Komentár pridaný (čaká na moderáciu)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [pending_moderation]
+
+  /reports/{id}/export:
+    get:
+      tags: [Reports]
+      summary: Export reportu ako PDF
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PDF súbor
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  # ==================== SEARCH ====================
+  /search:
+    get:
+      tags: [Search]
+      summary: Vyhľadávanie
+      description: |
+        Vyhľadáva v schválených reportoch. Podporuje exact a fuzzy režim.
+
+        Pre exact vyhľadávanie použite špecifické polia (phone, email, iban, wallet).
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+          description: Vyhľadávací reťazec
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum: [auto, exact, fuzzy, semantic]
+            default: auto
+        - name: fields
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [name, phone, email, iban, wallet, spz, vin, description]
+          style: form
+          explode: false
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: fraud_type
+          in: query
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Výsledky vyhľadávania
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+              example:
+                total: 47
+                results:
+                  - id: rpt_abc123
+                    score: 0.95
+                    source: fuzzy
+                    perpetrator:
+                      name: Vlxxxxxx Gxxa
+                    fraud_type: romance_scam
+                    country: SK
+                    incident_date: '2024-01-10'
+                    highlights:
+                      name: ['<em>Vladimir</em> <em>Gala</em>']
+                facets:
+                  country:
+                    SK: 23
+                    CZ: 15
+                    DE: 9
+                  fraud_type:
+                    romance_scam: 20
+                    investment_fraud: 15
+
+  # ==================== IMAGES ====================
+  /images/upload:
+    post:
+      tags: [Images]
+      summary: Upload obrazového súboru
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, report_id]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                report_id:
+                  type: string
+                evidence_type:
+                  type: string
+                  enum: [payment_evidence, fraudster_photo, screenshot, damage_docs, crime_scene, other]
+      responses:
+        '202':
+          description: Upload prijatý, spracováva sa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [processing]
+                  estimated_completion:
+                    type: integer
+                    description: Odhadovaný čas v sekundách
+
+  /images/upload/presigned:
+    post:
+      tags: [Images]
+      summary: Získať presigned URL pre upload
+      description: Pre veľké súbory použite presigned URL pre priamy upload do S3.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, content_type, size]
+              properties:
+                filename:
+                  type: string
+                content_type:
+                  type: string
+                size:
+                  type: integer
+                  maximum: 20971520
+      responses:
+        '200':
+          description: Presigned URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_url:
+                    type: string
+                    format: uri
+                  file_key:
+                    type: string
+                  expires_in:
+                    type: integer
+
+  /images/search:
+    post:
+      tags: [Images]
+      summary: Face search
+      description: |
+        Vyhľadá podobné tváre v databáze.
+        Vyžaduje role Standard alebo vyššiu.
+      security:
+        - BearerAuth: [search:face]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  format: binary
+                min_similarity:
+                  type: number
+                  default: 0.6
+                  minimum: 0.5
+                  maximum: 0.99
+                limit:
+                  type: integer
+                  default: 20
+      responses:
+        '200':
+          description: Výsledky face search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaceSearchResponse'
+        '400':
+          description: No face detected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: no_face_detected
+                message: No face detected in uploaded image
+
+  # ==================== ADMIN ====================
+  /admin/reports/{id}/approve:
+    post:
+      tags: [Admin]
+      summary: Schváliť report
+      security:
+        - BearerAuth: [admin:approve]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masking_overrides:
+                  type: object
+                  description: Per-field masking overrides
+                admin_notes:
+                  type: string
+      responses:
+        '200':
+          description: Report schválený
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [approved]
+                  published_at:
+                    type: string
+                    format: date-time
+
+  /admin/reports/{id}/reject:
+    post:
+      tags: [Admin]
+      summary: Zamietnuť report
+      security:
+        - BearerAuth: [admin:approve]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                notify_reporter:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Report zamietnutý
+
+  /admin/reports/{id}:
+    patch:
+      tags: [Admin]
+      summary: Upraviť report
+      security:
+        - BearerAuth: [admin:edit]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportUpdate'
+      responses:
+        '200':
+          description: Report upravený
+
+  /admin/duplicates:
+    get:
+      tags: [Admin]
+      summary: Zoznam duplicate clusterov
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, resolved, all]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Zoznam clusterov
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clusters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DuplicateCluster'
+
+  /admin/duplicates/{id}/merge:
+    post:
+      tags: [Admin]
+      summary: Zlúčiť duplicate cluster
+      security:
+        - BearerAuth: [admin:edit]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [primary_report_id]
+              properties:
+                primary_report_id:
+                  type: string
+                merge_report_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Cluster zlúčený
+
+  /admin/comments/{id}/approve:
+    post:
+      tags: [Admin]
+      summary: Schváliť komentár
+      security:
+        - BearerAuth: [admin:moderate]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Komentár schválený
+
+  /admin/comments/{id}/reject:
+    post:
+      tags: [Admin]
+      summary: Zamietnuť komentár
+      security:
+        - BearerAuth: [admin:moderate]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Komentár zamietnutý
+
+  # ==================== WEBHOOKS ====================
+  /webhooks/enrichment:
+    post:
+      tags: [Webhooks]
+      summary: Webhook pre enrichment výsledky
+      description: Prijíma výsledky z crawler/enrichment pipeline
+      security:
+        - WebhookSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrichmentWebhook'
+      responses:
+        '200':
+          description: Webhook prijatý
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    WebhookSecret:
+      type: apiKey
+      in: header
+      name: X-Webhook-Secret
+
+  schemas:
+    PasswordLogin:
+      type: object
+      required: [grant_type, email, password]
+      properties:
+        grant_type:
+          type: string
+          enum: [password]
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    ApiKeyLogin:
+      type: object
+      required: [grant_type, api_key]
+      properties:
+        grant_type:
+          type: string
+          enum: [api_key]
+        api_key:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+        refresh_token:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+
+    FraudType:
+      type: string
+      enum:
+        - romance_scam
+        - investment_fraud
+        - phishing
+        - identity_theft
+        - online_shopping_fraud
+        - tech_support_scam
+        - lottery_prize_scam
+        - employment_scam
+        - rental_scam
+        - cryptocurrency_scam
+        - pyramid_mlm_scheme
+        - insurance_fraud
+        - credit_card_fraud
+        - wire_fraud
+        - money_mule
+        - advance_fee_fraud
+        - business_email_compromise
+        - social_engineering
+        - fake_charity
+        - government_impersonation
+        - utility_scam
+        - grandparent_scam
+        - sextortion
+        - ransomware
+        - account_takeover
+        - sim_swapping
+        - catfishing
+        - ponzi_scheme
+        - other
+
+    ReportCreate:
+      type: object
+      required: [incident, perpetrator, reporter]
+      properties:
+        incident:
+          type: object
+          required: [fraud_type, summary]
+          properties:
+            fraud_type:
+              $ref: '#/components/schemas/FraudType'
+            date:
+              type: string
+              format: date
+            transaction_date:
+              type: string
+              format: date
+            summary:
+              type: string
+              maxLength: 500
+            description:
+              type: string
+              maxLength: 10000
+            financial_loss:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+                  default: EUR
+            location:
+              type: object
+              properties:
+                street:
+                  type: string
+                city:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+
+        perpetrator:
+          type: object
+          properties:
+            full_name:
+              type: string
+            nickname:
+              type: string
+            username:
+              type: string
+            approx_age:
+              type: integer
+            nationality:
+              type: string
+            physical_description:
+              type: string
+            phone:
+              type: string
+            email:
+              type: string
+              format: email
+            address:
+              type: object
+              properties:
+                street:
+                  type: string
+                city:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+
+        digital_footprints:
+          type: object
+          properties:
+            telegram:
+              type: string
+            whatsapp:
+              type: string
+            signal:
+              type: string
+            instagram:
+              type: string
+            facebook:
+              type: string
+            tiktok:
+              type: string
+            twitter:
+              type: string
+            website_url:
+              type: string
+              format: uri
+            domain_name:
+              type: string
+            domain_creation_date:
+              type: string
+              format: date
+            ip_address:
+              type: string
+            ip_country:
+              type: string
+            isp:
+              type: string
+            ip_abuse_score:
+              type: integer
+
+        financial:
+          type: object
+          properties:
+            iban:
+              type: string
+            account_holder:
+              type: string
+            account_number:
+              type: string
+            bank_name:
+              type: string
+            bank_country:
+              type: string
+            swift_bic:
+              type: string
+            routing_number:
+              type: string
+            bsb:
+              type: string
+            sort_code:
+              type: string
+            ifsc:
+              type: string
+            cnaps:
+              type: string
+            other_banking_details:
+              type: string
+
+        crypto:
+          type: object
+          properties:
+            wallet_address:
+              type: string
+            blockchain:
+              type: string
+              enum: [bitcoin, ethereum, tether, binance, other]
+            exchange_wallet_name:
+              type: string
+            transaction_hash:
+              type: string
+            paypal_account:
+              type: string
+
+        company:
+          type: object
+          properties:
+            name:
+              type: string
+            vat_tax_id:
+              type: string
+            address:
+              type: object
+              properties:
+                street:
+                  type: string
+                city:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+
+        vehicle:
+          type: object
+          properties:
+            make:
+              type: string
+            model:
+              type: string
+            color:
+              type: string
+            license_plate:
+              type: string
+            vin:
+              type: string
+            registered_owner:
+              type: string
+
+        evidence:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [payment_evidence, fraudster_photo, screenshot, damage_docs, crime_scene, other]
+              file_key:
+                type: string
+              external_url:
+                type: string
+                format: uri
+              description:
+                type: string
+
+        reporter:
+          type: object
+          required: [email, consent]
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            preferred_language:
+              type: string
+              default: en
+            consent:
+              type: boolean
+
+    ReportCreateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending]
+        created_at:
+          type: string
+          format: date-time
+        duplicate_check:
+          type: object
+          properties:
+            has_duplicates:
+              type: boolean
+            cluster_id:
+              type: string
+            match_count:
+              type: integer
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, archived]
+        incident:
+          type: object
+        perpetrator:
+          type: object
+        digital_footprints:
+          type: object
+        financial:
+          type: object
+        crypto:
+          type: object
+        company:
+          type: object
+        vehicle:
+          type: object
+        evidence:
+          type: array
+          items:
+            type: object
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ReportUpdate:
+      type: object
+      properties:
+        incident:
+          type: object
+        perpetrator:
+          type: object
+        digital_footprints:
+          type: object
+        financial:
+          type: object
+        masking_overrides:
+          type: object
+        admin_notes:
+          type: string
+
+    ReportList:
+      type: object
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+
+    SearchResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              score:
+                type: number
+              source:
+                type: string
+                enum: [exact, fuzzy, semantic]
+              perpetrator:
+                type: object
+              fraud_type:
+                type: string
+              country:
+                type: string
+              incident_date:
+                type: string
+                format: date
+              highlights:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+        facets:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: integer
+
+    FaceSearchResponse:
+      type: object
+      properties:
+        matches:
+          type: array
+          items:
+            type: object
+            properties:
+              report_id:
+                type: string
+              similarity:
+                type: number
+              thumbnail_url:
+                type: string
+                format: uri
+              perpetrator_name:
+                type: string
+        query:
+          type: object
+          properties:
+            face_detected:
+              type: boolean
+            face_count:
+              type: integer
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        author:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [approved, pending_moderation]
+
+    DuplicateCluster:
+      type: object
+      properties:
+        id:
+          type: string
+        primary_report_id:
+          type: string
+        report_ids:
+          type: array
+          items:
+            type: string
+        matching_criteria:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              type:
+                type: string
+                enum: [exact, fuzzy]
+              similarity:
+                type: number
+        status:
+          type: string
+          enum: [pending, resolved]
+        created_at:
+          type: string
+          format: date-time
+
+    EnrichmentWebhook:
+      type: object
+      properties:
+        event_type:
+          type: string
+          enum: [crawl_result, sanctions_match, news_match]
+        perpetrator_id:
+          type: string
+        source_id:
+          type: string
+        match_type:
+          type: string
+        match_value:
+          type: string
+        similarity:
+          type: number
+        data:
+          type: object
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+
+  responses:
+    BadRequest:
+      description: Neplatná požiadavka
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: validation_error
+            message: Invalid request body
+            details:
+              perpetrator.phone: Invalid phone format
+
+    Unauthorized:
+      description: Neautorizovaný prístup
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: unauthorized
+            message: Invalid or expired token
+
+    NotFound:
+      description: Zdroj nenájdený
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: not_found
+            message: Report not found
+
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: rate_limited
+            message: Rate limit exceeded. Try again in 60 seconds

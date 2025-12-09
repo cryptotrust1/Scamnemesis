@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "environment": "production",
+  "salt": "CHANGE_THIS_IN_PRODUCTION_a7f8d9e6c4b2a1f3e5d7c9b8a6f4e2d1c3b5a7f9e8d6c4b2a0f1e3d5c7b9a8f6",
+  "enableDeterministicMasking": true,
+  "enableAuditLogging": true,
+  "debugMode": false,
+  "roles": {
+    "0": {
+      "level": 0,
+      "permissions": ["view_public_reports", "submit_reports"],
+      "fieldOverrides": {}
+    },
+    "1": {
+      "level": 1,
+      "permissions": [
+        "view_detailed_reports",
+        "export_limited",
+        "submit_reports"
+      ],
+      "fieldOverrides": {
+        "scammerName": {
+          "maskingStrategy": "name_partial",
+          "visible": true
+        }
+      }
+    },
+    "2": {
+      "level": 2,
+      "permissions": ["view_all_reports", "export_full", "api_access"],
+      "fieldOverrides": {
+        "scammerName": {
+          "maskingStrategy": "name_partial",
+          "visible": true
+        },
+        "scammerEmail": {
+          "maskingStrategy": "email_partial",
+          "visible": true
+        },
+        "scammerPhone": {
+          "maskingStrategy": "phone_partial",
+          "visible": true
+        }
+      }
+    },
+    "3": {
+      "level": 3,
+      "permissions": ["all"],
+      "fieldOverrides": {}
+    }
+  },
+  "fields": {
+    "reporterName": {
+      "dataType": "name",
+      "maskingStrategy": "name_standard",
+      "minRoleLevel": 3,
+      "deterministicHash": true
+    },
+    "reporterEmail": {
+      "dataType": "email",
+      "maskingStrategy": "email_standard",
+      "minRoleLevel": 3,
+      "deterministicHash": true
+    },
+    "reporterPhone": {
+      "dataType": "phone",
+      "maskingStrategy": "phone_standard",
+      "minRoleLevel": 3,
+      "deterministicHash": true
+    },
+    "reporterIp": {
+      "dataType": "ip",
+      "maskingStrategy": "ip_v4",
+      "minRoleLevel": 3,
+      "deterministicHash": true
+    },
+    "reporterAddress": {
+      "dataType": "address",
+      "maskingStrategy": "address_tiered",
+      "minRoleLevel": 2,
+      "deterministicHash": false
+    },
+    "scammerName": {
+      "dataType": "name",
+      "maskingStrategy": "name_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "scammerEmail": {
+      "dataType": "email",
+      "maskingStrategy": "email_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "scammerPhone": {
+      "dataType": "phone",
+      "maskingStrategy": "phone_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "scammerIp": {
+      "dataType": "ip",
+      "maskingStrategy": "ip_v4",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "scammerAddress": {
+      "dataType": "address",
+      "maskingStrategy": "address_tiered",
+      "minRoleLevel": 2,
+      "deterministicHash": false
+    },
+    "scammerWallet": {
+      "dataType": "wallet",
+      "maskingStrategy": "wallet_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": false
+    },
+    "scammerSpz": {
+      "dataType": "spz",
+      "maskingStrategy": "spz_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "scammerVin": {
+      "dataType": "vin",
+      "maskingStrategy": "vin_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "iban": {
+      "dataType": "iban",
+      "maskingStrategy": "iban_standard",
+      "minRoleLevel": 2,
+      "deterministicHash": true
+    },
+    "amountLost": {
+      "dataType": "amount",
+      "maskingStrategy": "amount_tiered",
+      "minRoleLevel": 2,
+      "deterministicHash": false
+    },
+    "submissionDate": {
+      "dataType": "date",
+      "maskingStrategy": "date_tiered",
+      "minRoleLevel": 1,
+      "deterministicHash": false
+    }
+  },
+  "customRules": [
+    {
+      "id": "passport_mask",
+      "name": "Passport Number Masking",
+      "description": "Mask passport numbers in format XX1234567",
+      "pattern": "^[A-Z]{2}[0-9]{7}$",
+      "maskingFunction": "maskPassport",
+      "priority": 100
+    },
+    {
+      "id": "credit_card_mask",
+      "name": "Credit Card Masking",
+      "description": "Mask credit card numbers",
+      "pattern": "^[0-9]{4}[\\s-]?[0-9]{4}[\\s-]?[0-9]{4}[\\s-]?[0-9]{4}$",
+      "maskingFunction": "maskCreditCard",
+      "priority": 150
+    }
+  ]
+}
