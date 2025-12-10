@@ -34,17 +34,19 @@
 | **Homepage** | ✅ Hotové | `src/app/page.tsx` | Hero, features, CTA |
 | **Search Page** | ✅ Hotové | `src/app/search/` | Search with filters |
 | **Global Styles** | ✅ Hotové | `src/styles/globals.css` | CSS variables, dark mode |
-| **Admin Dashboard** | ✅ Hotové | `src/app/admin/` | Layout, Dashboard, Reports, Users |
+| **Admin Dashboard** | ✅ Hotové | `src/app/admin/` | Layout, Dashboard, Reports, Users, Comments, Duplicates, Settings |
+| **API Client** | ✅ Hotové | `src/lib/api/` | HTTP client, auth, reports, admin services |
+| **React Hooks** | ✅ Hotové | `src/hooks/` | useAuth, useReports, useAdmin hooks |
+| **Email Service** | ✅ Hotové | `src/lib/services/email.ts` | Resend integration, templates |
+| **Typesense Service** | ✅ Hotové | `src/lib/services/typesense.ts` | Full-text search, sync |
 
 ### ⏳ Potrebuje dokončiť:
 
 | Komponent | Priorita | Popis |
 |-----------|----------|-------|
-| **Prepojenie s API** | 🔴 Vysoká | Nahradiť mock dáta reálnymi API volaniami |
-| **Typesense Sync** | 🟡 Stredná | Index synchronization service |
-| **Email Service** | 🟡 Stredná | Notification emails |
 | **Unit Tests** | 🟡 Stredná | Jest tests for API routes |
 | **CI/CD Pipeline** | 🟢 Nízka | GitHub Actions |
+| **Production Deploy** | 🟢 Nízka | Deploy to production server |
 
 ---
 
@@ -146,57 +148,43 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ---
 
-## 🔄 AKTUÁLNA PRÁCA (10. December 2024, večer)
+## 🔄 AKTUÁLNA PRÁCA (10. December 2024)
 
-### Čo som robil (Claude Opus 4) - Session 1:
-1. Vytvoril kompletný deployment guide pre amatérov (`docs/NAVOD_PRE_AMATEROV.md`)
-2. Analyzoval celý codebase
-3. Identifikoval chýbajúce komponenty
+### Session 1 (Claude Opus 4):
+1. Vytvoril deployment guide (`docs/NAVOD_PRE_AMATEROV.md`)
+2. Analyzoval codebase
 
-### Čo som robil (Claude Opus 4) - Session 2:
-1. **UI komponenty** - Button, Input, Card, Badge, Alert
-2. **Layout komponenty** - Header (responsive nav), Footer
-3. **Root Layout** - `src/app/layout.tsx` s metadata
-4. **Homepage** - `src/app/page.tsx` - hero, features, recent reports
-5. **Search page** - `src/app/search/page.tsx` - vyhľadávanie s filtrami
-6. **Global CSS** - `src/styles/globals.css` - CSS variables, dark mode
+### Session 2 (Claude Opus 4):
+1. UI komponenty, Layout komponenty, Homepage, Search page
+2. Merge konflikty s main branch
 
-### Čo TREBA SPRAVIŤ (nasledujúci Claude):
+### Session 3 (Claude Opus 4):
+1. **Admin Dashboard komplet** - layout, dashboard, reports, users, comments, duplicates, settings
+2. **API Client** - `src/lib/api/` - client, auth, reports, admin services
+3. **React Hooks** - `src/hooks/` - useAuth, useReports, useAdmin
+4. **Email Service** - `src/lib/services/email.ts` - Resend, templates
+5. **Typesense Service** - `src/lib/services/typesense.ts` - full-text search
 
-**PRIORITA 1 - Zostávajúce Frontend Pages:**
-- [x] `src/app/page.tsx` - Homepage ✅ DONE
-- [x] `src/app/layout.tsx` - Root layout ✅ DONE
-- [x] `src/app/search/page.tsx` - Search results ✅ DONE
-- [ ] `src/app/report/page.tsx` - Report form
-- [ ] `src/app/report/[id]/page.tsx` - Report detail
-- [ ] `src/app/auth/login/page.tsx` - Login
-- [ ] `src/app/auth/register/page.tsx` - Register
-
-**PRIORITA 2 - Admin Dashboard:**
-- [ ] `src/app/admin/page.tsx` - Dashboard
-- [ ] `src/app/admin/reports/page.tsx` - Reports management
-- [ ] `src/app/admin/duplicates/page.tsx` - Duplicates
-
-**PRIORITA 3 - Ďalšie Components:**
-- [x] `src/components/ui/` - Button, Input, Card, Badge, Alert ✅ DONE
-- [x] `src/components/layout/` - Header, Footer ✅ DONE
-- [ ] `src/components/forms/` - ReportForm
+### ✅ Kompletné Frontend Pages:
+- [x] Homepage (`src/app/page.tsx`)
+- [x] Search (`src/app/search/`)
+- [x] Report form (`src/app/report/new/`)
+- [x] Report detail (`src/app/reports/[id]/`)
+- [x] Login (`src/app/auth/login/`)
+- [x] Register (`src/app/auth/register/`)
+- [x] Admin Dashboard komplet (`src/app/admin/*`)
 
 ### ⚠️ NEDOTÝKAJ SA:
 - `src/app/api/` - API routes sú hotové
 - `src/masking/` - Masking module je kompletný
-- `src/lib/` - Utilities sú hotové
 - `prisma/schema.prisma` - Schéma je finálna
-- `src/components/ui/` - UI komponenty sú hotové (môžeš rozšíriť, nie prepisovať)
-- `src/components/layout/` - Layout komponenty sú hotové
+- `src/app/admin/` - Admin je kompletný
 
-### 📁 VOĽNÉ PRIEČINKY (môžeš vytvárať):
-- `src/app/report/` - Report form a detail pages
-- `src/app/auth/` - Login a register pages
-- `src/app/admin/` - Admin dashboard
-- `src/components/forms/` - Form komponenty
-- `src/hooks/` - Custom React hooks
+### 🔜 Čo zostáva (nízka priorita):
+- Unit Tests
+- CI/CD Pipeline
+- Production Deployment
 
 ---
 
-**Posledný update:** Claude Opus 4, 10. December 2024 (Session 2)
+**Posledný update:** Claude Opus 4, 10. December 2024 (Session 3)
