@@ -1,0 +1,77 @@
+/**
+ * Scamnemesis Search Block - Editor Styles
+ */
+
+.scamnemesis-search-block-editor {
+    padding: 20px;
+    background: #f6f7f7;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+}
+
+.scamnemesis-search-preview {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.scamnemesis-search-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.scamnemesis-search-preview-header .dashicons {
+    color: #2563eb;
+}
+
+.scamnemesis-search-preview-form {
+    display: flex;
+    gap: 10px;
+}
+
+.scamnemesis-search-preview-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.scamnemesis-search-preview-form button {
+    padding: 10px 20px;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: default;
+}
+
+.scamnemesis-search-preview-filters {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.scamnemesis-search-preview-filters .filter {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    color: #6b7280;
+}
+
+.scamnemesis-search-preview-filters .filter.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}

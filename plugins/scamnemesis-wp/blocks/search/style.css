@@ -1,0 +1,21 @@
+/**
+ * Scamnemesis Search Block - Frontend Styles
+ * Note: Main styles are in assets/css/frontend.css
+ */
+
+/* Block-specific alignment styles */
+.wp-block-scamnemesis-search {
+    margin-bottom: 1.5rem;
+}
+
+.wp-block-scamnemesis-search.alignwide {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wp-block-scamnemesis-search.alignfull {
+    max-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+}

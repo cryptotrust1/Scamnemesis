@@ -1,0 +1,556 @@
+/**
+ * Scamnemesis Frontend Styles
+ *
+ * @package Scamnemesis
+ */
+
+/* CSS Variables */
+:root {
+    --scamnemesis-primary: #2563eb;
+    --scamnemesis-primary-hover: #1d4ed8;
+    --scamnemesis-success: #10b981;
+    --scamnemesis-warning: #f59e0b;
+    --scamnemesis-danger: #ef4444;
+    --scamnemesis-text: #1f2937;
+    --scamnemesis-text-muted: #6b7280;
+    --scamnemesis-border: #e5e7eb;
+    --scamnemesis-bg: #ffffff;
+    --scamnemesis-bg-secondary: #f9fafb;
+    --scamnemesis-radius: 8px;
+    --scamnemesis-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --scamnemesis-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Base Container */
+.scamnemesis-search-container,
+.scamnemesis-report-container,
+.scamnemesis-verify-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--scamnemesis-text);
+    box-sizing: border-box;
+}
+
+.scamnemesis-search-container *,
+.scamnemesis-report-container *,
+.scamnemesis-verify-container * {
+    box-sizing: border-box;
+}
+
+/* Search Form */
+.scamnemesis-search-form {
+    margin-bottom: 1rem;
+}
+
+.scamnemesis-search-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.scamnemesis-search-input,
+.scamnemesis-verify-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--scamnemesis-border);
+    border-radius: var(--scamnemesis-radius);
+    background: var(--scamnemesis-bg);
+    color: var(--scamnemesis-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scamnemesis-search-input:focus,
+.scamnemesis-verify-input:focus {
+    outline: none;
+    border-color: var(--scamnemesis-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.scamnemesis-search-button,
+.scamnemesis-verify-button,
+.scamnemesis-submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+    background: var(--scamnemesis-primary);
+    border: none;
+    border-radius: var(--scamnemesis-radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.scamnemesis-search-button:hover,
+.scamnemesis-verify-button:hover,
+.scamnemesis-submit-button:hover {
+    background: var(--scamnemesis-primary-hover);
+}
+
+.scamnemesis-search-button:disabled,
+.scamnemesis-verify-button:disabled,
+.scamnemesis-submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Search Filters */
+.scamnemesis-search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.scamnemesis-filter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--scamnemesis-text-muted);
+    background: var(--scamnemesis-bg-secondary);
+    border: 1px solid var(--scamnemesis-border);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.scamnemesis-filter-label:hover {
+    border-color: var(--scamnemesis-primary);
+    color: var(--scamnemesis-primary);
+}
+
+.scamnemesis-filter-label input[type="radio"] {
+    display: none;
+}
+
+.scamnemesis-filter-label:has(input:checked) {
+    background: var(--scamnemesis-primary);
+    border-color: var(--scamnemesis-primary);
+    color: #ffffff;
+}
+
+/* Search Results */
+.scamnemesis-search-results {
+    margin-top: 1.5rem;
+    border: 1px solid var(--scamnemesis-border);
+    border-radius: var(--scamnemesis-radius);
+    background: var(--scamnemesis-bg);
+    box-shadow: var(--scamnemesis-shadow);
+}
+
+.scamnemesis-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--scamnemesis-border);
+    background: var(--scamnemesis-bg-secondary);
+}
+
+.scamnemesis-results-count {
+    font-weight: 500;
+    color: var(--scamnemesis-text);
+}
+
+.scamnemesis-results-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--scamnemesis-text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.scamnemesis-results-close:hover {
+    background: var(--scamnemesis-border);
+}
+
+.scamnemesis-results-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.scamnemesis-result-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--scamnemesis-border);
+    transition: background-color 0.2s;
+}
+
+.scamnemesis-result-item:last-child {
+    border-bottom: none;
+}
+
+.scamnemesis-result-item:hover {
+    background: var(--scamnemesis-bg-secondary);
+}
+
+.scamnemesis-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.scamnemesis-result-identifier {
+    font-weight: 600;
+    color: var(--scamnemesis-text);
+    word-break: break-all;
+}
+
+.scamnemesis-result-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+}
+
+.scamnemesis-result-badge.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--scamnemesis-danger);
+}
+
+.scamnemesis-result-badge.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--scamnemesis-warning);
+}
+
+.scamnemesis-result-badge.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--scamnemesis-success);
+}
+
+.scamnemesis-result-description {
+    font-size: 0.875rem;
+    color: var(--scamnemesis-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.scamnemesis-result-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--scamnemesis-text-muted);
+}
+
+/* Pagination */
+.scamnemesis-results-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--scamnemesis-border);
+}
+
+.scamnemesis-pagination-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    color: var(--scamnemesis-text);
+    background: var(--scamnemesis-bg);
+    border: 1px solid var(--scamnemesis-border);
+    border-radius: var(--scamnemesis-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.scamnemesis-pagination-button:hover {
+    border-color: var(--scamnemesis-primary);
+    color: var(--scamnemesis-primary);
+}
+
+.scamnemesis-pagination-button.active {
+    background: var(--scamnemesis-primary);
+    border-color: var(--scamnemesis-primary);
+    color: #ffffff;
+}
+
+.scamnemesis-pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Error Message */
+.scamnemesis-search-error,
+.scamnemesis-error {
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--scamnemesis-danger);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--scamnemesis-radius);
+}
+
+/* Report Form */
+.scamnemesis-report-title {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--scamnemesis-text);
+}
+
+.scamnemesis-report-form {
+    max-width: 640px;
+}
+
+.scamnemesis-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.scamnemesis-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--scamnemesis-text);
+}
+
+.scamnemesis-form-group label .required {
+    color: var(--scamnemesis-danger);
+}
+
+.scamnemesis-form-group input[type="text"],
+.scamnemesis-form-group input[type="email"],
+.scamnemesis-form-group input[type="number"],
+.scamnemesis-form-group select,
+.scamnemesis-form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--scamnemesis-border);
+    border-radius: var(--scamnemesis-radius);
+    background: var(--scamnemesis-bg);
+    color: var(--scamnemesis-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scamnemesis-form-group input:focus,
+.scamnemesis-form-group select:focus,
+.scamnemesis-form-group textarea:focus {
+    outline: none;
+    border-color: var(--scamnemesis-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.scamnemesis-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.scamnemesis-field-hint {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--scamnemesis-text-muted);
+}
+
+.scamnemesis-form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.scamnemesis-form-half {
+    flex: 1;
+}
+
+.scamnemesis-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.scamnemesis-checkbox-label input[type="checkbox"] {
+    margin-top: 0.25rem;
+}
+
+.scamnemesis-form-actions {
+    margin-top: 1.5rem;
+}
+
+.scamnemesis-form-message {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: var(--scamnemesis-radius);
+}
+
+.scamnemesis-form-message.success {
+    color: var(--scamnemesis-success);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.scamnemesis-form-message.error {
+    color: var(--scamnemesis-danger);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Spinner */
+.scamnemesis-spinner {
+    animation: scamnemesis-spin 1s linear infinite;
+}
+
+@keyframes scamnemesis-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Widget Container */
+.scamnemesis-widget-container {
+    min-height: 300px;
+}
+
+.scamnemesis-widget-iframe {
+    width: 100%;
+    min-height: 300px;
+    border: none;
+}
+
+/* Verify Widget */
+.scamnemesis-verify-container {
+    max-width: 400px;
+}
+
+.scamnemesis-verify-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.scamnemesis-verify-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: var(--scamnemesis-radius);
+}
+
+.scamnemesis-verify-result.safe {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.scamnemesis-verify-result.reported {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Stats Widget */
+.scamnemesis-stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.scamnemesis-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.scamnemesis-stats-inline {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.scamnemesis-stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--scamnemesis-bg-secondary);
+    border-radius: var(--scamnemesis-radius);
+}
+
+.scamnemesis-stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--scamnemesis-primary);
+    line-height: 1.2;
+}
+
+.scamnemesis-stat-label {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--scamnemesis-text-muted);
+}
+
+/* Recent Reports */
+.scamnemesis-recent-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.scamnemesis-recent-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--scamnemesis-border);
+}
+
+.scamnemesis-recent-item:last-child {
+    border-bottom: none;
+}
+
+.scamnemesis-recent-identifier {
+    font-weight: 500;
+    color: var(--scamnemesis-text);
+}
+
+.scamnemesis-recent-type {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--scamnemesis-primary);
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 9999px;
+}
+
+.scamnemesis-recent-date {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--scamnemesis-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .scamnemesis-search-input-wrapper,
+    .scamnemesis-verify-input-wrapper {
+        flex-direction: column;
+    }
+
+    .scamnemesis-search-button,
+    .scamnemesis-verify-button {
+        width: 100%;
+    }
+
+    .scamnemesis-form-row {
+        flex-direction: column;
+    }
+
+    .scamnemesis-stats-container {
+        flex-direction: column;
+    }
+}

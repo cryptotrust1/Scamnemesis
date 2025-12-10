@@ -1,0 +1,77 @@
+/**
+ * Scamnemesis Report Block - Editor Styles
+ */
+
+.scamnemesis-report-block-editor {
+    padding: 20px;
+    background: #f6f7f7;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+}
+
+.scamnemesis-report-preview {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+}
+
+.scamnemesis-report-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.scamnemesis-report-preview-header .dashicons {
+    color: #ef4444;
+}
+
+.scamnemesis-report-preview-title {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.scamnemesis-report-preview-form .form-row {
+    margin-bottom: 15px;
+}
+
+.scamnemesis-report-preview-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.scamnemesis-report-preview-form input,
+.scamnemesis-report-preview-form select,
+.scamnemesis-report-preview-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.scamnemesis-report-preview-form textarea {
+    resize: none;
+}
+
+.scamnemesis-report-preview-form button {
+    padding: 12px 24px;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: default;
+}
