@@ -1,0 +1,333 @@
+# Slovak translation for Scamnemesis
+# Copyright (C) 2024 Scamnemesis Team
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Scamnemesis 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/scamnemesis/scamnemesis-wp/issues\n"
+"POT-Creation-Date: 2024-01-01T00:00:00+00:00\n"
+"PO-Revision-Date: 2024-01-01T00:00:00+00:00\n"
+"Last-Translator: Scamnemesis Team <translations@scamnemesis.com>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Scamnemesis Plugin\n"
+"X-Domain: scamnemesis\n"
+
+msgid "Scamnemesis"
+msgstr "Scamnemesis"
+
+msgid "Fraud report and search integration for WordPress. Search for scammers, report fraud, and protect your community."
+msgstr "Integrácia hlásení a vyhľadávania podvodov pre WordPress. Vyhľadávajte podvodníkov, nahlasujte podvody a chráňte svoju komunitu."
+
+msgid "Enter email, phone, wallet address, or domain..."
+msgstr "Zadajte email, telefón, adresu peňaženky alebo doménu..."
+
+msgid "Search"
+msgstr "Hľadať"
+
+msgid "Search for scam reports"
+msgstr "Vyhľadať hlásenia podvodov"
+
+msgid "Searching..."
+msgstr "Hľadám..."
+
+msgid "No results found"
+msgstr "Žiadne výsledky"
+
+msgid "An error occurred"
+msgstr "Vyskytla sa chyba"
+
+msgid "All"
+msgstr "Všetko"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Telefón"
+
+msgid "Crypto Wallet"
+msgstr "Krypto peňaženka"
+
+msgid "Domain"
+msgstr "Doména"
+
+msgid "Report a Scam"
+msgstr "Nahlásiť podvod"
+
+msgid "Thank you for your report. It will be reviewed by our team."
+msgstr "Ďakujeme za vaše hlásenie. Bude preskúmané naším tímom."
+
+msgid "Type of Identifier"
+msgstr "Typ identifikátora"
+
+msgid "Select type..."
+msgstr "Vyberte typ..."
+
+msgid "Email Address"
+msgstr "Emailová adresa"
+
+msgid "Phone Number"
+msgstr "Telefónne číslo"
+
+msgid "Website/Domain"
+msgstr "Webstránka/Doména"
+
+msgid "Social Media Profile"
+msgstr "Profil na sociálnych sieťach"
+
+msgid "Bank Account"
+msgstr "Bankový účet"
+
+msgid "Other"
+msgstr "Iné"
+
+msgid "Identifier"
+msgstr "Identifikátor"
+
+msgid "e.g., scammer@email.com, +1234567890, 0x..."
+msgstr "napr. podvodnik@email.com, +421123456789, 0x..."
+
+msgid "Enter the email, phone, wallet address, or other identifier of the scammer"
+msgstr "Zadajte email, telefón, adresu peňaženky alebo iný identifikátor podvodníka"
+
+msgid "Type of Scam"
+msgstr "Typ podvodu"
+
+msgid "Select scam type..."
+msgstr "Vyberte typ podvodu..."
+
+msgid "Phishing"
+msgstr "Phishing"
+
+msgid "Investment Fraud"
+msgstr "Investičný podvod"
+
+msgid "Romance Scam"
+msgstr "Romantický podvod"
+
+msgid "Online Shopping Fraud"
+msgstr "Podvod pri online nakupovaní"
+
+msgid "Impersonation"
+msgstr "Vydávanie sa za inú osobu"
+
+msgid "Tech Support Scam"
+msgstr "Podvod s technickou podporou"
+
+msgid "Lottery/Prize Scam"
+msgstr "Lotériový/Výherný podvod"
+
+msgid "Cryptocurrency Scam"
+msgstr "Kryptomenový podvod"
+
+msgid "Employment Scam"
+msgstr "Pracovný podvod"
+
+msgid "Description"
+msgstr "Popis"
+
+msgid "Please describe the scam in detail. Include dates, methods used, and any relevant information..."
+msgstr "Podrobne opíšte podvod. Uveďte dátumy, použité metódy a všetky relevantné informácie..."
+
+msgid "Amount Lost"
+msgstr "Strata"
+
+msgid "Currency"
+msgstr "Mena"
+
+msgid "Evidence URLs"
+msgstr "URL dôkazov"
+
+msgid "Enter URLs to screenshots or evidence (one per line)"
+msgstr "Zadajte URL na snímky obrazovky alebo dôkazy (jeden na riadok)"
+
+msgid "Links to screenshots, archived pages, or other evidence"
+msgstr "Odkazy na snímky obrazovky, archivované stránky alebo iné dôkazy"
+
+msgid "Your Email (optional)"
+msgstr "Váš email (voliteľné)"
+
+msgid "For follow-up questions only"
+msgstr "Len pre doplňujúce otázky"
+
+msgid "Submit anonymously"
+msgstr "Odoslať anonymne"
+
+msgid "I confirm this report is truthful and I agree to the %s"
+msgstr "Potvrdzujem, že toto hlásenie je pravdivé a súhlasím s %s"
+
+msgid "Terms of Service"
+msgstr "Podmienkami služby"
+
+msgid "Submit Report"
+msgstr "Odoslať hlásenie"
+
+msgid "Submitting..."
+msgstr "Odosielam..."
+
+msgid "Report submitted successfully"
+msgstr "Hlásenie bolo úspešne odoslané"
+
+msgid "Widget key not configured."
+msgstr "Widget kľúč nie je nakonfigurovaný."
+
+msgid "Scamnemesis Widget"
+msgstr "Scamnemesis Widget"
+
+msgid "Enter identifier to verify..."
+msgstr "Zadajte identifikátor na overenie..."
+
+msgid "Verify"
+msgstr "Overiť"
+
+msgid "Reports Filed"
+msgstr "Podaných hlásení"
+
+msgid "Total Reported Losses"
+msgstr "Celkové nahlásené straty"
+
+msgid "Users Protected"
+msgstr "Chránených používateľov"
+
+msgid "ago"
+msgstr "pred"
+
+msgid "Dashboard"
+msgstr "Prehľad"
+
+msgid "Settings"
+msgstr "Nastavenia"
+
+msgid "Shortcodes"
+msgstr "Shortcodes"
+
+msgid "Scamnemesis Dashboard"
+msgstr "Prehľad Scamnemesis"
+
+msgid "API Connection"
+msgstr "API pripojenie"
+
+msgid "Connection Failed"
+msgstr "Pripojenie zlyhalo"
+
+msgid "Connected"
+msgstr "Pripojené"
+
+msgid "Test Connection"
+msgstr "Otestovať pripojenie"
+
+msgid "Global Statistics"
+msgstr "Globálne štatistiky"
+
+msgid "Total Reports"
+msgstr "Celkový počet hlásení"
+
+msgid "Amount Reported"
+msgstr "Nahlásená suma"
+
+msgid "Quick Actions"
+msgstr "Rýchle akcie"
+
+msgid "Configure Settings"
+msgstr "Konfigurovať nastavenia"
+
+msgid "Clear Cache"
+msgstr "Vymazať cache"
+
+msgid "View Shortcodes"
+msgstr "Zobraziť shortcodes"
+
+msgid "Need Help?"
+msgstr "Potrebujete pomoc?"
+
+msgid "Visit our documentation for detailed setup instructions and usage guides."
+msgstr "Navštívte našu dokumentáciu pre podrobné inštrukcie a návody na použitie."
+
+msgid "Documentation"
+msgstr "Dokumentácia"
+
+msgid "Scamnemesis Settings"
+msgstr "Nastavenia Scamnemesis"
+
+msgid "Settings saved."
+msgstr "Nastavenia uložené."
+
+msgid "Save Settings"
+msgstr "Uložiť nastavenia"
+
+msgid "API Configuration"
+msgstr "Konfigurácia API"
+
+msgid "API URL"
+msgstr "API URL"
+
+msgid "API Key"
+msgstr "API kľúč"
+
+msgid "Widget Key"
+msgstr "Widget kľúč"
+
+msgid "Features"
+msgstr "Funkcie"
+
+msgid "Enable Search"
+msgstr "Povoliť vyhľadávanie"
+
+msgid "Allow users to search the fraud database"
+msgstr "Povoliť používateľom vyhľadávať v databáze podvodov"
+
+msgid "Enable Report Form"
+msgstr "Povoliť formulár hlásení"
+
+msgid "Allow users to submit fraud reports"
+msgstr "Povoliť používateľom odosielať hlásenia podvodov"
+
+msgid "Appearance"
+msgstr "Vzhľad"
+
+msgid "Primary Color"
+msgstr "Primárna farba"
+
+msgid "Default Language"
+msgstr "Predvolený jazyk"
+
+msgid "English"
+msgstr "Angličtina"
+
+msgid "Slovak"
+msgstr "Slovenčina"
+
+msgid "Czech"
+msgstr "Čeština"
+
+msgid "German"
+msgstr "Nemčina"
+
+msgid "Spanish"
+msgstr "Španielčina"
+
+msgid "French"
+msgstr "Francúzština"
+
+msgid "Performance"
+msgstr "Výkon"
+
+msgid "Cache Duration"
+msgstr "Trvanie cache"
+
+msgid "Report submissions are currently disabled."
+msgstr "Odosielanie hlásení je momentálne zakázané."
+
+msgid "Too many requests. Please try again later."
+msgstr "Príliš veľa požiadaviek. Skúste to neskôr."
+
+msgid "Cache cleared successfully."
+msgstr "Cache bola úspešne vymazaná."
+
+msgid "Connection successful!"
+msgstr "Pripojenie úspešné!"
