@@ -1,0 +1,649 @@
+# Copyright (C) 2024 Scamnemesis Team
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Scamnemesis 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/scamnemesis/scamnemesis-wp/issues\n"
+"POT-Creation-Date: 2024-01-01T00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Scamnemesis Plugin\n"
+"X-Domain: scamnemesis\n"
+
+#. Plugin Name of the plugin
+msgid "Scamnemesis"
+msgstr ""
+
+#. Description of the plugin
+msgid "Fraud report and search integration for WordPress. Search for scammers, report fraud, and protect your community."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Enter email, phone, wallet address, or domain..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Search"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Search for scam reports"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Searching..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "No results found"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "An error occurred"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "All"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Email"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Phone"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Crypto Wallet"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Domain"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Report a Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Thank you for your report. It will be reviewed by our team."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Type of Identifier"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Select type..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Email Address"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Phone Number"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Website/Domain"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Social Media Profile"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Bank Account"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Other"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Identifier"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "e.g., scammer@email.com, +1234567890, 0x..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Enter the email, phone, wallet address, or other identifier of the scammer"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Type of Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Select scam type..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Phishing"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Investment Fraud"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Romance Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Online Shopping Fraud"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Impersonation"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Tech Support Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Lottery/Prize Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Cryptocurrency Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Employment Scam"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Description"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Please describe the scam in detail. Include dates, methods used, and any relevant information..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Amount Lost"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Currency"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Evidence URLs"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Enter URLs to screenshots or evidence (one per line)"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Links to screenshots, archived pages, or other evidence"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Your Email (optional)"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "For follow-up questions only"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Submit anonymously"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "I confirm this report is truthful and I agree to the %s"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Terms of Service"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Submit Report"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Submitting..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Report submitted successfully"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Widget key not configured."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Scamnemesis Widget"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Enter identifier to verify..."
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Verify"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Reports Filed"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Total Reported Losses"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "Users Protected"
+msgstr ""
+
+#: includes/class-shortcodes.php
+msgid "ago"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Dashboard"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Shortcodes"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Scamnemesis Dashboard"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "API Connection"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Connection Failed"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Connected"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Test Connection"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Global Statistics"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Total Reports"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Amount Reported"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Quick Actions"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Configure Settings"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Clear Cache"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "View Shortcodes"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Need Help?"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Visit our documentation for detailed setup instructions and usage guides."
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Shortcodes Reference"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Parameters:"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Parameter"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Default"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Example:"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "API key is not configured. %sSet up your API key%s to enable full functionality."
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Permission denied."
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Connection successful!"
+msgstr ""
+
+#: includes/admin/class-admin.php
+msgid "Cache cleared successfully!"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Scamnemesis Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Settings saved."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Save Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "API Configuration"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Configure your Scamnemesis API credentials."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "API URL"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "The Scamnemesis API endpoint URL."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "API Key"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Your Scamnemesis API key. Get one at scamnemesis.com/dashboard."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Widget Key"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Widget key for embedded widgets (optional)."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Features"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Enable or disable plugin features."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Enable Search"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Allow users to search the fraud database"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Enable Report Form"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Allow users to submit fraud reports"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Appearance"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Customize the look and feel of the plugin."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Primary Color"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Main accent color for buttons and highlights."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Default Language"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "English"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Slovak"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Czech"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "German"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Spanish"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "French"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Performance"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Configure caching and performance options."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Cache Duration"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "How long to cache API responses (in seconds). Set to 0 to disable caching."
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Scamnemesis Search"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Search for fraud reports in the Scamnemesis database"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Search Scam Database"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Title:"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Placeholder:"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Button Text:"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Show type filters"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Scamnemesis Verify"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Quick verification check for identifiers"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Verify Before You Trust"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Scamnemesis Statistics"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Display fraud report statistics"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Scam Statistics"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Show:"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "All Statistics"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Reports Only"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Amount Lost Only"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Users Protected Only"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Recent Scam Reports"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Display recent fraud reports"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Recent Reports"
+msgstr ""
+
+#: includes/class-widgets.php
+msgid "Number of reports:"
+msgstr ""
+
+#: includes/class-rest-api.php
+msgid "Report submissions are currently disabled."
+msgstr ""
+
+#: includes/class-rest-api.php
+msgid "Too many requests. Please try again later."
+msgstr ""
+
+#: includes/class-rest-api.php
+msgid "Report submitted successfully."
+msgstr ""
+
+#: includes/class-rest-api.php
+msgid "Cache cleared successfully."
+msgstr ""
+
+#: includes/class-api-client.php
+msgid "Missing required field: %s"
+msgstr ""
+
+#: includes/class-api-client.php
+msgid "API request failed"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "Search Settings"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "Placeholder Text"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "Default Search Type"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "All Types"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "Show Type Filters"
+msgstr ""
+
+#: blocks/search/index.js
+msgid "Results Per Page"
+msgstr ""
+
+#: blocks/report/index.js
+msgid "Report Form Settings"
+msgstr ""
+
+#: blocks/report/index.js
+msgid "Form Title"
+msgstr ""
+
+#: blocks/report/index.js
+msgid "Show Title"
+msgstr ""
+
+#: blocks/report/index.js
+msgid "Success Message"
+msgstr ""
+
+#: blocks/report/index.js
+msgid "Message shown after successful submission."
+msgstr ""

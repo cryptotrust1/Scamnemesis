@@ -1,0 +1,36 @@
+{
+  "name": "@scamnemesis/sdk",
+  "version": "1.0.0",
+  "description": "Scamnemesis JavaScript SDK - Embeddable fraud search and report widget",
+  "main": "dist/scamnemesis.min.js",
+  "module": "src/scamnemesis.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "types"
+  ],
+  "scripts": {
+    "build": "terser src/scamnemesis.js -o dist/scamnemesis.min.js -c -m",
+    "dev": "cp src/scamnemesis.js dist/scamnemesis.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scamnemesis/sdk-js"
+  },
+  "keywords": [
+    "scamnemesis",
+    "fraud",
+    "scam",
+    "widget",
+    "embed",
+    "search",
+    "report"
+  ],
+  "author": "Scamnemesis Team",
+  "license": "MIT",
+  "homepage": "https://scamnemesis.com/docs/sdk",
+  "devDependencies": {
+    "terser": "^5.26.0"
+  }
+}

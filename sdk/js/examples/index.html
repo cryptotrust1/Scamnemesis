@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scamnemesis SDK Examples</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #1f2937;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+        }
+        .widget-container {
+            margin-top: 1.5rem;
+        }
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .tab.active {
+            background: #2563eb;
+            color: white;
+        }
+        .dark-section {
+            background: #1f2937;
+            color: #f3f4f6;
+        }
+        .dark-section h2 {
+            color: #f3f4f6;
+            border-bottom-color: #374151;
+        }
+        footer {
+            text-align: center;
+            color: #6b7280;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        footer a {
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scamnemesis SDK Examples</h1>
+    <p class="subtitle">Embeddable fraud search and report widgets for any website</p>
+
+    <!-- Search Widget Example -->
+    <div class="section">
+        <h2>Search Widget</h2>
+        <p>Allow users to search the Scamnemesis fraud database.</p>
+        <div class="widget-container" id="search-widget"></div>
+        <div class="code-block">
+<pre>&lt;div id="search-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const sdk = new Scamnemesis({ apiKey: 'YOUR_API_KEY' });
+sdk.createSearchWidget('#search-widget');
+&lt;/script&gt;</pre>
+        </div>
+    </div>
+
+    <!-- Verify Widget Example -->
+    <div class="section">
+        <h2>Quick Verify Widget</h2>
+        <p>Let users quickly check if an identifier is in the database.</p>
+        <div class="widget-container" id="verify-widget"></div>
+        <div class="code-block">
+<pre>&lt;div id="verify-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const sdk = new Scamnemesis({ apiKey: 'YOUR_API_KEY' });
+sdk.createVerifyWidget('#verify-widget');
+&lt;/script&gt;</pre>
+        </div>
+    </div>
+
+    <!-- Report Widget Example -->
+    <div class="section">
+        <h2>Report Form Widget</h2>
+        <p>Enable users to submit fraud reports directly from your website.</p>
+        <div class="widget-container" id="report-widget"></div>
+        <div class="code-block">
+<pre>&lt;div id="report-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const sdk = new Scamnemesis({ apiKey: 'YOUR_API_KEY' });
+sdk.createReportWidget('#report-widget', {
+    title: 'Report a Scam',
+    successMessage: 'Thank you for helping protect the community!'
+});
+&lt;/script&gt;</pre>
+        </div>
+    </div>
+
+    <!-- Dark Theme Example -->
+    <div class="section dark-section">
+        <h2>Dark Theme</h2>
+        <p>The SDK supports a built-in dark theme.</p>
+        <div class="widget-container" id="dark-search-widget"></div>
+        <div class="code-block">
+<pre>&lt;script&gt;
+const sdk = new Scamnemesis({
+    apiKey: 'YOUR_API_KEY',
+    theme: 'dark'
+});
+sdk.createSearchWidget('#dark-search-widget');
+&lt;/script&gt;</pre>
+        </div>
+    </div>
+
+    <!-- Auto-init Example -->
+    <div class="section">
+        <h2>Auto-initialization (No JavaScript)</h2>
+        <p>Use data attributes for zero-config setup:</p>
+        <div class="widget-container"
+             data-scamnemesis-init="verify"
+             data-theme="light"
+             data-language="en"></div>
+        <div class="code-block">
+<pre>&lt;div data-scamnemesis-init="verify"
+     data-api-key="YOUR_API_KEY"
+     data-theme="light"
+     data-language="en"&gt;&lt;/div&gt;
+
+&lt;script src="https://cdn.scamnemesis.com/sdk/v1/scamnemesis.min.js"&gt;&lt;/script&gt;</pre>
+        </div>
+    </div>
+
+    <!-- Slovak Language Example -->
+    <div class="section">
+        <h2>Multi-language Support</h2>
+        <p>Podporované jazyky: English, Slovenčina, Čeština, Deutsch</p>
+        <div class="tabs">
+            <button class="tab active" onclick="switchLanguage('en')">English</button>
+            <button class="tab" onclick="switchLanguage('sk')">Slovenčina</button>
+            <button class="tab" onclick="switchLanguage('cs')">Čeština</button>
+            <button class="tab" onclick="switchLanguage('de')">Deutsch</button>
+        </div>
+        <div class="widget-container" id="i18n-widget"></div>
+    </div>
+
+    <footer>
+        <p>
+            <a href="https://scamnemesis.com" target="_blank">Scamnemesis</a> |
+            <a href="https://scamnemesis.com/docs/sdk" target="_blank">Documentation</a> |
+            <a href="https://github.com/scamnemesis/sdk-js" target="_blank">GitHub</a>
+        </p>
+        <p>&copy; 2024 Scamnemesis. All rights reserved.</p>
+    </footer>
+
+    <script src="../src/scamnemesis.js"></script>
+    <script>
+        // Light theme SDK
+        const lightSdk = new Scamnemesis({
+            theme: 'light',
+            language: 'en',
+        });
+
+        // Dark theme SDK
+        const darkSdk = new Scamnemesis({
+            theme: 'dark',
+            language: 'en',
+        });
+
+        // Create widgets
+        lightSdk.createSearchWidget('#search-widget', {
+            placeholder: 'Enter email, phone, wallet, or domain to search...'
+        });
+
+        lightSdk.createVerifyWidget('#verify-widget');
+
+        lightSdk.createReportWidget('#report-widget', {
+            title: 'Report a Scam',
+            successMessage: 'Thank you for helping protect the community!'
+        });
+
+        darkSdk.createSearchWidget('#dark-search-widget');
+
+        // i18n widget
+        let i18nSdk = new Scamnemesis({ language: 'en' });
+        i18nSdk.createVerifyWidget('#i18n-widget');
+
+        function switchLanguage(lang) {
+            // Update tab styles
+            document.querySelectorAll('.tabs .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Recreate widget with new language
+            i18nSdk.destroy();
+            i18nSdk = new Scamnemesis({ language: lang });
+            i18nSdk.createVerifyWidget('#i18n-widget');
+        }
+    </script>
+</body>
+</html>
