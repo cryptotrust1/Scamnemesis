@@ -1,0 +1,556 @@
+// Scamnemesis Prisma Schema
+// Fraud Reporting System Database
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector"), pg_trgm]
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  BASIC
+  STANDARD
+  GOLD
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  MERGED
+  ARCHIVED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum FraudType {
+  ROMANCE_SCAM
+  INVESTMENT_FRAUD
+  PHISHING
+  IDENTITY_THEFT
+  ONLINE_SHOPPING_FRAUD
+  TECH_SUPPORT_SCAM
+  LOTTERY_PRIZE_SCAM
+  EMPLOYMENT_SCAM
+  RENTAL_SCAM
+  CRYPTOCURRENCY_SCAM
+  PYRAMID_MLM_SCHEME
+  INSURANCE_FRAUD
+  CREDIT_CARD_FRAUD
+  WIRE_FRAUD
+  MONEY_MULE
+  ADVANCE_FEE_FRAUD
+  BUSINESS_EMAIL_COMPROMISE
+  SOCIAL_ENGINEERING
+  FAKE_CHARITY
+  GOVERNMENT_IMPERSONATION
+  UTILITY_SCAM
+  GRANDPARENT_SCAM
+  SEXTORTION
+  RANSOMWARE
+  ACCOUNT_TAKEOVER
+  SIM_SWAPPING
+  CATFISHING
+  PONZI_SCHEME
+  OTHER
+}
+
+enum EvidenceType {
+  IMAGE
+  DOCUMENT
+  VIDEO
+  AUDIO
+  PAYMENT_EVIDENCE
+  FRAUDSTER_PHOTO
+  SCREENSHOT
+  DAMAGE_DOCS
+  CRIME_SCENE
+  OTHER
+}
+
+enum Blockchain {
+  BITCOIN
+  ETHEREUM
+  TETHER
+  BINANCE
+  SOLANA
+  OTHER
+}
+
+enum CommentStatus {
+  PENDING_MODERATION
+  APPROVED
+  REJECTED
+}
+
+enum DuplicateClusterStatus {
+  PENDING
+  RESOLVED
+  IGNORED
+}
+
+enum EnrichmentEventType {
+  CRAWL_RESULT
+  SANCTIONS_MATCH
+  NEWS_MATCH
+}
+
+// ==================== USERS & AUTH ====================
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String    @map("password_hash")
+  name            String?
+  role            UserRole  @default(BASIC)
+  isActive        Boolean   @default(true) @map("is_active")
+  emailVerified   Boolean   @default(false) @map("email_verified")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  lastLoginAt     DateTime? @map("last_login_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Display name
+  displayName     String?         @map("display_name")
+
+  // Relations
+  apiKeys          ApiKey[]
+  reports          Report[]        @relation("ReporterReports")
+  moderatedReports Report[]        @relation("ModeratedByUser")
+  comments         Comment[]
+  moderatedComments Comment[]      @relation("ModeratedComments")
+  auditLogs        AuditLog[]
+  refreshTokens    RefreshToken[]
+
+  @@map("users")
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  key         String    @unique
+  name        String
+  scopes      String[]  @default([])
+  rateLimit   Int       @default(1000) @map("rate_limit")
+  isActive    Boolean   @default(true) @map("is_active")
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ==================== REPORTS ====================
+
+model Report {
+  id              String       @id @default(cuid())
+  status          ReportStatus @default(PENDING)
+  severity        Severity?
+  publicId        String       @unique @default(cuid()) @map("public_id")
+
+  // Incident
+  fraudType             FraudType    @map("fraud_type")
+  incidentDate          DateTime?    @map("incident_date")
+  transactionDate       DateTime?    @map("transaction_date")
+  summary               String
+  description           String?      @db.Text
+  financialLossAmount   Decimal?     @map("financial_loss_amount") @db.Decimal(15, 2)
+  financialLossCurrency String       @default("EUR") @map("financial_loss_currency")
+  location              Json?
+
+  // Location (legacy - use location JSON field)
+  locationStreet     String? @map("location_street")
+  locationCity       String? @map("location_city")
+  locationPostalCode String? @map("location_postal_code")
+  locationCountry    String? @map("location_country")
+
+  // Reporter
+  reporterId      String    @map("reporter_id")
+  reporterEmail   String    @map("reporter_email")
+  reporterName    String?   @map("reporter_name")
+  reporterPhone   String?   @map("reporter_phone")
+  reporterConsent Boolean   @default(true) @map("reporter_consent")
+  reporterLang    String    @default("en") @map("reporter_lang")
+
+  // Admin / Moderation
+  moderatedById    String?   @map("moderated_by_id")
+  moderatedAt      DateTime? @map("moderated_at")
+  publishedAt      DateTime? @map("published_at")
+  rejectionReason  String?   @map("rejection_reason") @db.Text
+  adminNotes       String?   @map("admin_notes") @db.Text
+  maskingOverrides Json?     @map("masking_overrides")
+  metadata         Json?
+
+  // Merge tracking
+  mergedIntoId String?  @map("merged_into_id")
+  mergeCount   Int      @default(0) @map("merge_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  reporter          User               @relation("ReporterReports", fields: [reporterId], references: [id])
+  moderatedBy       User?              @relation("ModeratedByUser", fields: [moderatedById], references: [id])
+  mergedInto        Report?            @relation("MergedReports", fields: [mergedIntoId], references: [id])
+  mergedReports     Report[]           @relation("MergedReports")
+  perpetrators      Perpetrator[]
+  digitalFootprint  DigitalFootprint?
+  financialInfo     FinancialInfo?
+  cryptoInfo        CryptoInfo?
+  companyInfo       CompanyInfo?
+  vehicleInfo       VehicleInfo?
+  evidence          Evidence[]
+  comments          Comment[]
+  duplicateClusters DuplicateClusterReport[]
+
+  @@index([status])
+  @@index([severity])
+  @@index([fraudType])
+  @@index([locationCountry])
+  @@index([createdAt])
+  @@index([mergedIntoId])
+  @@map("reports")
+}
+
+model Perpetrator {
+  id                  String  @id @default(cuid())
+  reportId            String  @map("report_id")
+
+  fullName            String? @map("full_name")
+  fullNameNormalized  String? @map("full_name_normalized")
+  nickname            String?
+  username            String?
+  approxAge           Int?    @map("approx_age")
+  nationality         String?
+  physicalDescription String? @map("physical_description") @db.Text
+  phone               String?
+  phoneNormalized     String? @map("phone_normalized")
+  email               String?
+  emailNormalized     String? @map("email_normalized")
+
+  // Address
+  addressStreet     String? @map("address_street")
+  addressCity       String? @map("address_city")
+  addressPostalCode String? @map("address_postal_code")
+  addressCountry    String? @map("address_country")
+
+  // Enrichment data from external sources
+  enrichedData      Json?   @map("enriched_data")
+
+  // Embeddings for similarity search
+  nameEmbedding     Unsupported("vector(384)")? @map("name_embedding")
+
+  // Many-to-many relation (a perpetrator can be linked to multiple reports)
+  reports Report[]
+
+  @@index([reportId])
+  @@index([phoneNormalized])
+  @@index([emailNormalized])
+  @@index([fullNameNormalized])
+  @@map("perpetrators")
+}
+
+model DigitalFootprint {
+  id       String @id @default(cuid())
+  reportId String @unique @map("report_id")
+
+  telegram            String?
+  whatsapp            String?
+  signal              String?
+  instagram           String?
+  facebook            String?
+  tiktok              String?
+  twitter             String?
+  websiteUrl          String?  @map("website_url")
+  domainName          String?  @map("domain_name")
+  domainCreationDate  DateTime? @map("domain_creation_date")
+  ipAddress           String?  @map("ip_address")
+  ipCountry           String?  @map("ip_country")
+  isp                 String?
+  ipAbuseScore        Int?     @map("ip_abuse_score")
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([domainName])
+  @@index([ipAddress])
+  @@map("digital_footprints")
+}
+
+model FinancialInfo {
+  id       String @id @default(cuid())
+  reportId String @unique @map("report_id")
+
+  iban                String?
+  ibanNormalized      String? @map("iban_normalized")
+  accountHolder       String? @map("account_holder")
+  accountNumber       String? @map("account_number")
+  bankName            String? @map("bank_name")
+  bankCountry         String? @map("bank_country")
+  swiftBic            String? @map("swift_bic")
+  routingNumber       String? @map("routing_number")
+  bsb                 String?
+  sortCode            String? @map("sort_code")
+  ifsc                String?
+  cnaps               String?
+  otherBankingDetails String? @map("other_banking_details") @db.Text
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([ibanNormalized])
+  @@index([accountNumber])
+  @@map("financial_info")
+}
+
+model CryptoInfo {
+  id       String @id @default(cuid())
+  reportId String @unique @map("report_id")
+
+  walletAddress      String?     @map("wallet_address")
+  walletNormalized   String?     @map("wallet_normalized")
+  blockchain         Blockchain?
+  exchangeWalletName String?     @map("exchange_wallet_name")
+  transactionHash    String?     @map("transaction_hash")
+  paypalAccount      String?     @map("paypal_account")
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([walletNormalized])
+  @@map("crypto_info")
+}
+
+model CompanyInfo {
+  id       String @id @default(cuid())
+  reportId String @unique @map("report_id")
+
+  name            String?
+  vatTaxId        String? @map("vat_tax_id")
+  addressStreet   String? @map("address_street")
+  addressCity     String? @map("address_city")
+  addressPostal   String? @map("address_postal")
+  addressCountry  String? @map("address_country")
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([vatTaxId])
+  @@map("company_info")
+}
+
+model VehicleInfo {
+  id       String @id @default(cuid())
+  reportId String @unique @map("report_id")
+
+  make            String?
+  model           String?
+  color           String?
+  licensePlate    String? @map("license_plate")
+  vin             String?
+  registeredOwner String? @map("registered_owner")
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([licensePlate])
+  @@index([vin])
+  @@map("vehicle_info")
+}
+
+model Evidence {
+  id          String       @id @default(cuid())
+  reportId    String       @map("report_id")
+  type        EvidenceType
+  fileKey     String?      @map("file_key")
+  url         String?
+  externalUrl String?      @map("external_url")
+  description String?
+  mimeType    String?      @map("mime_type")
+  fileSize    Int?         @map("file_size")
+  hash        String?
+
+  // Image processing
+  thumbnailKey String? @map("thumbnail_key")
+  thumbnailUrl String? @map("thumbnail_url")
+  pHash        String? @map("p_hash")
+  hasFace      Boolean @default(false) @map("has_face")
+  faceCount    Int?    @map("face_count")
+
+  // OCR
+  ocrText       String? @map("ocr_text") @db.Text
+  ocrConfidence Float?  @map("ocr_confidence")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  report    Report      @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  faces     FaceData[]
+
+  @@index([pHash])
+  @@index([hash])
+  @@map("evidence")
+}
+
+model FaceData {
+  id         String @id @default(cuid())
+  evidenceId String @map("evidence_id")
+
+  boundingBox Json      @map("bounding_box")
+  embedding   Unsupported("vector(512)")? @map("embedding")
+  quality     Float?
+  cropKey     String?   @map("crop_key")
+
+  evidence Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@map("face_data")
+}
+
+// ==================== COMMENTS ====================
+
+model Comment {
+  id              String        @id @default(cuid())
+  reportId        String        @map("report_id")
+  userId          String        @map("user_id")
+  content         String        @db.Text
+  status          CommentStatus @default(PENDING_MODERATION)
+  moderatedAt     DateTime?     @map("moderated_at")
+  moderatedById   String?       @map("moderated_by_id")
+  rejectionReason String?       @map("rejection_reason")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id])
+
+  @@index([reportId])
+  @@index([status])
+  @@map("comments")
+}
+
+// ==================== DUPLICATE DETECTION ====================
+
+model DuplicateCluster {
+  id               String                 @id @default(cuid())
+  primaryReportId  String?                @map("primary_report_id")
+  status           DuplicateClusterStatus @default(PENDING)
+  confidence       Float                  @default(0)
+  matchType        String?                @map("match_type")
+  matchingCriteria Json?                  @map("matching_criteria")
+  resolvedAt       DateTime?              @map("resolved_at")
+  resolvedById     String?                @map("resolved_by_id")
+  createdAt        DateTime               @default(now()) @map("created_at")
+
+  reports DuplicateClusterReport[]
+
+  @@index([status])
+  @@index([confidence])
+  @@map("duplicate_clusters")
+}
+
+model DuplicateClusterReport {
+  clusterId String @map("cluster_id")
+  reportId  String @map("report_id")
+  similarity Float
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  cluster DuplicateCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  report  Report           @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@id([clusterId, reportId])
+  @@map("duplicate_cluster_reports")
+}
+
+// ==================== ENRICHMENT ====================
+
+model Enrichment {
+  id            String              @id @default(cuid())
+  perpetratorId String?             @map("perpetrator_id")
+  eventType     EnrichmentEventType @map("event_type")
+  sourceId      String              @map("source_id")
+  matchType     String              @map("match_type")
+  matchValue    String              @map("match_value")
+  similarity    Float?
+  data          Json
+  status        String              @default("pending")
+  reviewedAt    DateTime?           @map("reviewed_at")
+  reviewedById  String?             @map("reviewed_by_id")
+  createdAt     DateTime            @default(now()) @map("created_at")
+
+  @@index([perpetratorId])
+  @@index([status])
+  @@map("enrichments")
+}
+
+// ==================== AUDIT LOG ====================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?  @map("user_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  changes    Json?
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ==================== SEARCH INDEX ====================
+
+model SearchIndex {
+  id            String   @id @default(cuid())
+  reportId      String   @unique @map("report_id")
+  searchText    String   @map("search_text") @db.Text
+  lastIndexedAt DateTime @default(now()) @map("last_indexed_at")
+
+  @@map("search_index")
+}
+
+// ==================== RATE LIMITING ====================
+
+model RateLimit {
+  id         String   @id @default(cuid())
+  identifier String   @unique
+  count      Int      @default(0)
+  windowStart DateTime @map("window_start")
+  expiresAt  DateTime @map("expires_at")
+
+  @@index([expiresAt])
+  @@map("rate_limits")
+}
