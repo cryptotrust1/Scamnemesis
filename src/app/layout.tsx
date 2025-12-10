@@ -1,30 +1,44 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Header, Footer } from '@/components/layout';
-import '@/styles/globals.css';
+import './globals.css';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { Toaster } from '@/components/ui/toaster';
+import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ['latin', 'latin-ext'] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    default: 'ScamNemesis - Ochrana pred podvodníkmi',
-    template: '%s | ScamNemesis',
+    default: 'Scamnemesis - Platforma na hlásenie podvodov',
+    template: '%s | Scamnemesis',
   },
-  description: 'Komunitná platforma na nahlasovanie a vyhľadávanie podvodníkov. Chráňte seba aj ostatných pred online podvodmi.',
-  keywords: ['podvodník', 'scam', 'fraud', 'nahlásenie', 'databáza podvodníkov', 'ochrana'],
-  authors: [{ name: 'ScamNemesis Team' }],
+  description:
+    'Platforma na hlásenie a sledovanie podvodov s využitím umelej inteligencie a pokročilých algoritmov detekcie duplikátov.',
+  keywords: [
+    'podvody',
+    'scam',
+    'fraud',
+    'hlásenie podvodov',
+    'detekcia duplikátov',
+    'AI',
+    'machine learning',
+    'bezpečnosť',
+  ],
+  authors: [{ name: 'Scamnemesis Team' }],
+  creator: 'Scamnemesis',
   openGraph: {
     type: 'website',
     locale: 'sk_SK',
     url: 'https://scamnemesis.com',
-    siteName: 'ScamNemesis',
-    title: 'ScamNemesis - Ochrana pred podvodníkmi',
-    description: 'Komunitná platforma na nahlasovanie a vyhľadávanie podvodníkov.',
+    title: 'Scamnemesis - Platforma na hlásenie podvodov',
+    description: 'Hlásenie a sledovanie podvodov s využitím umelej inteligencie',
+    siteName: 'Scamnemesis',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ScamNemesis - Ochrana pred podvodníkmi',
-    description: 'Komunitná platforma na nahlasovanie a vyhľadávanie podvodníkov.',
+    title: 'Scamnemesis',
+    description: 'Platforma na hlásenie podvodov s AI',
   },
   robots: {
     index: true,
@@ -38,15 +52,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sk">
-      <body className={inter.className}>
-        <div className="app-container">
-          <Header />
-          <main className="main-content">
-            {children}
-          </main>
-          <Footer />
-        </div>
+    <html lang="sk" suppressHydrationWarning>
+      <body className={cn(inter.className, 'min-h-screen flex flex-col')}>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <Toaster />
       </body>
     </html>
   );

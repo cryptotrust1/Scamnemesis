@@ -1,274 +1,297 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { Button, Input, Card, CardBody, Badge, Alert } from '@/components/ui';
-import styles from './page.module.css';
+import { SearchFiltersComponent, type SearchFilters } from '@/components/search/search-filters';
+import { ReportList, type Report } from '@/components/search/report-list';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-interface SearchResult {
-  id: string;
-  public_id: string;
-  fraud_type: string;
-  severity: string;
-  summary: string;
-  perpetrator: {
-    full_name: string | null;
-    nickname: string | null;
-  } | null;
-  location: {
-    country: string | null;
-    city: string | null;
-  } | null;
-  financial_loss: {
-    amount: string | number;
-    currency: string;
-  } | null;
-  created_at: string;
-}
-
-const FRAUD_TYPES = [
-  { value: '', label: 'Všetky typy' },
-  { value: 'INVESTMENT_FRAUD', label: 'Investičný podvod' },
-  { value: 'ROMANCE_SCAM', label: 'Romantický podvod' },
-  { value: 'PHISHING', label: 'Phishing' },
-  { value: 'FAKE_ESHOP', label: 'Falošný e-shop' },
-  { value: 'ADVANCE_FEE', label: 'Záloha vopred' },
-  { value: 'TECH_SUPPORT', label: 'Tech support' },
-  { value: 'CRYPTO_SCAM', label: 'Krypto podvod' },
-  { value: 'JOB_SCAM', label: 'Pracovný podvod' },
-  { value: 'OTHER', label: 'Iné' },
+// Mock data - replace with actual API call
+const mockReports: Report[] = [
+  {
+    id: '1',
+    title: 'Investičný podvod s kryptomenami - ponuka vysokých výnosov',
+    description:
+      'Bol som kontaktovaný cez Facebook s ponukou investície do Bitcoinu. Sľúbili 300% výnos za 3 mesiace. Po vložení 15,000 EUR prestali odpovedať.',
+    fraudType: 'INVESTMENT_FRAUD',
+    country: 'Slovensko',
+    city: 'Bratislava',
+    amount: 15000,
+    currency: 'EUR',
+    status: 'APPROVED',
+    createdAt: '2025-12-09',
+    perpetratorName: 'Mic***l Nov**',
+    perpetratorPhone: '+421 9** *** 456',
+    perpetratorEmail: 'm*****@email.com',
+    similarReportsCount: 12,
+  },
+  {
+    id: '2',
+    title: 'Romance scam - zoznamka a požiadavka o peniaze',
+    description:
+      'Stretol som ženu na Tinderi, po mesiaci písania požiadala o 8,500 EUR na operáciu matky. Po zaslaní peňazí zmazala účet.',
+    fraudType: 'ROMANCE_SCAM',
+    country: 'Česká republika',
+    city: 'Praha',
+    amount: 8500,
+    currency: 'EUR',
+    status: 'APPROVED',
+    createdAt: '2025-12-08',
+    perpetratorName: 'Kat***a Dvořáková',
+    perpetratorEmail: 'k*****@seznam.cz',
+    similarReportsCount: 5,
+  },
+  {
+    id: '3',
+    title: 'Phishing email - podvrhnutá správa od Tatra banky',
+    description:
+      'Dostal som email údajne od Tatra banky s výzvou na overenie účtu. Link viedol na falošnú stránku kde som zadal prihlasovacie údaje.',
+    fraudType: 'PHISHING',
+    country: 'Slovensko',
+    city: 'Košice',
+    amount: 0,
+    currency: 'EUR',
+    status: 'APPROVED',
+    createdAt: '2025-12-08',
+    perpetratorEmail: 'info@tatrabank-verify.com',
+    similarReportsCount: 23,
+  },
+  {
+    id: '4',
+    title: 'Podvod s prenájmom bytu - vopred zaplatená záloha',
+    description:
+      'Našiel som inzerát na prenájom bytu v centre Bratislavy za výhodnú cenu. Majiteľ požadoval zálohu 2,000 EUR. Po zaplatení prestal odpovedať a byt neexistoval.',
+    fraudType: 'RENTAL_FRAUD',
+    country: 'Slovensko',
+    city: 'Bratislava',
+    amount: 2000,
+    currency: 'EUR',
+    status: 'PENDING',
+    createdAt: '2025-12-07',
+    perpetratorName: 'Pet** Hor***',
+    perpetratorPhone: '+421 9** *** 789',
+  },
+  {
+    id: '5',
+    title: 'Falošná charita - pomoc pre deti na Ukrajine',
+    description:
+      'Organizácia zbierala peniaze na pomoc deťom utečencom. Po vyzbieraní 45,000 EUR zmizli. Charita nikdy nebola registrovaná.',
+    fraudType: 'FAKE_CHARITY',
+    country: 'Slovensko',
+    city: 'Žilina',
+    amount: 45000,
+    currency: 'EUR',
+    status: 'APPROVED',
+    createdAt: '2025-12-06',
+    perpetratorName: 'Nadácia P***a deť**',
+    similarReportsCount: 8,
+  },
 ];
-
-const SEVERITY_COLORS: Record<string, 'default' | 'warning' | 'danger' | 'info'> = {
-  low: 'default',
-  medium: 'warning',
-  high: 'danger',
-  critical: 'danger',
-};
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
 
-  const [query, setQuery] = useState(initialQuery);
-  const [fraudType, setFraudType] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: initialQuery,
+    fraudType: 'all',
+    country: 'all',
+    status: 'all',
+    dateFrom: '',
+    dateTo: '',
+    amountMin: '',
+    amountMax: '',
+  });
+
+  const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages] = useState(5);
+  const [sortBy, setSortBy] = useState('date-desc');
+  const [totalResults] = useState(243);
 
   useEffect(() => {
-    if (initialQuery) {
-      performSearch();
-    }
+    handleSearch();
   }, []);
 
-  const performSearch = async () => {
-    if (!query.trim()) {
-      setError('Zadajte vyhľadávací výraz');
-      return;
-    }
-
+  const handleSearch = async () => {
     setIsLoading(true);
-    setError(null);
-    setHasSearched(true);
 
-    try {
-      const params = new URLSearchParams({ q: query });
-      if (fraudType) {
-        params.append('fraud_type', fraudType);
+    // Simulate API call
+    setTimeout(() => {
+      // Filter mock data based on filters
+      let filtered = [...mockReports];
+
+      if (filters.query) {
+        filtered = filtered.filter(
+          (r) =>
+            r.title.toLowerCase().includes(filters.query.toLowerCase()) ||
+            r.description.toLowerCase().includes(filters.query.toLowerCase()) ||
+            r.perpetratorName?.toLowerCase().includes(filters.query.toLowerCase())
+        );
       }
 
-      const response = await fetch(`/api/v1/search?${params.toString()}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Chyba pri vyhľadávaní');
+      if (filters.fraudType !== 'all') {
+        filtered = filtered.filter((r) => r.fraudType === filters.fraudType);
       }
 
-      setResults(data.data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nastala chyba');
-      setResults([]);
-    } finally {
+      if (filters.country !== 'all') {
+        filtered = filtered.filter((r) => r.country === filters.country);
+      }
+
+      if (filters.status !== 'all') {
+        filtered = filtered.filter((r) => r.status === filters.status);
+      }
+
+      // Sort
+      if (sortBy === 'date-desc') {
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      } else if (sortBy === 'date-asc') {
+        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      } else if (sortBy === 'amount-desc') {
+        filtered.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+      } else if (sortBy === 'amount-asc') {
+        filtered.sort((a, b) => (a.amount || 0) - (b.amount || 0));
+      }
+
+      setReports(filtered);
       setIsLoading(false);
-    }
+    }, 500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    performSearch();
-
-    // Update URL without reload
-    const params = new URLSearchParams();
-    params.set('q', query);
-    if (fraudType) {
-      params.set('type', fraudType);
-    }
-    window.history.pushState({}, '', `/search?${params.toString()}`);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('sk-SK', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+  const handleReset = () => {
+    setFilters({
+      query: '',
+      fraudType: 'all',
+      country: 'all',
+      status: 'all',
+      dateFrom: '',
+      dateTo: '',
+      amountMin: '',
+      amountMax: '',
     });
-  };
-
-  const getFraudTypeLabel = (type: string) => {
-    const found = FRAUD_TYPES.find((t) => t.value === type.toUpperCase());
-    return found ? found.label : type;
+    setCurrentPage(1);
   };
 
   return (
-    <div className={styles.page}>
-      {/* Search Header */}
-      <section className={styles.searchHeader}>
-        <h1 className={styles.title}>Vyhľadávanie</h1>
-        <p className={styles.subtitle}>
-          Vyhľadajte v databáze nahlásených podvodníkov
+    <div className="container py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tighter mb-2">Vyhľadávanie podvodov</h1>
+        <p className="text-muted-foreground">
+          Prehľadávajte databázu hlásených podvodov a chráňte sa pred podvodníkmi
         </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className={styles.searchForm}>
-          <div className={styles.searchInputs}>
-            <Input
-              type="text"
-              placeholder="Meno, email, telefón, IBAN..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              fullWidth
-              leftIcon={
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-              }
-            />
-            <select
-              value={fraudType}
-              onChange={(e) => setFraudType(e.target.value)}
-              className={styles.typeSelect}
-            >
-              {FRAUD_TYPES.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-            <Button type="submit" isLoading={isLoading}>
-              Vyhľadať
-            </Button>
-          </div>
-        </form>
-      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Filters Sidebar */}
+        <div className="lg:col-span-1">
+          <SearchFiltersComponent
+            filters={filters}
+            onFiltersChange={setFilters}
+            onSearch={handleSearch}
+            onReset={handleReset}
+          />
+        </div>
 
-      {/* Results Section */}
-      <section className={styles.results}>
-        {error && (
-          <Alert variant="error" dismissible onDismiss={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
-
-        {isLoading && (
-          <div className={styles.loading}>
-            <div className={styles.spinner} />
-            <p>Vyhľadávam...</p>
-          </div>
-        )}
-
-        {!isLoading && hasSearched && results.length === 0 && (
-          <div className={styles.noResults}>
-            <div className={styles.noResultsIcon}>🔍</div>
-            <h3>Žiadne výsledky</h3>
-            <p>
-              Pre výraz &quot;{query}&quot; sme nenašli žiadne záznamy.
-            </p>
-            <p className={styles.noResultsHint}>
-              Skúste iný vyhľadávací výraz alebo{' '}
-              <Link href="/report">nahláste nový podvod</Link>.
-            </p>
-          </div>
-        )}
-
-        {!isLoading && results.length > 0 && (
-          <>
-            <div className={styles.resultsHeader}>
-              <span className={styles.resultsCount}>
-                Nájdených <strong>{results.length}</strong> záznamov
-              </span>
+        {/* Results */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Results Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Nájdených <span className="font-semibold text-foreground">{reports.length}</span> z{' '}
+                <span className="font-semibold text-foreground">{totalResults}</span> výsledkov
+              </p>
             </div>
 
-            <div className={styles.resultsList}>
-              {results.map((result) => (
-                <Card key={result.id} variant="default" hoverable className={styles.resultCard}>
-                  <CardBody>
-                    <div className={styles.resultHeader}>
-                      <div className={styles.resultBadges}>
-                        <Badge variant="danger">
-                          {getFraudTypeLabel(result.fraud_type)}
-                        </Badge>
-                        {result.severity && (
-                          <Badge variant={SEVERITY_COLORS[result.severity] || 'default'}>
-                            {result.severity.toUpperCase()}
-                          </Badge>
-                        )}
-                      </div>
-                      <span className={styles.resultDate}>
-                        {formatDate(result.created_at)}
-                      </span>
-                    </div>
-
-                    <h3 className={styles.resultName}>
-                      {result.perpetrator?.full_name || result.perpetrator?.nickname || 'Neznámy'}
-                    </h3>
-
-                    <p className={styles.resultSummary}>{result.summary}</p>
-
-                    <div className={styles.resultMeta}>
-                      {result.location?.country && (
-                        <span className={styles.resultLocation}>
-                          📍 {result.location.city ? `${result.location.city}, ` : ''}{result.location.country}
-                        </span>
-                      )}
-                      {result.financial_loss && (
-                        <span className={styles.resultLoss}>
-                          💰 Strata: {result.financial_loss.amount} {result.financial_loss.currency}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className={styles.resultFooter}>
-                      <Link href={`/report/${result.public_id}`} className={styles.resultLink}>
-                        <Button variant="outline" size="sm">
-                          Zobraziť detail
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardBody>
-                </Card>
-              ))}
+            {/* Sort */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Zoradiť:</span>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date-desc">Najnovšie</SelectItem>
+                  <SelectItem value="date-asc">Najstaršie</SelectItem>
+                  <SelectItem value="amount-desc">Suma (zostupne)</SelectItem>
+                  <SelectItem value="amount-asc">Suma (vzostupne)</SelectItem>
+                  <SelectItem value="relevance">Relevancia</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </>
-        )}
-
-        {!hasSearched && (
-          <div className={styles.instructions}>
-            <div className={styles.instructionsIcon}>💡</div>
-            <h3>Tipy na vyhľadávanie</h3>
-            <ul className={styles.instructionsList}>
-              <li>Zadajte <strong>celé meno</strong> pre presnejšie výsledky</li>
-              <li>Vyhľadajte podľa <strong>emailu</strong> alebo <strong>telefónneho čísla</strong></li>
-              <li>Zadajte <strong>IBAN</strong> alebo <strong>číslo účtu</strong></li>
-              <li>Vyhľadajte podľa <strong>krypto adresy</strong> (Bitcoin, Ethereum...)</li>
-              <li>Použite <strong>filter typu podvodu</strong> pre zúženie výsledkov</li>
-            </ul>
           </div>
-        )}
-      </section>
+
+          {/* Report List */}
+          <ReportList reports={reports} isLoading={isLoading} />
+
+          {/* Pagination */}
+          {reports.length > 0 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                  />
+                </PaginationItem>
+
+                {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                  const page = i + 1;
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === page}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                        }}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+
+                {totalPages > 5 && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
