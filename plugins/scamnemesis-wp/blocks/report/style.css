@@ -1,0 +1,27 @@
+/**
+ * Scamnemesis Report Block - Frontend Styles
+ * Note: Main styles are in assets/css/frontend.css
+ */
+
+/* Block-specific alignment styles */
+.wp-block-scamnemesis-report {
+    margin-bottom: 1.5rem;
+}
+
+.wp-block-scamnemesis-report.alignwide {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wp-block-scamnemesis-report.alignfull {
+    max-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.wp-block-scamnemesis-report .scamnemesis-report-container {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
