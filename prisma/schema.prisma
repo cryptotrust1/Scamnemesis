@@ -24,9 +24,18 @@ enum UserRole {
 
 enum ReportStatus {
   PENDING
+  UNDER_REVIEW
   APPROVED
   REJECTED
+  MERGED
   ARCHIVED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 enum FraudType {
@@ -62,6 +71,10 @@ enum FraudType {
 }
 
 enum EvidenceType {
+  IMAGE
+  DOCUMENT
+  VIDEO
+  AUDIO
   PAYMENT_EVIDENCE
   FRAUDSTER_PHOTO
   SCREENSHOT
@@ -112,13 +125,17 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
+  // Display name
+  displayName     String?         @map("display_name")
+
   // Relations
-  apiKeys         ApiKey[]
-  reports         Report[]        @relation("ReporterReports")
-  approvedReports Report[]        @relation("ApprovedByUser")
-  comments        Comment[]
-  auditLogs       AuditLog[]
-  refreshTokens   RefreshToken[]
+  apiKeys          ApiKey[]
+  reports          Report[]        @relation("ReporterReports")
+  moderatedReports Report[]        @relation("ModeratedByUser")
+  comments         Comment[]
+  moderatedComments Comment[]      @relation("ModeratedComments")
+  auditLogs        AuditLog[]
+  refreshTokens    RefreshToken[]
 
   @@map("users")
 }
@@ -157,18 +174,20 @@ model RefreshToken {
 model Report {
   id              String       @id @default(cuid())
   status          ReportStatus @default(PENDING)
+  severity        Severity?
   publicId        String       @unique @default(cuid()) @map("public_id")
 
   // Incident
-  fraudType       FraudType    @map("fraud_type")
-  incidentDate    DateTime?    @map("incident_date")
-  transactionDate DateTime?    @map("transaction_date")
-  summary         String
-  description     String?      @db.Text
-  financialLoss   Decimal?     @map("financial_loss") @db.Decimal(15, 2)
-  currency        String       @default("EUR")
+  fraudType             FraudType    @map("fraud_type")
+  incidentDate          DateTime?    @map("incident_date")
+  transactionDate       DateTime?    @map("transaction_date")
+  summary               String
+  description           String?      @db.Text
+  financialLossAmount   Decimal?     @map("financial_loss_amount") @db.Decimal(15, 2)
+  financialLossCurrency String       @default("EUR") @map("financial_loss_currency")
+  location              Json?
 
-  // Location
+  // Location (legacy - use location JSON field)
   locationStreet     String? @map("location_street")
   locationCity       String? @map("location_city")
   locationPostalCode String? @map("location_postal_code")
@@ -182,40 +201,50 @@ model Report {
   reporterConsent Boolean   @default(true) @map("reporter_consent")
   reporterLang    String    @default("en") @map("reporter_lang")
 
-  // Admin
-  approvedById    String?   @map("approved_by_id")
-  approvedAt      DateTime? @map("approved_at")
-  rejectedReason  String?   @map("rejected_reason")
-  adminNotes      String?   @map("admin_notes") @db.Text
-  maskingOverrides Json?    @map("masking_overrides")
+  // Admin / Moderation
+  moderatedById    String?   @map("moderated_by_id")
+  moderatedAt      DateTime? @map("moderated_at")
+  publishedAt      DateTime? @map("published_at")
+  rejectionReason  String?   @map("rejection_reason") @db.Text
+  adminNotes       String?   @map("admin_notes") @db.Text
+  maskingOverrides Json?     @map("masking_overrides")
+  metadata         Json?
+
+  // Merge tracking
+  mergedIntoId String?  @map("merged_into_id")
+  mergeCount   Int      @default(0) @map("merge_count")
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  reporter         User               @relation("ReporterReports", fields: [reporterId], references: [id])
-  approvedBy       User?              @relation("ApprovedByUser", fields: [approvedById], references: [id])
-  perpetrator      Perpetrator?
-  digitalFootprint DigitalFootprint?
-  financialInfo    FinancialInfo?
-  cryptoInfo       CryptoInfo?
-  companyInfo      CompanyInfo?
-  vehicleInfo      VehicleInfo?
-  evidence         Evidence[]
-  comments         Comment[]
+  reporter          User               @relation("ReporterReports", fields: [reporterId], references: [id])
+  moderatedBy       User?              @relation("ModeratedByUser", fields: [moderatedById], references: [id])
+  mergedInto        Report?            @relation("MergedReports", fields: [mergedIntoId], references: [id])
+  mergedReports     Report[]           @relation("MergedReports")
+  perpetrators      Perpetrator[]
+  digitalFootprint  DigitalFootprint?
+  financialInfo     FinancialInfo?
+  cryptoInfo        CryptoInfo?
+  companyInfo       CompanyInfo?
+  vehicleInfo       VehicleInfo?
+  evidence          Evidence[]
+  comments          Comment[]
   duplicateClusters DuplicateClusterReport[]
 
   @@index([status])
+  @@index([severity])
   @@index([fraudType])
   @@index([locationCountry])
   @@index([createdAt])
+  @@index([mergedIntoId])
   @@map("reports")
 }
 
 model Perpetrator {
   id                  String  @id @default(cuid())
-  reportId            String  @unique @map("report_id")
+  reportId            String  @map("report_id")
 
   fullName            String? @map("full_name")
   fullNameNormalized  String? @map("full_name_normalized")
@@ -235,11 +264,16 @@ model Perpetrator {
   addressPostalCode String? @map("address_postal_code")
   addressCountry    String? @map("address_country")
 
+  // Enrichment data from external sources
+  enrichedData      Json?   @map("enriched_data")
+
   // Embeddings for similarity search
   nameEmbedding     Unsupported("vector(384)")? @map("name_embedding")
 
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  // Many-to-many relation (a perpetrator can be linked to multiple reports)
+  reports Report[]
 
+  @@index([reportId])
   @@index([phoneNormalized])
   @@index([emailNormalized])
   @@index([fullNameNormalized])
@@ -354,13 +388,16 @@ model Evidence {
   reportId    String       @map("report_id")
   type        EvidenceType
   fileKey     String?      @map("file_key")
+  url         String?
   externalUrl String?      @map("external_url")
   description String?
   mimeType    String?      @map("mime_type")
   fileSize    Int?         @map("file_size")
+  hash        String?
 
   // Image processing
   thumbnailKey String? @map("thumbnail_key")
+  thumbnailUrl String? @map("thumbnail_url")
   pHash        String? @map("p_hash")
   hasFace      Boolean @default(false) @map("has_face")
   faceCount    Int?    @map("face_count")
@@ -375,6 +412,7 @@ model Evidence {
   faces     FaceData[]
 
   @@index([pHash])
+  @@index([hash])
   @@map("evidence")
 }
 
@@ -395,16 +433,20 @@ model FaceData {
 // ==================== COMMENTS ====================
 
 model Comment {
-  id        String        @id @default(cuid())
-  reportId  String        @map("report_id")
-  userId    String        @map("user_id")
-  content   String        @db.Text
-  status    CommentStatus @default(PENDING_MODERATION)
-  createdAt DateTime      @default(now()) @map("created_at")
-  updatedAt DateTime      @updatedAt @map("updated_at")
+  id              String        @id @default(cuid())
+  reportId        String        @map("report_id")
+  userId          String        @map("user_id")
+  content         String        @db.Text
+  status          CommentStatus @default(PENDING_MODERATION)
+  moderatedAt     DateTime?     @map("moderated_at")
+  moderatedById   String?       @map("moderated_by_id")
+  rejectionReason String?       @map("rejection_reason")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id])
 
   @@index([reportId])
   @@index([status])
@@ -414,17 +456,20 @@ model Comment {
 // ==================== DUPLICATE DETECTION ====================
 
 model DuplicateCluster {
-  id              String                 @id @default(cuid())
-  primaryReportId String?                @map("primary_report_id")
-  status          DuplicateClusterStatus @default(PENDING)
-  matchingCriteria Json                   @map("matching_criteria")
-  resolvedAt      DateTime?              @map("resolved_at")
-  resolvedById    String?                @map("resolved_by_id")
-  createdAt       DateTime               @default(now()) @map("created_at")
+  id               String                 @id @default(cuid())
+  primaryReportId  String?                @map("primary_report_id")
+  status           DuplicateClusterStatus @default(PENDING)
+  confidence       Float                  @default(0)
+  matchType        String?                @map("match_type")
+  matchingCriteria Json?                  @map("matching_criteria")
+  resolvedAt       DateTime?              @map("resolved_at")
+  resolvedById     String?                @map("resolved_by_id")
+  createdAt        DateTime               @default(now()) @map("created_at")
 
   reports DuplicateClusterReport[]
 
   @@index([status])
+  @@index([confidence])
   @@map("duplicate_clusters")
 }
 
@@ -470,6 +515,7 @@ model AuditLog {
   action     String
   entityType String   @map("entity_type")
   entityId   String   @map("entity_id")
+  changes    Json?
   oldValue   Json?    @map("old_value")
   newValue   Json?    @map("new_value")
   ipAddress  String?  @map("ip_address")
@@ -480,6 +526,7 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([userId])
+  @@index([action])
   @@index([createdAt])
   @@map("audit_logs")
 }
