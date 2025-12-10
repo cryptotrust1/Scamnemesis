@@ -139,4 +139,48 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ---
 
+---
+
+## 🔄 AKTUÁLNA PRÁCA (10. December 2024, večer)
+
+### Čo som robil (Claude Opus 4):
+1. Vytvoril kompletný deployment guide pre amatérov (`docs/NAVOD_PRE_AMATEROV.md`)
+2. Analyzoval celý codebase
+3. Identifikoval chýbajúce komponenty
+
+### Čo TREBA SPRAVIŤ (nasledujúci Claude):
+
+**PRIORITA 1 - Frontend Pages (src/app/):**
+- [ ] `src/app/page.tsx` - Homepage
+- [ ] `src/app/layout.tsx` - Root layout s navigation
+- [ ] `src/app/search/page.tsx` - Search results
+- [ ] `src/app/report/page.tsx` - Report form
+- [ ] `src/app/report/[id]/page.tsx` - Report detail
+- [ ] `src/app/auth/login/page.tsx` - Login
+- [ ] `src/app/auth/register/page.tsx` - Register
+
+**PRIORITA 2 - Admin Dashboard:**
+- [ ] `src/app/admin/page.tsx` - Dashboard
+- [ ] `src/app/admin/reports/page.tsx` - Reports management
+- [ ] `src/app/admin/duplicates/page.tsx` - Duplicates
+
+**PRIORITA 3 - Components:**
+- [ ] `src/components/ui/` - Button, Input, Card, etc.
+- [ ] `src/components/forms/` - SearchForm, ReportForm
+- [ ] `src/components/layout/` - Header, Footer, Sidebar
+
+### ⚠️ NEDOTÝKAJ SA:
+- `src/app/api/` - API routes sú hotové
+- `src/masking/` - Masking module je kompletný
+- `src/lib/` - Utilities sú hotové
+- `prisma/schema.prisma` - Schéma je finálna
+
+### 📁 VOĽNÉ PRIEČINKY (môžeš vytvárať):
+- `src/app/` (okrem api/)
+- `src/components/`
+- `src/hooks/`
+- `src/styles/`
+
+---
+
 **Posledný update:** Claude Opus 4, 10. December 2024
