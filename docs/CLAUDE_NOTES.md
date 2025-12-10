@@ -34,15 +34,13 @@
 | **Homepage** | ✅ Hotové | `src/app/page.tsx` | Hero, features, CTA |
 | **Search Page** | ✅ Hotové | `src/app/search/` | Search with filters |
 | **Global Styles** | ✅ Hotové | `src/styles/globals.css` | CSS variables, dark mode |
+| **Admin Dashboard** | ✅ Hotové | `src/app/admin/` | Layout, Dashboard, Reports, Users |
 
 ### ⏳ Potrebuje dokončiť:
 
 | Komponent | Priorita | Popis |
 |-----------|----------|-------|
-| **Report Form Page** | 🔴 Vysoká | Form na nahlásenie podvodu |
-| **Report Detail Page** | 🔴 Vysoká | Detail nahlásenia |
-| **Auth Pages** | 🔴 Vysoká | Login, Register |
-| **Admin Dashboard UI** | 🔴 Vysoká | React admin interface |
+| **Prepojenie s API** | 🔴 Vysoká | Nahradiť mock dáta reálnymi API volaniami |
 | **Typesense Sync** | 🟡 Stredná | Index synchronization service |
 | **Email Service** | 🟡 Stredná | Notification emails |
 | **Unit Tests** | 🟡 Stredná | Jest tests for API routes |
