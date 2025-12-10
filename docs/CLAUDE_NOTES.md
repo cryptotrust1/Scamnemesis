@@ -29,12 +29,19 @@
 | **WordPress Plugin** | ✅ Hotové | `plugins/scamnemesis-wp/` | Shortcodes, widgets, Gutenberg |
 | **JavaScript SDK** | ✅ Hotové | `sdk/js/` | Embeddable widgets |
 | **Docker Compose** | ✅ Hotové | `docker-compose.yml` | Dev environment |
+| **UI Components** | ✅ Hotové | `src/components/ui/` | Button, Input, Card, Badge, Alert |
+| **Layout Components** | ✅ Hotové | `src/components/layout/` | Header, Footer |
+| **Homepage** | ✅ Hotové | `src/app/page.tsx` | Hero, features, CTA |
+| **Search Page** | ✅ Hotové | `src/app/search/` | Search with filters |
+| **Global Styles** | ✅ Hotové | `src/styles/globals.css` | CSS variables, dark mode |
 
 ### ⏳ Potrebuje dokončiť:
 
 | Komponent | Priorita | Popis |
 |-----------|----------|-------|
-| **Frontend Next.js** | 🔴 Vysoká | Public pages (homepage, search, report form) |
+| **Report Form Page** | 🔴 Vysoká | Form na nahlásenie podvodu |
+| **Report Detail Page** | 🔴 Vysoká | Detail nahlásenia |
+| **Auth Pages** | 🔴 Vysoká | Login, Register |
 | **Admin Dashboard UI** | 🔴 Vysoká | React admin interface |
 | **Typesense Sync** | 🟡 Stredná | Index synchronization service |
 | **Email Service** | 🟡 Stredná | Notification emails |
@@ -143,17 +150,25 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ## 🔄 AKTUÁLNA PRÁCA (10. December 2024, večer)
 
-### Čo som robil (Claude Opus 4):
+### Čo som robil (Claude Opus 4) - Session 1:
 1. Vytvoril kompletný deployment guide pre amatérov (`docs/NAVOD_PRE_AMATEROV.md`)
 2. Analyzoval celý codebase
 3. Identifikoval chýbajúce komponenty
 
+### Čo som robil (Claude Opus 4) - Session 2:
+1. **UI komponenty** - Button, Input, Card, Badge, Alert
+2. **Layout komponenty** - Header (responsive nav), Footer
+3. **Root Layout** - `src/app/layout.tsx` s metadata
+4. **Homepage** - `src/app/page.tsx` - hero, features, recent reports
+5. **Search page** - `src/app/search/page.tsx` - vyhľadávanie s filtrami
+6. **Global CSS** - `src/styles/globals.css` - CSS variables, dark mode
+
 ### Čo TREBA SPRAVIŤ (nasledujúci Claude):
 
-**PRIORITA 1 - Frontend Pages (src/app/):**
-- [ ] `src/app/page.tsx` - Homepage
-- [ ] `src/app/layout.tsx` - Root layout s navigation
-- [ ] `src/app/search/page.tsx` - Search results
+**PRIORITA 1 - Zostávajúce Frontend Pages:**
+- [x] `src/app/page.tsx` - Homepage ✅ DONE
+- [x] `src/app/layout.tsx` - Root layout ✅ DONE
+- [x] `src/app/search/page.tsx` - Search results ✅ DONE
 - [ ] `src/app/report/page.tsx` - Report form
 - [ ] `src/app/report/[id]/page.tsx` - Report detail
 - [ ] `src/app/auth/login/page.tsx` - Login
@@ -164,23 +179,26 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 - [ ] `src/app/admin/reports/page.tsx` - Reports management
 - [ ] `src/app/admin/duplicates/page.tsx` - Duplicates
 
-**PRIORITA 3 - Components:**
-- [ ] `src/components/ui/` - Button, Input, Card, etc.
-- [ ] `src/components/forms/` - SearchForm, ReportForm
-- [ ] `src/components/layout/` - Header, Footer, Sidebar
+**PRIORITA 3 - Ďalšie Components:**
+- [x] `src/components/ui/` - Button, Input, Card, Badge, Alert ✅ DONE
+- [x] `src/components/layout/` - Header, Footer ✅ DONE
+- [ ] `src/components/forms/` - ReportForm
 
 ### ⚠️ NEDOTÝKAJ SA:
 - `src/app/api/` - API routes sú hotové
 - `src/masking/` - Masking module je kompletný
 - `src/lib/` - Utilities sú hotové
 - `prisma/schema.prisma` - Schéma je finálna
+- `src/components/ui/` - UI komponenty sú hotové (môžeš rozšíriť, nie prepisovať)
+- `src/components/layout/` - Layout komponenty sú hotové
 
 ### 📁 VOĽNÉ PRIEČINKY (môžeš vytvárať):
-- `src/app/` (okrem api/)
-- `src/components/`
-- `src/hooks/`
-- `src/styles/`
+- `src/app/report/` - Report form a detail pages
+- `src/app/auth/` - Login a register pages
+- `src/app/admin/` - Admin dashboard
+- `src/components/forms/` - Form komponenty
+- `src/hooks/` - Custom React hooks
 
 ---
 
-**Posledný update:** Claude Opus 4, 10. December 2024
+**Posledný update:** Claude Opus 4, 10. December 2024 (Session 2)
