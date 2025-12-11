@@ -1,21 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { StepWizard } from '@/components/report/step-wizard';
 import { FraudTypeStep } from '@/components/report/steps/fraud-type-step';
 import { BasicInfoStep } from '@/components/report/steps/basic-info-step';
+import { PerpetratorStep } from '@/components/report/steps/perpetrator-step';
+import { EvidenceStep } from '@/components/report/steps/evidence-step';
+import { ContactStep } from '@/components/report/steps/contact-step';
+import { ReviewStep } from '@/components/report/steps/review-step';
 import { toast } from 'sonner';
 import {
   fraudTypeSchema,
   basicInfoSchema,
-  type FraudTypeForm,
-  type BasicInfoForm,
+  perpetratorSchema,
+  contactInfoSchema,
   type CompleteReportForm,
 } from '@/lib/validations/report';
+
+interface EvidenceFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url?: string;
+  description?: string;
+  file?: File;
+}
 
 const steps = [
   { id: 1, title: 'Typ podvodu', description: 'Výber kategórie' },
@@ -31,8 +45,28 @@ export default function NewReportPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<CompleteReportForm>>({
     currency: 'EUR',
+    perpetratorType: 'INDIVIDUAL',
+    wantUpdates: false,
+    agreeToTerms: false,
+    agreeToGDPR: false,
   });
+  const [files, setFiles] = useState<EvidenceFile[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    const draft = localStorage.getItem('report-draft');
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        setFormData((prev) => ({ ...prev, ...parsed }));
+        toast.info('Načítaný uložený koncept');
+      } catch {
+        // Ignore invalid draft
+      }
+    }
+  }, []);
 
   const updateField = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -68,6 +102,45 @@ export default function NewReportPage() {
           currency: formData.currency,
         };
         break;
+      case 3:
+        // Perpetrator step - optional fields, just validate format if provided
+        schema = perpetratorSchema;
+        data = {
+          perpetratorType: formData.perpetratorType,
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          website: formData.website,
+          socialMedia: formData.socialMedia,
+          iban: formData.iban,
+          bankAccount: formData.bankAccount,
+          cryptoWallet: formData.cryptoWallet,
+          companyName: formData.companyName,
+          companyId: formData.companyId,
+          address: formData.address,
+        };
+        break;
+      case 4:
+        // Evidence step - no required validation
+        return true;
+      case 5:
+        schema = contactInfoSchema;
+        data = {
+          reporterName: formData.reporterName,
+          reporterEmail: formData.reporterEmail,
+          reporterPhone: formData.reporterPhone,
+          wantUpdates: formData.wantUpdates,
+          agreeToTerms: formData.agreeToTerms,
+          agreeToGDPR: formData.agreeToGDPR,
+        };
+        break;
+      case 6:
+        // Review step - validate consents
+        if (!formData.agreeToTerms || !formData.agreeToGDPR) {
+          toast.error('Musíte súhlasiť s podmienkami a GDPR');
+          return false;
+        }
+        return true;
       default:
         return true;
     }
@@ -110,28 +183,56 @@ export default function NewReportPage() {
     toast.success('Koncept bol uložený');
   };
 
+  const handleGoToStep = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSubmit = async () => {
     if (!validateStep()) return;
 
+    setIsSubmitting(true);
+
     try {
+      // Prepare form data with files
+      const submitData = new FormData();
+
+      // Add form fields
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          submitData.append(key, typeof value === 'boolean' ? String(value) : value);
+        }
+      });
+
+      // Add files
+      files.forEach((file, index) => {
+        if (file.file) {
+          submitData.append(`files`, file.file);
+          if (file.description) {
+            submitData.append(`fileDescriptions[${index}]`, file.description);
+          }
+        }
+      });
+
       const response = await fetch('/api/v1/reports', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: submitData,
       });
 
       if (response.ok) {
         const data = await response.json();
         localStorage.removeItem('report-draft');
-        toast.success('Report bol úspešne odoslaný!');
-        router.push(`/reports/${data.id}`);
+        toast.success('Hlásenie bolo úspešne odoslané!');
+        router.push(`/reports/${data.id || data.publicId}?submitted=true`);
       } else {
-        toast.error('Chyba pri odosielaní reportu');
+        const errorData = await response.json().catch(() => null);
+        toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
       }
     } catch (error) {
-      toast.error('Chyba pri odosielaní reportu');
+      console.error('Submit error:', error);
+      toast.error('Chyba pri odosielaní hlásenia');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -156,122 +257,36 @@ export default function NewReportPage() {
 
       case 3:
         return (
-          <div className="space-y-6 max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Údaje o páchateľovi</h2>
-              <p className="text-muted-foreground">
-                Zadajte známe informácie o páchateľovi (všetky polia sú voliteľné)
-              </p>
-            </div>
-            <div className="p-8 bg-muted/50 rounded-lg text-center">
-              <p className="text-muted-foreground">
-                Tento krok bude implementovaný v ďalšej verzii
-              </p>
-            </div>
-          </div>
+          <PerpetratorStep
+            data={formData}
+            errors={errors}
+            onChange={updateField}
+          />
         );
 
       case 4:
         return (
-          <div className="space-y-6 max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Nahratie dôkazov</h2>
-              <p className="text-muted-foreground">
-                Nahrajte obrázky, dokumenty alebo iné súbory ako dôkaz
-              </p>
-            </div>
-            <div className="p-8 bg-muted/50 rounded-lg text-center">
-              <p className="text-muted-foreground">
-                Tento krok bude implementovaný v ďalšej verzii
-              </p>
-            </div>
-          </div>
+          <EvidenceStep
+            files={files}
+            onFilesChange={setFiles}
+          />
         );
 
       case 5:
         return (
-          <div className="space-y-6 max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Vaše kontaktné údaje</h2>
-              <p className="text-muted-foreground">
-                Voliteľné - pre zasielanie upozornení o stave hlásenia
-              </p>
-            </div>
-            <div className="p-8 bg-muted/50 rounded-lg text-center">
-              <p className="text-muted-foreground">
-                Tento krok bude implementovaný v ďalšej verzii
-              </p>
-            </div>
-          </div>
+          <ContactStep
+            data={formData}
+            errors={errors}
+            onChange={updateField}
+          />
         );
 
       case 6:
         return (
-          <div className="space-y-6 max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Kontrola a odoslanie</h2>
-              <p className="text-muted-foreground">
-                Skontrolujte všetky údaje pred odoslaním
-              </p>
-            </div>
-
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Typ podvodu</h3>
-                  <p className="text-sm text-muted-foreground">{formData.fraudType || 'Nevybrané'}</p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Nadpis</h3>
-                  <p className="text-sm text-muted-foreground">{formData.title || '-'}</p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Popis</h3>
-                  <p className="text-sm text-muted-foreground whitespace-pre-line">
-                    {formData.description || '-'}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">Dátum</h3>
-                    <p className="text-sm text-muted-foreground">{formData.incidentDate || '-'}</p>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Lokalita</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {formData.city}, {formData.country}
-                    </p>
-                  </div>
-                </div>
-
-                {formData.amount && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Výška škody</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {formData.amount} {formData.currency}
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <div className="bg-muted/50 p-4 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                Odoslaním tohto hlásenia súhlasíte s{' '}
-                <a href="/terms" className="text-primary hover:underline">
-                  podmienkami používania
-                </a>{' '}
-                a{' '}
-                <a href="/privacy" className="text-primary hover:underline">
-                  ochranou osobných údajov
-                </a>
-                .
-              </p>
-            </div>
-          </div>
+          <ReviewStep
+            data={{ ...formData, files }}
+            onEdit={handleGoToStep}
+          />
         );
 
       default:
@@ -330,9 +345,18 @@ export default function NewReportPage() {
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit}>
-              Odoslať hlásenie
-              <ArrowRight className="h-4 w-4 ml-2" />
+            <Button onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Odosielam...
+                </>
+              ) : (
+                <>
+                  Odoslať hlásenie
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </>
+              )}
             </Button>
           )}
         </div>
