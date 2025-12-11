@@ -187,12 +187,17 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 1. **Unit Tests** - `src/app/api/v1/__tests__/` - auth.test.ts, reports.test.ts, search.test.ts
 2. **Report Form Steps** - `src/components/report/steps/` - perpetrator, evidence, contact, review
 3. **Updated /report/new page** - Complete multi-step wizard integration
+4. **i18n Setup** - `src/lib/i18n/` - SK, EN, CS, DE translations, I18nProvider, LanguageSelector
+5. **Success Page** - `src/app/report/success/` - Post-submission success page
+6. **Audit Log** - `src/app/admin/audit/` - Admin audit log viewer with filters
+7. **PDF Export** - `src/app/api/v1/reports/[id]/export/` - HTML/PDF/JSON export
+8. **OpenAPI Documentation** - `docs/openapi.yaml` - Full API specification
 
 ### 🔜 Čo zostáva (nízka priorita):
-- i18n Setup (SK, EN, CS, DE)
 - CI/CD Pipeline
 - Production Deployment
+- E2E Tests
 
 ---
 
-**Posledný update:** Claude Opus 4, 11. December 2024 (Session 4)
+**Posledný update:** Claude Opus 4, 11. December 2024 (Session 4 - pokracovanie)

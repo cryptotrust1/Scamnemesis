@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Shield,
   LogOut,
+  History,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -43,6 +44,11 @@ const sidebarItems = [
     title: 'Komentáre',
     href: '/admin/comments',
     icon: MessageSquare,
+  },
+  {
+    title: 'Audit Log',
+    href: '/admin/audit',
+    icon: History,
   },
   {
     title: 'Nastavenia',
