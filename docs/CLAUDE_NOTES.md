@@ -40,11 +40,14 @@
 | **Email Service** | ✅ Hotové | `src/lib/services/email.ts` | Resend integration, templates |
 | **Typesense Service** | ✅ Hotové | `src/lib/services/typesense.ts` | Full-text search, sync |
 
+| **Unit Tests** | ✅ Hotové | `src/app/api/v1/__tests__/` | Auth, Reports, Search tests |
+| **Report Form Steps** | ✅ Hotové | `src/components/report/steps/` | Complete multi-step wizard |
+
 ### ⏳ Potrebuje dokončiť:
 
 | Komponent | Priorita | Popis |
 |-----------|----------|-------|
-| **Unit Tests** | 🟡 Stredná | Jest tests for API routes |
+| **i18n Setup** | 🟡 Stredná | Multi-language support (SK, EN, CS, DE) |
 | **CI/CD Pipeline** | 🟢 Nízka | GitHub Actions |
 | **Production Deploy** | 🟢 Nízka | Deploy to production server |
 
@@ -180,11 +183,16 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 - `prisma/schema.prisma` - Schéma je finálna
 - `src/app/admin/` - Admin je kompletný
 
+### Session 4 (Claude Opus 4, 11. December 2024):
+1. **Unit Tests** - `src/app/api/v1/__tests__/` - auth.test.ts, reports.test.ts, search.test.ts
+2. **Report Form Steps** - `src/components/report/steps/` - perpetrator, evidence, contact, review
+3. **Updated /report/new page** - Complete multi-step wizard integration
+
 ### 🔜 Čo zostáva (nízka priorita):
-- Unit Tests
+- i18n Setup (SK, EN, CS, DE)
 - CI/CD Pipeline
 - Production Deployment
 
 ---
 
-**Posledný update:** Claude Opus 4, 10. December 2024 (Session 3)
+**Posledný update:** Claude Opus 4, 11. December 2024 (Session 4)

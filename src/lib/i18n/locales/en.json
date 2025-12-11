@@ -1,0 +1,198 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "confirm": "Confirm",
+    "optional": "optional"
+  },
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "report": "Report Fraud",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "We protect you from scammers",
+    "subtitle": "Search, report and warn others about fraud",
+    "searchPlaceholder": "Enter name, phone, email or IBAN...",
+    "searchButton": "Search",
+    "reportButton": "Report Fraud",
+    "statsReports": "reports",
+    "statsUsers": "users",
+    "statsSearches": "searches"
+  },
+  "search": {
+    "title": "Search",
+    "results": "results",
+    "noResults": "No results",
+    "noResultsDescription": "Try changing your search criteria",
+    "filters": {
+      "fraudType": "Fraud Type",
+      "country": "Country",
+      "status": "Status",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "amountMin": "Min Amount",
+      "amountMax": "Max Amount"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "amountHigh": "Highest Amount",
+      "amountLow": "Lowest Amount"
+    }
+  },
+  "report": {
+    "title": "Report Fraud",
+    "subtitle": "Help protect others from scammers",
+    "steps": {
+      "fraudType": "Fraud Type",
+      "basicInfo": "Basic Info",
+      "perpetrator": "Perpetrator",
+      "evidence": "Evidence",
+      "contact": "Contact",
+      "review": "Review"
+    },
+    "fraudTypes": {
+      "investment": "Investment Fraud",
+      "romance": "Romance Scam",
+      "phishing": "Phishing",
+      "identity": "Identity Theft",
+      "ecommerce": "E-commerce Fraud",
+      "crypto": "Crypto Scam",
+      "job": "Job Scam",
+      "rental": "Rental Fraud",
+      "loan": "Loan Scam",
+      "charity": "Fake Charity",
+      "techSupport": "Tech Support Scam",
+      "lottery": "Lottery Scam",
+      "other": "Other"
+    },
+    "fields": {
+      "title": "Report Title",
+      "description": "Detailed Description",
+      "incidentDate": "Incident Date",
+      "country": "Country",
+      "city": "City",
+      "postalCode": "Postal Code",
+      "amount": "Damage Amount",
+      "currency": "Currency",
+      "perpetratorType": "Perpetrator Type",
+      "perpetratorName": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "socialMedia": "Social Media",
+      "iban": "IBAN",
+      "bankAccount": "Bank",
+      "cryptoWallet": "Crypto Wallet",
+      "reporterName": "Your Name",
+      "reporterEmail": "Your Email",
+      "reporterPhone": "Your Phone"
+    },
+    "consent": {
+      "terms": "I agree to the Terms of Service",
+      "gdpr": "I agree to data processing",
+      "updates": "I want to receive updates"
+    },
+    "saveDraft": "Save Draft",
+    "submitReport": "Submit Report",
+    "success": {
+      "title": "Report submitted successfully!",
+      "description": "Thank you for your contribution to protecting others."
+    }
+  },
+  "reportDetail": {
+    "status": {
+      "pending": "Pending Review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "sections": {
+      "description": "Description",
+      "perpetrator": "Perpetrator Information",
+      "evidence": "Evidence",
+      "similarReports": "Similar Reports",
+      "comments": "Comments"
+    },
+    "share": "Share",
+    "report": "Report"
+  },
+  "comments": {
+    "title": "Comments",
+    "placeholder": "Write a comment...",
+    "submit": "Add Comment",
+    "noComments": "No comments yet",
+    "approval": "Comment will be published after approval"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?"
+    },
+    "register": {
+      "title": "Sign Up",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Sign Up",
+      "hasAccount": "Already have an account?"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "emailExists": "Email already exists",
+      "weakPassword": "Password is too weak"
+    }
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "users": "Users",
+    "duplicates": "Duplicates",
+    "comments": "Comments",
+    "settings": "Settings",
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "merge": "Merge",
+      "ban": "Ban"
+    }
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "serverError": "Server error",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access denied"
+  },
+  "footer": {
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact",
+    "copyright": "All rights reserved"
+  }
+}

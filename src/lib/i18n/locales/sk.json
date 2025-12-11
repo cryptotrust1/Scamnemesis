@@ -1,0 +1,198 @@
+{
+  "common": {
+    "loading": "Nacitavam...",
+    "error": "Chyba",
+    "success": "Uspech",
+    "save": "Ulozit",
+    "cancel": "Zrusit",
+    "delete": "Vymazat",
+    "edit": "Upravit",
+    "back": "Spat",
+    "next": "Dalej",
+    "submit": "Odoslat",
+    "search": "Hladat",
+    "filter": "Filtrovat",
+    "reset": "Resetovat",
+    "yes": "Ano",
+    "no": "Nie",
+    "close": "Zavriet",
+    "confirm": "Potvrdit",
+    "optional": "volitelne"
+  },
+  "nav": {
+    "home": "Domov",
+    "search": "Vyhladavanie",
+    "report": "Nahlasit podvod",
+    "login": "Prihlasit sa",
+    "register": "Registrovat sa",
+    "logout": "Odhlasit sa",
+    "profile": "Profil",
+    "admin": "Administracia"
+  },
+  "home": {
+    "title": "Ochranime vas pred podvodnikmi",
+    "subtitle": "Vyhladajte, nahlaste a varujte ostatnych pred podvodmi",
+    "searchPlaceholder": "Zadajte meno, telefon, email alebo IBAN...",
+    "searchButton": "Vyhladat",
+    "reportButton": "Nahlasit podvod",
+    "statsReports": "nahlaseni",
+    "statsUsers": "pouzivatelov",
+    "statsSearches": "vyhladavani"
+  },
+  "search": {
+    "title": "Vyhladavanie",
+    "results": "vysledkov",
+    "noResults": "Ziadne vysledky",
+    "noResultsDescription": "Skuste zmenit vyhladavacie kriteria",
+    "filters": {
+      "fraudType": "Typ podvodu",
+      "country": "Krajina",
+      "status": "Stav",
+      "dateFrom": "Datum od",
+      "dateTo": "Datum do",
+      "amountMin": "Min. suma",
+      "amountMax": "Max. suma"
+    },
+    "sort": {
+      "label": "Zoradit",
+      "newest": "Najnovsie",
+      "oldest": "Najstarsie",
+      "amountHigh": "Najvyssia suma",
+      "amountLow": "Najnizsia suma"
+    }
+  },
+  "report": {
+    "title": "Nahlasit podvod",
+    "subtitle": "Pomozite ochranit ostatnych pred podvodnikmi",
+    "steps": {
+      "fraudType": "Typ podvodu",
+      "basicInfo": "Zakladne info",
+      "perpetrator": "Pachatel",
+      "evidence": "Dokazy",
+      "contact": "Kontakt",
+      "review": "Kontrola"
+    },
+    "fraudTypes": {
+      "investment": "Investicny podvod",
+      "romance": "Romance scam",
+      "phishing": "Phishing",
+      "identity": "Kradez identity",
+      "ecommerce": "E-commerce podvod",
+      "crypto": "Krypto podvod",
+      "job": "Pracovny podvod",
+      "rental": "Podvod s prenajmom",
+      "loan": "Podvod s pozickou",
+      "charity": "Falosna charita",
+      "techSupport": "Tech support scam",
+      "lottery": "Loterny podvod",
+      "other": "Iny typ"
+    },
+    "fields": {
+      "title": "Nadpis hlasenia",
+      "description": "Podrobny popis",
+      "incidentDate": "Datum incidentu",
+      "country": "Krajina",
+      "city": "Mesto",
+      "postalCode": "PSC",
+      "amount": "Vyska skody",
+      "currency": "Mena",
+      "perpetratorType": "Typ pachatela",
+      "perpetratorName": "Meno",
+      "phone": "Telefon",
+      "email": "Email",
+      "website": "Webova stranka",
+      "socialMedia": "Socialne siete",
+      "iban": "IBAN",
+      "bankAccount": "Banka",
+      "cryptoWallet": "Krypto penazenka",
+      "reporterName": "Vase meno",
+      "reporterEmail": "Vas email",
+      "reporterPhone": "Vas telefon"
+    },
+    "consent": {
+      "terms": "Suhlasim s podmienkami pouzivania",
+      "gdpr": "Suhlasim so spracovanim osobnych udajov",
+      "updates": "Chcem dostavat aktualizacie"
+    },
+    "saveDraft": "Ulozit koncept",
+    "submitReport": "Odoslat hlasenie",
+    "success": {
+      "title": "Hlasenie bolo uspesne odoslane!",
+      "description": "Dakujeme za vas prispevok k ochrane ostatnych."
+    }
+  },
+  "reportDetail": {
+    "status": {
+      "pending": "Caka na schvalenie",
+      "approved": "Schvalene",
+      "rejected": "Zamietnute"
+    },
+    "sections": {
+      "description": "Popis",
+      "perpetrator": "Informacie o pachatelovi",
+      "evidence": "Dokazy",
+      "similarReports": "Podobne hlasenia",
+      "comments": "Komentare"
+    },
+    "share": "Zdielat",
+    "report": "Nahlasit"
+  },
+  "comments": {
+    "title": "Komentare",
+    "placeholder": "Napisite komentar...",
+    "submit": "Pridat komentar",
+    "noComments": "Zatial ziadne komentare",
+    "approval": "Komentar bude zverejneny po schvaleni"
+  },
+  "auth": {
+    "login": {
+      "title": "Prihlasenie",
+      "email": "Email",
+      "password": "Heslo",
+      "submit": "Prihlasit sa",
+      "forgotPassword": "Zabudli ste heslo?",
+      "noAccount": "Nemate ucet?"
+    },
+    "register": {
+      "title": "Registracia",
+      "name": "Meno",
+      "email": "Email",
+      "password": "Heslo",
+      "confirmPassword": "Potvrdit heslo",
+      "submit": "Registrovat sa",
+      "hasAccount": "Uz mate ucet?"
+    },
+    "errors": {
+      "invalidCredentials": "Nespravne prihlasovacie udaje",
+      "emailExists": "Email uz existuje",
+      "weakPassword": "Heslo je prilis slabe"
+    }
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "reports": "Hlasenia",
+    "users": "Pouzivatelia",
+    "duplicates": "Duplikaty",
+    "comments": "Komentare",
+    "settings": "Nastavenia",
+    "actions": {
+      "approve": "Schvalit",
+      "reject": "Zamietnuť",
+      "merge": "Zlucit",
+      "ban": "Zablokovat"
+    }
+  },
+  "errors": {
+    "notFound": "Stranka nebola najdena",
+    "serverError": "Chyba servera",
+    "unauthorized": "Neautorizovany pristup",
+    "forbidden": "Pristup zamietnuty"
+  },
+  "footer": {
+    "about": "O nas",
+    "privacy": "Ochrana sukromia",
+    "terms": "Podmienky pouzivania",
+    "contact": "Kontakt",
+    "copyright": "Vsetky prava vyhradene"
+  }
+}

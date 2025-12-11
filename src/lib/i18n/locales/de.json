@@ -1,0 +1,198 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Loschen",
+    "edit": "Bearbeiten",
+    "back": "Zuruck",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "reset": "Zurucksetzen",
+    "yes": "Ja",
+    "no": "Nein",
+    "close": "Schliessen",
+    "confirm": "Bestatigen",
+    "optional": "optional"
+  },
+  "nav": {
+    "home": "Startseite",
+    "search": "Suche",
+    "report": "Betrug melden",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "profile": "Profil",
+    "admin": "Verwaltung"
+  },
+  "home": {
+    "title": "Wir schutzen Sie vor Betrugern",
+    "subtitle": "Suchen, melden und warnen Sie andere vor Betrug",
+    "searchPlaceholder": "Name, Telefon, E-Mail oder IBAN eingeben...",
+    "searchButton": "Suchen",
+    "reportButton": "Betrug melden",
+    "statsReports": "Meldungen",
+    "statsUsers": "Benutzer",
+    "statsSearches": "Suchen"
+  },
+  "search": {
+    "title": "Suche",
+    "results": "Ergebnisse",
+    "noResults": "Keine Ergebnisse",
+    "noResultsDescription": "Versuchen Sie andere Suchkriterien",
+    "filters": {
+      "fraudType": "Betrugsart",
+      "country": "Land",
+      "status": "Status",
+      "dateFrom": "Datum von",
+      "dateTo": "Datum bis",
+      "amountMin": "Min. Betrag",
+      "amountMax": "Max. Betrag"
+    },
+    "sort": {
+      "label": "Sortieren",
+      "newest": "Neueste",
+      "oldest": "Alteste",
+      "amountHigh": "Hochster Betrag",
+      "amountLow": "Niedrigster Betrag"
+    }
+  },
+  "report": {
+    "title": "Betrug melden",
+    "subtitle": "Helfen Sie andere vor Betrugern zu schutzen",
+    "steps": {
+      "fraudType": "Betrugsart",
+      "basicInfo": "Grundinfo",
+      "perpetrator": "Tater",
+      "evidence": "Beweise",
+      "contact": "Kontakt",
+      "review": "Uberprufung"
+    },
+    "fraudTypes": {
+      "investment": "Anlagebetrug",
+      "romance": "Romance Scam",
+      "phishing": "Phishing",
+      "identity": "Identitatsdiebstahl",
+      "ecommerce": "E-Commerce-Betrug",
+      "crypto": "Krypto-Betrug",
+      "job": "Jobbetrug",
+      "rental": "Mietbetrug",
+      "loan": "Kreditbetrug",
+      "charity": "Falsche Wohltatigkeit",
+      "techSupport": "Tech-Support-Betrug",
+      "lottery": "Lotteriebetrug",
+      "other": "Sonstiges"
+    },
+    "fields": {
+      "title": "Titel der Meldung",
+      "description": "Detaillierte Beschreibung",
+      "incidentDate": "Datum des Vorfalls",
+      "country": "Land",
+      "city": "Stadt",
+      "postalCode": "PLZ",
+      "amount": "Schadenshohe",
+      "currency": "Wahrung",
+      "perpetratorType": "Art des Taters",
+      "perpetratorName": "Name",
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "website": "Website",
+      "socialMedia": "Soziale Medien",
+      "iban": "IBAN",
+      "bankAccount": "Bank",
+      "cryptoWallet": "Krypto-Wallet",
+      "reporterName": "Ihr Name",
+      "reporterEmail": "Ihre E-Mail",
+      "reporterPhone": "Ihre Telefonnummer"
+    },
+    "consent": {
+      "terms": "Ich stimme den Nutzungsbedingungen zu",
+      "gdpr": "Ich stimme der Datenverarbeitung zu",
+      "updates": "Ich mochte Updates erhalten"
+    },
+    "saveDraft": "Entwurf speichern",
+    "submitReport": "Meldung absenden",
+    "success": {
+      "title": "Meldung erfolgreich gesendet!",
+      "description": "Vielen Dank fur Ihren Beitrag zum Schutz anderer."
+    }
+  },
+  "reportDetail": {
+    "status": {
+      "pending": "Wartet auf Uberprufung",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt"
+    },
+    "sections": {
+      "description": "Beschreibung",
+      "perpetrator": "Taterinformationen",
+      "evidence": "Beweise",
+      "similarReports": "Ahnliche Meldungen",
+      "comments": "Kommentare"
+    },
+    "share": "Teilen",
+    "report": "Melden"
+  },
+  "comments": {
+    "title": "Kommentare",
+    "placeholder": "Kommentar schreiben...",
+    "submit": "Kommentar hinzufugen",
+    "noComments": "Noch keine Kommentare",
+    "approval": "Kommentar wird nach Genehmigung veroffentlicht"
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "forgotPassword": "Passwort vergessen?",
+      "noAccount": "Kein Konto?"
+    },
+    "register": {
+      "title": "Registrieren",
+      "name": "Name",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestatigen",
+      "submit": "Registrieren",
+      "hasAccount": "Bereits ein Konto?"
+    },
+    "errors": {
+      "invalidCredentials": "Ungultige Anmeldedaten",
+      "emailExists": "E-Mail existiert bereits",
+      "weakPassword": "Passwort ist zu schwach"
+    }
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "reports": "Meldungen",
+    "users": "Benutzer",
+    "duplicates": "Duplikate",
+    "comments": "Kommentare",
+    "settings": "Einstellungen",
+    "actions": {
+      "approve": "Genehmigen",
+      "reject": "Ablehnen",
+      "merge": "Zusammenfuhren",
+      "ban": "Sperren"
+    }
+  },
+  "errors": {
+    "notFound": "Seite nicht gefunden",
+    "serverError": "Serverfehler",
+    "unauthorized": "Nicht autorisiert",
+    "forbidden": "Zugriff verweigert"
+  },
+  "footer": {
+    "about": "Uber uns",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "contact": "Kontakt",
+    "copyright": "Alle Rechte vorbehalten"
+  }
+}
