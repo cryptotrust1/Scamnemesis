@@ -204,10 +204,19 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 3. **Terms Page** - `src/app/terms/page.tsx` - Podmienky pouzivania
 4. **Privacy Page** - `src/app/privacy/page.tsx` - Ochrana osobnych udajov (GDPR)
 5. **Contact Page** - `src/app/contact/page.tsx` - Contact form with validation
+6. **Crawler System** - `src/lib/crawlers/` - Complete crawler infrastructure:
+   - Bull job queue system for async processing
+   - BaseConnector class with rate limiting and entity extraction
+   - OFAC SDN sanctions connector (US Treasury)
+   - EU Financial Sanctions connector
+   - Interpol Red Notices connector
+   - RSS news connector (SK, CZ, DE, EN, RU, UK sources)
 
 ### 🔜 Čo zostáva (nízka priorita):
 - Production Deployment
-- Basic Crawlers (OFAC, EU sanctions, Interpol, RSS)
+- Image Processing (thumbnails, pHash)
+- Face Recognition (real implementation)
+- OCR Pipeline (Tesseract)
 
 ### ✅ Všetky Frontend Pages:
 - [x] Homepage (`src/app/page.tsx`)
