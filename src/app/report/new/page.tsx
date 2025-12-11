@@ -223,7 +223,7 @@ export default function NewReportPage() {
         const data = await response.json();
         localStorage.removeItem('report-draft');
         toast.success('Hlásenie bolo úspešne odoslané!');
-        router.push(`/reports/${data.id || data.publicId}?submitted=true`);
+        router.push(`/report/success?id=${data.id || data.publicId}`);
       } else {
         const errorData = await response.json().catch(() => null);
         toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
