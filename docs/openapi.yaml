@@ -1,0 +1,823 @@
+openapi: 3.0.3
+info:
+  title: Scamnemesis API
+  description: |
+    API pre hlasenie a vyhladavanie podvodov.
+
+    ## Autentifikacia
+
+    API podporuje dva typy autentifikacie:
+    - **JWT Token**: Pre webovych klientov (Bearer token v Authorization header)
+    - **API Key**: Pre servery a integracie (X-API-Key header)
+
+    ## Rate Limiting
+
+    Vsetky endpointy maju nastaveny rate limit:
+    - Anonymni uzivatelia: 100 requestov/hodinu
+    - Prihlaseni uzivatelia: 1000 requestov/hodinu
+    - API key: 10000 requestov/hodinu
+
+    ## Maskovanie dat
+
+    Citlive udaje su maskovane podla urovne pristupu:
+    - BASIC: Plne maskovane
+    - STANDARD: Ciastocne maskovane
+    - GOLD: Minimalne maskovanie
+    - ADMIN: Bez maskovania
+  version: 1.0.0
+  contact:
+    name: Scamnemesis Support
+    email: support@scamnemesis.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.scamnemesis.com/api/v1
+    description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+tags:
+  - name: Auth
+    description: Autentifikacia a sprava uzivatelov
+  - name: Reports
+    description: Sprava hlaseni o podvodoch
+  - name: Search
+    description: Vyhladavanie v databaze
+  - name: Verify
+    description: Rychle overenie identifikatorov
+  - name: Admin
+    description: Administrativne operacie (vyzaduje admin rolu)
+  - name: Stats
+    description: Statistiky a analyzy
+
+paths:
+  # Auth endpoints
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Registracia noveho uzivatela
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  minLength: 8
+                  example: SecurePass123!
+                name:
+                  type: string
+                  example: Jan Novak
+      responses:
+        '201':
+          description: Uzivatel uspesne vytvoreny
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          description: Email uz existuje
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Prihlasenie uzivatela
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Uspesne prihlasenie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Nespravne prihlasovacie udaje
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Obnovenie access tokenu
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token obnoveny
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Neplatny refresh token
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Odhlasenie uzivatela
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Uspesne odhlasenie
+
+  # Reports endpoints
+  /reports:
+    get:
+      tags: [Reports]
+      summary: Zoznam hlaseni
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, APPROVED, REJECTED]
+        - name: fraudType
+          in: query
+          schema:
+            type: string
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Zoznam hlaseni
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportSummary'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags: [Reports]
+      summary: Vytvorenie noveho hlasenia
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateReportRequest'
+      responses:
+        '201':
+          description: Hlasenie vytvorene
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /reports/{id}:
+    get:
+      tags: [Reports]
+      summary: Detail hlasenia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail hlasenia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '404':
+          description: Hlasenie nenajdene
+
+  /reports/{id}/comments:
+    get:
+      tags: [Reports]
+      summary: Komentare k hlaseniu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Zoznam komentarov
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+    post:
+      tags: [Reports]
+      summary: Pridanie komentara
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                  minLength: 10
+                  maxLength: 2000
+      responses:
+        '201':
+          description: Komentar pridany
+        '401':
+          description: Vyzaduje prihlasenie
+
+  /reports/{id}/export:
+    get:
+      tags: [Reports]
+      summary: Export hlasenia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [html, pdf, json]
+            default: html
+      responses:
+        '200':
+          description: Exportovane hlasenie
+          content:
+            text/html:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+
+  # Search endpoints
+  /search:
+    get:
+      tags: [Search]
+      summary: Vyhladavanie v databaze
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Vyhladavaci dotaz (min 2 znaky)
+          schema:
+            type: string
+            minLength: 2
+        - name: mode
+          in: query
+          description: Rezim vyhladavania
+          schema:
+            type: string
+            enum: [auto, exact, fuzzy, semantic]
+            default: auto
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: fraud_type
+          in: query
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Vysledky vyhladavania
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  # Verify endpoint
+  /verify:
+    get:
+      tags: [Verify]
+      summary: Rychle overenie identifikatora
+      description: |
+        Rychle overenie ci sa dany identifikator (telefon, email, IBAN, wallet)
+        nachadza v databaze hlaseni.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Identifikator na overenie
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Typ identifikatora (automaticky detekovany ak nie je zadany)
+          schema:
+            type: string
+            enum: [phone, email, iban, wallet, name]
+      responses:
+        '200':
+          description: Vysledok overenia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+
+  # Stats endpoints
+  /stats:
+    get:
+      tags: [Stats]
+      summary: Globalne statistiky
+      responses:
+        '200':
+          description: Statistiky systemu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+
+  # Admin endpoints
+  /admin/reports:
+    get:
+      tags: [Admin]
+      summary: Zoznam vsetkych hlaseni (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zoznam hlaseni
+        '403':
+          description: Nedostatocne opravnenia
+
+  /admin/reports/{id}/approve:
+    post:
+      tags: [Admin]
+      summary: Schvalenie hlasenia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hlasenie schvalene
+        '403':
+          description: Nedostatocne opravnenia
+
+  /admin/reports/{id}/reject:
+    post:
+      tags: [Admin]
+      summary: Zamietnutie hlasenia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Hlasenie zamietnute
+        '403':
+          description: Nedostatocne opravnenia
+
+  /admin/duplicates:
+    get:
+      tags: [Admin]
+      summary: Zoznam duplikatov
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Zoznam duplikatov
+
+  /admin/duplicates/{id}/merge:
+    post:
+      tags: [Admin]
+      summary: Zlucenie duplikatov
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [primaryReportId]
+              properties:
+                primaryReportId:
+                  type: string
+      responses:
+        '200':
+          description: Duplikaty zlucene
+        '403':
+          description: Nedostatocne opravnenia
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        expiresIn:
+          type: integer
+          description: Platnost access tokenu v sekundach
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [BASIC, STANDARD, GOLD, ADMIN, SUPER_ADMIN]
+        createdAt:
+          type: string
+          format: date-time
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+        publicId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        fraudType:
+          type: string
+          enum: [INVESTMENT_FRAUD, ROMANCE_SCAM, PHISHING, IDENTITY_THEFT, ECOMMERCE_FRAUD, CRYPTO_SCAM, JOB_SCAM, RENTAL_FRAUD, LOAN_SCAM, FAKE_CHARITY, TECH_SUPPORT_SCAM, LOTTERY_SCAM, OTHER]
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED, UNDER_REVIEW, MERGED]
+        severity:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, CRITICAL]
+        incidentDate:
+          type: string
+          format: date
+        locationCity:
+          type: string
+        locationCountry:
+          type: string
+        financialLoss:
+          type: number
+        currency:
+          type: string
+        perpetrator:
+          $ref: '#/components/schemas/Perpetrator'
+        createdAt:
+          type: string
+          format: date-time
+        viewCount:
+          type: integer
+
+    ReportSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        publicId:
+          type: string
+        title:
+          type: string
+        fraudType:
+          type: string
+        status:
+          type: string
+        severity:
+          type: string
+        locationCountry:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Perpetrator:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: Moze byt maskovane
+        phone:
+          type: string
+          description: Moze byt maskovane
+        email:
+          type: string
+          description: Moze byt maskovane
+        website:
+          type: string
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        author:
+          type: object
+          properties:
+            name:
+              type: string
+            role:
+              type: string
+        upvotes:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    SearchResults:
+      type: object
+      properties:
+        total:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              score:
+                type: number
+              source:
+                type: string
+                enum: [exact, fuzzy, semantic]
+              perpetrator:
+                type: object
+              fraud_type:
+                type: string
+              country:
+                type: string
+              highlights:
+                type: object
+        facets:
+          type: object
+          properties:
+            country:
+              type: object
+            fraud_type:
+              type: object
+
+    VerifyResult:
+      type: object
+      properties:
+        found:
+          type: boolean
+        count:
+          type: integer
+        risk_level:
+          type: string
+          enum: [none, low, medium, high, critical]
+        query_type:
+          type: string
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportSummary'
+
+    Stats:
+      type: object
+      properties:
+        totalReports:
+          type: integer
+        approvedReports:
+          type: integer
+        pendingReports:
+          type: integer
+        totalUsers:
+          type: integer
+        totalSearches:
+          type: integer
+        reportsByType:
+          type: object
+        reportsByCountry:
+          type: object
+        recentActivity:
+          type: array
+          items:
+            type: object
+
+    CreateReportRequest:
+      type: object
+      required: [fraudType, title, description, incidentDate, country]
+      properties:
+        fraudType:
+          type: string
+        title:
+          type: string
+          minLength: 10
+          maxLength: 200
+        description:
+          type: string
+          minLength: 50
+          maxLength: 10000
+        incidentDate:
+          type: string
+          format: date
+        country:
+          type: string
+        city:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        perpetratorName:
+          type: string
+        perpetratorPhone:
+          type: string
+        perpetratorEmail:
+          type: string
+        perpetratorWebsite:
+          type: string
+        iban:
+          type: string
+        cryptoWallet:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+        agreeToTerms:
+          type: boolean
+        agreeToGDPR:
+          type: boolean
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+  responses:
+    ValidationError:
+      description: Chyba validacie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: validation_error
+              message:
+                type: string
+              details:
+                type: object
+
+    Unauthorized:
+      description: Neautorizovany pristup
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: unauthorized
+              message:
+                type: string
+
+    Forbidden:
+      description: Nedostatocne opravnenia
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: forbidden
+              message:
+                type: string
