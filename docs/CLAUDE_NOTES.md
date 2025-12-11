@@ -47,9 +47,14 @@
 
 | Komponent | Priorita | Popis |
 |-----------|----------|-------|
-| **i18n Setup** | 🟡 Stredná | Multi-language support (SK, EN, CS, DE) |
-| **CI/CD Pipeline** | 🟢 Nízka | GitHub Actions |
 | **Production Deploy** | 🟢 Nízka | Deploy to production server |
+| **Basic Crawlers** | 🟢 Nízka | OFAC, EU sanctions, Interpol, RSS |
+
+### ✅ Nedávno dokončené (Session 5):
+| **CI/CD Pipeline** | ✅ Hotové | GitHub Actions (.github/workflows/ci.yml) |
+| **E2E Tests** | ✅ Hotové | Playwright (e2e/) |
+| **i18n Setup** | ✅ Hotové | Multi-language support (src/lib/i18n/) |
+| **Legal Pages** | ✅ Hotové | Terms, Privacy, Contact |
 
 ---
 
@@ -193,11 +198,30 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 7. **PDF Export** - `src/app/api/v1/reports/[id]/export/` - HTML/PDF/JSON export
 8. **OpenAPI Documentation** - `docs/openapi.yaml` - Full API specification
 
+### Session 5 (Claude Opus 4, 11. December 2024):
+1. **CI/CD Pipeline** - `.github/workflows/ci.yml` - Complete GitHub Actions workflow
+2. **E2E Tests** - `e2e/` - Playwright tests for homepage, search, report-form, auth
+3. **Terms Page** - `src/app/terms/page.tsx` - Podmienky pouzivania
+4. **Privacy Page** - `src/app/privacy/page.tsx` - Ochrana osobnych udajov (GDPR)
+5. **Contact Page** - `src/app/contact/page.tsx` - Contact form with validation
+
 ### 🔜 Čo zostáva (nízka priorita):
-- CI/CD Pipeline
 - Production Deployment
-- E2E Tests
+- Basic Crawlers (OFAC, EU sanctions, Interpol, RSS)
+
+### ✅ Všetky Frontend Pages:
+- [x] Homepage (`src/app/page.tsx`)
+- [x] Search (`src/app/search/`)
+- [x] Report form (`src/app/report/new/`)
+- [x] Report success (`src/app/report/success/`)
+- [x] Report detail (`src/app/reports/[id]/`)
+- [x] Login (`src/app/auth/login/`)
+- [x] Register (`src/app/auth/register/`)
+- [x] Admin Dashboard komplet (`src/app/admin/*`)
+- [x] Terms of Service (`src/app/terms/`)
+- [x] Privacy Policy (`src/app/privacy/`)
+- [x] Contact (`src/app/contact/`)
 
 ---
 
-**Posledný update:** Claude Opus 4, 11. December 2024 (Session 4 - pokracovanie)
+**Posledný update:** Claude Opus 4, 11. December 2024 (Session 5)
