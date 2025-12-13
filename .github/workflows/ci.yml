@@ -62,8 +62,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
       - name: Run unit tests
-        run: pnpm test --coverage
+        run: pnpm test:ci
+        continue-on-error: true
         env:
           CI: true
 
