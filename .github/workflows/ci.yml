@@ -110,9 +110,20 @@ jobs:
         run: pnpm prisma generate
 
       - name: Build application
-        run: pnpm build
+        run: |
+          echo "=== Starting build with SKIP_ENV_VALIDATION=true ==="
+          pnpm build
+          echo "=== Build completed ==="
+          echo "=== Checking .next directory ==="
+          ls -la .next || echo "ERROR: .next directory does not exist!"
+          ls -la .next/static || echo "WARNING: .next/static does not exist"
+          du -sh .next || echo "ERROR: Cannot get .next size"
         env:
           SKIP_ENV_VALIDATION: true
+          # Minimal mock env vars for build
+          DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
+          NEXTAUTH_SECRET: "mock-secret-for-ci-build"
+          NEXTAUTH_URL: "http://localhost:3000"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -120,6 +131,7 @@ jobs:
           name: build-output
           path: .next
           retention-days: 1
+          if-no-files-found: error
 
   # E2E Tests
   e2e:
