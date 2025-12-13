@@ -24,8 +24,6 @@ import {
   maskPhonePartial,
   maskIBAN,
   maskIP,
-  maskIPv4,
-  maskIPv6,
   maskWallet,
   maskSPZ,
   maskVIN,
@@ -320,8 +318,8 @@ export class DataMasker {
     fieldName: string,
     value: T | undefined | null,
     userRole: Role,
-    maskingFn: (val: T) => any
-  ): any {
+    maskingFn: (val: T) => T | string | Record<string, unknown>
+  ): T | string | Record<string, unknown> | undefined {
     if (value === undefined || value === null) {
       return undefined;
     }
@@ -343,7 +341,7 @@ export class DataMasker {
   /**
    * Mask transaction ID - similar to IBAN masking
    */
-  private maskTransactionId(txId: string, options: MaskingOptions): string {
+  private maskTransactionId(txId: string, _options: MaskingOptions): string {
     if (!txId) return '';
     if (txId.length < 8) return '****';
 
@@ -368,7 +366,7 @@ export class DataMasker {
   private maskAttachments(
     attachments: string[] | undefined,
     userRole: Role
-  ): any {
+  ): string[] | { count: number; preview?: Array<{ name: string; size: string }> } | undefined {
     if (!attachments) return undefined;
 
     if (userRole === Role.BASIC) {
@@ -378,7 +376,7 @@ export class DataMasker {
     if (userRole === Role.STANDARD) {
       return {
         count: attachments.length,
-        preview: attachments.slice(0, 2).map((a) => ({
+        preview: attachments.slice(0, 2).map((_a) => ({
           name: 'attachment_masked.dat',
           size: 'hidden',
         })),
@@ -442,7 +440,7 @@ export class DataMasker {
    */
   public getStats(): {
     totalReportsProcessed: number;
-    mappingTableStats: any;
+    mappingTableStats: Record<string, unknown>;
     auditLogCount: number;
   } {
     return {

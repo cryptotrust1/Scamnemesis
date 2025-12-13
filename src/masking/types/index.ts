@@ -103,7 +103,7 @@ export interface Address {
   country?: string;
 }
 
-export interface MaskedValue<T = any> {
+export interface MaskedValue<T = unknown> {
   original: T;
   masked: T;
   strategy: MaskingStrategy;
@@ -160,7 +160,7 @@ export interface FraudReport {
 }
 
 export interface MaskedReport extends Omit<FraudReport, keyof FraudReport> {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export type MaskingFunction = (
