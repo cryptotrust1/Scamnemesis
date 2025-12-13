@@ -72,6 +72,14 @@ jobs:
           CI: true
           NODE_OPTIONS: --experimental-vm-modules
 
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          file: ./coverage/lcov.info
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   # Build
   build:
     name: Build
