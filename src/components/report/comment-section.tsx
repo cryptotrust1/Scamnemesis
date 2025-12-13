@@ -62,7 +62,7 @@ const mockComments: Comment[] = [
   },
 ];
 
-export function CommentSection({ reportId }: CommentSectionProps) {
+export function CommentSection({ reportId: _reportId }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>(mockComments);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,7 +109,7 @@ export function CommentSection({ reportId }: CommentSectionProps) {
     toast.success('Hlas bol zaznamenaný');
   };
 
-  const handleReport = (commentId: string) => {
+  const handleReport = (_commentId: string) => {
     toast.info('Komentár bol nahlásený moderátorovi');
   };
 

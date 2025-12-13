@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { filename, content_type, size } = validatedBody.data;
+    const { filename, content_type, size: _size } = validatedBody.data;
 
     // Generate unique file key
     const ext = filename.split('.').pop()?.toLowerCase() || 'jpg';

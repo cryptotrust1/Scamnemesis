@@ -12,10 +12,29 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+// Report type inferred from Prisma query result
+type ReportForExport = NonNullable<Awaited<ReturnType<typeof getReportForExport>>>;
+
+// Helper to get report type from DB query
+async function getReportForExport(id: string) {
+  const { prisma } = await import('@/lib/db');
+  return prisma.report.findFirst({
+    where: {
+      OR: [{ id }, { publicId: id }],
+    },
+    include: {
+      perpetrators: true,
+      financialInfo: true,
+      cryptoInfo: true,
+      digitalFootprint: true,
+    },
+  });
+}
+
 /**
  * Generate HTML template for PDF export
  */
-function generateReportHTML(report: any): string {
+function generateReportHTML(report: ReportForExport): string {
   const formatDate = (date: Date | string | null) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('sk-SK', {
@@ -25,7 +44,7 @@ function generateReportHTML(report: any): string {
     });
   };
 
-  const formatAmount = (amount: number | null, currency: string | null) => {
+  const formatAmount = (amount: number | null, currency: string | null | undefined) => {
     if (!amount) return 'N/A';
     return `${amount.toLocaleString('sk-SK')} ${currency || 'EUR'}`;
   };

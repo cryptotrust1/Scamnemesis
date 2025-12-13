@@ -2,8 +2,6 @@
  * Tests for /api/v1/auth endpoints
  */
 
-import { NextRequest } from 'next/server';
-
 // Mock Prisma client
 jest.mock('@/lib/db', () => ({
   prisma: {

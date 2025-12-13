@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     const { min_similarity, limit } = params.data;
 
     // Convert file to buffer for processing
-    const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
+    const _imageBuffer = Buffer.from(await imageFile.arrayBuffer());
 
     // In production, this would:
     // 1. Extract face embedding using face recognition model (e.g., face-api.js, AWS Rekognition)
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     // Mock embedding (512-dimensional vector for face recognition)
     // In production, this would be the actual face embedding
-    const mockEmbedding = new Array(512).fill(0).map(() => Math.random() * 2 - 1);
+    const _mockEmbedding = new Array(512).fill(0).map(() => Math.random() * 2 - 1);
 
     // Search for similar faces using pgvector
     // In production:

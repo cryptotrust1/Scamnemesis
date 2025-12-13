@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
-import { getAuthContext, requireAuth } from '@/lib/middleware/auth';
+import { requireAuth } from '@/lib/middleware/auth';
 
 const CommentCreateSchema = z.object({
   content: z.string().min(10, 'Comment must be at least 10 characters').max(2000, 'Comment must not exceed 2000 characters'),

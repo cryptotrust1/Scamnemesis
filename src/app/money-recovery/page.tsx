@@ -4,13 +4,10 @@ import Link from 'next/link';
 import {
   Shield,
   Search,
-  FileText,
   Scale,
   Users,
   ArrowRight,
   CheckCircle,
-  Clock,
-  DollarSign,
   Target,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

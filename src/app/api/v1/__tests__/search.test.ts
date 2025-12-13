@@ -219,7 +219,7 @@ describe('Search API', () => {
       const request = createRequest({ q: 'scam reports', mode: 'semantic' });
 
       const response = await GET(request);
-      const data = await response.json();
+      const _data = await response.json();
 
       expect(response.status).toBe(200);
     });
