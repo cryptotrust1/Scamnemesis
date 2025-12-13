@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Production builds
+build/
+dist/
+
+# Test coverage and reports
+coverage/
+playwright-report/
+test-results/
+
+# Cache
+.turbo/
+*.tsbuildinfo
+
+# Generated files
+prisma/migrations/
+
+# Misc
+.vercel/
+.git/
+
+# Config files that don't need linting
+*.md
+*.json
+*.yaml
+*.yml

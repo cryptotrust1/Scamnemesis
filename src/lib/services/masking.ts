@@ -5,6 +5,7 @@
 
 import { createDataMasker, DataMasker, Role } from '@/masking';
 import { DEFAULT_MASKING_CONFIG } from '@/masking/config/masking-config';
+import { DataType } from '@/masking/types';
 
 // User role to masking role mapping
 const USER_ROLE_MAP: Record<string, Role> = {
@@ -60,9 +61,8 @@ export function maskField(
   }
 
   const masker = getMasker();
-  const { DataType } = require('@/masking/types');
 
-  const typeMap: Record<string, any> = {
+  const typeMap: Record<string, DataType> = {
     'email': DataType.EMAIL,
     'phone': DataType.PHONE,
     'iban': DataType.IBAN,
