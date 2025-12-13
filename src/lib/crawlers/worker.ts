@@ -16,7 +16,6 @@ import {
   scheduleJob,
 } from './queue';
 import {
-  ConnectorFactory,
   registerConnectors,
   OFACConnector,
   EUSanctionsConnector,
@@ -246,7 +245,7 @@ async function queueEnrichmentMatching(result: CrawlResult): Promise<void> {
  * Process enrichment matching job
  */
 async function processEnrichmentMatch(
-  job: Job<{ perpetratorId: string; crawlResultId: string }>
+  _job: Job<{ perpetratorId: string; crawlResultId: string }>
 ): Promise<{ matches: number }> {
   // This would match crawl result entities with existing perpetrators
   // For now, this is a placeholder

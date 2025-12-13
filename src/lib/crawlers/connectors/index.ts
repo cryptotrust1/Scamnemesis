@@ -17,7 +17,7 @@ export { RSSConnector, NEWS_SOURCE_CONFIGS } from './RSSConnector';
 // Register connectors with factory
 import { ConnectorFactory } from './BaseConnector';
 import { OFACConnector, OFAC_DEFAULT_CONFIG } from './OFACConnector';
-import { EUSanctionsConnector, EU_SANCTIONS_DEFAULT_CONFIG } from './EUSanctionsConnector';
+import { EU_SANCTIONS_DEFAULT_CONFIG } from './EUSanctionsConnector';
 import { InterpolConnector, INTERPOL_DEFAULT_CONFIG } from './InterpolConnector';
 import { RSSConnector, NEWS_SOURCE_CONFIGS } from './RSSConnector';
 

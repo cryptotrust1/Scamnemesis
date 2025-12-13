@@ -2,7 +2,7 @@
  * Tests for Environment Validation
  */
 
-import { validateEnv, getEnv, isProduction, isDevelopment, isTest, getAllowedOrigins, getAllowedImageFormats, isFeatureEnabled, resetEnvCache } from '../env';
+import { validateEnv, isProduction, isDevelopment, isTest, getAllowedOrigins, getAllowedImageFormats, isFeatureEnabled, resetEnvCache } from '../env';
 
 describe('Environment Validation', () => {
   const originalEnv = process.env;
