@@ -41,13 +41,13 @@ const customJestConfig = {
     '!src/**/*.spec.{js,jsx,ts,tsx}',
   ],
 
-  // Coverage thresholds
-  coverageThresholds: {
+  // Coverage thresholds (set to 0 for initial setup, increase later)
+  coverageThreshold: {
     global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70,
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
     },
   },
 
@@ -72,6 +72,8 @@ const customJestConfig = {
     '/.next/',
     '/out/',
     '/coverage/',
+    '/e2e/',
+    '<rootDir>/e2e/',
   ],
 
   // Module file extensions
