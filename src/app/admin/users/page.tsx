@@ -144,10 +144,6 @@ export default function AdminUsersPage() {
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
   useEffect(() => {
-    filterUsers();
-  }, [search, roleFilter, statusFilter]);
-
-  const filterUsers = () => {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -173,7 +169,7 @@ export default function AdminUsersPage() {
       setCurrentPage(1);
       setIsLoading(false);
     }, 300);
-  };
+  }, [search, roleFilter, statusFilter]);
 
   const getRoleBadge = (role: string) => {
     switch (role) {

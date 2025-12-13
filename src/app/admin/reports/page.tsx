@@ -162,10 +162,6 @@ export default function AdminReportsPage() {
   const totalPages = Math.ceil(reports.length / itemsPerPage);
 
   useEffect(() => {
-    filterReports();
-  }, [search, statusFilter, fraudTypeFilter, severityFilter]);
-
-  const filterReports = () => {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -196,7 +192,7 @@ export default function AdminReportsPage() {
       setCurrentPage(1);
       setIsLoading(false);
     }, 300);
-  };
+  }, [search, statusFilter, fraudTypeFilter, severityFilter]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import {
-  Image,
+  Image as ImageIcon,
   Upload,
   Trash2,
   Search,
@@ -13,7 +14,6 @@ import {
   Download,
   Eye,
   Edit2,
-  X,
   Check,
   Loader2,
   FileText,
@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   Select,
@@ -150,7 +150,7 @@ function formatDate(dateString: string): string {
 function getMediaIcon(type: string) {
   switch (type) {
     case 'IMAGE':
-      return Image;
+      return ImageIcon;
     case 'VIDEO':
       return Video;
     case 'AUDIO':
@@ -400,10 +400,12 @@ export default function AdminMediaPage() {
               >
                 <div className="aspect-square relative bg-muted rounded-t-lg overflow-hidden">
                   {item.thumbnailUrl ? (
-                    <img
+                    <Image
                       src={item.thumbnailUrl}
                       alt={item.altText || item.originalName}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -475,12 +477,14 @@ export default function AdminMediaPage() {
                   className="flex items-center gap-4 p-4 hover:bg-muted/50 cursor-pointer"
                   onClick={() => setSelectedMedia(item)}
                 >
-                  <div className="w-16 h-16 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-16 h-16 bg-muted rounded-lg overflow-hidden flex-shrink-0 relative">
                     {item.thumbnailUrl ? (
-                      <img
+                      <Image
                         src={item.thumbnailUrl}
                         alt={item.altText || item.originalName}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        unoptimized
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -546,11 +550,15 @@ export default function AdminMediaPage() {
           </DialogHeader>
           <div className="space-y-4">
             {selectedMedia?.type === 'IMAGE' && selectedMedia.url && (
-              <img
-                src={selectedMedia.url}
-                alt={selectedMedia.altText || selectedMedia.originalName}
-                className="w-full max-h-[60vh] object-contain rounded-lg"
-              />
+              <div className="relative w-full h-[60vh]">
+                <Image
+                  src={selectedMedia.url}
+                  alt={selectedMedia.altText || selectedMedia.originalName}
+                  fill
+                  className="object-contain rounded-lg"
+                  unoptimized
+                />
+              </div>
             )}
             {selectedMedia?.type !== 'IMAGE' && (
               <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
