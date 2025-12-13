@@ -305,11 +305,25 @@ jobs:
       - name: Run E2E tests
         run: pnpm test:e2e
         env:
+          CI: true
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: "true"
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/scamnemesis_test
           REDIS_URL: redis://localhost:6379
-          JWT_SECRET: test-secret-key-for-ci
-          NEXTAUTH_SECRET: test-nextauth-secret
+          JWT_SECRET: test-secret-key-for-ci-minimum-32-characters-length
+          JWT_REFRESH_SECRET: test-refresh-secret-for-ci-minimum-32-chars
+          NEXTAUTH_SECRET: test-nextauth-secret-minimum-32-characters-key
           NEXTAUTH_URL: http://localhost:3000
+          S3_ENDPOINT: http://localhost:9000
+          S3_BUCKET: mock-bucket
+          S3_ACCESS_KEY: mock-access-key
+          S3_SECRET_KEY: mock-secret-key
+          S3_REGION: us-east-1
+          TYPESENSE_HOST: localhost
+          TYPESENSE_PORT: "8108"
+          TYPESENSE_PROTOCOL: http
+          TYPESENSE_API_KEY: mock-typesense-key
+          ML_SERVICE_URL: http://localhost:8000
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

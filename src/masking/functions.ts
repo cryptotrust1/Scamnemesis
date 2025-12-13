@@ -44,7 +44,7 @@ export function maskName(name: string, options: MaskingOptions): string {
     return first + middle + last;
   };
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     // Split by whitespace and hyphens, preserving separators
     const parts = val.split(/(\s+|-)/);
     return parts
@@ -107,7 +107,7 @@ export function maskNamePartial(name: string, options: MaskingOptions): string {
 export function maskPhone(phone: string, options: MaskingOptions): string {
   if (!phone || typeof phone !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     // Extract digits and formatting
     const digits = val.replace(/\D/g, '');
     if (digits.length < 6) {
@@ -209,7 +209,7 @@ export function maskPhonePartial(phone: string, options: MaskingOptions): string
 export function maskEmail(email: string, options: MaskingOptions): string {
   if (!email || typeof email !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     const atIndex = val.lastIndexOf('@');
     if (atIndex === -1) {
       // Invalid email, mask everything
@@ -275,7 +275,7 @@ export function maskEmailPartial(email: string, options: MaskingOptions): string
 export function maskIBAN(iban: string, options: MaskingOptions): string {
   if (!iban || typeof iban !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     // Remove all spaces and formatting
     const clean = val.replace(/\s/g, '').toUpperCase();
 
@@ -315,7 +315,7 @@ export function maskIBAN(iban: string, options: MaskingOptions): string {
  * @example
  * maskIPv4("192.168.1.100") → "192.168.1.xxx"
  */
-export function maskIPv4(ip: string, options: MaskingOptions): string {
+export function maskIPv4(ip: string, _options: MaskingOptions): string {
   if (!ip || typeof ip !== 'string') return '';
 
   const parts = ip.split('.');
@@ -335,7 +335,7 @@ export function maskIPv4(ip: string, options: MaskingOptions): string {
  * @example
  * maskIPv6("2001:0db8:85a3::8a2e:0370:7334") → "2001:0db8:****:****:****:****:****:****"
  */
-export function maskIPv6(ip: string, options: MaskingOptions): string {
+export function maskIPv6(ip: string, _options: MaskingOptions): string {
   if (!ip || typeof ip !== 'string') return '';
 
   // Simple approach: show first 2 hextets, mask the rest
@@ -378,7 +378,7 @@ export function maskIP(ip: string, options: MaskingOptions): string {
 export function maskWallet(wallet: string, options: MaskingOptions): string {
   if (!wallet || typeof wallet !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     if (val.length < 12) {
       // Too short
       const first = val.substring(0, 4);
@@ -412,7 +412,7 @@ export function maskWallet(wallet: string, options: MaskingOptions): string {
 export function maskSPZ(spz: string, options: MaskingOptions): string {
   if (!spz || typeof spz !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     const clean = val.replace(/[\s-]/g, '').toUpperCase();
 
     if (clean.length < 4) {
@@ -446,7 +446,7 @@ export function maskSPZ(spz: string, options: MaskingOptions): string {
 export function maskVIN(vin: string, options: MaskingOptions): string {
   if (!vin || typeof vin !== 'string') return '';
 
-  const maskingFn = (val: string, seed?: number): string => {
+  const maskingFn = (val: string, _seed?: number): string => {
     const clean = val.replace(/\s/g, '').toUpperCase();
 
     if (clean.length !== 17) {

@@ -321,7 +321,7 @@ export class MaskingConfigLoader {
    */
   public static fromEnvironment(): MaskingConfigLoader {
     const config: Partial<MaskingConfig> = {
-      environment: (process.env.NODE_ENV as any) || 'development',
+      environment: (process.env.NODE_ENV as 'development' | 'staging' | 'production') || 'development',
       salt: process.env.MASKING_SALT || generateSalt(),
       enableDeterministicMasking:
         process.env.ENABLE_DETERMINISTIC_MASKING !== 'false',
