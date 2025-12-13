@@ -6,19 +6,21 @@
 
 import { NextRequest } from 'next/server';
 
-// Mock Prisma
-const mockPrismaReport = {
-  count: jest.fn(),
-  findMany: jest.fn(),
-  groupBy: jest.fn(),
-};
-
+// Mock Prisma - using jest.fn() directly to avoid hoisting issues
 jest.mock('@/lib/db', () => ({
   __esModule: true,
   default: {
-    report: mockPrismaReport,
+    report: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+      groupBy: jest.fn(),
+    },
   },
 }));
+
+// Get reference to mocked module
+import db from '@/lib/db';
+const mockPrismaReport = db.report as jest.Mocked<typeof db.report>;
 
 // Mock middleware
 jest.mock('@/lib/middleware/auth', () => ({

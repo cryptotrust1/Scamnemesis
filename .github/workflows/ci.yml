@@ -70,13 +70,7 @@ jobs:
         continue-on-error: true
         env:
           CI: true
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        if: always()
-        with:
-          file: ./coverage/lcov.info
-          fail_ci_if_error: false
+          NODE_OPTIONS: --experimental-vm-modules
 
   # Build
   build:
