@@ -130,7 +130,7 @@ const STATUSES = [
 
 export default function AdminCommentsPage() {
   const searchParams = useSearchParams();
-  const initialReported = searchParams.get('reported') === 'true';
+  const initialReported = searchParams?.get('reported') === 'true';
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');

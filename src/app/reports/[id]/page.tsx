@@ -139,7 +139,7 @@ Keď som chcel vybrať peniaze, prestali odpovedať na správy a emaily. Webová
 
 export default function ReportDetailPage() {
   const params = useParams();
-  const reportId = params.id as string;
+  const reportId = params?.id as string;
   const [report, setReport] = useState<ReportDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -107,7 +107,7 @@ const mockReports: Report[] = [
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get('q') || '';
+  const initialQuery = searchParams?.get('q') || '';
 
   const [filters, setFilters] = useState<SearchFilters>({
     query: initialQuery,

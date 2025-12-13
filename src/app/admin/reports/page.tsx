@@ -148,7 +148,7 @@ const SEVERITIES = [
 
 export default function AdminReportsPage() {
   const searchParams = useSearchParams();
-  const initialStatus = searchParams.get('status') || 'all';
+  const initialStatus = searchParams?.get('status') || 'all';
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState(initialStatus);
