@@ -154,6 +154,14 @@ export function getEnv(): Env {
   return validateEnv();
 }
 
+/**
+ * Reset the environment cache
+ * This should only be used in tests
+ */
+export function resetEnvCache(): void {
+  cachedEnv = null;
+}
+
 // ===========================================================================
 // HELPERS
 // ===========================================================================

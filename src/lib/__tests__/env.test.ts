@@ -2,13 +2,14 @@
  * Tests for Environment Validation
  */
 
-import { validateEnv, getEnv, isProduction, isDevelopment, isTest, getAllowedOrigins, getAllowedImageFormats, isFeatureEnabled } from '../env';
+import { validateEnv, getEnv, isProduction, isDevelopment, isTest, getAllowedOrigins, getAllowedImageFormats, isFeatureEnabled, resetEnvCache } from '../env';
 
 describe('Environment Validation', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
     // Clear cache
+    resetEnvCache();
     jest.resetModules();
     process.env = { ...originalEnv };
   });
@@ -97,8 +98,20 @@ describe('Environment Validation', () => {
     it('should transform string to number', () => {
       process.env = {
         ...originalEnv,
+        NODE_ENV: 'test',
         PORT: '4000',
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
+        REDIS_URL: 'redis://localhost:6379',
+        S3_ENDPOINT: 'http://localhost:9000',
+        S3_BUCKET: 'test',
+        S3_ACCESS_KEY: 'key',
+        S3_SECRET_KEY: 'secret',
+        TYPESENSE_HOST: 'localhost',
         TYPESENSE_PORT: '9108',
+        TYPESENSE_API_KEY: 'key',
+        ML_SERVICE_URL: 'http://localhost:8000',
+        JWT_SECRET: 'test-jwt-secret-at-least-32-characters-long',
+        JWT_REFRESH_SECRET: 'test-refresh-secret-at-least-32-characters-long',
         RATE_LIMIT_MAX_REQUESTS: '200',
       };
 
@@ -112,6 +125,18 @@ describe('Environment Validation', () => {
     it('should transform string to boolean', () => {
       process.env = {
         ...originalEnv,
+        NODE_ENV: 'test',
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
+        REDIS_URL: 'redis://localhost:6379',
+        S3_ENDPOINT: 'http://localhost:9000',
+        S3_BUCKET: 'test',
+        S3_ACCESS_KEY: 'key',
+        S3_SECRET_KEY: 'secret',
+        TYPESENSE_HOST: 'localhost',
+        TYPESENSE_API_KEY: 'key',
+        ML_SERVICE_URL: 'http://localhost:8000',
+        JWT_SECRET: 'test-jwt-secret-at-least-32-characters-long',
+        JWT_REFRESH_SECRET: 'test-refresh-secret-at-least-32-characters-long',
         ENABLE_VIRUS_SCAN: 'true',
         ENABLE_FACE_DETECTION: 'false',
         ENABLE_EXACT_MATCH: 'true',
@@ -127,6 +152,7 @@ describe('Environment Validation', () => {
 
   describe('Helper functions', () => {
     beforeEach(() => {
+      resetEnvCache();
       process.env = {
         ...originalEnv,
         NODE_ENV: 'test',
@@ -157,23 +183,28 @@ describe('Environment Validation', () => {
     });
 
     it('getAllowedOrigins should parse comma-separated string', () => {
+      resetEnvCache();
       process.env.ALLOWED_ORIGINS = 'http://localhost:3000,https://example.com';
       const origins = getAllowedOrigins();
       expect(origins).toEqual(['http://localhost:3000', 'https://example.com']);
     });
 
     it('getAllowedOrigins should return default if not set', () => {
+      resetEnvCache();
+      delete process.env.ALLOWED_ORIGINS;
       const origins = getAllowedOrigins();
       expect(origins).toEqual(['http://localhost:3000']);
     });
 
     it('getAllowedImageFormats should parse formats', () => {
+      resetEnvCache();
       process.env.ALLOWED_IMAGE_FORMATS = 'jpg,png,gif';
       const formats = getAllowedImageFormats();
       expect(formats).toEqual(['jpg', 'png', 'gif']);
     });
 
     it('isFeatureEnabled should check feature flags', () => {
+      resetEnvCache();
       process.env.ENABLE_VIRUS_SCAN = 'true';
       process.env.ENABLE_FACE_DETECTION = 'false';
 

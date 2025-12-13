@@ -15,29 +15,63 @@ jest.mock('@/lib/db', () => ({
       findMany: jest.fn(),
       groupBy: jest.fn(),
     },
+    apiKey: {
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    rateLimit: {
+      deleteMany: jest.fn(),
+      findUnique: jest.fn(),
+      upsert: jest.fn(),
+      update: jest.fn(),
+    },
   },
 }));
 
 // Get reference to mocked module
 import db from '@/lib/db';
 const mockPrismaReport = db.report as jest.Mocked<typeof db.report>;
+const mockPrismaApiKey = db.apiKey as jest.Mocked<typeof db.apiKey>;
+const mockPrismaRateLimit = db.rateLimit as jest.Mocked<typeof db.rateLimit>;
 
-// Mock middleware
-jest.mock('@/lib/middleware/auth', () => ({
-  requireAuth: jest.fn().mockResolvedValue(null),
-  requireRateLimit: jest.fn().mockResolvedValue(null),
-  optionalAuth: jest.fn().mockResolvedValue({ userId: 'user-1' }),
+// Mock JWT verification to avoid auth errors
+jest.mock('@/lib/auth/jwt', () => ({
+  verifyToken: jest.fn().mockResolvedValue(null),
+  hasScope: jest.fn().mockReturnValue(true),
 }));
 
 import { GET } from '../search/route';
-import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 
 describe('Search API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Mock report methods
     mockPrismaReport.count.mockResolvedValue(0);
     mockPrismaReport.findMany.mockResolvedValue([]);
     mockPrismaReport.groupBy.mockResolvedValue([]);
+
+    // Mock auth-related methods
+    mockPrismaApiKey.findUnique.mockResolvedValue(null);
+    mockPrismaApiKey.update.mockResolvedValue(null as any);
+
+    // Mock rate limit methods
+    mockPrismaRateLimit.deleteMany.mockResolvedValue({ count: 0 });
+    mockPrismaRateLimit.findUnique.mockResolvedValue(null);
+    mockPrismaRateLimit.upsert.mockResolvedValue({
+      id: 'rate-limit-1',
+      identifier: 'test',
+      count: 1,
+      windowStart: new Date(),
+      expiresAt: new Date(Date.now() + 3600000),
+    });
+    mockPrismaRateLimit.update.mockResolvedValue({
+      id: 'rate-limit-1',
+      identifier: 'test',
+      count: 1,
+      windowStart: new Date(),
+      expiresAt: new Date(Date.now() + 3600000),
+    });
   });
 
   // Helper to create request
@@ -46,7 +80,7 @@ describe('Search API', () => {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
-    return new NextRequest(url);
+    return new NextRequest(url.toString());
   };
 
   describe('GET /api/v1/search - Validation', () => {
@@ -119,14 +153,19 @@ describe('Search API', () => {
       locationCountry: 'SK',
       incidentDate: new Date('2024-01-15'),
       createdAt: new Date(),
-      perpetrator: {
-        fullName: 'John Scammer',
-        phone: '+421900111222',
-        email: 'scammer@example.com',
-        fullNameNormalized: 'john scammer',
-        phoneNormalized: '421900111222',
-        emailNormalized: 'scammer@example.com',
-      },
+      perpetrators: [
+        {
+          fullName: 'John Scammer',
+          phone: '+421900111222',
+          email: 'scammer@example.com',
+          fullNameNormalized: 'john scammer',
+          phoneNormalized: '421900111222',
+          emailNormalized: 'scammer@example.com',
+        },
+      ],
+      financialInfo: null,
+      cryptoInfo: null,
+      digitalFootprint: null,
     };
 
     it('should search with auto mode (default)', async () => {
@@ -377,20 +416,24 @@ describe('Search API', () => {
         fraudType: 'PHISHING',
         locationCountry: 'SK',
         incidentDate: new Date('2024-01-15'),
-        perpetrator: {
-          fullName: 'John Scammer',
-          phone: '+421900111222',
-          email: 'scammer@example.com',
-        },
+        perpetrators: [
+          {
+            fullName: 'John Scammer',
+            phone: '+421900111222',
+            email: 'scammer@example.com',
+          },
+        ],
       },
       {
         publicId: 'report-2',
         fraudType: 'INVESTMENT',
         locationCountry: 'CZ',
         incidentDate: new Date('2024-02-20'),
-        perpetrator: {
-          fullName: 'Jane Fraud',
-        },
+        perpetrators: [
+          {
+            fullName: 'Jane Fraud',
+          },
+        ],
       },
     ];
 
@@ -458,15 +501,19 @@ describe('Search API', () => {
 
       await GET(request);
 
-      expect(requireRateLimit).toHaveBeenCalledWith(request, 100);
+      // Rate limit should check the database
+      expect(mockPrismaRateLimit.upsert).toHaveBeenCalled();
     });
 
     it('should return rate limit error when exceeded', async () => {
-      const mockRateLimitError = Response.json(
-        { error: 'rate_limit_exceeded' },
-        { status: 429 }
-      );
-      (requireRateLimit as jest.Mock).mockResolvedValueOnce(mockRateLimitError);
+      // Mock rate limit as exceeded
+      mockPrismaRateLimit.upsert.mockResolvedValue({
+        id: 'rate-limit-1',
+        identifier: 'test',
+        count: 101, // Over the limit of 100
+        windowStart: new Date(),
+        expiresAt: new Date(Date.now() + 3600000),
+      });
 
       const request = createRequest({ q: 'test' });
 
@@ -478,11 +525,15 @@ describe('Search API', () => {
 
   describe('GET /api/v1/search - Authentication', () => {
     it('should support optional authentication', async () => {
+      mockPrismaReport.count.mockResolvedValue(0);
+      mockPrismaReport.findMany.mockResolvedValue([]);
+
       const request = createRequest({ q: 'test' });
 
-      await GET(request);
+      const response = await GET(request);
 
-      expect(optionalAuth).toHaveBeenCalledWith(request);
+      // Should successfully process request without auth
+      expect(response.status).toBe(200);
     });
   });
 
@@ -502,20 +553,17 @@ describe('Search API', () => {
 
   describe('GET /api/v1/search - Auto Mode Fallback', () => {
     it('should fallback to fuzzy when exact returns no results', async () => {
-      // First call (exact search) returns 0
-      mockPrismaReport.count
-        .mockResolvedValueOnce(0) // exact search count
-        .mockResolvedValueOnce(5); // fuzzy search count
+      // For name-based queries, exact search returns early without DB calls
+      // So only fuzzy search calls the DB
+      mockPrismaReport.count.mockResolvedValue(1); // fuzzy search count
 
-      mockPrismaReport.findMany
-        .mockResolvedValueOnce([]) // exact search results
-        .mockResolvedValueOnce([
-          {
-            publicId: 'report-1',
-            fraudType: 'PHISHING',
-            perpetrator: { fullName: 'John Test' },
-          },
-        ]); // fuzzy search results
+      mockPrismaReport.findMany.mockResolvedValue([
+        {
+          publicId: 'report-1',
+          fraudType: 'PHISHING',
+          perpetrators: [{ fullName: 'John Test' }],
+        },
+      ]); // fuzzy search results
 
       mockPrismaReport.groupBy.mockResolvedValue([]);
 
@@ -525,7 +573,8 @@ describe('Search API', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.total).toBe(5);
+      expect(data.total).toBe(1);
+      expect(data.results).toHaveLength(1);
     });
 
     it('should use exact results when found in auto mode', async () => {
@@ -534,10 +583,12 @@ describe('Search API', () => {
         {
           publicId: 'report-1',
           fraudType: 'PHISHING',
-          perpetrator: {
-            email: 'scammer@test.com',
-            emailNormalized: 'scammer@test.com',
-          },
+          perpetrators: [
+            {
+              email: 'scammer@test.com',
+              emailNormalized: 'scammer@test.com',
+            },
+          ],
         },
       ]);
       mockPrismaReport.groupBy.mockResolvedValue([]);
