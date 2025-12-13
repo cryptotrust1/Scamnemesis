@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
@@ -36,7 +35,7 @@ export async function POST(
     const now = new Date();
 
     // Update the comment to approved
-    const updatedComment = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const updatedComment = await prisma.$transaction(async (tx) => {
       // Update the comment
       const updated = await tx.comment.update({
         where: { id },
