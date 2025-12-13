@@ -44,12 +44,16 @@ export async function GET(request: NextRequest) {
         include: {
           reports: {
             include: {
-              perpetrators: {
-                select: {
-                  id: true,
-                  fullName: true,
-                  email: true,
-                  phone: true,
+              report: {
+                include: {
+                  perpetrators: {
+                    select: {
+                      id: true,
+                      fullName: true,
+                      email: true,
+                      phone: true,
+                    },
+                  },
                 },
               },
             },
@@ -72,22 +76,24 @@ export async function GET(request: NextRequest) {
         status: cluster.status.toLowerCase(),
         confidence: cluster.confidence,
         match_type: cluster.matchType?.toLowerCase(),
-        reports: cluster.reports.map(report => ({
-          id: report.id,
-          fraud_type: report.fraudType?.toLowerCase(),
-          summary: report.summary,
-          status: report.status.toLowerCase(),
-          financial_loss: report.financialLossAmount ? {
-            amount: Number(report.financialLossAmount),
-            currency: report.financialLossCurrency,
+        reports: cluster.reports.map(clusterReport => ({
+          id: clusterReport.report.id,
+          fraud_type: clusterReport.report.fraudType?.toLowerCase(),
+          summary: clusterReport.report.summary,
+          status: clusterReport.report.status.toLowerCase(),
+          financial_loss: clusterReport.report.financialLossAmount ? {
+            amount: Number(clusterReport.report.financialLossAmount),
+            currency: clusterReport.report.financialLossCurrency,
           } : null,
-          perpetrators: report.perpetrators.map(p => ({
+          perpetrators: clusterReport.report.perpetrators.map(p => ({
             id: p.id,
             full_name: p.fullName,
             email: p.email,
             phone: p.phone,
           })),
-          created_at: report.createdAt.toISOString(),
+          created_at: clusterReport.report.createdAt.toISOString(),
+          similarity: clusterReport.similarity,
+          is_primary: clusterReport.isPrimary,
         })),
         created_at: cluster.createdAt.toISOString(),
         resolved_at: cluster.resolvedAt?.toISOString(),

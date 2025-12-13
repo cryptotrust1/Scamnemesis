@@ -10,7 +10,7 @@ import {
   Briefcase,
   Home,
   CreditCard,
-  HandHeart,
+  HeartHandshake,
   Phone,
   Gift,
   HelpCircle
@@ -86,7 +86,7 @@ const fraudTypes = [
     value: 'FAKE_CHARITY',
     label: 'Falošná charita',
     description: 'Podvodné zbierky, falošné charity, scam fundraising',
-    icon: HandHeart,
+    icon: HeartHandshake,
     color: 'text-rose-500',
   },
   {

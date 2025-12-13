@@ -81,7 +81,7 @@ export async function GET(
   try {
     // Get authentication context (optional - public endpoint)
     const auth = await getAuthContext(request);
-    const userRole = auth?.role || 'BASIC';
+    const isAdmin = auth.scopes.some(s => s.startsWith('admin:'));
 
     // Find the report
     const report = await prisma.report.findFirst({
@@ -91,7 +91,7 @@ export async function GET(
           { publicId: id },
         ],
         // Only show approved reports to public
-        ...(userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN' ? {
+        ...(!isAdmin ? {
           status: 'APPROVED',
         } : {}),
       },

@@ -55,7 +55,7 @@ export async function POST(
     }
 
     // Verify primary report is in the cluster
-    const clusterReportIds = cluster.reports.map(r => r.id);
+    const clusterReportIds = cluster.reports.map(r => r.reportId);
     if (!clusterReportIds.includes(primary_report_id)) {
       return NextResponse.json(
         { error: 'invalid_primary', message: 'Primary report is not in this cluster' },

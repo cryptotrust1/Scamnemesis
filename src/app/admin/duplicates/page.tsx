@@ -340,7 +340,7 @@ export default function AdminDuplicatesPage() {
                         <div
                           key={report.id}
                           className={`p-4 rounded-lg border ${
-                            report.isPrimary ? 'border-green-300 bg-green-50/50' : 'bg-muted/30'
+                            'isPrimary' in report && report.isPrimary ? 'border-green-300 bg-green-50/50' : 'bg-muted/30'
                           }`}
                         >
                           <div className="flex items-start justify-between">
@@ -349,7 +349,7 @@ export default function AdminDuplicatesPage() {
                                 <span className="text-xs font-mono text-muted-foreground">
                                   {report.publicId}
                                 </span>
-                                {report.isPrimary && (
+                                {'isPrimary' in report && report.isPrimary && (
                                   <Badge variant="success" className="text-xs">Primárne</Badge>
                                 )}
                                 <Badge variant="outline">{report.fraudType}</Badge>
@@ -361,17 +361,17 @@ export default function AdminDuplicatesPage() {
                                     <span className="font-medium">Meno:</span> {report.perpetratorName}
                                   </div>
                                 )}
-                                {report.perpetratorPhone && (
+                                {'perpetratorPhone' in report && report.perpetratorPhone && (
                                   <div>
                                     <span className="font-medium">Tel:</span> {report.perpetratorPhone}
                                   </div>
                                 )}
-                                {report.perpetratorEmail && (
+                                {'perpetratorEmail' in report && report.perpetratorEmail && (
                                   <div>
                                     <span className="font-medium">Email:</span> {report.perpetratorEmail}
                                   </div>
                                 )}
-                                {report.perpetratorIban && (
+                                {'perpetratorIban' in report && report.perpetratorIban && (
                                   <div>
                                     <span className="font-medium">IBAN:</span> {report.perpetratorIban}
                                   </div>
