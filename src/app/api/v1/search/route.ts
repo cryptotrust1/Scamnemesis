@@ -264,13 +264,13 @@ export async function GET(request: NextRequest) {
     const params = {
       q: searchParams.get('q') || '',
       mode: searchParams.get('mode') as SearchMode || 'auto',
-      fields: searchParams.get('fields'),
-      country: searchParams.get('country'),
-      fraud_type: searchParams.get('fraud_type'),
-      date_from: searchParams.get('date_from'),
-      date_to: searchParams.get('date_to'),
-      limit: searchParams.get('limit'),
-      offset: searchParams.get('offset'),
+      fields: searchParams.get('fields') ?? undefined,
+      country: searchParams.get('country') ?? undefined,
+      fraud_type: searchParams.get('fraud_type') ?? undefined,
+      date_from: searchParams.get('date_from') ?? undefined,
+      date_to: searchParams.get('date_to') ?? undefined,
+      limit: searchParams.get('limit') ?? undefined,
+      offset: searchParams.get('offset') ?? undefined,
     };
 
     const parsed = searchParamsSchema.safeParse(params);
