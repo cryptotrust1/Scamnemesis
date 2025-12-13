@@ -178,6 +178,9 @@ jobs:
           name: build-output
           path: .next
 
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
       - name: Setup test database
         run: pnpm prisma db push
         env:

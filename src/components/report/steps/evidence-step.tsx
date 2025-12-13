@@ -248,6 +248,7 @@ export function EvidenceStep({ files, onFilesChange }: EvidenceStepProps) {
                     {/* Preview or Icon */}
                     <div className="flex-shrink-0">
                       {isImage && file.url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={file.url}
                           alt={file.name}

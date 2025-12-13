@@ -229,6 +229,6 @@ export function isFeatureEnabled(feature: 'virus_scan' | 'face_detection' | 'ocr
 // AUTO-VALIDATE ON IMPORT (in non-test environments)
 // ===========================================================================
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && process.env.SKIP_ENV_VALIDATION !== 'true') {
   validateEnv();
 }

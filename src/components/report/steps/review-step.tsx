@@ -188,6 +188,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
               {data.files.map((file) => (
                 <div key={file.id} className="relative">
                   {file.type.startsWith('image/') && file.url ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={file.url}
                       alt={file.name}
