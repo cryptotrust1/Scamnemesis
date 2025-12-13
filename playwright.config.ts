@@ -10,6 +10,13 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+
+  // Timeout configurations for CI reliability
+  timeout: 30 * 1000, // 30 seconds per test
+  expect: {
+    timeout: 10 * 1000, // 10 seconds for assertions
+  },
+
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['list'],
@@ -20,6 +27,9 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
+    // Action and navigation timeouts
+    navigationTimeout: 30 * 1000,
+    actionTimeout: 10 * 1000,
   },
 
   projects: process.env.CI
@@ -64,5 +74,8 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    // Capture server output for debugging
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });
