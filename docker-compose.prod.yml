@@ -25,13 +25,13 @@ services:
       - "--providers.docker.network=scamnemesis_network_prod"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      # HTTP to HTTPS redirect (handled per-router, not globally, to allow ACME challenge)
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL:-admin@example.com}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       - "--log.level=INFO"
+      - "--api.dashboard=false"
     ports:
       - "80:80"
       - "443:443"
@@ -79,14 +79,28 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
+      # Main HTTPS router
       - "traefik.http.routers.app.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=3000"
+      # HTTP to HTTPS redirect router
+      - "traefik.http.routers.app-http.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.app-http.entrypoints=web"
+      - "traefik.http.routers.app-http.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      # WWW redirect (HTTPS)
       - "traefik.http.routers.app-www.rule=Host(`www.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.app-www.entrypoints=websecure"
       - "traefik.http.routers.app-www.tls.certresolver=letsencrypt"
       - "traefik.http.routers.app-www.middlewares=www-redirect"
       - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https://www\\.(.*)"
       - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://$${1}"
+      # WWW HTTP to HTTPS redirect
+      - "traefik.http.routers.app-www-http.rule=Host(`www.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.app-www-http.entrypoints=web"
+      - "traefik.http.routers.app-www-http.middlewares=https-redirect"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/verify"]
       interval: 30s
