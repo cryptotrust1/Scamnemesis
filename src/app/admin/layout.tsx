@@ -15,6 +15,9 @@ import {
   Shield,
   LogOut,
   History,
+  Image,
+  Search,
+  FileEdit,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -44,6 +47,21 @@ const sidebarItems = [
     title: 'Komentáre',
     href: '/admin/comments',
     icon: MessageSquare,
+  },
+  {
+    title: 'Médiá',
+    href: '/admin/media',
+    icon: Image,
+  },
+  {
+    title: 'Stránky',
+    href: '/admin/pages',
+    icon: FileEdit,
+  },
+  {
+    title: 'SEO',
+    href: '/admin/seo',
+    icon: Search,
   },
   {
     title: 'Audit Log',

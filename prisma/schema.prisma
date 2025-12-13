@@ -137,6 +137,12 @@ model User {
   auditLogs        AuditLog[]
   refreshTokens    RefreshToken[]
 
+  // CMS Relations
+  media            Media[]
+  pages            Page[]
+  pageRevisions    PageRevision[]
+  systemSettings   SystemSetting[]
+
   @@map("users")
 }
 
@@ -553,4 +559,264 @@ model RateLimit {
 
   @@index([expiresAt])
   @@map("rate_limits")
+}
+
+// ==================== CMS - MEDIA LIBRARY ====================
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  OTHER
+}
+
+enum MediaStatus {
+  PROCESSING
+  READY
+  FAILED
+  DELETED
+}
+
+model Media {
+  id          String      @id @default(cuid())
+  type        MediaType   @default(IMAGE)
+  status      MediaStatus @default(PROCESSING)
+
+  // File info
+  filename       String
+  originalName   String      @map("original_name")
+  mimeType       String      @map("mime_type")
+  fileSize       Int         @map("file_size")
+
+  // S3/MinIO keys
+  fileKey        String      @map("file_key")
+  thumbnailKey   String?     @map("thumbnail_key")
+
+  // URLs (presigned or CDN)
+  url            String?
+  thumbnailUrl   String?     @map("thumbnail_url")
+
+  // Image dimensions
+  width          Int?
+  height         Int?
+
+  // Metadata
+  title          String?
+  altText        String?     @map("alt_text")
+  caption        String?     @db.Text
+  description    String?     @db.Text
+
+  // Hash for deduplication
+  hash           String?
+  pHash          String?     @map("p_hash")
+
+  // Virus scan
+  scanStatus     String?     @map("scan_status")
+  scanResult     String?     @map("scan_result")
+  scannedAt      DateTime?   @map("scanned_at")
+
+  // Ownership
+  uploadedById   String      @map("uploaded_by_id")
+
+  // Soft delete
+  deletedAt      DateTime?   @map("deleted_at")
+
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  uploadedBy     User        @relation(fields: [uploadedById], references: [id])
+  pageMedia      PageMedia[]
+
+  @@index([type])
+  @@index([status])
+  @@index([hash])
+  @@index([uploadedById])
+  @@index([deletedAt])
+  @@map("media")
+}
+
+// ==================== CMS - SEO ====================
+
+model SeoMeta {
+  id              String    @id @default(cuid())
+
+  // Target entity (polymorphic)
+  entityType      String    @map("entity_type")  // 'page', 'report', 'home'
+  entityId        String?   @map("entity_id")
+
+  // Basic SEO
+  title           String?   @db.VarChar(70)
+  description     String?   @db.VarChar(160)
+  keywords        String[]
+
+  // Open Graph
+  ogTitle         String?   @map("og_title")
+  ogDescription   String?   @map("og_description") @db.Text
+  ogImage         String?   @map("og_image")
+  ogType          String?   @map("og_type") @default("website")
+
+  // Twitter
+  twitterTitle    String?   @map("twitter_title")
+  twitterDescription String? @map("twitter_description") @db.Text
+  twitterImage    String?   @map("twitter_image")
+  twitterCard     String?   @map("twitter_card") @default("summary_large_image")
+
+  // Indexing
+  noIndex         Boolean   @default(false) @map("no_index")
+  noFollow        Boolean   @default(false) @map("no_follow")
+  canonicalUrl    String?   @map("canonical_url")
+
+  // Schema.org JSON-LD
+  schemaMarkup    Json?     @map("schema_markup")
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([entityType, entityId])
+  @@index([entityType])
+  @@map("seo_meta")
+}
+
+model SeoRedirect {
+  id          String    @id @default(cuid())
+
+  fromPath    String    @unique @map("from_path")
+  toPath      String    @map("to_path")
+  statusCode  Int       @default(301) @map("status_code")  // 301, 302, 307, 308
+  isActive    Boolean   @default(true) @map("is_active")
+
+  // Analytics
+  hitCount    Int       @default(0) @map("hit_count")
+  lastHitAt   DateTime? @map("last_hit_at")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@map("seo_redirects")
+}
+
+// ==================== CMS - PAGES ====================
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Page {
+  id          String      @id @default(cuid())
+
+  // URL and identification
+  slug        String      @unique
+  path        String      @unique  // full path like /about/team
+
+  // Content
+  title       String
+  content     String      @db.Text
+  excerpt     String?     @db.Text
+
+  // Status
+  status      PageStatus  @default(DRAFT)
+  publishedAt DateTime?   @map("published_at")
+
+  // Hierarchy
+  parentId    String?     @map("parent_id")
+  sortOrder   Int         @default(0) @map("sort_order")
+
+  // Template
+  template    String      @default("default")
+
+  // Featured image
+  featuredImageId String? @map("featured_image_id")
+
+  // Author
+  authorId    String      @map("author_id")
+
+  // Metadata
+  metadata    Json?
+
+  // Soft delete
+  deletedAt   DateTime?   @map("deleted_at")
+
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  parent      Page?       @relation("PageHierarchy", fields: [parentId], references: [id])
+  children    Page[]      @relation("PageHierarchy")
+  author      User        @relation(fields: [authorId], references: [id])
+  revisions   PageRevision[]
+  pageMedia   PageMedia[]
+
+  @@index([status])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@map("pages")
+}
+
+model PageRevision {
+  id          String    @id @default(cuid())
+  pageId      String    @map("page_id")
+
+  // Snapshot
+  title       String
+  content     String    @db.Text
+  excerpt     String?   @db.Text
+
+  // Version info
+  version     Int
+
+  // Author
+  authorId    String    @map("author_id")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  page        Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@index([pageId])
+  @@index([version])
+  @@map("page_revisions")
+}
+
+model PageMedia {
+  id        String @id @default(cuid())
+  pageId    String @map("page_id")
+  mediaId   String @map("media_id")
+  sortOrder Int    @default(0) @map("sort_order")
+
+  page      Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  media     Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, mediaId])
+  @@map("page_media")
+}
+
+// ==================== CMS - SYSTEM SETTINGS ====================
+
+model SystemSetting {
+  id          String    @id @default(cuid())
+
+  key         String    @unique
+  value       Json
+  type        String    @default("string")  // string, number, boolean, json
+  group       String    @default("general")
+
+  label       String?
+  description String?   @db.Text
+
+  isPublic    Boolean   @default(false) @map("is_public")
+
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  updatedById String?   @map("updated_by_id")
+
+  updatedBy   User?     @relation(fields: [updatedById], references: [id])
+
+  @@index([group])
+  @@index([isPublic])
+  @@map("system_settings")
 }

@@ -211,44 +211,6 @@ services:
       start_period: 300s
 
   # ===========================================================================
-  # WORDPRESS (for plugin development)
-  # ===========================================================================
-  wordpress:
-    image: wordpress:6.4-php8.2-apache
-    container_name: scamnemesis-wordpress
-    environment:
-      - WORDPRESS_DB_HOST=wordpress-db
-      - WORDPRESS_DB_USER=wordpress
-      - WORDPRESS_DB_PASSWORD=${WP_DB_PASSWORD:-wordpress}
-      - WORDPRESS_DB_NAME=wordpress
-    volumes:
-      - ./plugins/scamnemesis-wp:/var/www/html/wp-content/plugins/scamnemesis
-      - wordpress_data:/var/www/html
-    ports:
-      - "8080:80"
-    depends_on:
-      - wordpress-db
-    networks:
-      - scamnemesis
-    profiles:
-      - wordpress
-
-  wordpress-db:
-    image: mysql:8.0
-    container_name: scamnemesis-wordpress-db
-    environment:
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress
-      - MYSQL_PASSWORD=${WP_DB_PASSWORD:-wordpress}
-      - MYSQL_ROOT_PASSWORD=${WP_DB_ROOT_PASSWORD:-rootpassword}
-    volumes:
-      - wordpress_db_data:/var/lib/mysql
-    networks:
-      - scamnemesis
-    profiles:
-      - wordpress
-
-  # ===========================================================================
   # ADMIN TOOLS (optional)
   # ===========================================================================
   pgadmin:
@@ -348,10 +310,6 @@ volumes:
     name: scamnemesis_minio_data
   clamav_data:
     name: scamnemesis_clamav_data
-  wordpress_data:
-    name: scamnemesis_wordpress_data
-  wordpress_db_data:
-    name: scamnemesis_wordpress_db_data
   prometheus_data:
     name: scamnemesis_prometheus_data
   grafana_data:
