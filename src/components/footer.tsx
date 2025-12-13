@@ -1,27 +1,28 @@
 import Link from 'next/link';
-import { Shield, Github, Mail } from 'lucide-react';
+import Image from 'next/image';
+import { Mail } from 'lucide-react';
 
 const footerLinks = {
-  product: [
-    { name: 'Vyhľadávanie', href: '/search' },
-    { name: 'Nahlásiť podvod', href: '/report/new' },
-    { name: 'Štatistiky', href: '/stats' },
-    { name: 'API', href: '/api-docs' },
+  services: [
+    { name: 'Scam Checker', href: '/search' },
+    { name: 'Report Scam', href: '/report/new' },
+    { name: 'Money Recovery', href: '/money-recovery' },
+    { name: 'Verify Service/Product', href: '/verify-serviceproduct' },
+  ],
+  resources: [
+    { name: 'I Was Scammed', href: '/i-was-scammed-need-help' },
+    { name: 'Scam Prevention', href: '/scam-prevention' },
+    { name: 'Training Courses', href: '/training-courses' },
+    { name: 'Scammer Removal', href: '/scammer-removal' },
   ],
   company: [
-    { name: 'O nás', href: '/about' },
-    { name: 'Kontakt', href: '/contact' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact Us', href: '/contact-us' },
+    { name: 'Support Us', href: '/support-us' },
   ],
   legal: [
-    { name: 'Ochrana osobných údajov', href: '/privacy' },
-    { name: 'Podmienky používania', href: '/terms' },
-    { name: 'Cookies', href: '/cookies' },
-  ],
-  support: [
-    { name: 'Často kladené otázky', href: '/faq' },
-    { name: 'Návody', href: '/guides' },
-    { name: 'Podpora', href: '/support' },
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
   ],
 };
 
@@ -33,42 +34,55 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <Shield className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl">Scamnemesis</span>
+              <Image
+                src="/images/logo-scam-blue.png"
+                alt="ScamNemesis"
+                width={40}
+                height={40}
+                className="h-10 w-10"
+              />
+              <span className="font-bold text-xl">ScamNemesis</span>
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Platforma na hlásenie a sledovanie podvodov s využitím umelej inteligencie a pokročilých algoritmov
-              detekcie duplikátov.
+            <p className="text-sm text-muted-foreground max-w-xs mb-4">
+              We help victims of crypto scams and investment frauds. Our team of lawyers, forensic analysts, and ethical hackers provides rapid fraud assistance, scammer investigations, and money recovery support.
             </p>
-            <div className="flex space-x-4 mt-6">
-              <a
-                href="https://github.com/cryptotrust1/Scamnemesis"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </a>
+            <div className="flex items-center space-x-2">
+              <Mail className="h-4 w-4 text-muted-foreground" />
               <a
                 href="mailto:info@scamnemesis.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
               >
-                <Mail className="h-5 w-5" />
-                <span className="sr-only">Email</span>
+                info@scamnemesis.com
               </a>
             </div>
           </div>
 
-          {/* Product */}
+          {/* Services */}
           <div>
-            <h3 className="font-semibold mb-4">Produkt</h3>
+            <h3 className="font-semibold mb-4">Services</h3>
             <ul className="space-y-3">
-              {footerLinks.product.map((link) => (
+              {footerLinks.services.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="font-semibold mb-4">Resources</h3>
+            <ul className="space-y-3">
+              {footerLinks.resources.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -79,30 +93,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-semibold mb-4">Spoločnosť</h3>
+            <h3 className="font-semibold mb-4">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="font-semibold mb-4">Podpora</h3>
-            <ul className="space-y-3">
-              {footerLinks.support.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -115,14 +112,14 @@ export function Footer() {
         {/* Bottom */}
         <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Scamnemesis. Všetky práva vyhradené.
+            © {new Date().getFullYear()} ScamNemesis. All rights reserved.
           </p>
           <div className="flex space-x-6">
             {footerLinks.legal.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
               >
                 {link.name}
               </Link>

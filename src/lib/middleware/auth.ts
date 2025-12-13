@@ -81,7 +81,7 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
 export async function requireAuth(
   request: NextRequest,
   requiredScopes: string[] = []
-): Promise<{ auth: AuthContext } | NextResponse> {
+): Promise<{ auth: AuthContext; userId: string } | NextResponse> {
   const auth = await getAuthContext(request);
 
   if (!auth.user && !auth.apiKey) {
@@ -107,7 +107,11 @@ export async function requireAuth(
     }
   }
 
-  return { auth };
+  // Extract userId from either user token or API key
+  // We know at least one of user or apiKey exists due to the check above
+  const userId = (auth.user?.sub || auth.apiKey?.userId) as string;
+
+  return { auth, userId };
 }
 
 /**

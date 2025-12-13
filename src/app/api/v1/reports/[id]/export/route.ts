@@ -368,10 +368,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           { publicId: id },
         ],
         // Only allow export of approved reports for non-admins
-        ...(auth?.role !== 'ADMIN' && auth?.role !== 'SUPER_ADMIN' ? { status: 'APPROVED' } : {}),
+        ...(!(auth && 'auth' in auth && auth.auth.scopes.some(s => s.startsWith('admin:'))) ? { status: 'APPROVED' } : {}),
       },
       include: {
-        perpetrator: true,
+        perpetrators: true,
         financialInfo: true,
         cryptoInfo: true,
         digitalFootprint: true,
