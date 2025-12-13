@@ -45,15 +45,27 @@ test.describe('Report Form', () => {
 
     if (await clickableElement.count() > 0 && await clickableElement.isVisible()) {
       await clickableElement.click();
-      await page.waitForLoadState('domcontentloaded');
+      // Wait for selection to register
+      await page.waitForTimeout(500);
     }
 
-    // Look for next/continue button
-    const nextButton = page.locator('button').filter({ hasText: /next|dalej|continue|pokračovat|ďalej/i }).first();
+    // Use getByRole for more resilient button selection
+    // Use .last() to get the navigation next button (avoid back button)
+    const nextButton = page.getByRole('button', { name: /ďalej|next|dalej|continue|pokračovat/i });
 
-    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
-      await nextButton.click();
-      await page.waitForLoadState('domcontentloaded');
+    if (await nextButton.count() > 0) {
+      // Wait for button to be ready and stable
+      await nextButton.first().waitFor({ state: 'visible', timeout: 5000 });
+
+      // Click and wait for new content to appear
+      await nextButton.first().click();
+
+      // Wait for DOM to stabilize after React re-render
+      await page.waitForTimeout(300);
+
+      // Verify new step content loaded
+      const stepHeading = page.locator('main h2').first();
+      await stepHeading.waitFor({ state: 'visible', timeout: 10000 });
     }
   });
 

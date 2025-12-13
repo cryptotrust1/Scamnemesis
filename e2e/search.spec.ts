@@ -15,8 +15,8 @@ test.describe('Search Page', () => {
     // "Vyhľadajte meno, telefón, email, IBAN, web..."
     const searchInput = page.locator('input[placeholder*="Vyhľadajte"], input[placeholder*="meno"], input[placeholder*="Search"]').first();
 
-    // Wait for page content to load
-    await expect(page.locator('main, body')).toBeVisible({ timeout: 10000 });
+    // Wait for page content to load - use specific selector to avoid strict mode violation
+    await expect(page.getByRole('main')).toBeVisible({ timeout: 10000 });
 
     // Check if search input exists (may not exist if page structure is different)
     if (await searchInput.count() > 0) {
@@ -72,8 +72,8 @@ test.describe('Search Page', () => {
   });
 
   test('should be accessible', async ({ page }) => {
-    // Check page has basic accessibility
-    const mainContent = page.locator('main, body').first();
+    // Check page has basic accessibility - use getByRole for accessibility testing
+    const mainContent = page.getByRole('main');
     await expect(mainContent).toBeVisible();
 
     // Check some interactive elements exist
