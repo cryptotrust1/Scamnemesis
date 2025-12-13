@@ -233,4 +233,50 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ---
 
-**Posledný update:** Claude Opus 4, 11. December 2024 (Session 5)
+## ⚠️ IGNOROVANÉ KOMPONENTY (13. December 2024)
+
+**Tieto komponenty NERIEŠIME:**
+- ❌ **WordPress (wp.scamnemesis.com)** - nebudeme nasadzovať
+- ❌ **scamnemesis.sk doména** - používame len scamnemesis.com
+- ❌ **WordPress plugin** - ignorovať
+
+**Produkčná URL:** https://scamnemesis.com (funguje)
+
+---
+
+## 📋 CHÝBAJÚCE FUNKCIE (13. December 2024)
+
+### 🔴 KRITICKÉ (potrebné pre MVP):
+
+| Funkcia | Popis | Priorita |
+|---------|-------|----------|
+| **Database Seeding** | Databáza je prázdna, treba seed dáta | 🔴 Vysoká |
+| **API integrácia** | Frontend používa mock dáta, treba napojiť na reálne API | 🔴 Vysoká |
+| **CAPTCHA** | Ochrana formulárov pred botmi (reCAPTCHA v3) | 🔴 Vysoká |
+| **Password Reset** | Zabudnuté heslo - resetovanie cez email | 🔴 Vysoká |
+| **Email verifikácia** | Overenie emailovej adresy pri registrácii | 🔴 Vysoká |
+
+### 🟠 DÔLEŽITÉ (potrebné pre v1):
+
+| Funkcia | Popis | Priorita |
+|---------|-------|----------|
+| **Image Pipeline** | Thumbnail generovanie, pHash výpočet | 🟠 Stredná |
+| **Face Detection** | Detekcia tvárí v obrázkoch (CPU) | 🟠 Stredná |
+| **OCR Pipeline** | Extrakcia textu z obrázkov/PDF (Tesseract) | 🟠 Stredná |
+| **Background Workers** | Async spracovanie (duplicate detection worker) | 🟠 Stredná |
+| **Real-time Notifications** | WebSocket notifikácie | 🟠 Stredná |
+| **PDF Export** | Generovanie PDF reportov (implementované ale neotestované) | 🟠 Stredná |
+
+### 🟡 NÍZKA PRIORITA (pre v2):
+
+| Funkcia | Popis | Priorita |
+|---------|-------|----------|
+| **Kubernetes** | Helm charty, autoscaling | 🟡 Nízka |
+| **GPU Workers** | Face embedding, advanced ML | 🟡 Nízka |
+| **Advanced Crawlers** | 50+ news sources, Yandex search | 🟡 Nízka |
+| **Multi-region** | CDN, read replicas | 🟡 Nízka |
+| **Mobile App** | React Native/Flutter aplikácia | 🟡 Nízka |
+
+---
+
+**Posledný update:** Claude Opus 4, 13. December 2024 (Session Review)
