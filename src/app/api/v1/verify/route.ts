@@ -91,10 +91,10 @@ export async function GET(request: NextRequest) {
 
     switch (detectedType) {
       case 'email':
-        where.perpetrator = { emailNormalized: normalizedIdentifier };
+        where.perpetrators = { some: { emailNormalized: normalizedIdentifier } };
         break;
       case 'phone':
-        where.perpetrator = { phoneNormalized: normalizedIdentifier };
+        where.perpetrators = { some: { phoneNormalized: normalizedIdentifier } };
         break;
       case 'iban':
         where.financialInfo = { ibanNormalized: normalizedIdentifier };
@@ -108,8 +108,8 @@ export async function GET(request: NextRequest) {
       default:
         // For unknown types, search across multiple fields
         where.OR = [
-          { perpetrator: { emailNormalized: normalizedIdentifier } },
-          { perpetrator: { phoneNormalized: normalizedIdentifier } },
+          { perpetrators: { some: { emailNormalized: normalizedIdentifier } } },
+          { perpetrators: { some: { phoneNormalized: normalizedIdentifier } } },
           { financialInfo: { ibanNormalized: normalizedIdentifier } },
           { cryptoInfo: { walletNormalized: normalizedIdentifier } },
           { digitalFootprint: { domainName: normalizedIdentifier } },

@@ -1,7 +1,7 @@
 // UI Components barrel export
 
-export { Button, type ButtonProps } from './Button';
-export { Input, type InputProps } from './Input';
-export { Card, CardHeader, CardBody, CardFooter, type CardProps, type CardHeaderProps, type CardBodyProps, type CardFooterProps } from './Card';
-export { Badge, type BadgeProps } from './Badge';
-export { Alert, type AlertProps } from './Alert';
+export { Button, type ButtonProps, buttonVariants } from './button';
+export { Input, type InputProps } from './input';
+export { Card, CardHeader, CardBody, CardFooter, CardContent, CardTitle, CardDescription, type CardProps, type CardHeaderProps, type CardBodyProps, type CardFooterProps, type CardContentProps, type CardTitleProps, type CardDescriptionProps } from './card';
+export { Badge, type BadgeProps } from './badge';
+export { Alert, type AlertProps } from './alert';

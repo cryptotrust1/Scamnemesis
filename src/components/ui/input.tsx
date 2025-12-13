@@ -1,22 +1,81 @@
-import * as React from 'react';
+'use client';
 
-import { cn } from '@/lib/utils';
+import React, { forwardRef } from 'react';
+import styles from './Input.module.css';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  hint?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
+}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => {
-  return (
-    <input
-      type={type}
-      className={cn(
-        'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-        className
-      )}
-      ref={ref}
-      {...props}
-    />
-  );
-});
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      label,
+      error,
+      hint,
+      leftIcon,
+      rightIcon,
+      fullWidth = false,
+      className = '',
+      id,
+      ...props
+    },
+    ref
+  ) => {
+    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+
+    const wrapperClasses = [
+      styles.wrapper,
+      fullWidth ? styles.fullWidth : '',
+      error ? styles.hasError : '',
+      className,
+    ].filter(Boolean).join(' ');
+
+    const inputClasses = [
+      styles.input,
+      leftIcon ? styles.hasLeftIcon : '',
+      rightIcon ? styles.hasRightIcon : '',
+    ].filter(Boolean).join(' ');
+
+    return (
+      <div className={wrapperClasses}>
+        {label && (
+          <label htmlFor={inputId} className={styles.label}>
+            {label}
+          </label>
+        )}
+        <div className={styles.inputWrapper}>
+          {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
+          <input
+            ref={ref}
+            id={inputId}
+            className={inputClasses}
+            aria-invalid={error ? 'true' : 'false'}
+            aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
+            {...props}
+          />
+          {rightIcon && <span className={styles.rightIcon}>{rightIcon}</span>}
+        </div>
+        {error && (
+          <span id={`${inputId}-error`} className={styles.error} role="alert">
+            {error}
+          </span>
+        )}
+        {hint && !error && (
+          <span id={`${inputId}-hint`} className={styles.hint}>
+            {hint}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+
 Input.displayName = 'Input';
 
-export { Input };
+export default Input;

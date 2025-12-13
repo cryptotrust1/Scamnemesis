@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       // Total amount lost
       prisma.report.aggregate({
         where: { status: 'APPROVED' },
-        _sum: { financialLoss: true },
+        _sum: { financialLossAmount: true },
       }),
 
       // Reports this month
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
 
     const stats = {
       total_reports: totalReports,
-      total_amount_lost: Number(totalAmountResult._sum.financialLoss || 0),
+      total_amount_lost: Number(totalAmountResult._sum.financialLossAmount || 0),
       users_protected: uniqueReporters.length * 10, // Estimate: each report protects ~10 potential victims
       reports_this_month: reportsThisMonth,
       top_fraud_types: fraudTypeCounts.map((f) => ({

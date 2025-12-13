@@ -200,7 +200,13 @@ export default function NewReportPage() {
       // Add form fields
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          submitData.append(key, typeof value === 'boolean' ? String(value) : value);
+          if (Array.isArray(value)) {
+            submitData.append(key, JSON.stringify(value));
+          } else if (typeof value === 'boolean' || typeof value === 'number') {
+            submitData.append(key, String(value));
+          } else if (typeof value === 'string') {
+            submitData.append(key, value);
+          }
         }
       });
 

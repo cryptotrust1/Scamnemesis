@@ -228,7 +228,7 @@ function generateReportHTML(report: any): string {
     </div>
   </div>
 
-  <h1>${report.title || 'Bez nazvu'}</h1>
+  <h1>${report.summary || 'Bez nazvu'}</h1>
 
   <div style="margin-top: 10px;">
     <span class="badge badge-status">${statusLabels[report.status] || report.status}</span>
@@ -252,40 +252,40 @@ function generateReportHTML(report: any): string {
     </div>
     <div class="info-item">
       <label>Vyska skody</label>
-      <div class="value">${formatAmount(report.financialLoss, report.currency)}</div>
+      <div class="value">${formatAmount(Number(report.financialLossAmount), report.financialLossCurrency)}</div>
     </div>
   </div>
 
   <h2>Popis incidentu</h2>
   <div class="description">${report.description || 'Bez popisu'}</div>
 
-  ${report.perpetrator ? `
+  ${report.perpetrators[0] ? `
   <h2>Informacie o pachatelovi</h2>
   <div class="perpetrator-card">
     <div class="warning">VAROVANIE: Tieto udaje mozu byt zneuzite. Overujte informacie z viacerych zdrojov.</div>
     <div class="perpetrator-grid">
-      ${report.perpetrator.fullName ? `
+      ${report.perpetrators[0].fullName ? `
       <div class="perpetrator-item">
         <label>Meno</label>
-        <div class="value">${report.perpetrator.fullName}</div>
+        <div class="value">${report.perpetrators[0].fullName}</div>
       </div>
       ` : ''}
-      ${report.perpetrator.phone ? `
+      ${report.perpetrators[0].phone ? `
       <div class="perpetrator-item">
         <label>Telefon</label>
-        <div class="value">${report.perpetrator.phone}</div>
+        <div class="value">${report.perpetrators[0].phone}</div>
       </div>
       ` : ''}
-      ${report.perpetrator.email ? `
+      ${report.perpetrators[0].email ? `
       <div class="perpetrator-item">
         <label>Email</label>
-        <div class="value">${report.perpetrator.email}</div>
+        <div class="value">${report.perpetrators[0].email}</div>
       </div>
       ` : ''}
-      ${report.perpetrator.website ? `
+      ${report.digitalFootprint?.websiteUrl ? `
       <div class="perpetrator-item">
         <label>Webova stranka</label>
-        <div class="value">${report.perpetrator.website}</div>
+        <div class="value">${report.digitalFootprint.websiteUrl}</div>
       </div>
       ` : ''}
     </div>
@@ -419,9 +419,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     // JSON format for programmatic access
     if (format === 'json') {
+      const perpetrator = report.perpetrators[0];
       return NextResponse.json({
         id: report.publicId,
-        title: report.title,
+        summary: report.summary,
         description: report.description,
         fraudType: report.fraudType,
         status: report.status,
@@ -432,13 +433,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           city: report.locationCity,
           country: report.locationCountry,
         },
-        financialLoss: report.financialLoss,
-        currency: report.currency,
-        perpetrator: report.perpetrator ? {
-          name: report.perpetrator.fullName,
-          phone: report.perpetrator.phone,
-          email: report.perpetrator.email,
-          website: report.perpetrator.website,
+        financialLoss: report.financialLossAmount ? Number(report.financialLossAmount) : null,
+        currency: report.financialLossCurrency,
+        perpetrator: perpetrator ? {
+          name: perpetrator.fullName,
+          phone: perpetrator.phone,
+          email: perpetrator.email,
+          website: report.digitalFootprint?.websiteUrl,
         } : null,
       });
     }

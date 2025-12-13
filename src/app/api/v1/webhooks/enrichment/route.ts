@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
           await tx.perpetrator.update({
             where: { id: data.perpetrator_id },
             data: {
-              enrichedData: updatedEnrichedData,
+              enrichedData: updatedEnrichedData as object,
             },
           });
         }

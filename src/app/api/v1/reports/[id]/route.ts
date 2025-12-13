@@ -83,6 +83,9 @@ export async function GET(
     const auth = await getAuthContext(request);
     const isAdmin = auth.scopes.some(s => s.startsWith('admin:'));
 
+    // Determine user role for masking
+    const userRole = isAdmin ? 'ADMIN' : (auth.user ? 'STANDARD' : 'BASIC');
+
     // Find the report
     const report = await prisma.report.findFirst({
       where: {
@@ -265,7 +268,8 @@ export async function POST(
 
   // Get authentication context
   const auth = await getAuthContext(request);
-  if (!auth || !auth.userId) {
+  const userId = auth.user?.sub || auth.apiKey?.userId;
+  if (!userId) {
     return NextResponse.json(
       { error: 'unauthorized', message: 'Authentication required to comment' },
       { status: 401 }
@@ -305,7 +309,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         reportId: report.id,
-        userId: auth.userId,
+        userId: userId,
         content: validated.data.content,
         status: 'PENDING_MODERATION',
       },
