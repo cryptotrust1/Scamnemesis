@@ -16,8 +16,11 @@ const S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'minioadmin';
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-const CLAMAV_HOST = process.env.CLAMAV_HOST || 'localhost';
-const CLAMAV_PORT = parseInt(process.env.CLAMAV_PORT || '3310');
+// ClamAV configuration (reserved for future virus scanning feature)
+const _CLAMAV_HOST = process.env.CLAMAV_HOST || 'localhost';
+const _CLAMAV_PORT = parseInt(process.env.CLAMAV_PORT || '3310');
+void _CLAMAV_HOST;
+void _CLAMAV_PORT;
 
 // Allowed file types
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];

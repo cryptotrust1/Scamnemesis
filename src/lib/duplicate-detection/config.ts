@@ -76,11 +76,29 @@ export function getThresholds(
   }
 }
 
+/** Database threshold record */
+interface ThresholdRecord {
+  levenshteinMax: number;
+  jaroWinklerMin: number;
+  ngramJaccardMin: number;
+  vectorSimilarityMin: number;
+  imageHashDistanceMax: number;
+  overallConfidenceMin: number;
+}
+
+/** Database client interface for threshold loading */
+interface ThresholdDbClient {
+  duplicateThreshold: {
+    findUnique: (args: { where: { id: string } }) => Promise<ThresholdRecord | null>;
+    findFirst: (args: { where: { isDefault: boolean } }) => Promise<ThresholdRecord | null>;
+  };
+}
+
 /**
  * Load thresholds from database (for A/B testing)
  */
 export async function loadThresholdsFromDB(
-  db: any,
+  db: ThresholdDbClient,
   configId?: string
 ): Promise<DuplicateThresholds> {
   try {

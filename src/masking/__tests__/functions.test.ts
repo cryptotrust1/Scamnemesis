@@ -9,7 +9,7 @@ import {
   maskEmail,
   maskEmailPartial,
   maskPhone,
-  maskPhonePartial,
+  maskPhonePartial as _maskPhonePartial,
   maskIBAN,
   maskIP,
   maskIPv4,
@@ -21,6 +21,9 @@ import {
   maskDate,
   maskAmount,
 } from '../functions';
+
+// Unused import aliased with underscore for future use
+void _maskPhonePartial;
 import { Role, MaskingOptions, Address } from '../types';
 
 describe('Name Masking', () => {
