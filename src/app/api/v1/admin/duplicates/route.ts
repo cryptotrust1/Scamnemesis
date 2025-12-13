@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const QuerySchema = z.object({
   status: z.enum(['pending', 'resolved', 'all']).default('pending'),
   limit: z.coerce.number().int().min(1).max(100).default(20),

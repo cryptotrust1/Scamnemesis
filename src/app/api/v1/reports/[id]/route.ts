@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { getAuthContext } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 // Helper function to mask sensitive data based on user role
 function maskField(value: string | null, fieldType: 'email' | 'phone' | 'iban' | 'name' | 'wallet', userRole: string): string | null {
   if (!value) return null;

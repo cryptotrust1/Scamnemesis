@@ -10,6 +10,8 @@ import { z } from 'zod';
 import { requireAuth } from '@/lib/middleware/auth';
 import { mediaService } from '@/lib/services/media';
 
+export const dynamic = 'force-dynamic';
+
 const UpdateMediaSchema = z.object({
   title: z.string().optional(),
   altText: z.string().optional(),

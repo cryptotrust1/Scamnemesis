@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const ApproveBodySchema = z.object({
   masking_overrides: z.record(z.any()).optional(),
   admin_notes: z.string().optional(),

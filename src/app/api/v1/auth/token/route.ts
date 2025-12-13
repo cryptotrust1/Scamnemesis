@@ -14,6 +14,8 @@ import {
   getScopesForRole,
 } from '@/lib/auth/jwt';
 
+export const dynamic = 'force-dynamic';
+
 // Request schemas
 const passwordLoginSchema = z.object({
   grant_type: z.literal('password'),

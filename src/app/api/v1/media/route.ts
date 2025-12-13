@@ -10,6 +10,8 @@ import { requireAuth } from '@/lib/middleware/auth';
 import { mediaService } from '@/lib/services/media';
 import { MediaType, MediaStatus } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 // Schema for creating presigned upload
 const CreatePresignedSchema = z.object({
   filename: z.string().min(1).max(255),

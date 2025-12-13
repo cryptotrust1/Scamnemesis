@@ -9,6 +9,8 @@ import { z } from 'zod';
 import prisma from '@/lib/db';
 import { requireRateLimit } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const verifyParamsSchema = z.object({
   identifier: z.string().min(2).max(500),
   type: z.enum(['auto', 'email', 'phone', 'wallet', 'iban', 'domain']).default('auto'),

@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { requireRateLimit } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 interface StatsCache {
   data: {
     total_reports: number;

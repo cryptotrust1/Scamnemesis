@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const FraudTypeEnum = z.enum([
   'romance_scam', 'investment_fraud', 'phishing', 'identity_theft',
   'online_shopping_fraud', 'tech_support_scam', 'lottery_prize_scam',
