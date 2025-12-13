@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -102,6 +102,30 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -116,36 +140,66 @@ jobs:
           echo "PWD: $(pwd)"
           echo "Node: $(node --version)"
           echo "pnpm: $(pnpm --version)"
+          echo "Memory limit: $NODE_OPTIONS"
           df -h .
           free -m 2>/dev/null || echo "free not available"
-          echo "=== Environment ==="
-          env | grep -E "SKIP_ENV|NODE_ENV|DATABASE" || true
-          echo "=== Starting Next.js build ==="
+          echo ""
+          echo "=== Environment Variables ==="
+          env | grep -E "SKIP_ENV|NODE_ENV|DATABASE|NODE_OPTIONS" || true
+          echo ""
+          echo "=== Starting Next.js build with optimizations ==="
           set +e
-          pnpm build 2>&1 | tee build.log
+          pnpm build:ci 2>&1 | tee build.log
           BUILD_STATUS=${PIPESTATUS[0]}
           set -e
+          echo ""
           echo "=== Build exit code: $BUILD_STATUS ==="
           echo "=== Current directory contents ==="
           ls -la
+          echo ""
           echo "=== Checking .next directory ==="
           if [ -d ".next" ]; then
-            echo "SUCCESS: .next directory exists"
-            ls -la .next | head -20
+            echo "✅ SUCCESS: .next directory exists"
+            echo "Directory structure:"
+            ls -la .next | head -30
+            echo ""
+            echo "Size breakdown:"
             du -sh .next
+            du -sh .next/* 2>/dev/null || true
+            echo ""
+            echo "Standalone output check:"
+            if [ -d ".next/standalone" ]; then
+              echo "✅ Standalone output created"
+              ls -la .next/standalone | head -20
+            else
+              echo "⚠️  No standalone output (this is OK for artifact upload)"
+            fi
           else
-            echo "FAILURE: .next directory does NOT exist!"
-            echo "=== Last 50 lines of build log ==="
-            tail -50 build.log
+            echo "❌ FAILURE: .next directory does NOT exist!"
+            echo ""
+            echo "=== Build log (last 100 lines) ==="
+            tail -100 build.log
+            echo ""
+            echo "=== Disk space ==="
+            df -h
+            echo ""
+            echo "=== Process list at failure ==="
+            ps aux | head -20
             exit 1
           fi
           if [ "$BUILD_STATUS" -ne 0 ]; then
-            echo "Build failed with status $BUILD_STATUS"
+            echo "❌ Build failed with status $BUILD_STATUS"
             exit $BUILD_STATUS
           fi
+          echo ""
+          echo "✅ Build completed successfully!"
         env:
+          # Increase Node.js memory limit for large builds
+          NODE_OPTIONS: "--max-old-space-size=4096"
+          # Skip environment validation in CI
           SKIP_ENV_VALIDATION: "true"
           NODE_ENV: "production"
+          # Mock environment variables for build
           DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
           NEXTAUTH_SECRET: "mock-secret-for-ci-build-minimum-32-characters"
           NEXTAUTH_URL: "http://localhost:3000"
@@ -168,6 +222,7 @@ jobs:
           echo "=== Final verification ==="
           ls -la
           test -d .next || { echo "FATAL: .next directory missing!"; exit 1; }
+          echo "Build output verified successfully"
           ls -la .next
           du -sh .next
 
@@ -175,7 +230,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: .next
+          path: |
+            .next
+            !.next/cache
+          include-hidden-files: true
           retention-days: 1
           if-no-files-found: error
 
@@ -214,7 +272,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -271,7 +329,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
