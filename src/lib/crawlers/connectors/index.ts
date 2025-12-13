@@ -16,10 +16,10 @@ export { RSSConnector, NEWS_SOURCE_CONFIGS } from './RSSConnector';
 
 // Register connectors with factory
 import { ConnectorFactory } from './BaseConnector';
-import { OFACConnector } from './OFACConnector';
-import { EUSanctionsConnector } from './EUSanctionsConnector';
-import { InterpolConnector } from './InterpolConnector';
-import { RSSConnector } from './RSSConnector';
+import { OFACConnector, OFAC_DEFAULT_CONFIG } from './OFACConnector';
+import { EUSanctionsConnector, EU_SANCTIONS_DEFAULT_CONFIG } from './EUSanctionsConnector';
+import { InterpolConnector, INTERPOL_DEFAULT_CONFIG } from './InterpolConnector';
+import { RSSConnector, NEWS_SOURCE_CONFIGS } from './RSSConnector';
 
 // Register all connector types
 ConnectorFactory.register('xml', OFACConnector);
@@ -41,9 +41,9 @@ export function registerConnectors(): void {
 // All default configurations
 export const ALL_CONNECTOR_CONFIGS = {
   sanctions: [
-    { ...require('./OFACConnector').OFAC_DEFAULT_CONFIG },
-    { ...require('./EUSanctionsConnector').EU_SANCTIONS_DEFAULT_CONFIG },
-    { ...require('./InterpolConnector').INTERPOL_DEFAULT_CONFIG },
+    { ...OFAC_DEFAULT_CONFIG },
+    { ...EU_SANCTIONS_DEFAULT_CONFIG },
+    { ...INTERPOL_DEFAULT_CONFIG },
   ],
-  news: require('./RSSConnector').NEWS_SOURCE_CONFIGS,
+  news: NEWS_SOURCE_CONFIGS,
 };
