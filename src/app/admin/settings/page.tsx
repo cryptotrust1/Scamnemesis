@@ -6,7 +6,6 @@ import {
   Bell,
   Shield,
   Database,
-  Mail,
   Globe,
   Key,
   Save,

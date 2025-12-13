@@ -79,7 +79,7 @@ const pendingActions = [
 ];
 
 export default function AdminDashboard() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simulate loading
