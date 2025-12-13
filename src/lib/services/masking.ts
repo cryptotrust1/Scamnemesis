@@ -93,9 +93,9 @@ interface PrismaReport {
   summary: string;
   description?: string | null;
   incidentDate?: Date | null;
-  financialLossAmount?: any;
+  financialLossAmount?: unknown;
   financialLossCurrency?: string;
-  location?: any;
+  location?: unknown;
   locationCountry?: string | null;
   locationCity?: string | null;
   publishedAt?: Date | null;
@@ -162,10 +162,33 @@ interface CommentData {
   user?: { displayName?: string | null } | null;
 }
 
+/** Masked report type */
+export interface MaskedReport {
+  id: string;
+  public_id: string;
+  status: string;
+  fraud_type?: string;
+  severity?: string | null;
+  summary: string;
+  description?: string | null;
+  incident_date?: string | null;
+  financial_loss?: { amount: unknown; currency?: string } | null;
+  location?: { country?: string | null; city?: string | null } | null;
+  perpetrator?: Record<string, unknown> | null;
+  digital_footprint?: Record<string, unknown> | null;
+  financial?: Record<string, unknown> | null;
+  crypto?: Record<string, unknown> | null;
+  evidence?: Array<{ id: string; type?: string; thumbnail_url?: string | null; description?: string | null }>;
+  comments?: Array<{ id: string; content: string; author: string; created_at: string }>;
+  published_at?: string | null;
+  created_at: string;
+  comment_count: number;
+}
+
 /**
  * Apply masking to a Prisma report based on user role
  */
-export function maskReport(report: PrismaReport, userRole: string): any {
+export function maskReport(report: PrismaReport, userRole: string): MaskedReport {
   const role = toMaskingRole(userRole);
   const perpetrator = report.perpetrators?.[0];
 
@@ -260,7 +283,7 @@ export function maskReport(report: PrismaReport, userRole: string): any {
 /**
  * Apply masking to multiple reports
  */
-export function maskReports(reports: PrismaReport[], userRole: string): any[] {
+export function maskReports(reports: PrismaReport[], userRole: string): MaskedReport[] {
   return reports.map(report => maskReport(report, userRole));
 }
 

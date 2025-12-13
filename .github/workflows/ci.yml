@@ -111,19 +111,43 @@ jobs:
 
       - name: Build application
         run: |
-          echo "=== Starting build with SKIP_ENV_VALIDATION=true ==="
-          pnpm build
+          set -x
+          echo "=== Starting build ==="
+          echo "Node version: $(node --version)"
+          echo "pnpm version: $(pnpm --version)"
+          echo "SKIP_ENV_VALIDATION=$SKIP_ENV_VALIDATION"
+          pnpm build || { echo "Build failed with exit code $?"; exit 1; }
           echo "=== Build completed ==="
           echo "=== Checking .next directory ==="
-          ls -la .next || echo "ERROR: .next directory does not exist!"
+          ls -la .next || { echo "ERROR: .next directory does not exist!"; exit 1; }
           ls -la .next/static || echo "WARNING: .next/static does not exist"
           du -sh .next || echo "ERROR: Cannot get .next size"
         env:
-          SKIP_ENV_VALIDATION: true
-          # Minimal mock env vars for build
+          SKIP_ENV_VALIDATION: "true"
+          NODE_ENV: production
+          # Database
           DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
-          NEXTAUTH_SECRET: "mock-secret-for-ci-build"
+          # Auth
+          NEXTAUTH_SECRET: "mock-secret-for-ci-build-minimum-32-characters"
           NEXTAUTH_URL: "http://localhost:3000"
+          # JWT (must be 32+ chars)
+          JWT_SECRET: "mock-jwt-secret-key-for-ci-builds-minimum-32-characters"
+          JWT_REFRESH_SECRET: "mock-refresh-secret-key-for-ci-builds-minimum-32-chars"
+          # Redis
+          REDIS_URL: "redis://localhost:6379"
+          # S3/MinIO
+          S3_ENDPOINT: "http://localhost:9000"
+          S3_BUCKET: "mock-bucket"
+          S3_ACCESS_KEY: "mock-access-key"
+          S3_SECRET_KEY: "mock-secret-key"
+          S3_REGION: "us-east-1"
+          # Typesense
+          TYPESENSE_HOST: "localhost"
+          TYPESENSE_PORT: "8108"
+          TYPESENSE_PROTOCOL: "http"
+          TYPESENSE_API_KEY: "mock-typesense-key"
+          # ML Service
+          ML_SERVICE_URL: "http://localhost:8000"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
