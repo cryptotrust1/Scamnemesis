@@ -110,7 +110,7 @@ export default function AdminLayout({
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href ||
-              (item.href !== '/admin' && pathname.startsWith(item.href));
+              (item.href !== '/admin' && pathname?.startsWith(item.href));
 
             return (
               <Link
@@ -170,7 +170,7 @@ export default function AdminLayout({
           <h1 className="text-lg font-semibold">
             {sidebarItems.find((item) =>
               pathname === item.href ||
-              (item.href !== '/admin' && pathname.startsWith(item.href))
+              (item.href !== '/admin' && pathname?.startsWith(item.href))
             )?.title || 'Admin'}
           </h1>
           <div className="flex items-center gap-4">

@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 export default function ReportSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const reportId = searchParams.get('id');
+  const reportId = searchParams?.get('id');
   const [copied, setCopied] = useState(false);
 
   // Redirect if no report ID
