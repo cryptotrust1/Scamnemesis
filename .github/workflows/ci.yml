@@ -110,44 +110,66 @@ jobs:
         run: pnpm prisma generate
 
       - name: Build application
+        shell: bash
         run: |
-          set -x
-          echo "=== Starting build ==="
-          echo "Node version: $(node --version)"
-          echo "pnpm version: $(pnpm --version)"
-          echo "SKIP_ENV_VALIDATION=$SKIP_ENV_VALIDATION"
-          pnpm build || { echo "Build failed with exit code $?"; exit 1; }
-          echo "=== Build completed ==="
+          echo "=== System Info ==="
+          echo "PWD: $(pwd)"
+          echo "Node: $(node --version)"
+          echo "pnpm: $(pnpm --version)"
+          df -h .
+          free -m 2>/dev/null || echo "free not available"
+          echo "=== Environment ==="
+          env | grep -E "SKIP_ENV|NODE_ENV|DATABASE" || true
+          echo "=== Starting Next.js build ==="
+          set +e
+          pnpm build 2>&1 | tee build.log
+          BUILD_STATUS=${PIPESTATUS[0]}
+          set -e
+          echo "=== Build exit code: $BUILD_STATUS ==="
+          echo "=== Current directory contents ==="
+          ls -la
           echo "=== Checking .next directory ==="
-          ls -la .next || { echo "ERROR: .next directory does not exist!"; exit 1; }
-          ls -la .next/static || echo "WARNING: .next/static does not exist"
-          du -sh .next || echo "ERROR: Cannot get .next size"
+          if [ -d ".next" ]; then
+            echo "SUCCESS: .next directory exists"
+            ls -la .next | head -20
+            du -sh .next
+          else
+            echo "FAILURE: .next directory does NOT exist!"
+            echo "=== Last 50 lines of build log ==="
+            tail -50 build.log
+            exit 1
+          fi
+          if [ "$BUILD_STATUS" -ne 0 ]; then
+            echo "Build failed with status $BUILD_STATUS"
+            exit $BUILD_STATUS
+          fi
         env:
           SKIP_ENV_VALIDATION: "true"
-          NODE_ENV: production
-          # Database
+          NODE_ENV: "production"
           DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
-          # Auth
           NEXTAUTH_SECRET: "mock-secret-for-ci-build-minimum-32-characters"
           NEXTAUTH_URL: "http://localhost:3000"
-          # JWT (must be 32+ chars)
           JWT_SECRET: "mock-jwt-secret-key-for-ci-builds-minimum-32-characters"
           JWT_REFRESH_SECRET: "mock-refresh-secret-key-for-ci-builds-minimum-32-chars"
-          # Redis
           REDIS_URL: "redis://localhost:6379"
-          # S3/MinIO
           S3_ENDPOINT: "http://localhost:9000"
           S3_BUCKET: "mock-bucket"
           S3_ACCESS_KEY: "mock-access-key"
           S3_SECRET_KEY: "mock-secret-key"
           S3_REGION: "us-east-1"
-          # Typesense
           TYPESENSE_HOST: "localhost"
           TYPESENSE_PORT: "8108"
           TYPESENSE_PROTOCOL: "http"
           TYPESENSE_API_KEY: "mock-typesense-key"
-          # ML Service
           ML_SERVICE_URL: "http://localhost:8000"
+
+      - name: Verify build output exists
+        run: |
+          echo "=== Final verification ==="
+          ls -la
+          test -d .next || { echo "FATAL: .next directory missing!"; exit 1; }
+          ls -la .next
+          du -sh .next
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
