@@ -13,10 +13,13 @@ RUN apk add --no-cache \
     curl \
     bash
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml ./
 
 # ===========================================================================
 # DEPENDENCIES STAGE - Install all dependencies
@@ -24,7 +27,7 @@ COPY package.json package-lock.json* ./
 FROM base AS dependencies
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # ===========================================================================
 # DEVELOPMENT STAGE - Hot reload support
@@ -38,7 +41,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Expose port
 EXPOSE 3000
@@ -48,7 +51,7 @@ ENV NODE_ENV=development
 ENV PORT=3000
 
 # Start development server
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "dev"]
 
 # ===========================================================================
 # BUILDER STAGE - Build the application
@@ -62,11 +65,11 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Build Next.js application
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+RUN pnpm build
 
 # ===========================================================================
 # PRODUCTION STAGE - Minimal production image
@@ -79,6 +82,9 @@ RUN apk add --no-cache \
     curl \
     bash
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
 WORKDIR /app
 
 # Create non-root user
@@ -87,14 +93,14 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 # Copy necessary files from builder
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json ./package-lock.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Change ownership
 RUN chown -R nextjs:nodejs /app
@@ -115,4 +121,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:3000/api/v1/verify || exit 1
 
 # Start production server
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
