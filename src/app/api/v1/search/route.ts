@@ -9,6 +9,8 @@ import { z } from 'zod';
 import prisma from '@/lib/db';
 import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const searchParamsSchema = z.object({
   q: z.string().min(2).max(500),
   mode: z.enum(['auto', 'exact', 'fuzzy', 'semantic']).default('auto'),

@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const RejectBodySchema = z.object({
   reason: z.string().optional(),
 });

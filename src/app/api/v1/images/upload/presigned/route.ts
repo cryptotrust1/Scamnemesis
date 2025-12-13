@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { requireAuth } from '@/lib/middleware/auth';
 import { randomUUID } from 'crypto';
 
+export const dynamic = 'force-dynamic';
+
 const ALLOWED_CONTENT_TYPES = [
   'image/jpeg',
   'image/png',

@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const SearchQuerySchema = z.object({
   min_similarity: z.coerce.number().min(0.5).max(0.99).default(0.6),
   limit: z.coerce.number().int().min(1).max(50).default(20),

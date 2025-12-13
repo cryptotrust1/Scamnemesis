@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
+export const dynamic = 'force-dynamic';
+
 const MergeBodySchema = z.object({
   primary_report_id: z.string().uuid('Invalid primary report ID'),
   merge_report_ids: z.array(z.string().uuid('Invalid report ID')).optional(),

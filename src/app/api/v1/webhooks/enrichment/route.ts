@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { createHmac, timingSafeEqual } from 'crypto';
 
+export const dynamic = 'force-dynamic';
+
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'dev-webhook-secret';
 
 const EnrichmentWebhookSchema = z.object({

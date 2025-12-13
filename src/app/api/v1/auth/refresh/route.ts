@@ -14,6 +14,8 @@ import {
 } from '@/lib/auth/jwt';
 import { jwtVerify } from 'jose';
 
+export const dynamic = 'force-dynamic';
+
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'default-secret-change-in-production'
 );
