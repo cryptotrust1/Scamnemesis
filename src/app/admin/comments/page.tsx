@@ -143,10 +143,6 @@ export default function AdminCommentsPage() {
   const totalPages = Math.ceil(comments.length / itemsPerPage);
 
   useEffect(() => {
-    filterComments();
-  }, [search, statusFilter, reportedOnly]);
-
-  const filterComments = () => {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -172,7 +168,8 @@ export default function AdminCommentsPage() {
       setCurrentPage(1);
       setIsLoading(false);
     }, 300);
-  };
+  }, [search, statusFilter, reportedOnly]);
+
 
   const getStatusBadge = (status: string) => {
     switch (status) {

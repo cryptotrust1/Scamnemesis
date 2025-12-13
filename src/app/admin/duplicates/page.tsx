@@ -154,10 +154,6 @@ export default function AdminDuplicatesPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    filterDuplicates();
-  }, [statusFilter]);
-
-  const filterDuplicates = () => {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -170,7 +166,8 @@ export default function AdminDuplicatesPage() {
       setDuplicates(filtered);
       setIsLoading(false);
     }, 300);
-  };
+  }, [statusFilter]);
+
 
   const toggleExpanded = (id: string) => {
     setExpandedClusters((prev) => {
