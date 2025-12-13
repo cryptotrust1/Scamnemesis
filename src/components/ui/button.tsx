@@ -1,47 +1,98 @@
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { cva, type VariantProps } from 'class-variance-authority';
+'use client';
 
-import { cn } from '@/lib/utils';
+import React from 'react';
+import styles from './Button.module.css';
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  }
-);
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'default' | 'destructive' | 'link';
+  size?: 'sm' | 'md' | 'lg' | 'icon' | 'default';
+  isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
-  }
-);
-Button.displayName = 'Button';
+// Map additional variants to existing styles
+const variantMap: Record<string, string> = {
+  destructive: 'danger',
+  link: 'ghost',
+};
 
-export { Button, buttonVariants };
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  isLoading = false,
+  leftIcon,
+  rightIcon,
+  fullWidth = false,
+  disabled,
+  className = '',
+  asChild = false,
+  ...props
+}) => {
+  const mappedVariant = variantMap[variant] || variant;
+  const classNames = [
+    styles.button,
+    styles[mappedVariant] || styles.primary,
+    styles[size] || styles.md,
+    fullWidth ? styles.fullWidth : '',
+    isLoading ? styles.loading : '',
+    className,
+  ].filter(Boolean).join(' ');
+
+  // If asChild is true, clone the child element and pass the className
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children as React.ReactElement<{className?: string}>, {
+      className: `${classNames} ${(children as React.ReactElement<{className?: string}>).props.className || ''}`.trim(),
+    });
+  }
+
+  return (
+    <button
+      className={classNames}
+      disabled={disabled || isLoading}
+      {...props}
+    >
+      {isLoading && (
+        <span className={styles.spinner}>
+          <svg
+            className={styles.spinnerIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className={styles.spinnerCircle}
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className={styles.spinnerPath}
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        </span>
+      )}
+      {!isLoading && leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
+      <span className={styles.content}>{children}</span>
+      {!isLoading && rightIcon && <span className={styles.rightIcon}>{rightIcon}</span>}
+    </button>
+  );
+};
+
+// Compatibility helper for shadcn/ui style usage
+export function buttonVariants({ variant = 'primary', size = 'md' }: { variant?: string; size?: string } = {}) {
+  return [
+    styles.button,
+    styles[variant] || styles.primary,
+    styles[size] || styles.md,
+  ].filter(Boolean).join(' ');
+}
+
+export default Button;

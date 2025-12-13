@@ -177,8 +177,8 @@ export async function POST(request: NextRequest) {
             : null,
           summary: data.incident.summary,
           description: data.incident.description,
-          financialLoss: data.incident.financial_loss?.amount,
-          currency: data.incident.financial_loss?.currency || 'EUR',
+          financialLossAmount: data.incident.financial_loss?.amount,
+          financialLossCurrency: data.incident.financial_loss?.currency || 'EUR',
           locationStreet: data.incident.location?.street,
           locationCity: data.incident.location?.city,
           locationPostalCode: data.incident.location?.postal_code,
@@ -418,7 +418,7 @@ export async function GET(request: NextRequest) {
     const reports = await prisma.report.findMany({
       where,
       include: {
-        perpetrator: true,
+        perpetrators: true,
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -432,9 +432,9 @@ export async function GET(request: NextRequest) {
       fraud_type: report.fraudType.toLowerCase(),
       incident_date: report.incidentDate?.toISOString().split('T')[0],
       country: report.locationCountry,
-      perpetrator: report.perpetrator
+      perpetrator: report.perpetrators[0]
         ? {
-            name: report.perpetrator.fullName, // TODO: Apply masking
+            name: report.perpetrators[0].fullName, // TODO: Apply masking
           }
         : null,
       created_at: report.createdAt.toISOString(),

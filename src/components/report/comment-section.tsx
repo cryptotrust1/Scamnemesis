@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import { MessageSquare, ThumbsUp, Flag, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button, Card, Badge } from '@/components/ui';
 import { formatRelativeTime, getInitials } from '@/lib/utils';
 import { toast } from 'sonner';
 

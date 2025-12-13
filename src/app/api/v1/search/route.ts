@@ -28,9 +28,9 @@ interface SearchResult {
   score: number;
   source: 'exact' | 'fuzzy' | 'semantic';
   perpetrator: {
-    name?: string;
-    phone?: string;
-    email?: string;
+    name?: string | null;
+    phone?: string | null;
+    email?: string | null;
   };
   fraud_type: string;
   country?: string;
@@ -121,12 +121,12 @@ async function exactSearch(
     switch (type) {
       case 'email':
         orConditions.push({
-          perpetrator: { emailNormalized: normalizedQuery },
+          perpetrators: { some: { emailNormalized: normalizedQuery } },
         });
         break;
       case 'phone':
         orConditions.push({
-          perpetrator: { phoneNormalized: normalizedQuery },
+          perpetrators: { some: { phoneNormalized: normalizedQuery } },
         });
         break;
       case 'iban':
@@ -162,7 +162,7 @@ async function exactSearch(
     prisma.report.findMany({
       where,
       include: {
-        perpetrator: true,
+        perpetrators: true,
         financialInfo: true,
         cryptoInfo: true,
         digitalFootprint: true,
@@ -178,9 +178,9 @@ async function exactSearch(
     score: 1.0,
     source: 'exact' as const,
     perpetrator: {
-      name: report.perpetrator?.fullName,
-      phone: report.perpetrator?.phone,
-      email: report.perpetrator?.email,
+      name: report.perpetrators[0]?.fullName,
+      phone: report.perpetrators[0]?.phone,
+      email: report.perpetrators[0]?.email,
     },
     fraud_type: report.fraudType.toLowerCase(),
     country: report.locationCountry || undefined,
@@ -204,12 +204,14 @@ async function fuzzySearch(
   // Use PostgreSQL similarity search with trigrams
   const where = {
     status: 'APPROVED' as const,
-    perpetrator: {
-      OR: [
-        { fullNameNormalized: { contains: normalizedQuery } },
-        { nickname: { contains: normalizedQuery, mode: 'insensitive' as const } },
-        { username: { contains: normalizedQuery, mode: 'insensitive' as const } },
-      ],
+    perpetrators: {
+      some: {
+        OR: [
+          { fullNameNormalized: { contains: normalizedQuery } },
+          { nickname: { contains: normalizedQuery, mode: 'insensitive' as const } },
+          { username: { contains: normalizedQuery, mode: 'insensitive' as const } },
+        ],
+      },
     },
     ...filters,
   };
@@ -219,7 +221,7 @@ async function fuzzySearch(
     prisma.report.findMany({
       where,
       include: {
-        perpetrator: true,
+        perpetrators: true,
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -232,13 +234,13 @@ async function fuzzySearch(
     score: 0.8, // TODO: Calculate actual similarity score
     source: 'fuzzy' as const,
     perpetrator: {
-      name: report.perpetrator?.fullName,
+      name: report.perpetrators[0]?.fullName,
     },
     fraud_type: report.fraudType.toLowerCase(),
     country: report.locationCountry || undefined,
     incident_date: report.incidentDate?.toISOString().split('T')[0],
     highlights: {
-      name: report.perpetrator?.fullName ? [report.perpetrator.fullName] : [],
+      name: report.perpetrators[0]?.fullName ? [report.perpetrators[0].fullName] : [],
     },
   }));
 
