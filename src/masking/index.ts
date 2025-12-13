@@ -318,8 +318,8 @@ export class DataMasker {
     fieldName: string,
     value: T | undefined | null,
     userRole: Role,
-    maskingFn: (val: T) => T | string | Record<string, unknown>
-  ): T | string | Record<string, unknown> | undefined {
+    maskingFn: (val: T) => unknown
+  ): unknown {
     if (value === undefined || value === null) {
       return undefined;
     }
