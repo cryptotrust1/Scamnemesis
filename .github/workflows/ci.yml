@@ -110,32 +110,38 @@ jobs:
         run: pnpm prisma generate
 
       - name: Build application
+        shell: bash
         run: |
           echo "=== System Info ==="
           echo "PWD: $(pwd)"
           echo "Node: $(node --version)"
           echo "pnpm: $(pnpm --version)"
           df -h .
-          free -m || true
+          free -m 2>/dev/null || echo "free not available"
           echo "=== Environment ==="
-          echo "SKIP_ENV_VALIDATION=$SKIP_ENV_VALIDATION"
-          echo "NODE_ENV=$NODE_ENV"
-          echo "=== Building ==="
-          pnpm build
-          BUILD_EXIT=$?
-          echo "=== Build exit code: $BUILD_EXIT ==="
-          echo "=== Listing current directory ==="
+          env | grep -E "SKIP_ENV|NODE_ENV|DATABASE" || true
+          echo "=== Starting Next.js build ==="
+          set +e
+          pnpm build 2>&1 | tee build.log
+          BUILD_STATUS=${PIPESTATUS[0]}
+          set -e
+          echo "=== Build exit code: $BUILD_STATUS ==="
+          echo "=== Current directory contents ==="
           ls -la
-          echo "=== Checking .next ==="
+          echo "=== Checking .next directory ==="
           if [ -d ".next" ]; then
-            echo ".next directory exists"
-            ls -la .next
+            echo "SUCCESS: .next directory exists"
+            ls -la .next | head -20
             du -sh .next
           else
-            echo "ERROR: .next directory does NOT exist!"
-            echo "Listing all directories:"
-            find . -maxdepth 2 -type d -name ".next" 2>/dev/null || true
+            echo "FAILURE: .next directory does NOT exist!"
+            echo "=== Last 50 lines of build log ==="
+            tail -50 build.log
             exit 1
+          fi
+          if [ "$BUILD_STATUS" -ne 0 ]; then
+            echo "Build failed with status $BUILD_STATUS"
+            exit $BUILD_STATUS
           fi
         env:
           SKIP_ENV_VALIDATION: "true"
@@ -156,6 +162,14 @@ jobs:
           TYPESENSE_PROTOCOL: "http"
           TYPESENSE_API_KEY: "mock-typesense-key"
           ML_SERVICE_URL: "http://localhost:8000"
+
+      - name: Verify build output exists
+        run: |
+          echo "=== Final verification ==="
+          ls -la
+          test -d .next || { echo "FATAL: .next directory missing!"; exit 1; }
+          ls -la .next
+          du -sh .next
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
