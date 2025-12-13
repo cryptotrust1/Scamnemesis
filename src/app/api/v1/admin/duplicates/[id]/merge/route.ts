@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { Prisma, DuplicateClusterReport, Perpetrator } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 
@@ -56,7 +55,7 @@ export async function POST(
     }
 
     // Verify primary report is in the cluster
-    const clusterReportIds = cluster.reports.map((r: DuplicateClusterReport) => r.reportId);
+    const clusterReportIds = cluster.reports.map((r) => r.reportId);
     if (!clusterReportIds.includes(primary_report_id)) {
       return NextResponse.json(
         { error: 'invalid_primary', message: 'Primary report is not in this cluster' },
@@ -66,13 +65,13 @@ export async function POST(
 
     // Determine which reports to merge
     const reportsToMerge = merge_report_ids
-      ? merge_report_ids.filter((reportId: string) => clusterReportIds.includes(reportId) && reportId !== primary_report_id)
-      : clusterReportIds.filter((reportId: string) => reportId !== primary_report_id);
+      ? merge_report_ids.filter((reportId) => clusterReportIds.includes(reportId) && reportId !== primary_report_id)
+      : clusterReportIds.filter((reportId) => reportId !== primary_report_id);
 
     const now = new Date();
 
     // Perform the merge
-    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const result = await prisma.$transaction(async (tx) => {
       // Get primary report with all details
       const primaryReport = await tx.report.findUnique({
         where: { id: primary_report_id },
@@ -110,7 +109,7 @@ export async function POST(
         // Optionally migrate perpetrators that don't exist in primary
         for (const perpetrator of mergedReport.perpetrators) {
           // Check if similar perpetrator exists
-          const existingPerp = primaryReport.perpetrators.find((p: Perpetrator) =>
+          const existingPerp = primaryReport.perpetrators.find((p) =>
             (p.email && p.email === perpetrator.email) ||
             (p.phone && p.phone === perpetrator.phone) ||
             (p.fullName && p.fullName === perpetrator.fullName)

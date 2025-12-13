@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { DuplicateCluster, DuplicateClusterReport, Report, Perpetrator } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
-
-type ClusterReportWithReport = DuplicateClusterReport & {
-  report: Report & {
-    perpetrators: Pick<Perpetrator, 'id' | 'fullName' | 'email' | 'phone'>[];
-  };
-};
-
-type ClusterWithReports = DuplicateCluster & {
-  reports: ClusterReportWithReport[];
-};
 
 const QuerySchema = z.object({
   status: z.enum(['pending', 'resolved', 'all']).default('pending'),
@@ -82,12 +71,12 @@ export async function GET(request: NextRequest) {
     ]);
 
     return NextResponse.json({
-      clusters: (clusters as ClusterWithReports[]).map((cluster: ClusterWithReports) => ({
+      clusters: clusters.map((cluster) => ({
         id: cluster.id,
         status: cluster.status.toLowerCase(),
         confidence: cluster.confidence,
         match_type: cluster.matchType?.toLowerCase(),
-        reports: cluster.reports.map((clusterReport: ClusterReportWithReport) => ({
+        reports: cluster.reports.map((clusterReport) => ({
           id: clusterReport.report.id,
           fraud_type: clusterReport.report.fraudType?.toLowerCase(),
           summary: clusterReport.report.summary,
@@ -96,7 +85,7 @@ export async function GET(request: NextRequest) {
             amount: Number(clusterReport.report.financialLossAmount),
             currency: clusterReport.report.financialLossCurrency,
           } : null,
-          perpetrators: clusterReport.report.perpetrators.map((p: Pick<Perpetrator, 'id' | 'fullName' | 'email' | 'phone'>) => ({
+          perpetrators: clusterReport.report.perpetrators.map((p) => ({
             id: p.id,
             full_name: p.fullName,
             email: p.email,

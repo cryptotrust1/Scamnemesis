@@ -225,7 +225,7 @@ export default function AdminDuplicatesPage() {
     });
   };
 
-  const handleMerge = (clusterId: string, primaryId: string) => {
+  const handleMerge = (clusterId: string, _primaryId: string) => {
     setDuplicates(duplicates.map(d =>
       d.id === clusterId ? { ...d, status: 'MERGED', mergedAt: new Date().toISOString() } : d
     ));
@@ -333,7 +333,7 @@ export default function AdminDuplicatesPage() {
                 {isExpanded && (
                   <CardContent className="pt-0">
                     <div className="space-y-3">
-                      {cluster.reports.map((report, index) => (
+                      {cluster.reports.map((report) => (
                         <div
                           key={report.id}
                           className={`p-4 rounded-lg border ${
