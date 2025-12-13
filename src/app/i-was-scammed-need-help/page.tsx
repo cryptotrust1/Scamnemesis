@@ -8,14 +8,12 @@ import {
   AlertTriangle,
   Lock,
   Eye,
-  FileCheck,
   Users,
   ArrowRight,
-  CheckCircle,
   XCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const steps = [
   {

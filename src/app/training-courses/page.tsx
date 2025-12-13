@@ -4,7 +4,6 @@ import Link from 'next/link';
 import {
   Shield,
   GraduationCap,
-  Users,
   Building,
   Play,
   Lock,
@@ -17,7 +16,7 @@ import {
   Smartphone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const freeCourses = [
   { title: 'Recognizing scams', icon: AlertTriangle },

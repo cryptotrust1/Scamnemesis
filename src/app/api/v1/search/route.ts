@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/db';
-import { requireAuth, requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
+import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 
 const searchParamsSchema = z.object({
   q: z.string().min(2).max(500),
@@ -257,7 +257,7 @@ export async function GET(request: NextRequest) {
     if (rateLimitError) return rateLimitError;
 
     // Authentication (optional for basic search)
-    const auth = await optionalAuth(request);
+    const _auth = await optionalAuth(request);
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);

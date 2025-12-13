@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PerpetratorForm } from '@/lib/validations/report';
 import { User, Building2, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';

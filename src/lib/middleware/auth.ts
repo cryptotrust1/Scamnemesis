@@ -191,7 +191,7 @@ export async function requireRateLimit(
   const auth = await getAuthContext(request);
   const identifier = auth.user?.sub || auth.apiKey?.userId || `ip:${ip}`;
 
-  const { allowed, remaining, resetAt } = await checkRateLimit(identifier, limit);
+  const { allowed, remaining: _remaining, resetAt } = await checkRateLimit(identifier, limit);
 
   if (!allowed) {
     return NextResponse.json(

@@ -8,25 +8,17 @@ import {
   Shield,
   Database,
   Globe,
-  CheckCircle,
   ArrowRight,
-  Users,
   FileText,
   AlertTriangle,
-  Lock,
-  Zap,
   Eye,
-  MessageCircle,
-  TrendingUp,
   BookOpen,
-  Phone,
-  Mail,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 // Database statistics

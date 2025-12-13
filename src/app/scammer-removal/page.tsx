@@ -5,14 +5,12 @@ import {
   Shield,
   UserX,
   FileText,
-  Clock,
   AlertTriangle,
   Heart,
   BookOpen,
   Users,
   ArrowRight,
   CheckCircle,
-  XCircle,
   HelpCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
