@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Copy,
@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,124 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-// Mock data
-const mockDuplicates = [
-  {
-    id: 'dup1',
-    confidence: 95,
-    matchType: 'PHONE_AND_IBAN',
-    status: 'PENDING',
-    createdAt: '2025-12-10T14:00:00',
-    reports: [
-      {
-        id: 'r1',
-        publicId: 'RPT-2024-001234',
-        title: 'Investičný podvod - falošná platforma TradeCoin',
-        fraudType: 'INVESTMENT_FRAUD',
-        perpetratorName: 'Michael Novák',
-        perpetratorPhone: '+421 905 123 456',
-        perpetratorIban: 'SK12 1234 5678 9012 3456',
-        amount: 15000,
-        currency: 'EUR',
-        createdAt: '2025-12-09',
-        reporterCount: 1,
-      },
-      {
-        id: 'r2',
-        publicId: 'RPT-2024-001220',
-        title: 'Krypto podvod - TradeCoin investičný program',
-        fraudType: 'CRYPTO_SCAM',
-        perpetratorName: 'Michal Novak',
-        perpetratorPhone: '+421 905 123 456',
-        perpetratorIban: 'SK12 1234 5678 9012 3456',
-        amount: 8500,
-        currency: 'EUR',
-        createdAt: '2025-12-08',
-        reporterCount: 1,
-      },
-      {
-        id: 'r3',
-        publicId: 'RPT-2024-001198',
-        title: 'Bitcoin investícia - podvod na Facebooku',
-        fraudType: 'INVESTMENT_FRAUD',
-        perpetratorName: 'M. Novák',
-        perpetratorPhone: '+421905123456',
-        perpetratorIban: 'SK1212345678901234 56',
-        amount: 5000,
-        currency: 'EUR',
-        createdAt: '2025-12-05',
-        reporterCount: 1,
-      },
-    ],
-  },
-  {
-    id: 'dup2',
-    confidence: 87,
-    matchType: 'EMAIL_SIMILARITY',
-    status: 'PENDING',
-    createdAt: '2025-12-10T10:30:00',
-    reports: [
-      {
-        id: 'r4',
-        publicId: 'RPT-2024-001230',
-        title: 'Romance scam - Tinder zoznamka',
-        fraudType: 'ROMANCE_SCAM',
-        perpetratorName: 'Katarína Dvoráková',
-        perpetratorEmail: 'katka.dvorakova@email.com',
-        amount: 12000,
-        currency: 'EUR',
-        createdAt: '2025-12-07',
-        reporterCount: 1,
-      },
-      {
-        id: 'r5',
-        publicId: 'RPT-2024-001215',
-        title: 'Romantický podvod - žiadosť o peniaze',
-        fraudType: 'ROMANCE_SCAM',
-        perpetratorName: 'Katarína D.',
-        perpetratorEmail: 'k.dvorakova@email.com',
-        amount: 8000,
-        currency: 'EUR',
-        createdAt: '2025-12-04',
-        reporterCount: 1,
-      },
-    ],
-  },
-  {
-    id: 'dup3',
-    confidence: 78,
-    matchType: 'NAME_AND_LOCATION',
-    status: 'MERGED',
-    createdAt: '2025-12-09T15:00:00',
-    mergedAt: '2025-12-09T16:30:00',
-    reports: [
-      {
-        id: 'r6',
-        publicId: 'RPT-2024-001180',
-        title: 'Tech support scam - falošný Microsoft',
-        fraudType: 'TECH_SUPPORT',
-        perpetratorName: 'Microsoft Support Team',
-        amount: 500,
-        currency: 'EUR',
-        createdAt: '2025-12-01',
-        reporterCount: 3,
-        isPrimary: true,
-      },
-      {
-        id: 'r7',
-        publicId: 'RPT-2024-001175',
-        title: 'Podvod - hovory od Microsoft supportu',
-        fraudType: 'TECH_SUPPORT',
-        perpetratorName: 'Microsoft Technical Support',
-        amount: 350,
-        currency: 'EUR',
-        createdAt: '2025-11-30',
-        reporterCount: 1,
-      },
-    ],
-  },
-];
+import { fetchDuplicates, mergeDuplicates, dismissDuplicates, type DuplicateCluster } from '@/lib/admin/api';
 
 const STATUSES = [
   { value: 'all', label: 'Všetky' },
@@ -149,24 +33,44 @@ const STATUSES = [
 
 export default function AdminDuplicatesPage() {
   const [statusFilter, setStatusFilter] = useState('all');
-  const [duplicates, setDuplicates] = useState(mockDuplicates);
+  const [duplicates, setDuplicates] = useState<DuplicateCluster[]>([]);
   const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Stats
+  const [stats, setStats] = useState({
+    pending: 0,
+    total: 0,
+    reportsInClusters: 0,
+  });
+
+  const loadDuplicates = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchDuplicates(statusFilter);
+      setDuplicates(data.duplicates);
+
+      // Update stats
+      const pendingCount = data.duplicates.filter((d: DuplicateCluster) => d.status === 'PENDING').length;
+      const reportsCount = data.duplicates.reduce((sum: number, d: DuplicateCluster) => sum + d.reports.length, 0);
+      setStats({
+        pending: pendingCount,
+        total: data.total,
+        reportsInClusters: reportsCount,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa načítať duplikáty');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [statusFilter]);
 
   useEffect(() => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      let filtered = [...mockDuplicates];
-
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((d) => d.status === statusFilter);
-      }
-
-      setDuplicates(filtered);
-      setIsLoading(false);
-    }, 300);
-  }, [statusFilter]);
+    loadDuplicates();
+  }, [loadDuplicates]);
 
 
   const toggleExpanded = (id: string) => {
@@ -225,20 +129,52 @@ export default function AdminDuplicatesPage() {
     });
   };
 
-  const handleMerge = (clusterId: string, _primaryId: string) => {
-    setDuplicates(duplicates.map(d =>
-      d.id === clusterId ? { ...d, status: 'MERGED', mergedAt: new Date().toISOString() } : d
-    ));
+  const handleMerge = async (clusterId: string, primaryId: string) => {
+    try {
+      setIsSubmitting(true);
+      await mergeDuplicates(clusterId, primaryId);
+      setDuplicates(duplicates.map(d =>
+        d.id === clusterId ? { ...d, status: 'MERGED' as const, mergedAt: new Date().toISOString() } : d
+      ));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zlúčiť duplikáty');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDismiss = (clusterId: string) => {
-    setDuplicates(duplicates.map(d =>
-      d.id === clusterId ? { ...d, status: 'DISMISSED' } : d
-    ));
+  const handleDismiss = async (clusterId: string) => {
+    try {
+      setIsSubmitting(true);
+      await dismissDuplicates(clusterId);
+      setDuplicates(duplicates.map(d =>
+        d.id === clusterId ? { ...d, status: 'DISMISSED' as const } : d
+      ));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zamietnuť duplikáty');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const pendingCount = mockDuplicates.filter(d => d.status === 'PENDING').length;
-  const totalReportsInClusters = mockDuplicates.reduce((sum, d) => sum + d.reports.length, 0);
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
+              <p className="text-destructive">{error}</p>
+              <Button onClick={loadDuplicates} variant="outline">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Skúsiť znova
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -246,19 +182,19 @@ export default function AdminDuplicatesPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-amber-600">{pendingCount}</div>
+            <div className="text-2xl font-bold text-amber-600">{stats.pending}</div>
             <p className="text-sm text-muted-foreground">Čakajúcich na riešenie</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockDuplicates.length}</div>
+            <div className="text-2xl font-bold">{stats.total}</div>
             <p className="text-sm text-muted-foreground">Celkom skupín duplikátov</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{totalReportsInClusters}</div>
+            <div className="text-2xl font-bold">{stats.reportsInClusters}</div>
             <p className="text-sm text-muted-foreground">Hlásení v skupinách</p>
           </CardContent>
         </Card>
@@ -270,18 +206,24 @@ export default function AdminDuplicatesPage() {
           <Copy className="h-5 w-5 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Potenciálne duplikáty</h2>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter" />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUSES.map((status) => (
-              <SelectItem key={status.value} value={status.value}>
-                {status.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUSES.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="outline" size="sm" onClick={loadDuplicates}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Obnoviť
+          </Button>
+        </div>
       </div>
 
       {/* Duplicates List */}
@@ -337,7 +279,7 @@ export default function AdminDuplicatesPage() {
                         <div
                           key={report.id}
                           className={`p-4 rounded-lg border ${
-                            'isPrimary' in report && report.isPrimary ? 'border-green-300 bg-green-50/50' : 'bg-muted/30'
+                            report.isPrimary ? 'border-green-300 bg-green-50/50' : 'bg-muted/30'
                           }`}
                         >
                           <div className="flex items-start justify-between">
@@ -346,7 +288,7 @@ export default function AdminDuplicatesPage() {
                                 <span className="text-xs font-mono text-muted-foreground">
                                   {report.publicId}
                                 </span>
-                                {'isPrimary' in report && report.isPrimary && (
+                                {report.isPrimary && (
                                   <Badge variant="success" className="text-xs">Primárne</Badge>
                                 )}
                                 <Badge variant="outline">{report.fraudType}</Badge>
@@ -358,24 +300,26 @@ export default function AdminDuplicatesPage() {
                                     <span className="font-medium">Meno:</span> {report.perpetratorName}
                                   </div>
                                 )}
-                                {'perpetratorPhone' in report && report.perpetratorPhone && (
+                                {report.perpetratorPhone && (
                                   <div>
                                     <span className="font-medium">Tel:</span> {report.perpetratorPhone}
                                   </div>
                                 )}
-                                {'perpetratorEmail' in report && report.perpetratorEmail && (
+                                {report.perpetratorEmail && (
                                   <div>
                                     <span className="font-medium">Email:</span> {report.perpetratorEmail}
                                   </div>
                                 )}
-                                {'perpetratorIban' in report && report.perpetratorIban && (
+                                {report.perpetratorIban && (
                                   <div>
                                     <span className="font-medium">IBAN:</span> {report.perpetratorIban}
                                   </div>
                                 )}
-                                <div>
-                                  <span className="font-medium">Suma:</span> {report.amount.toLocaleString()} {report.currency}
-                                </div>
+                                {report.amount !== undefined && (
+                                  <div>
+                                    <span className="font-medium">Suma:</span> {report.amount.toLocaleString()} {report.currency || 'EUR'}
+                                  </div>
+                                )}
                                 <div>
                                   <span className="font-medium">Dátum:</span> {formatDate(report.createdAt)}
                                 </div>
@@ -397,12 +341,14 @@ export default function AdminDuplicatesPage() {
                         <Button
                           variant="outline"
                           onClick={() => handleDismiss(cluster.id)}
+                          disabled={isSubmitting}
                         >
                           <XCircle className="h-4 w-4 mr-2" />
                           Nie sú duplikáty
                         </Button>
                         <Button
                           onClick={() => handleMerge(cluster.id, cluster.reports[0].id)}
+                          disabled={isSubmitting}
                         >
                           <Merge className="h-4 w-4 mr-2" />
                           Zlúčiť hlásenia

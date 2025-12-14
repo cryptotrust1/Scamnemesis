@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -14,6 +14,8 @@ import {
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,100 +28,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-// Mock data
-const mockReports = [
-  {
-    id: '1',
-    publicId: 'RPT-2024-001234',
-    title: 'Investičný podvod s kryptomenami - ponuka vysokých výnosov',
-    status: 'PENDING',
-    fraudType: 'INVESTMENT_FRAUD',
-    severity: 'HIGH',
-    reporterEmail: 'jan.n***@email.com',
-    perpetratorName: 'Mic***l Nov**',
-    amount: 15000,
-    currency: 'EUR',
-    country: 'Slovensko',
-    createdAt: '2025-12-10T14:32:00',
-    similarCount: 12,
-  },
-  {
-    id: '2',
-    publicId: 'RPT-2024-001233',
-    title: 'Romance scam - zoznamka a požiadavka o peniaze',
-    status: 'PENDING',
-    fraudType: 'ROMANCE_SCAM',
-    severity: 'MEDIUM',
-    reporterEmail: 'maria.k***@gmail.com',
-    perpetratorName: 'Kat***a Dvořáková',
-    amount: 8500,
-    currency: 'EUR',
-    country: 'Česká republika',
-    createdAt: '2025-12-10T13:15:00',
-    similarCount: 5,
-  },
-  {
-    id: '3',
-    publicId: 'RPT-2024-001232',
-    title: 'Phishing email - podvrhnutá správa od Tatra banky',
-    status: 'APPROVED',
-    fraudType: 'PHISHING',
-    severity: 'CRITICAL',
-    reporterEmail: 'peter.h***@yahoo.com',
-    perpetratorName: null,
-    amount: 0,
-    currency: 'EUR',
-    country: 'Slovensko',
-    createdAt: '2025-12-10T11:45:00',
-    similarCount: 23,
-  },
-  {
-    id: '4',
-    publicId: 'RPT-2024-001231',
-    title: 'Podvod s prenájmom bytu - vopred zaplatená záloha',
-    status: 'PENDING',
-    fraudType: 'RENTAL_FRAUD',
-    severity: 'MEDIUM',
-    reporterEmail: 'anna.s***@outlook.com',
-    perpetratorName: 'Pet** Hor***',
-    amount: 2000,
-    currency: 'EUR',
-    country: 'Slovensko',
-    createdAt: '2025-12-10T10:20:00',
-    similarCount: 3,
-  },
-  {
-    id: '5',
-    publicId: 'RPT-2024-001230',
-    title: 'Falošná výherná SMS',
-    status: 'REJECTED',
-    fraudType: 'SMS_SCAM',
-    severity: 'LOW',
-    reporterEmail: 'tomas.b***@email.com',
-    perpetratorName: null,
-    amount: 0,
-    currency: 'EUR',
-    country: 'Slovensko',
-    createdAt: '2025-12-10T09:55:00',
-    similarCount: 0,
-  },
-  {
-    id: '6',
-    publicId: 'RPT-2024-001229',
-    title: 'Tech support scam - falošný Microsoft',
-    status: 'APPROVED',
-    fraudType: 'TECH_SUPPORT',
-    severity: 'HIGH',
-    reporterEmail: 'eva.m***@gmail.com',
-    perpetratorName: 'Microsoft Support',
-    amount: 500,
-    currency: 'EUR',
-    country: 'Slovensko',
-    createdAt: '2025-12-09T16:30:00',
-    similarCount: 45,
-  },
-];
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { fetchReports, approveReport, rejectReport, type Report } from '@/lib/admin/api';
 
 const FRAUD_TYPES = [
   { value: 'all', label: 'Všetky typy' },
@@ -129,6 +47,7 @@ const FRAUD_TYPES = [
   { value: 'RENTAL_FRAUD', label: 'Prenájom' },
   { value: 'SMS_SCAM', label: 'SMS podvod' },
   { value: 'TECH_SUPPORT', label: 'Tech support' },
+  { value: 'CRYPTO_SCAM', label: 'Krypto podvod' },
 ];
 
 const STATUSES = [
@@ -154,45 +73,51 @@ export default function AdminReportsPage() {
   const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [fraudTypeFilter, setFraudTypeFilter] = useState('all');
   const [severityFilter, setSeverityFilter] = useState('all');
-  const [reports, setReports] = useState(mockReports);
+  const [reports, setReports] = useState<Report[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Reject dialog state
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [rejectingReportId, setRejectingReportId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(reports.length / itemsPerPage);
+
+  const loadReports = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchReports({
+        status: statusFilter,
+        fraudType: fraudTypeFilter,
+        severity: severityFilter,
+        search: search || undefined,
+        page: currentPage,
+        pageSize: itemsPerPage,
+      });
+      setReports(data.reports);
+      setTotalPages(data.totalPages);
+      setTotalCount(data.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa načítať hlásenia');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [statusFilter, fraudTypeFilter, severityFilter, search, currentPage]);
 
   useEffect(() => {
-    setIsLoading(true);
+    loadReports();
+  }, [loadReports]);
 
-    setTimeout(() => {
-      let filtered = [...mockReports];
-
-      if (search) {
-        filtered = filtered.filter(
-          (r) =>
-            r.title.toLowerCase().includes(search.toLowerCase()) ||
-            r.publicId.toLowerCase().includes(search.toLowerCase()) ||
-            r.reporterEmail.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((r) => r.status === statusFilter);
-      }
-
-      if (fraudTypeFilter !== 'all') {
-        filtered = filtered.filter((r) => r.fraudType === fraudTypeFilter);
-      }
-
-      if (severityFilter !== 'all') {
-        filtered = filtered.filter((r) => r.severity === severityFilter);
-      }
-
-      setReports(filtered);
-      setCurrentPage(1);
-      setIsLoading(false);
-    }, 300);
-  }, [search, statusFilter, fraudTypeFilter, severityFilter]);
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, fraudTypeFilter, severityFilter, search]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -233,18 +158,59 @@ export default function AdminReportsPage() {
     });
   };
 
-  const handleApprove = (id: string) => {
-    setReports(reports.map(r => r.id === id ? { ...r, status: 'APPROVED' } : r));
+  const handleApprove = async (id: string) => {
+    try {
+      setIsSubmitting(true);
+      await approveReport(id);
+      // Update local state
+      setReports(reports.map(r => r.id === id ? { ...r, status: 'APPROVED' as const } : r));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa schváliť hlásenie');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleReject = (id: string) => {
-    setReports(reports.map(r => r.id === id ? { ...r, status: 'REJECTED' } : r));
+  const handleRejectClick = (id: string) => {
+    setRejectingReportId(id);
+    setRejectReason('');
+    setRejectDialogOpen(true);
   };
 
-  const paginatedReports = reports.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleRejectConfirm = async () => {
+    if (!rejectingReportId || !rejectReason.trim()) return;
+
+    try {
+      setIsSubmitting(true);
+      await rejectReport(rejectingReportId, rejectReason);
+      // Update local state
+      setReports(reports.map(r => r.id === rejectingReportId ? { ...r, status: 'REJECTED' as const } : r));
+      setRejectDialogOpen(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zamietnuť hlásenie');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
+              <p className="text-destructive">{error}</p>
+              <Button onClick={loadReports} variant="outline">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Skúsiť znova
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -317,8 +283,12 @@ export default function AdminReportsPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>
-              Hlásenia ({reports.length})
+              Hlásenia ({totalCount})
             </CardTitle>
+            <Button variant="outline" size="sm" onClick={loadReports}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Obnoviť
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -343,13 +313,13 @@ export default function AdminReportsPage() {
               </div>
 
               {/* Table Body */}
-              {paginatedReports.map((report) => (
+              {reports.map((report) => (
                 <div
                   key={report.id}
                   className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors"
                 >
                   <div className="col-span-1 text-sm font-mono">
-                    {report.publicId.split('-').pop()}
+                    {report.publicId?.split('-').pop() || report.id.substring(0, 8)}
                   </div>
 
                   <div className="col-span-3">
@@ -367,14 +337,14 @@ export default function AdminReportsPage() {
                   </div>
 
                   <div className="col-span-2">
-                    {report.amount > 0 ? (
+                    {report.amount && report.amount > 0 ? (
                       <span className="font-semibold">
-                        {report.amount.toLocaleString()} {report.currency}
+                        {report.amount.toLocaleString()} {report.currency || 'EUR'}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}
-                    {report.similarCount > 0 && (
+                    {report.similarCount && report.similarCount > 0 && (
                       <p className="text-xs text-muted-foreground">
                         {report.similarCount} podobných
                       </p>
@@ -398,6 +368,7 @@ export default function AdminReportsPage() {
                           size="icon"
                           className="text-green-600 hover:text-green-700 hover:bg-green-50"
                           onClick={() => handleApprove(report.id)}
+                          disabled={isSubmitting}
                         >
                           <CheckCircle className="h-4 w-4" />
                         </Button>
@@ -405,7 +376,8 @@ export default function AdminReportsPage() {
                           variant="ghost"
                           size="icon"
                           className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => handleReject(report.id)}
+                          onClick={() => handleRejectClick(report.id)}
+                          disabled={isSubmitting}
                         >
                           <XCircle className="h-4 w-4" />
                         </Button>
@@ -424,7 +396,7 @@ export default function AdminReportsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground">
-                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, reports.length)} z {reports.length}
+                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, totalCount)} z {totalCount}
               </p>
               <div className="flex items-center gap-2">
                 <Button
@@ -451,6 +423,36 @@ export default function AdminReportsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Reject Dialog */}
+      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Zamietnuť hlásenie</DialogTitle>
+            <DialogDescription>
+              Zadajte dôvod zamietnutia hlásenia. Táto informácia bude zaznamenaná v audit logu.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            placeholder="Dôvod zamietnutia..."
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            rows={4}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRejectDialogOpen(false)}>
+              Zrušiť
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRejectConfirm}
+              disabled={!rejectReason.trim() || isSubmitting}
+            >
+              Zamietnuť
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
