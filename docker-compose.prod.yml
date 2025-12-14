@@ -102,6 +102,7 @@ services:
       - ML_SERVICE_URL=http://ml-service:8000
       - NEXT_PUBLIC_API_URL=https://${DOMAIN:-localhost}
       - NEXT_PUBLIC_DOMAIN=${DOMAIN:-localhost}
+      - NEXT_PUBLIC_SITE_URL=https://${DOMAIN:-localhost}
     depends_on:
       postgres:
         condition: service_healthy
@@ -124,6 +125,7 @@ services:
       - "traefik.http.routers.app-http.rule=Host(`${DOMAIN:-localhost}`)"
       - "traefik.http.routers.app-http.entrypoints=web"
       - "traefik.http.routers.app-http.middlewares=https-redirect"
+      - "traefik.http.routers.app-http.service=app"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
       # WWW redirect (HTTPS)
@@ -138,6 +140,7 @@ services:
       - "traefik.http.routers.app-www-http.rule=Host(`www.${DOMAIN:-localhost}`)"
       - "traefik.http.routers.app-www-http.entrypoints=web"
       - "traefik.http.routers.app-www-http.middlewares=https-redirect"
+      - "traefik.http.routers.app-www-http.service=app"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
       interval: 30s
@@ -300,6 +303,12 @@ services:
       MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - scamnemesis
 
@@ -307,7 +316,8 @@ services:
     image: minio/mc:latest
     container_name: scamnemesis-minio-init
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     environment:
       - S3_ACCESS_KEY=${S3_ACCESS_KEY:-minioadmin}
       - S3_SECRET_KEY=${S3_SECRET_KEY:-minioadmin}
