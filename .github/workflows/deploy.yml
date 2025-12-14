@@ -94,20 +94,28 @@ jobs:
             # Check container status
             docker compose -f docker-compose.prod.yml ps
 
-            # Wait for app container to be healthy
+            # Wait for app container to be healthy (with proper error handling)
             echo "Waiting for app to become healthy..."
+            APP_HEALTHY=false
             for i in {1..30}; do
               if docker compose -f docker-compose.prod.yml ps app | grep -q "healthy"; then
                 echo "App is healthy!"
+                APP_HEALTHY=true
                 break
               fi
               echo "Waiting for app health check... ($i/30)"
               sleep 5
             done
 
-            # Run database migrations
-            echo "Running database migrations..."
-            docker compose -f docker-compose.prod.yml exec -T app pnpm prisma migrate deploy || echo "Migration skipped (may already be up to date)"
+            if [ "$APP_HEALTHY" = false ]; then
+              echo "ERROR: App failed to become healthy after 150 seconds!"
+              docker compose -f docker-compose.prod.yml logs app --tail=100
+              exit 1
+            fi
+
+            # Migrations run automatically via the migrations service in docker-compose
+            # (depends_on: migrations: condition: service_completed_successfully)
+            echo "Database migrations were executed by the migrations service"
 
             # Verify app is responding (run curl INSIDE the container - port 3000 not exposed to host)
             echo "Verifying app health via container network..."

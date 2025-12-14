@@ -40,6 +40,25 @@ services:
       - scamnemesis
 
   # ===========================================================================
+  # DATABASE MIGRATIONS (runs before app starts)
+  # ===========================================================================
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder  # Use builder stage which has pnpm and node_modules
+    container_name: scamnemesis-migrations
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["pnpm", "prisma", "migrate", "deploy"]
+    networks:
+      - scamnemesis
+    restart: "no"  # Run once and exit
+
+  # ===========================================================================
   # NEXT.JS APPLICATION (Frontend + Backend API)
   # ===========================================================================
   app:
@@ -75,6 +94,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     labels:
       - "traefik.enable=true"
       # Main HTTPS router
