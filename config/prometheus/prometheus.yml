@@ -1,0 +1,58 @@
+# Prometheus Configuration for Scamnemesis
+# This file configures Prometheus to scrape metrics from application services
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'scamnemesis-monitor'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# Rule files (optional)
+# rule_files:
+#   - "alert_rules.yml"
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+  # Next.js Application metrics
+  - job_name: 'app'
+    static_configs:
+      - targets: ['app:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # ML Service metrics
+  - job_name: 'ml-service'
+    static_configs:
+      - targets: ['ml-service:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # PostgreSQL metrics (via postgres_exporter if configured)
+  # - job_name: 'postgres'
+  #   static_configs:
+  #     - targets: ['postgres-exporter:9187']
+
+  # Redis metrics (via redis_exporter if configured)
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['redis-exporter:9121']
+
+  # Traefik metrics
+  - job_name: 'traefik'
+    static_configs:
+      - targets: ['traefik:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
