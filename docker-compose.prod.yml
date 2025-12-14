@@ -111,11 +111,13 @@ services:
         condition: service_completed_successfully
     labels:
       - "traefik.enable=true"
+      # Define the backend service (CRITICAL - must be defined for routers to work)
+      - "traefik.http.services.app.loadbalancer.server.port=3000"
       # Main HTTPS router
       - "traefik.http.routers.app.rule=Host(`${DOMAIN:-localhost}`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
-      - "traefik.http.services.app.loadbalancer.server.port=3000"
+      - "traefik.http.routers.app.service=app"
       # HTTP to HTTPS redirect router
       - "traefik.http.routers.app-http.rule=Host(`${DOMAIN:-localhost}`)"
       - "traefik.http.routers.app-http.entrypoints=web"
@@ -126,6 +128,7 @@ services:
       - "traefik.http.routers.app-www.rule=Host(`www.${DOMAIN:-localhost}`)"
       - "traefik.http.routers.app-www.entrypoints=websecure"
       - "traefik.http.routers.app-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.app-www.service=app"
       - "traefik.http.routers.app-www.middlewares=www-redirect"
       - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https://www\\.(.*)"
       - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://$${1}"
