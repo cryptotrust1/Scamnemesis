@@ -24,6 +24,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          script_stop: true
           script: |
             cd /var/www/Scamnemesis
 
@@ -31,12 +32,24 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            # Build and deploy with Docker
-            docker compose -f docker-compose.prod.yml build app
-            docker compose -f docker-compose.prod.yml up -d app
+            # Stop all containers first
+            docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
-            # Verify deployment
-            sleep 10
+            # Remove old volumes if corrupted (optional - uncomment if needed)
+            # docker volume rm scamnemesis_redis_data_prod || true
+
+            # Build and start all services
+            docker compose -f docker-compose.prod.yml build app
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Wait for services to be healthy
+            echo "Waiting for services to start..."
+            sleep 30
+
+            # Check container status
+            docker compose -f docker-compose.prod.yml ps
+
+            # Verify app is responding
             curl -f http://localhost:3000 || exit 1
 
-            echo "✅ Deployment successful!"
+            echo "Deployment successful!"
