@@ -436,7 +436,7 @@ export default function AdminReportsPage() {
           <Textarea
             placeholder="Dôvod zamietnutia..."
             value={rejectReason}
-            onChange={(e) => setRejectReason(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRejectReason(e.target.value)}
             rows={4}
           />
           <DialogFooter>
