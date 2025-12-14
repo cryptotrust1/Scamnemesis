@@ -192,10 +192,10 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 md:py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tighter mb-2">Vyhľadávanie podvodov</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl mb-2">Vyhľadávanie podvodov</h1>
+        <p className="text-[#64748b]">
           Prehľadávajte databázu hlásených podvodov a chráňte sa pred podvodníkmi
         </p>
       </div>

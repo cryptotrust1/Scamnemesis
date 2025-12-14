@@ -26,33 +26,33 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function IWasScammedPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-red-50 to-white dark:from-red-950/20 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <AlertTriangle className="h-16 w-16 mx-auto mb-6 text-red-500" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+            <AlertTriangle className="h-12 w-12 mx-auto mb-5 text-red-500" />
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5">
               Was Scammed: Get Your Money Back. Report Fraud Now.
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-6 max-w-3xl mx-auto">
+            <p className="text-base text-[#64748b] md:text-lg mb-4 max-w-3xl mx-auto leading-relaxed">
               You&apos;ve just realized you&apos;ve been scammed. Your heart is racing, you feel sick to your stomach,
               and you&apos;re trying to figure out what just happened. This is normal. You are not alone, and you are not stupid.
             </p>
-            <p className="text-base text-muted-foreground md:text-lg mb-8 max-w-3xl mx-auto">
+            <p className="text-sm text-[#64748b] md:text-base mb-6 max-w-3xl mx-auto leading-relaxed">
               The first hours after realizing you&apos;ve been scammed are absolutely critical. Every minute counts.
               This guide will walk you through exactly what to do, step by step, to maximize your chances of recovery
               and help prevent others from becoming victims.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/report/new">
-                  <FileText className="mr-2 h-5 w-5" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Fill Out Report Form
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-[#f8fafc]" asChild>
                 <Link href="/contact-us">
-                  <Phone className="mr-2 h-5 w-5" />
+                  <Phone className="mr-2 h-4 w-4" />
                   Contact Us for Help
                 </Link>
               </Button>
@@ -702,32 +702,32 @@ export default function IWasScammedPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* Final CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               You&apos;re Not Alone in This
             </h2>
-            <p className="text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               Thousands of people are scammed every day. It doesn&apos;t mean you&apos;re stupid - it means you encountered
               a skilled criminal. The best thing you can do now is take action, document everything, and help prevent
               others from becoming victims.
             </p>
-            <p className="text-white/90 md:text-lg">
+            <p className="text-[#64748b] text-sm leading-relaxed">
               Start by filling out our comprehensive reporting form. It&apos;s free, it will help you organize your thoughts
               and evidence, and it generates a professional report you can use with police and banks.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mt-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/report/new">
-                  <FileText className="mr-2 h-5 w-5" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Fill Out Report Form
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/contact-us">
-                  <Phone className="mr-2 h-5 w-5" />
+                  <Phone className="mr-2 h-4 w-4" />
                   Contact Us for Help
                 </Link>
               </Button>

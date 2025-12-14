@@ -192,50 +192,50 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 lg:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-background">
+      {/* Hero Section - Clean minimal style like demo */}
+      <section className="w-full py-16 md:py-20 lg:py-24 bg-white">
         <div className="container px-4 md:px-6">
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="flex flex-col space-y-6">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-[#0E74FF]">
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl text-[#1e293b]">
                 Is It a Scam? Check Any Website, Person, Company, Phone or Email Instantly
               </h1>
-              <p className="text-lg text-muted-foreground md:text-xl">
-                Check scams instantly 🔎 — verify people, websites, companies, job offers, emails, phone numbers, dating profiles, and more. Enjoy free real-time protection 🛡️.
+              <p className="text-lg text-[#64748b] md:text-xl leading-relaxed">
+                Check scams instantly — verify people, websites, companies, job offers, emails, phone numbers, dating profiles, and more. Free real-time protection.
               </p>
 
-              {/* Search Bar */}
+              {/* Search Bar - Clean bordered style */}
               <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
                 <Input
                   type="text"
                   placeholder="Search name, phone, email, website, IBAN..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 h-14 text-lg px-6"
+                  className="flex-1 h-12 text-base px-4 border-[#e8e8e8] focus:border-[#0E74FF] focus:ring-[#0E74FF]"
                 />
-                <Button type="submit" size="lg" className="h-14 px-8 bg-[#0E74FF] hover:bg-[#0E74FF]/90">
-                  <Search className="mr-2 h-5 w-5" />
+                <Button type="submit" size="lg" className="h-12 px-6 bg-[#0E74FF] hover:bg-[#0E74FF]/90">
+                  <Search className="mr-2 h-4 w-4" />
                   Search
                 </Button>
               </form>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+              {/* CTA Buttons - Clean style */}
+              <div className="flex flex-wrap gap-3">
+                <Button size="default" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                   <Link href="/search">
-                    <Search className="mr-2 h-5 w-5" />
+                    <Search className="mr-2 h-4 w-4" />
                     Scam Checker
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
+                <Button size="default" variant="outline" className="border-[#e8e8e8] hover:bg-[#f8fafc]" asChild>
                   <Link href="/report/new">
-                    <FileText className="mr-2 h-5 w-5" />
+                    <FileText className="mr-2 h-4 w-4" />
                     Report Scam
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
+                <Button size="default" variant="outline" className="border-[#e8e8e8] hover:bg-[#f8fafc]" asChild>
                   <Link href="/i-was-scammed-need-help">
-                    <AlertTriangle className="mr-2 h-5 w-5" />
+                    <AlertTriangle className="mr-2 h-4 w-4" />
                     I was scammed
                   </Link>
                 </Button>
@@ -248,7 +248,7 @@ export default function HomePage() {
                 alt="Fraud prevention illustration"
                 width={600}
                 height={500}
-                className="rounded-2xl shadow-2xl"
+                className="rounded-lg border border-[#e8e8e8]"
                 priority
               />
             </div>
@@ -256,67 +256,67 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Database Stats Section */}
-      <section className="w-full py-12 bg-[#0E74FF] text-white">
+      {/* Database Stats Section - Demo style: white bg, bordered cards, thin numbers */}
+      <section className="w-full py-16 bg-white">
         <div className="container px-4 md:px-6">
-          {/* Primary stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          {/* Primary stats - bordered cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="text-center">
-                  <Icon className="h-8 w-8 mx-auto mb-2 opacity-80" />
-                  <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
-                  <div className="text-sm opacity-80">{stat.label}</div>
+                <div key={stat.label} className="stat-card">
+                  <Icon className="h-6 w-6 mx-auto mb-3 text-[#64748b]" />
+                  <div className="stat-number">{stat.value}</div>
+                  <div className="stat-label">{stat.label}</div>
                 </div>
               );
             })}
           </div>
-          {/* Additional stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8 pt-6 border-t border-white/20">
+          {/* Additional stats - bordered cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
             {additionalStats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-xl md:text-2xl font-bold">{stat.value}</div>
-                <div className="text-xs opacity-80">{stat.label}</div>
+              <div key={stat.label} className="stat-card">
+                <div className="stat-number text-2xl">{stat.value}</div>
+                <div className="stat-label text-xs">{stat.label}</div>
               </div>
             ))}
           </div>
-          {/* Total stats */}
-          <div className="flex flex-wrap justify-center gap-8 pt-6 border-t border-white/20">
+          {/* Total stats row */}
+          <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-[#e8e8e8]">
             {totalStats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <div className="text-sm opacity-80">{stat.label}</div>
+              <div key={stat.label} className="text-center px-4">
+                <div className="text-2xl font-extralight text-[#1e293b]">{stat.value}</div>
+                <div className="text-sm text-[#64748b]">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Accordion Sections */}
-      <section className="w-full py-16 md:py-24">
+      {/* FAQ Accordion Sections - Clean bordered style like demo */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
-          <div className="max-w-4xl mx-auto space-y-4">
+          <div className="max-w-4xl mx-auto space-y-3">
             {faqSections.map((section) => (
               <div
                 key={section.id}
-                className="border rounded-xl overflow-hidden bg-card shadow-sm"
+                className="border border-[#e8e8e8] rounded-lg overflow-hidden bg-white"
               >
                 <button
                   onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-muted/50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-[#f8fafc] transition-colors"
                 >
-                  <h3 className="text-xl font-semibold">{section.title}</h3>
+                  <h3 className="text-lg font-medium text-[#1e293b]">{section.title}</h3>
                   {expandedSection === section.id ? (
-                    <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                    <ChevronUp className="h-5 w-5 text-[#64748b]" />
                   ) : (
-                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                    <ChevronDown className="h-5 w-5 text-[#64748b]" />
                   )}
                 </button>
                 {expandedSection === section.id && (
-                  <div className="px-6 pb-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="relative h-48 md:h-64 rounded-lg overflow-hidden">
+                  <div className="px-5 pb-5 border-t border-[#e8e8e8]">
+                    <div className="grid md:grid-cols-2 gap-5 pt-5">
+                      <div className="relative h-48 md:h-56 rounded-lg overflow-hidden border border-[#e8e8e8]">
                         <Image
                           src={section.image}
                           alt={section.title}
@@ -324,7 +324,7 @@ export default function HomePage() {
                           className="object-cover"
                         />
                       </div>
-                      <div className="text-muted-foreground whitespace-pre-line">
+                      <div className="text-[#64748b] whitespace-pre-line text-sm leading-relaxed">
                         {section.content}
                       </div>
                     </div>
@@ -336,36 +336,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Roadmap Section */}
-      <section className="w-full py-16 md:py-24 bg-muted/30">
+      {/* Roadmap Section - Clean bordered style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Feature Roadmap</h2>
-            <p className="text-muted-foreground mt-2">What we&apos;re building and what&apos;s already live</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl">Feature Roadmap</h2>
+            <p className="text-[#64748b] mt-2">What we&apos;re building and what&apos;s already live</p>
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {roadmapFeatures.map((feature) => (
                 <div
                   key={feature.name}
-                  className="flex items-center gap-4 p-4 bg-card rounded-lg border"
+                  className="flex items-center gap-4 p-4 bg-white rounded-lg border border-[#e8e8e8]"
                 >
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{feature.name}</span>
+                      <span className="text-sm font-medium text-[#1e293b]">{feature.name}</span>
                       <Badge
-                        variant={
-                          feature.status === 'functional'
-                            ? 'default'
-                            : feature.status === 'development'
-                            ? 'secondary'
-                            : 'outline'
-                        }
+                        variant="outline"
                         className={
                           feature.status === 'functional'
-                            ? 'bg-green-500'
-                            : ''
+                            ? 'bg-green-50 text-green-700 border-green-200'
+                            : feature.status === 'development'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            : 'bg-gray-50 text-gray-600 border-gray-200'
                         }
                       >
                         {feature.status === 'functional'
@@ -375,9 +371,9 @@ export default function HomePage() {
                           : 'Planned'}
                       </Badge>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-[#f1f5f9] rounded-full h-1.5">
                       <div
-                        className={`h-2 rounded-full transition-all ${
+                        className={`h-1.5 rounded-full transition-all ${
                           feature.status === 'functional'
                             ? 'bg-green-500'
                             : 'bg-[#0E74FF]'
@@ -386,7 +382,7 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground w-12 text-right">
+                  <span className="text-xs font-medium text-[#64748b] w-10 text-right">
                     {feature.progress}%
                   </span>
                 </div>
@@ -396,35 +392,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="w-full py-16 md:py-24">
+      {/* Services Section - Clean bordered cards */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Our Services</h2>
-            <p className="text-muted-foreground mt-2">Professional fraud investigation and recovery services</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl">Our Services</h2>
+            <p className="text-[#64748b] mt-2">Professional fraud investigation and recovery services</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {services.map((service) => {
               const Icon = service.icon;
               return (
-                <Card key={service.title} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <Icon className="h-10 w-10 text-[#0E74FF] mb-4" />
-                    <CardTitle className="text-lg">{service.title}</CardTitle>
+                <Card key={service.title} className="border border-[#e8e8e8] shadow-none hover:border-[#0E74FF]/30 transition-colors bg-white">
+                  <CardHeader className="pb-3">
+                    <Icon className="h-8 w-8 text-[#0E74FF] mb-3" />
+                    <CardTitle className="text-base font-medium text-[#1e293b]">{service.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{service.description}</p>
+                    <p className="text-sm text-[#64748b] mb-4 leading-relaxed">{service.description}</p>
                     {service.price && (
                       <div className="mb-4">
-                        <span className="text-2xl font-bold text-[#0E74FF]">{service.price}</span>
-                        <span className="text-sm text-muted-foreground ml-2">{service.priceNote}</span>
+                        <span className="text-xl font-semibold text-[#0E74FF]">{service.price}</span>
+                        <span className="text-xs text-[#64748b] ml-2">{service.priceNote}</span>
                       </div>
                     )}
-                    <Button className="w-full bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+                    <Button className="w-full bg-[#0E74FF] hover:bg-[#0E74FF]/90 h-9 text-sm" asChild>
                       <Link href={service.link}>
                         Learn More
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <ArrowRight className="ml-2 h-3 w-3" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -435,67 +431,70 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Free Training Section */}
-      <section className="w-full py-16 md:py-24 bg-muted/30">
+      {/* Free Training Section - Clean bordered style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Free Training</h2>
-            <p className="text-muted-foreground mt-2">Learn how to protect yourself and your business</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl">Free Training</h2>
+            <p className="text-[#64748b] mt-2">Learn how to protect yourself and your business</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl mx-auto">
             {trainingTopics.map((topic) => (
-              <Card key={topic} className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="flex items-center gap-4 p-6">
-                  <BookOpen className="h-8 w-8 text-[#0E74FF] flex-shrink-0" />
-                  <span className="font-medium">{topic}</span>
+              <Card key={topic} className="border border-[#e8e8e8] shadow-none hover:border-[#0E74FF]/30 transition-colors cursor-pointer bg-white">
+                <CardContent className="flex items-center gap-3 p-4">
+                  <BookOpen className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
+                  <span className="text-sm font-medium text-[#1e293b]">{topic}</span>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           <div className="text-center mt-8">
-            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+            <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
               <Link href="/training-courses">
                 Start Free Training
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Certifications */}
-      <section className="w-full py-12">
+      {/* Certifications - Clean minimal */}
+      <section className="w-full py-10 border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            <Image src="/images/cert-1.png" alt="Certification 1" width={120} height={60} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/images/cert-2.png" alt="Certification 2" width={120} height={60} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/images/cert-3.png" alt="Certification 3" width={120} height={60} className="opacity-70 hover:opacity-100 transition-opacity" />
+          <div className="flex flex-wrap justify-center items-center gap-10">
+            <Image src="/images/cert-1.png" alt="Certification 1" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-2.png" alt="Certification 2" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-3.png" alt="Certification 3" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-4.png" alt="Certification 4" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-5.png" alt="Certification 5" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-6.png" alt="Certification 6" width={100} height={50} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl">
               Ready to protect yourself?
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               Join thousands of users who have already checked suspicious contacts and reported scams. Your report could save someone from becoming a victim.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/search">
-                  <Search className="mr-2 h-5 w-5" />
+                  <Search className="mr-2 h-4 w-4" />
                   Check Now
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#0E74FF]" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/report/new">
-                  <FileText className="mr-2 h-5 w-5" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Report Scam
                 </Link>
               </Button>
