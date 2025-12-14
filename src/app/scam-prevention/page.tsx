@@ -197,21 +197,21 @@ const reportingChannels = [
 export default function ScamPreventionPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <Shield className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+            <Shield className="h-12 w-12 mx-auto mb-5 text-[#0E74FF]" />
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-4">
               Comprehensive Anti-Scam Guide
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8">
+            <p className="text-base text-[#64748b] md:text-lg mb-6 leading-relaxed">
               Your practical security guide to identifying threats, preventing financial losses, and responding effectively to fraud. Knowledge and preparation are your strongest defenses.
             </p>
-            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+            <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
               <Link href="/search">
                 Check Someone Now
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -638,25 +638,25 @@ export default function ScamPreventionPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <Shield className="h-16 w-16" />
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <Shield className="h-10 w-10 text-[#0E74FF]" />
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               Stay Vigilant, Stay Protected
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               Use our free Scam Checker before engaging with anyone online. A few seconds of verification can save you thousands of dollars and immense emotional distress.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/search">
                   Use Scam Checker
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#0E74FF]" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/training-courses">
                   Free Training
                 </Link>

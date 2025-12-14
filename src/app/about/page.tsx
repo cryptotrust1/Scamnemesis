@@ -60,37 +60,37 @@ const services = [
 export default function AboutPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <Shield className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+            <Shield className="h-12 w-12 mx-auto mb-5 text-[#0E74FF]" />
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-4">
               About ScamNemesis
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8">
+            <p className="text-base text-[#64748b] md:text-lg mb-6 leading-relaxed">
               We are a team of lawyers, forensic analysts, and ethical hackers dedicated to helping victims of crypto scams and investment frauds. Our mission is to protect people from fraud and help those who have been victimized.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="w-full py-16">
+      {/* Mission Section - Clean bordered style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="grid md:grid-cols-2 gap-10 items-center">
               <div>
-                <Target className="h-12 w-12 mb-4 text-[#0E74FF]" />
-                <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-                <p className="text-muted-foreground mb-4">
+                <Target className="h-8 w-8 mb-4 text-[#0E74FF]" />
+                <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl mb-4">Our Mission</h2>
+                <p className="text-[#64748b] mb-4 text-sm leading-relaxed">
                   To create a safer digital environment by providing accessible fraud prevention tools, professional investigation services, and support for victims of online scams.
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-[#64748b] text-sm leading-relaxed">
                   We believe everyone deserves protection from fraud, regardless of their financial situation. That&apos;s why we offer free tools alongside our professional services.
                 </p>
               </div>
-              <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+              <div className="relative h-56 md:h-72 rounded-lg overflow-hidden border border-[#e8e8e8]">
                 <Image
                   src="/images/section-team.png"
                   alt="Our Team"
@@ -103,21 +103,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="w-full py-16 bg-muted/30">
+      {/* Values Section - Clean bordered cards */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <h2 className="text-xl font-semibold text-[#1e293b] text-center mb-10 sm:text-2xl">Our Values</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {values.map((value) => {
               const Icon = value.icon;
               return (
-                <Card key={value.title}>
-                  <CardHeader className="text-center">
-                    <Icon className="h-10 w-10 mx-auto mb-2 text-[#0E74FF]" />
-                    <CardTitle className="text-lg">{value.title}</CardTitle>
+                <Card key={value.title} className="border border-[#e8e8e8] shadow-none">
+                  <CardHeader className="text-center pb-2">
+                    <Icon className="h-8 w-8 mx-auto mb-2 text-[#0E74FF]" />
+                    <CardTitle className="text-base font-medium text-[#1e293b]">{value.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground text-center">{value.description}</p>
+                    <p className="text-xs text-[#64748b] text-center leading-relaxed">{value.description}</p>
                   </CardContent>
                 </Card>
               );
@@ -126,22 +126,22 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Credentials Section */}
-      <section className="w-full py-16">
+      {/* Team Credentials Section - Clean bordered */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
-              <Users className="h-12 w-12 mx-auto mb-4 text-[#0E74FF]" />
-              <h2 className="text-3xl font-bold mb-4">Expert Team</h2>
-              <p className="text-muted-foreground">
+            <div className="text-center mb-10">
+              <Users className="h-8 w-8 mx-auto mb-4 text-[#0E74FF]" />
+              <h2 className="text-xl font-semibold text-[#1e293b] mb-3 sm:text-2xl">Expert Team</h2>
+              <p className="text-[#64748b] text-sm">
                 Our team holds certifications from leading institutions with backgrounds in financial crime investigation, military intelligence, and Big 4 consulting.
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
               {teamCredentials.map((credential) => (
-                <div key={credential} className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-[#0E74FF]" />
-                  <span className="text-sm">{credential}</span>
+                <div key={credential} className="flex items-center gap-2 p-3 bg-white border border-[#e8e8e8] rounded-lg">
+                  <CheckCircle className="h-4 w-4 text-[#0E74FF]" />
+                  <span className="text-sm text-[#1e293b]">{credential}</span>
                 </div>
               ))}
             </div>
@@ -149,18 +149,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Services Overview Section */}
-      <section className="w-full py-16 bg-muted/30">
+      {/* Services Overview Section - Clean bordered cards */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">What We Offer</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <h2 className="text-xl font-semibold text-[#1e293b] text-center mb-10 sm:text-2xl">What We Offer</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 max-w-5xl mx-auto">
             {services.map((service) => (
-              <Card key={service.name}>
+              <Card key={service.name} className="border border-[#e8e8e8] shadow-none">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{service.name}</CardTitle>
+                  <CardTitle className="text-sm font-medium text-[#1e293b]">{service.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">{service.description}</p>
+                  <p className="text-xs text-[#64748b] leading-relaxed">{service.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -168,56 +168,35 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Certifications Section */}
-      <section className="w-full py-16">
+      {/* Certifications Section - Clean minimal */}
+      <section className="w-full py-12 border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <h2 className="text-2xl font-bold text-center mb-8">Our Certifications</h2>
-          <div className="flex flex-wrap justify-center gap-8 max-w-3xl mx-auto">
-            <div className="relative w-24 h-24">
-              <Image
-                src="/images/cert-1.png"
-                alt="Certification 1"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="relative w-24 h-24">
-              <Image
-                src="/images/cert-2.png"
-                alt="Certification 2"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="relative w-24 h-24">
-              <Image
-                src="/images/cert-3.png"
-                alt="Certification 3"
-                fill
-                className="object-contain"
-              />
-            </div>
+          <h2 className="text-lg font-semibold text-[#1e293b] text-center mb-8">Our Certifications</h2>
+          <div className="flex flex-wrap justify-center gap-10 max-w-3xl mx-auto">
+            <Image src="/images/cert-1.png" alt="Certification 1" width={80} height={80} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-2.png" alt="Certification 2" width={80} height={80} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <Image src="/images/cert-3.png" alt="Certification 3" width={80} height={80} className="opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               Need Help?
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               Whether you want to check someone&apos;s legitimacy, report a scam, or need help recovering your money — we&apos;re here for you.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/search">
                   Use Scam Checker
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#0E74FF]" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/contact-us">
                   Contact Us
                 </Link>

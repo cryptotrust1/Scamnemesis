@@ -12,10 +12,13 @@ const config: Config = {
       center: true,
       padding: '2rem',
       screens: {
-        '2xl': '1400px',
+        '2xl': '1200px',
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -50,6 +53,14 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // Demo-matching colors
+        demo: {
+          text: '#1e293b',
+          muted: '#64748b',
+          border: '#e8e8e8',
+          bg: '#f8fafc',
+          blue: '#0E74FF',
+        },
         // Custom colors for fraud types
         fraud: {
           investment: '#ef4444',
@@ -64,6 +75,9 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      fontWeight: {
+        extralight: '200',
       },
       keyframes: {
         'accordion-down': {

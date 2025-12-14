@@ -66,25 +66,25 @@ const processSteps = [
 export default function MoneyRecoveryPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <Shield className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+            <Shield className="h-12 w-12 mx-auto mb-5 text-[#0E74FF]" />
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5">
               What to do if you have been scammed? Get quick and effective help
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8 max-w-3xl mx-auto">
+            <p className="text-base text-[#64748b] md:text-lg mb-6 max-w-3xl mx-auto leading-relaxed">
               Professional fraud investigation and fund recovery for crypto scams and investment fraud. Our team combines digital forensics, OSINT, and legal coordination to help you recover your money.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/report/new">
                   Report a Scam
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-[#f8fafc]" asChild>
                 <Link href="/contact-us">
                   Order Service
                 </Link>
@@ -270,24 +270,24 @@ export default function MoneyRecoveryPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               Ready to start your recovery?
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               With us, you won&apos;t find empty promises — services that guarantee 100% refunds are actually scams. We offer honest, professional investigation.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/report/new">
                   Report a Scam
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white text-[#0E74FF] hover:bg-white/90" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/contact-us">
                   Order Service
                 </Link>
