@@ -50,12 +50,23 @@ jobs:
 
             # Wait for services to be healthy
             echo "Waiting for services to start..."
-            sleep 30
+            sleep 90  # Increased: app needs 60s start_period + buffer
 
             # Check container status
             docker compose -f docker-compose.prod.yml ps
 
-            # Verify app is responding
-            curl -f http://localhost:3000 || exit 1
+            # Wait for app container to be healthy
+            echo "Waiting for app to become healthy..."
+            for i in {1..30}; do
+              if docker compose -f docker-compose.prod.yml ps app | grep -q "healthy"; then
+                echo "App is healthy!"
+                break
+              fi
+              echo "Waiting for app health check... ($i/30)"
+              sleep 5
+            done
+
+            # Verify app is responding (use correct health endpoint)
+            curl -f http://localhost:3000/api/v1/verify || exit 1
 
             echo "Deployment successful!"

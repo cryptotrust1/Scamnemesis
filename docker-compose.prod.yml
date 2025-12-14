@@ -9,8 +9,6 @@
 #   3. Pockaj 5-10 minut na inicializaciu
 # =============================================================================
 
-version: '3.8'
-
 services:
   # ===========================================================================
   # TRAEFIK - Reverse Proxy + Automaticke SSL certifikaty
@@ -104,9 +102,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/verify"]
       interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      timeout: 15s
+      retries: 5
+      start_period: 90s
     networks:
       - scamnemesis
     deploy:
@@ -291,12 +289,22 @@ services:
     image: prom/prometheus:v2.48.0
     container_name: scamnemesis-prometheus
     restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
     volumes:
       - ./config/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       - scamnemesis
 
