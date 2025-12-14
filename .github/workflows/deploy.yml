@@ -23,14 +23,6 @@ jobs:
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script_stop: true
-          command_timeout: 45m
-          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -42,7 +34,15 @@ jobs:
           TYPESENSE_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
           S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
           S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-        script: |
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script_stop: true
+          command_timeout: 45m
+          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY
+          script: |
             cd /var/www/Scamnemesis
 
             # Pull latest changes
@@ -89,7 +89,7 @@ jobs:
 
             # Wait for services to be healthy
             echo "Waiting for services to start..."
-            sleep 90  # Increased: app needs 60s start_period + buffer
+            sleep 90
 
             # Check container status
             docker compose -f docker-compose.prod.yml ps
