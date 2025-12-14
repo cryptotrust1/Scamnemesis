@@ -5,13 +5,15 @@
 # ===========================================================================
 # BASE STAGE - Common dependencies
 # ===========================================================================
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 
 # Install system dependencies
-RUN apk add --no-cache \
-    libc6-compat \
+RUN apt-get update && apt-get install -y \
     curl \
-    bash
+    openssl \
+    libssl-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9 --activate
@@ -74,13 +76,15 @@ RUN pnpm build
 # ===========================================================================
 # PRODUCTION STAGE - Minimal production image
 # ===========================================================================
-FROM node:20-alpine AS production
+FROM node:20-slim AS production
 
-# Install system dependencies
-RUN apk add --no-cache \
-    libc6-compat \
+# Install system dependencies including OpenSSL for Prisma
+RUN apt-get update && apt-get install -y \
     curl \
-    bash
+    openssl \
+    libssl-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9 --activate
