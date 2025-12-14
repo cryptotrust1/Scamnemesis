@@ -57,21 +57,21 @@ const visionInitiatives = [
 export default function ScammerRemovalPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <UserX className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-6 leading-tight">
+            <UserX className="h-12 w-12 mx-auto mb-5 text-[#0E74FF]" />
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5 leading-tight">
               Request for Database Deletion - A Second Chance: Help for a New Beginning in Life
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8 max-w-3xl mx-auto">
+            <p className="text-base text-[#64748b] md:text-lg mb-6 max-w-3xl mx-auto leading-relaxed">
               We believe in privacy and second chances. Our platform offers individuals with criminal pasts an opportunity to request deletion from our scammer database and receive support for life reintegration. Everyone has the right to rebuild their life and start fresh.
             </p>
-            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+            <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
               <Link href="/contact-us">
                 Submit Removal Request
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -418,27 +418,27 @@ export default function ScammerRemovalPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* Final CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl max-w-3xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               Everyone Deserves a Second Chance
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               We believe in redemption and rehabilitation. Your past doesn&apos;t have to define your future. Take the first step today toward a better tomorrow.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" variant="secondary" asChild>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
                 <Link href="/contact-us">
                   Submit Removal Request
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
+              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
                 <Link href="/support-us">
                   Support Our Mission
-                  <Heart className="ml-2 h-5 w-5" />
+                  <Heart className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>

@@ -18,14 +18,14 @@ const program2Features = [
 export default function SupportUsPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5">
               Support Our Mission – Help Us Bring Justice and Safety to Everyone
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl max-w-3xl mx-auto">
+            <p className="text-base text-[#64748b] md:text-lg max-w-3xl mx-auto leading-relaxed">
               Justice and safety should not be reserved only for those who can afford them. We offer free services to fraud victims while sustaining our mission through community support. Your contribution helps us protect the vulnerable and give second chances to those seeking redemption.
             </p>
           </div>
@@ -133,18 +133,18 @@ export default function SupportUsPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-white to-blue-50 dark:from-background dark:to-blue-950/20">
+      {/* Final CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <Heart className="h-16 w-16 mx-auto mb-6 text-pink-500" />
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-6">
-              Together We Make a Difference ❤️
+          <div className="max-w-2xl mx-auto text-center">
+            <Heart className="h-10 w-10 mx-auto mb-5 text-pink-500" />
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl mb-4">
+              Together We Make a Difference
             </h2>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8">
+            <p className="text-[#64748b] mb-6 leading-relaxed">
               Whether you choose to support fraud prevention or second-chance programs, your generosity creates real change. Thank you for being part of our mission to build a safer, more just world for everyone.
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-[#64748b] text-sm">
               Have questions? <Link href="/contact-us" className="text-[#0E74FF] hover:underline font-medium">Contact us</Link> to learn more about our work.
             </p>
           </div>
