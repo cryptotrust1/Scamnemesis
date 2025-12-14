@@ -14,25 +14,26 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('page_size') || '10');
     const status = searchParams.get('status');
-    const reported = searchParams.get('reported');
     const search = searchParams.get('q');
 
     // Build where clause
-    const where: Record<string, unknown> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
 
     if (status) {
-      where.status = status;
-    }
-
-    if (reported === 'true') {
-      where.isReported = true;
+      // Map frontend status to Prisma enum
+      if (status === 'PENDING') {
+        where.status = 'PENDING_MODERATION';
+      } else {
+        where.status = status;
+      }
     }
 
     if (search) {
       where.OR = [
         { content: { contains: search, mode: 'insensitive' } },
-        { author: { email: { contains: search, mode: 'insensitive' } } },
-        { author: { firstName: { contains: search, mode: 'insensitive' } } },
+        { user: { email: { contains: search, mode: 'insensitive' } } },
+        { user: { name: { contains: search, mode: 'insensitive' } } },
       ];
     }
 
@@ -47,22 +48,21 @@ export async function GET(request: NextRequest) {
           id: true,
           content: true,
           status: true,
-          isReported: true,
-          reportReason: true,
+          rejectionReason: true,
           createdAt: true,
-          author: {
+          user: {
             select: {
               id: true,
               email: true,
-              firstName: true,
-              lastName: true,
+              name: true,
+              displayName: true,
             },
           },
           report: {
             select: {
               id: true,
               publicId: true,
-              title: true,
+              summary: true,
             },
           },
         },
@@ -74,21 +74,21 @@ export async function GET(request: NextRequest) {
     const formattedComments = comments.map((comment) => ({
       id: comment.id,
       content: comment.content,
-      status: comment.status,
-      reported: comment.isReported,
-      reportReason: comment.reportReason,
+      status: comment.status === 'PENDING_MODERATION' ? 'PENDING' : comment.status,
+      reported: false, // No isReported field in schema
+      reportReason: comment.rejectionReason,
       createdAt: comment.createdAt.toISOString(),
       author: {
-        id: comment.author.id,
-        displayName: comment.author.firstName && comment.author.lastName
-          ? `${comment.author.firstName} ${comment.author.lastName}`
-          : comment.author.firstName || 'Anonym',
-        email: `${comment.author.email.substring(0, 5)}***@${comment.author.email.split('@')[1]}`,
+        id: comment.user.id,
+        displayName: comment.user.displayName || comment.user.name || 'Anonym',
+        email: comment.user.email
+          ? `${comment.user.email.substring(0, 5)}***@${comment.user.email.split('@')[1]}`
+          : 'skrytý',
       },
       report: {
         id: comment.report.id,
         publicId: comment.report.publicId,
-        title: comment.report.title,
+        title: comment.report.summary,
       },
     }));
 

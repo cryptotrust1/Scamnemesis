@@ -13,7 +13,6 @@ import {
   ArrowRight,
   XCircle,
   CreditCard,
-  Ban,
   Clock,
   CheckCircle2,
   FileWarning,

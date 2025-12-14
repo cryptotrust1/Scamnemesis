@@ -5,8 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Search,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -129,17 +127,12 @@ const trainingTopics = [
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
     }
-  };
-
-  const toggleSection = (id: string) => {
-    setExpandedSection(expandedSection === id ? null : id);
   };
 
   return (
