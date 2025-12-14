@@ -58,23 +58,38 @@ jobs:
             ENVEOF
 
             # Append secrets (with defaults for non-critical values)
-            POSTGRES_PASSWORD_VAL="${POSTGRES_PASSWORD:-scamnemesis_prod_password}"
+            # IMPORTANT: Strip newlines/carriage returns from all values to prevent Traefik errors
+            strip_newlines() {
+              echo -n "$1" | tr -d '\n\r'
+            }
+
+            POSTGRES_PASSWORD_VAL=$(strip_newlines "${POSTGRES_PASSWORD:-scamnemesis_prod_password}")
+            DOMAIN_VAL=$(strip_newlines "${DOMAIN:-localhost}")
+            ACME_EMAIL_VAL=$(strip_newlines "${ACME_EMAIL:-admin@example.com}")
+
             echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_VAL}" >> .env
             echo "POSTGRES_USER=postgres" >> .env
             echo "POSTGRES_DB=scamnemesis" >> .env
             echo "DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD_VAL}@postgres:5432/scamnemesis" >> .env
-            echo "JWT_SECRET=${JWT_SECRET:-$(openssl rand -base64 32)}" >> .env
-            echo "JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-$(openssl rand -base64 32)}" >> .env
-            echo "DOMAIN=${DOMAIN:-localhost}" >> .env
-            echo "ACME_EMAIL=${ACME_EMAIL:-admin@example.com}" >> .env
-            echo "GRAFANA_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}" >> .env
-            echo "REDIS_PASSWORD=${REDIS_PASSWORD:-scamnemesis_redis_2024}" >> .env
-            echo "TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-changeme}" >> .env
-            echo "S3_ACCESS_KEY=${S3_ACCESS_KEY:-minioadmin}" >> .env
-            echo "S3_SECRET_KEY=${S3_SECRET_KEY:-minioadmin}" >> .env
+            echo "JWT_SECRET=$(strip_newlines "${JWT_SECRET:-$(openssl rand -base64 32)}")" >> .env
+            echo "JWT_REFRESH_SECRET=$(strip_newlines "${JWT_REFRESH_SECRET:-$(openssl rand -base64 32)}")" >> .env
+            echo "DOMAIN=${DOMAIN_VAL}" >> .env
+            echo "ACME_EMAIL=${ACME_EMAIL_VAL}" >> .env
+            echo "GRAFANA_ADMIN_PASSWORD=$(strip_newlines "${GRAFANA_ADMIN_PASSWORD:-admin}")" >> .env
+            echo "REDIS_PASSWORD=$(strip_newlines "${REDIS_PASSWORD:-scamnemesis_redis_2024}")" >> .env
+            echo "TYPESENSE_API_KEY=$(strip_newlines "${TYPESENSE_API_KEY:-changeme}")" >> .env
+            echo "S3_ACCESS_KEY=$(strip_newlines "${S3_ACCESS_KEY:-minioadmin}")" >> .env
+            echo "S3_SECRET_KEY=$(strip_newlines "${S3_SECRET_KEY:-minioadmin}")" >> .env
 
-            # Verify .env file was created
+            # Verify .env file was created and validate it
             echo "Environment file created with $(wc -l < .env) lines"
+
+            # CRITICAL: Validate that DOMAIN has no newlines (this was causing 404 errors!)
+            if grep -q $'\n' <<< "$DOMAIN_VAL" || grep -q $'\r' <<< "$DOMAIN_VAL"; then
+              echo "ERROR: DOMAIN contains newline characters! Check GitHub Secrets."
+              exit 1
+            fi
+            echo "DOMAIN validated: '${DOMAIN_VAL}'"
 
             # Stop all containers and clean up
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
@@ -128,5 +143,30 @@ jobs:
             # Verify app is responding (run curl INSIDE the container - port 3000 not exposed to host)
             echo "Verifying app health via container network..."
             docker compose -f docker-compose.prod.yml exec -T app curl -f http://localhost:3000/api/v1/health || exit 1
+
+            # CRITICAL: Check Traefik logs for routing errors (this catches the newline bug)
+            echo "Checking Traefik for routing errors..."
+            TRAEFIK_ERRORS=$(docker compose -f docker-compose.prod.yml logs traefik --tail=50 2>&1 | grep -i "error.*hostname\|invalid.*host" || true)
+            if [ -n "$TRAEFIK_ERRORS" ]; then
+              echo "ERROR: Traefik has routing errors!"
+              echo "$TRAEFIK_ERRORS"
+              echo ""
+              echo "This usually means DOMAIN in .env has newline characters."
+              echo "Current .env DOMAIN value:"
+              grep "^DOMAIN=" .env | od -c
+              exit 1
+            fi
+            echo "Traefik routing OK - no hostname errors found"
+
+            # Final verification - check actual website response
+            echo "Final check - testing HTTPS endpoint..."
+            sleep 5
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://${DOMAIN_VAL}/" || echo "000")
+            if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+              echo "SUCCESS: Website responding with HTTP $HTTP_CODE"
+            else
+              echo "WARNING: Website returned HTTP $HTTP_CODE (might still be starting)"
+              docker compose -f docker-compose.prod.yml logs traefik --tail=20
+            fi
 
             echo "Deployment successful!"
