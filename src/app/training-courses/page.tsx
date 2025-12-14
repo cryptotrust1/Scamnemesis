@@ -73,22 +73,22 @@ const differentiators = [
 export default function TrainingCoursesPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+      {/* Hero Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
           <div className="grid md:grid-cols-2 gap-8 items-center max-w-6xl mx-auto">
             <div>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+              <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5">
                 World-class, expert-led cybersecurity training from the world&apos;s top security professionals.
               </h1>
-              <p className="text-lg text-muted-foreground md:text-xl mb-8">
+              <p className="text-base text-[#64748b] md:text-lg mb-6 leading-relaxed">
                 Prevent fraud and attacks with comprehensive training designed to protect individuals and organizations from evolving cyber threats.
               </p>
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
-                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <p className="text-sm font-medium text-amber-800 mb-1">
                   Coming Soon
                 </p>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                <p className="text-sm text-amber-700">
                   Our training courses are currently in development. Contact us at{' '}
                   <a href="mailto:info@scamnemesis.com" className="text-[#0E74FF] hover:underline">
                     info@scamnemesis.com
@@ -97,7 +97,7 @@ export default function TrainingCoursesPage() {
                 </p>
               </div>
             </div>
-            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden shadow-xl">
+            <div className="relative h-[350px] md:h-[400px] rounded-lg overflow-hidden border border-[#e8e8e8]">
               <Image
                 src="/images/pages/training-courses.jpg"
                 alt="Cybersecurity Training"
@@ -269,20 +269,20 @@ export default function TrainingCoursesPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
+      {/* CTA Section - Clean minimal style */}
+      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
               Ready to Strengthen Your Security?
             </h2>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
+            <p className="text-[#64748b] leading-relaxed">
               Contact us to discuss your training needs or learn more about our upcoming courses.
             </p>
-            <Button size="lg" variant="secondary" asChild>
+            <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
               <Link href="/contact-us">
                 Book a Free Consultation
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
