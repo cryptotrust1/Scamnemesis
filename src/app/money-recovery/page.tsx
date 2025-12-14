@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Shield,
   Search,
@@ -13,48 +14,52 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-const processSteps = [
+const services = [
   {
     number: '1',
-    title: 'Intelligence Analysis & Fraud Mapping',
+    title: 'Intelligence Analysis and Fraud Mapping',
     description: 'Collecting transaction data, crypto addresses, IP traces, and all available digital footprints to map the fraud network.',
     icon: Search,
+    image: '/images/pages/money-recovery.jpg',
   },
   {
     number: '2',
-    title: 'Forensic Tracking & Evidence Collection',
+    title: 'Forensic Tracking and Evidence Collection',
     description: 'Using blockchain analysis and OSINT tools to trace funds and gather court-admissible evidence.',
     icon: Target,
+    image: '/images/pages/forensic-tracking.jpg',
   },
   {
     number: '3',
-    title: 'Legal Assessment & Recommendations',
+    title: 'Legal Assessment and Recommendations',
     description: 'Lawyer-prepared case analysis with jurisdiction determination and recovery strategy recommendations.',
     icon: Scale,
+    image: '/images/pages/legal-assessment.jpg',
   },
   {
     number: '4',
-    title: 'Cooperation with Authorities',
+    title: 'Cooperation with Authorities and Support',
     description: 'Providing comprehensive evidence materials for criminal proceedings and coordinating with law enforcement.',
     icon: Users,
+    image: '/images/pages/investigation-team.jpg',
   },
 ];
 
-const howItWorks = [
+const processSteps = [
   {
     step: '1',
-    title: 'Fill out detailed intake form',
-    description: 'Provide all information about the fraud incident, including transaction details and communication records.',
+    title: 'Report the Scam',
+    description: 'Fill out our detailed intake form with all information about the fraud incident, including transaction details and communication records.',
   },
   {
     step: '2',
-    title: 'Contact via form, provide case details, complete €600 payment',
-    description: 'Our team reviews your case and begins the investigation once payment is confirmed.',
+    title: 'Order the Service',
+    description: 'Complete the €600 payment to start the investigation. Our team reviews your case and assigns a dedicated investigator.',
   },
   {
     step: '3',
-    title: 'Receive questions from specialist; investigation begins',
-    description: 'A dedicated investigator contacts you for additional details and starts tracing the funds.',
+    title: 'Investigation Begins',
+    description: 'Your specialist contacts you for additional details and begins comprehensive forensic tracking, evidence collection, and legal assessment.',
   },
 ];
 
@@ -64,19 +69,24 @@ export default function MoneyRecoveryPage() {
       {/* Hero Section */}
       <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-background">
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center">
             <Shield className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
-              Money Recovery Services
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+              What to do if you have been scammed? Get quick and effective help
             </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8">
+            <p className="text-lg text-muted-foreground md:text-xl mb-8 max-w-3xl mx-auto">
               Professional fraud investigation and fund recovery for crypto scams and investment fraud. Our team combines digital forensics, OSINT, and legal coordination to help you recover your money.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-                <Link href="/contact-us">
-                  Order Refund Recovery Service
+                <Link href="/report/new">
+                  Report a Scam
                   <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/contact-us">
+                  Order Service
                 </Link>
               </Button>
             </div>
@@ -132,24 +142,35 @@ export default function MoneyRecoveryPage() {
         </div>
       </section>
 
-      {/* Process Section */}
+      {/* Services Section */}
       <section className="w-full py-16 md:py-24">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Process</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {processSteps.map((step) => {
-              const Icon = step.icon;
+          <h2 className="text-3xl font-bold text-center mb-4">Our Services</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Comprehensive fraud investigation combining digital forensics, blockchain analysis, and legal expertise
+          </p>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {services.map((service) => {
+              const Icon = service.icon;
               return (
-                <Card key={step.number}>
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold mb-4">
-                      {step.number}
+                <Card key={service.number} className="overflow-hidden">
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold shadow-lg">
+                      {service.number}
                     </div>
+                  </div>
+                  <CardHeader>
                     <Icon className="h-8 w-8 text-[#0E74FF] mb-2" />
-                    <CardTitle className="text-lg">{step.title}</CardTitle>
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                    <p className="text-muted-foreground">{service.description}</p>
                   </CardContent>
                 </Card>
               );
@@ -161,19 +182,37 @@ export default function MoneyRecoveryPage() {
       {/* How It Works Section */}
       <section className="w-full py-16 bg-muted/30">
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">How to Get Started</h2>
-          <div className="max-w-3xl mx-auto space-y-6">
-            {howItWorks.map((item) => (
-              <div key={item.step} className="flex gap-6 items-start">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold">
-                  {item.step}
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+          <h2 className="text-3xl font-bold text-center mb-4">3-Step Process to Access the Service</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Get started with our professional fraud investigation service in three simple steps
+          </p>
+          <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
+            {processSteps.map((item) => (
+              <Card key={item.step} className="text-center">
+                <CardHeader>
+                  <div className="w-16 h-16 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold text-2xl mx-auto mb-4">
+                    {item.step}
+                  </div>
+                  <CardTitle className="text-xl">{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <p className="text-muted-foreground">{item.description}</p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
+          </div>
+          <div className="flex justify-center gap-4 mt-12">
+            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
+              <Link href="/report/new">
+                Report a Scam
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/contact-us">
+                Order Service
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -181,31 +220,48 @@ export default function MoneyRecoveryPage() {
       {/* Differentiation Section */}
       <section className="w-full py-16">
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto">
-            <Card className="border-amber-200 bg-amber-50/50">
-              <CardHeader>
-                <CardTitle>What Makes Us Different</CardTitle>
+          <div className="max-w-4xl mx-auto">
+            <Card className="border-2 border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl md:text-3xl">What Makes Us Different</CardTitle>
+                <CardDescription className="text-base">
+                  No empty promises - just honest, professional investigation
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
+              <CardContent className="space-y-6">
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-6 border-2 border-[#0E74FF]">
+                  <h3 className="font-semibold text-lg mb-3 text-center">Transparent Pricing</h3>
+                  <div className="flex items-center justify-center gap-4 flex-wrap">
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">Our Price</div>
+                      <div className="text-4xl font-bold text-[#0E74FF]">€600</div>
+                    </div>
+                    <div className="text-2xl text-muted-foreground">vs</div>
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">Typical Services</div>
+                      <div className="text-3xl font-bold text-red-500 line-through">$3,000-$10,000</div>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-center">
                   Unlike typical &quot;money recovery&quot; services that only file reports and send emails without deep analysis:
                 </p>
-                <ul className="space-y-2">
+                <ul className="grid md:grid-cols-2 gap-4">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>We provide real forensic investigation, not just paperwork</span>
+                    <span>Real forensic investigation, not just paperwork</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Transparent pricing at €600 — not $3,000-$10,000</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Honest about recovery likelihood — no false promises</span>
+                    <span>Honest about recovery likelihood</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <span>Court-ready evidence packages</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Blockchain analysis and OSINT tools</span>
                   </li>
                 </ul>
               </CardContent>
@@ -224,12 +280,19 @@ export default function MoneyRecoveryPage() {
             <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
               With us, you won&apos;t find empty promises — services that guarantee 100% refunds are actually scams. We offer honest, professional investigation.
             </p>
-            <Button size="lg" variant="secondary" asChild>
-              <Link href="/report/new">
-                Start Money Recovery
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button size="lg" variant="secondary" asChild>
+                <Link href="/report/new">
+                  Report a Scam
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="bg-white text-[#0E74FF] hover:bg-white/90" asChild>
+                <Link href="/contact-us">
+                  Order Service
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

@@ -1,19 +1,22 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Shield,
   GraduationCap,
   Building,
   Play,
   Lock,
-  Clock,
   ArrowRight,
   CheckCircle,
   AlertTriangle,
   Monitor,
   Baby,
   Smartphone,
+  Target,
+  Users,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,14 +51,22 @@ const differentiators = [
   {
     title: 'Live Threat Intelligence',
     description: 'We work on active crypto and investment fraud cases daily, keeping content current and practical.',
+    icon: Target,
   },
   {
     title: 'Continuously Updated',
     description: 'Our curriculum evolves with new threats, ensuring you always have the latest protection knowledge.',
+    icon: BookOpen,
   },
   {
     title: 'Both Perspectives',
     description: 'Our expertise spans victim psychology and scammer tactics, providing comprehensive understanding.',
+    icon: Users,
+  },
+  {
+    title: 'Real-World Experience',
+    description: 'Learn from practitioners who actively investigate and prevent fraud, not just theory from textbooks.',
+    icon: Shield,
   },
 ];
 
@@ -63,25 +74,53 @@ export default function TrainingCoursesPage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-purple-50 to-white dark:from-purple-950/20 dark:to-background">
+      <section className="w-full py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <GraduationCap className="h-16 w-16 mx-auto mb-6 text-purple-600" />
-            <span className="inline-block px-4 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">
-              Coming Soon
-            </span>
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
-              Expert-Led Cybersecurity Training
-            </h1>
-            <p className="text-lg text-muted-foreground md:text-xl mb-8">
-              Fraud prevention and cyber resilience training from experts who work on active cases daily. Practical knowledge that protects.
+          <div className="grid md:grid-cols-2 gap-8 items-center max-w-6xl mx-auto">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl mb-6">
+                World-class, expert-led cybersecurity training from the world&apos;s top security professionals.
+              </h1>
+              <p className="text-lg text-muted-foreground md:text-xl mb-8">
+                Prevent fraud and attacks with comprehensive training designed to protect individuals and organizations from evolving cyber threats.
+              </p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                  Coming Soon
+                </p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  Our training courses are currently in development. Contact us at{' '}
+                  <a href="mailto:info@scamnemesis.com" className="text-[#0E74FF] hover:underline">
+                    info@scamnemesis.com
+                  </a>{' '}
+                  to be notified when they launch.
+                </p>
+              </div>
+            </div>
+            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden shadow-xl">
+              <Image
+                src="/images/pages/training-courses.jpg"
+                alt="Cybersecurity Training"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cybersecurity Courses Description */}
+      <section className="w-full py-16 bg-muted/30">
+        <div className="container px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <GraduationCap className="h-16 w-16 mx-auto mb-6 text-[#0E74FF]" />
+            <h2 className="text-3xl font-bold mb-4">Comprehensive Cybersecurity Training</h2>
+            <p className="text-lg text-muted-foreground">
+              Our courses cover everything from basic online safety to advanced security methodologies.
+              Whether you&apos;re an individual looking to protect yourself, a professional seeking specialized
+              knowledge, or an organization needing custom training, we have solutions tailored to your needs.
             </p>
-            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-              <Link href="/contact-us">
-                Get Notified When Available
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
           </div>
         </div>
       </section>
@@ -177,17 +216,21 @@ export default function TrainingCoursesPage() {
       <section className="w-full py-16 bg-muted/30">
         <div className="container px-4 md:px-6">
           <h2 className="text-3xl font-bold text-center mb-12">What Makes Our Training Different</h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {differentiators.map((item) => (
-              <Card key={item.title}>
-                <CardHeader>
-                  <CardTitle className="text-lg">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {differentiators.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Card key={item.title} className="text-center">
+                  <CardHeader>
+                    <Icon className="h-10 w-10 mx-auto mb-3 text-[#0E74FF]" />
+                    <CardTitle className="text-lg">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -195,31 +238,33 @@ export default function TrainingCoursesPage() {
       {/* Credentials Section */}
       <section className="w-full py-16">
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-5xl mx-auto text-center">
             <Shield className="h-12 w-12 mx-auto mb-4 text-[#0E74FF]" />
             <h2 className="text-2xl font-bold mb-4">Certified Experts</h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground mb-12">
               Our team holds certifications from leading security institutions and brings real-world experience in cybersecurity and fraud investigation.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="w-full py-16 bg-purple-50 dark:bg-purple-950/20">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <Clock className="h-12 w-12 mx-auto mb-4 text-purple-600" />
-            <h2 className="text-2xl font-bold mb-4">Interested in Custom Training?</h2>
-            <p className="text-muted-foreground mb-6">
-              Contact us to discuss your organization&apos;s training needs or to be notified when courses become available.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              Email us at{' '}
-              <a href="mailto:info@scamnemesis.com" className="text-[#0E74FF] hover:underline">
-                info@scamnemesis.com
-              </a>
-            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-70">
+              {/* Certification Logos Placeholders */}
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">CISSP</div>
+              </div>
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">CEH</div>
+              </div>
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">CISM</div>
+              </div>
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">Security+</div>
+              </div>
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">OSCP</div>
+              </div>
+              <div className="flex items-center justify-center h-20 bg-muted rounded-lg p-4">
+                <div className="text-xs font-semibold text-muted-foreground text-center">CFE</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -228,15 +273,15 @@ export default function TrainingCoursesPage() {
       <section className="w-full py-16 md:py-24 bg-[#0E74FF] text-white">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-              Be the First to Know
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              Ready to Strengthen Your Security?
             </h2>
             <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
-              Our training courses are launching soon. Get notified when they become available.
+              Contact us to discuss your training needs or learn more about our upcoming courses.
             </p>
             <Button size="lg" variant="secondary" asChild>
               <Link href="/contact-us">
-                Contact Us
+                Book a Free Consultation
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
