@@ -83,9 +83,17 @@ jobs:
             docker rmi scamnemesis-app scamnemesis-ml-service scamnemesis-migrations 2>/dev/null || true
             docker builder prune -f || true
 
-            # Build and start all services with fresh images
-            docker compose -f docker-compose.prod.yml build --no-cache --pull
-            docker compose -f docker-compose.prod.yml up -d
+            # Pull latest pre-built images from Docker Hub (traefik, postgres, redis, etc.)
+            echo "Pulling latest images from Docker Hub..."
+            docker compose -f docker-compose.prod.yml pull
+
+            # Build local services with fresh images
+            echo "Building local services..."
+            docker compose -f docker-compose.prod.yml build --no-cache
+
+            # Start all services with forced recreation to apply new config
+            echo "Starting services with forced recreation..."
+            docker compose -f docker-compose.prod.yml up -d --force-recreate
 
             # Wait for services to be healthy
             echo "Waiting for services to start..."

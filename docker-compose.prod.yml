@@ -111,6 +111,8 @@ services:
         condition: service_completed_successfully
     labels:
       - "traefik.enable=true"
+      # CRITICAL: Tell Traefik which network to use for backend communication
+      - "traefik.docker.network=scamnemesis_network_prod"
       # Define the backend service (CRITICAL - must be defined for routers to work)
       - "traefik.http.services.app.loadbalancer.server.port=3000"
       # Main HTTPS router
