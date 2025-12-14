@@ -121,9 +121,9 @@ ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV COREPACK_HOME=/app/.cache/corepack
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:3000/api/v1/verify || exit 1
+# Health check - uses dedicated lightweight health endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
+    CMD curl -f http://localhost:3000/api/v1/health || exit 1
 
 # Start production server
 CMD ["pnpm", "start"]
