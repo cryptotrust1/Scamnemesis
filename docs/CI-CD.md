@@ -108,6 +108,21 @@ at node_modules/test-exclude/index.js:5:14
 1. Run `pnpm install` locally
 2. Commit updated `pnpm-lock.yaml`
 
+### DRONE_SSH_PREV_COMMAND_EXIT_CODE Warnings (Deployment)
+
+**Warning**:
+```
+The "DRONE_SSH_PREV_COMMAND_EXIT_CODE" variable is not set. Defaulting to a blank string.
+```
+
+**Impact**: Low priority - warnings are cosmetic and don't affect deployment functionality.
+
+**Cause**: The `script_stop: true` flag in `appleboy/ssh-action` injects error-handling code that corrupts heredoc operations, appearing as undefined variables in Docker Compose.
+
+**Solution**: See detailed analysis in [DEPLOYMENT_WARNING_ANALYSIS.md](./DEPLOYMENT_WARNING_ANALYSIS.md)
+
+**Quick Fix**: Replace `script_stop: true` with `set -e` at the top of the deployment script.
+
 ## Performance Optimization
 
 ### Test Parallelization
