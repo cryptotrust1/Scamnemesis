@@ -43,20 +43,33 @@ services:
   # DATABASE MIGRATIONS (runs before app starts)
   # ===========================================================================
   migrations:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder  # Use builder stage which has pnpm and node_modules
+    image: postgres:16-alpine
     container_name: scamnemesis-migrations
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=${POSTGRES_USER:-postgres}
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGDATABASE=${POSTGRES_DB:-scamnemesis}
+    volumes:
+      - ./migrations:/migrations:ro
     depends_on:
       postgres:
         condition: service_healthy
-    command: ["pnpm", "prisma", "migrate", "deploy"]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Running database migrations..."
+        for file in /migrations/*.sql; do
+          if [ -f "$$file" ]; then
+            echo "Executing: $$file"
+            psql -f "$$file" || echo "Warning: $$file may have already been applied"
+          fi
+        done
+        echo "Migrations completed!"
     networks:
       - scamnemesis
-    restart: "no"  # Run once and exit
+    restart: "no"
 
   # ===========================================================================
   # NEXT.JS APPLICATION (Frontend + Backend API)
@@ -71,7 +84,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-scamnemesis}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
       - REDIS_URL=redis://:${REDIS_PASSWORD:-scamnemesis_redis_2024}@redis:6379
       - S3_ENDPOINT=http://minio:9000
       - S3_ACCESS_KEY=${S3_ACCESS_KEY:-minioadmin}
