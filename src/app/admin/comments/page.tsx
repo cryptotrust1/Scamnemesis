@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Search,
@@ -15,6 +15,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,99 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-// Mock data
-const mockComments = [
-  {
-    id: '1',
-    content: 'Môžem potvrdiť, tento podvodník mi tiež poslal rovnakú správu. Buďte opatrní!',
-    author: {
-      id: 'u1',
-      displayName: 'Ján Novák',
-      email: 'jan.n***@email.com',
-    },
-    report: {
-      id: 'r1',
-      title: 'Investičný podvod s kryptomenami',
-      publicId: 'RPT-2024-001234',
-    },
-    status: 'PENDING',
-    reported: false,
-    createdAt: '2025-12-10T14:32:00',
-  },
-  {
-    id: '2',
-    content: 'SPAM SPAM SPAM odkaz na podozrivú stránku',
-    author: {
-      id: 'u2',
-      displayName: 'Spammer123',
-      email: 'spam***@email.com',
-    },
-    report: {
-      id: 'r2',
-      title: 'Romance scam - dating aplikácia',
-      publicId: 'RPT-2024-001233',
-    },
-    status: 'PENDING',
-    reported: true,
-    reportReason: 'Spam obsah',
-    createdAt: '2025-12-10T13:15:00',
-  },
-  {
-    id: '3',
-    content: 'Ďakujem za nahlásenie, vďaka vám som sa vyhol podobnému podvodu.',
-    author: {
-      id: 'u3',
-      displayName: 'Mária Kováčová',
-      email: 'maria.k***@gmail.com',
-    },
-    report: {
-      id: 'r3',
-      title: 'Phishing email - podvrhnutá správa od banky',
-      publicId: 'RPT-2024-001232',
-    },
-    status: 'APPROVED',
-    reported: false,
-    createdAt: '2025-12-10T11:45:00',
-  },
-  {
-    id: '4',
-    content: 'Toto je falošné hlásenie, poznám túto osobu a nie je to podvodník!',
-    author: {
-      id: 'u4',
-      displayName: 'Peter Horváth',
-      email: 'peter.h***@yahoo.com',
-    },
-    report: {
-      id: 'r4',
-      title: 'Podvod s prenájmom bytu',
-      publicId: 'RPT-2024-001231',
-    },
-    status: 'PENDING',
-    reported: true,
-    reportReason: 'Nepravdivé tvrdenie',
-    createdAt: '2025-12-10T10:20:00',
-  },
-  {
-    id: '5',
-    content: 'Vulgárny a urážlivý obsah ktorý bol zmazaný',
-    author: {
-      id: 'u5',
-      displayName: 'Trollmaster',
-      email: 'troll***@email.com',
-    },
-    report: {
-      id: 'r1',
-      title: 'Investičný podvod s kryptomenami',
-      publicId: 'RPT-2024-001234',
-    },
-    status: 'REJECTED',
-    reported: true,
-    reportReason: 'Vulgárny obsah',
-    rejectionReason: 'Porušenie pravidiel komunity',
-    createdAt: '2025-12-09T16:30:00',
-  },
-];
+import { fetchComments, approveComment, rejectComment, type Comment } from '@/lib/admin/api';
 
 const STATUSES = [
   { value: 'all', label: 'Všetky stavy' },
@@ -131,44 +41,68 @@ const STATUSES = [
 export default function AdminCommentsPage() {
   const searchParams = useSearchParams();
   const initialReported = searchParams?.get('reported') === 'true';
+  const initialStatus = searchParams?.get('status') || 'all';
 
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [reportedOnly, setReportedOnly] = useState(initialReported);
-  const [comments, setComments] = useState(mockComments);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Stats
+  const [stats, setStats] = useState({
+    pending: 0,
+    reported: 0,
+    total: 0,
+  });
 
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(comments.length / itemsPerPage);
+
+  const loadComments = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchComments({
+        status: statusFilter,
+        reported: reportedOnly || undefined,
+        search: search || undefined,
+        page: currentPage,
+        pageSize: itemsPerPage,
+      });
+      setComments(data.comments);
+      setTotalPages(Math.ceil(data.total / itemsPerPage));
+      setTotalCount(data.total);
+
+      // Update stats on first load
+      if (statusFilter === 'all' && !reportedOnly && !search) {
+        const pendingCount = data.comments.filter((c: Comment) => c.status === 'PENDING').length;
+        const reportedCount = data.comments.filter((c: Comment) => c.reported).length;
+        setStats({
+          pending: pendingCount,
+          reported: reportedCount,
+          total: data.total,
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa načítať komentáre');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [statusFilter, reportedOnly, search, currentPage]);
 
   useEffect(() => {
-    setIsLoading(true);
+    loadComments();
+  }, [loadComments]);
 
-    setTimeout(() => {
-      let filtered = [...mockComments];
-
-      if (search) {
-        filtered = filtered.filter(
-          (c) =>
-            c.content.toLowerCase().includes(search.toLowerCase()) ||
-            c.author.displayName.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((c) => c.status === statusFilter);
-      }
-
-      if (reportedOnly) {
-        filtered = filtered.filter((c) => c.reported);
-      }
-
-      setComments(filtered);
-      setCurrentPage(1);
-      setIsLoading(false);
-    }, 300);
-  }, [search, statusFilter, reportedOnly]);
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, reportedOnly, search]);
 
 
   const getStatusBadge = (status: string) => {
@@ -195,21 +129,48 @@ export default function AdminCommentsPage() {
     });
   };
 
-  const handleApprove = (id: string) => {
-    setComments(comments.map(c => c.id === id ? { ...c, status: 'APPROVED' } : c));
+  const handleApprove = async (id: string) => {
+    try {
+      setIsSubmitting(true);
+      await approveComment(id);
+      setComments(comments.map(c => c.id === id ? { ...c, status: 'APPROVED' as const } : c));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa schváliť komentár');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleReject = (id: string) => {
-    setComments(comments.map(c => c.id === id ? { ...c, status: 'REJECTED' } : c));
+  const handleReject = async (id: string) => {
+    try {
+      setIsSubmitting(true);
+      await rejectComment(id);
+      setComments(comments.map(c => c.id === id ? { ...c, status: 'REJECTED' as const } : c));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zamietnuť komentár');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const paginatedComments = comments.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const pendingCount = mockComments.filter(c => c.status === 'PENDING').length;
-  const reportedCount = mockComments.filter(c => c.reported).length;
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
+              <p className="text-destructive">{error}</p>
+              <Button onClick={loadComments} variant="outline">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Skúsiť znova
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -217,19 +178,19 @@ export default function AdminCommentsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-amber-600">{pendingCount}</div>
+            <div className="text-2xl font-bold text-amber-600">{stats.pending}</div>
             <p className="text-sm text-muted-foreground">Čakajúcich na moderáciu</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">{reportedCount}</div>
+            <div className="text-2xl font-bold text-red-600">{stats.reported}</div>
             <p className="text-sm text-muted-foreground">Nahlásených komentárov</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockComments.length}</div>
+            <div className="text-2xl font-bold">{stats.total || totalCount}</div>
             <p className="text-sm text-muted-foreground">Celkom komentárov</p>
           </CardContent>
         </Card>
@@ -285,10 +246,16 @@ export default function AdminCommentsPage() {
       {/* Comments List */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
-            Komentáre ({comments.length})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Komentáre ({totalCount})
+            </CardTitle>
+            <Button variant="outline" size="sm" onClick={loadComments}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Obnoviť
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -301,7 +268,7 @@ export default function AdminCommentsPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {paginatedComments.map((comment) => (
+              {comments.map((comment) => (
                 <div
                   key={comment.id}
                   className={`p-4 rounded-lg border ${
@@ -364,6 +331,7 @@ export default function AdminCommentsPage() {
                             size="icon"
                             className="text-green-600 hover:text-green-700 hover:bg-green-50"
                             onClick={() => handleApprove(comment.id)}
+                            disabled={isSubmitting}
                           >
                             <CheckCircle className="h-4 w-4" />
                           </Button>
@@ -372,6 +340,7 @@ export default function AdminCommentsPage() {
                             size="icon"
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             onClick={() => handleReject(comment.id)}
+                            disabled={isSubmitting}
                           >
                             <XCircle className="h-4 w-4" />
                           </Button>
@@ -391,7 +360,7 @@ export default function AdminCommentsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground">
-                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, comments.length)} z {comments.length}
+                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, totalCount)} z {totalCount}
               </p>
               <div className="flex items-center gap-2">
                 <Button

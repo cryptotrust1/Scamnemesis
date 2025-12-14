@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   FileText,
@@ -18,9 +18,11 @@ import {
   Image,
   Search,
   FileEdit,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { AdminAuthProvider, useAdminAuth } from '@/lib/admin/auth-context';
 
 const sidebarItems = [
   {
@@ -75,13 +77,48 @@ const sidebarItems = [
   },
 ];
 
-export default function AdminLayout({
+function AdminLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isLoading, isAuthenticated, logout } = useAdminAuth();
+
+  // Check if we're on the login page
+  const isLoginPage = pathname === '/admin/login';
+
+  // Redirect to login if not authenticated (except on login page)
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !isLoginPage) {
+      router.push('/admin/login');
+    }
+  }, [isLoading, isAuthenticated, isLoginPage, router]);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // On login page, just render children
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Not authenticated - show nothing (redirect will happen)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -132,15 +169,15 @@ export default function AdminLayout({
 
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 border-t p-2">
-          <Link
-            href="/"
+          <button
+            onClick={logout}
             className={cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors'
+              'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors'
             )}
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />
-            {!collapsed && <span>Späť na web</span>}
-          </Link>
+            {!collapsed && <span>Odhlásiť sa</span>}
+          </button>
         </div>
 
         {/* Collapse button */}
@@ -175,7 +212,10 @@ export default function AdminLayout({
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
-              admin@scamnemesis.com
+              {user?.email}
+            </span>
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
+              {user?.role}
             </span>
           </div>
         </header>
@@ -186,5 +226,19 @@ export default function AdminLayout({
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AdminAuthProvider>
+      <AdminLayoutContent>
+        {children}
+      </AdminLayoutContent>
+    </AdminAuthProvider>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Search,
   Filter,
@@ -15,6 +15,8 @@ import {
   Mail,
   Calendar,
   FileText,
+  RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,99 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-// Mock data
-const mockUsers = [
-  {
-    id: '1',
-    email: 'jan.novak@email.com',
-    displayName: 'Ján Novák',
-    role: 'ADMIN',
-    status: 'ACTIVE',
-    reportsCount: 45,
-    commentsCount: 123,
-    registeredAt: '2024-03-15T10:30:00',
-    lastLoginAt: '2025-12-10T09:15:00',
-    verified: true,
-  },
-  {
-    id: '2',
-    email: 'maria.kovacova@gmail.com',
-    displayName: 'Mária Kováčová',
-    role: 'GOLD',
-    status: 'ACTIVE',
-    reportsCount: 28,
-    commentsCount: 67,
-    registeredAt: '2024-06-20T14:45:00',
-    lastLoginAt: '2025-12-09T18:30:00',
-    verified: true,
-  },
-  {
-    id: '3',
-    email: 'peter.horvat@yahoo.com',
-    displayName: 'Peter Horváth',
-    role: 'STANDARD',
-    status: 'ACTIVE',
-    reportsCount: 12,
-    commentsCount: 34,
-    registeredAt: '2024-08-10T09:00:00',
-    lastLoginAt: '2025-12-08T11:20:00',
-    verified: true,
-  },
-  {
-    id: '4',
-    email: 'anna.svobodova@outlook.com',
-    displayName: 'Anna Svobodová',
-    role: 'BASIC',
-    status: 'ACTIVE',
-    reportsCount: 5,
-    commentsCount: 15,
-    registeredAt: '2024-10-05T16:20:00',
-    lastLoginAt: '2025-12-07T14:45:00',
-    verified: true,
-  },
-  {
-    id: '5',
-    email: 'tomas.benes@email.com',
-    displayName: 'Tomáš Beneš',
-    role: 'BASIC',
-    status: 'BANNED',
-    reportsCount: 2,
-    commentsCount: 8,
-    registeredAt: '2024-11-15T11:30:00',
-    lastLoginAt: '2025-11-20T08:00:00',
-    verified: false,
-  },
-  {
-    id: '6',
-    email: 'eva.majerova@gmail.com',
-    displayName: 'Eva Majerová',
-    role: 'STANDARD',
-    status: 'ACTIVE',
-    reportsCount: 18,
-    commentsCount: 42,
-    registeredAt: '2024-07-25T13:15:00',
-    lastLoginAt: '2025-12-10T07:30:00',
-    verified: true,
-  },
-  {
-    id: '7',
-    email: 'michal.kralik@email.com',
-    displayName: null,
-    role: 'BASIC',
-    status: 'PENDING',
-    reportsCount: 0,
-    commentsCount: 0,
-    registeredAt: '2025-12-09T20:45:00',
-    lastLoginAt: null,
-    verified: false,
-  },
-];
+import { fetchUsers, updateUserRole, banUser, unbanUser, type User } from '@/lib/admin/api';
 
 const ROLES = [
   { value: 'all', label: 'Všetky role' },
-  { value: 'ADMIN', label: 'Admin' },
   { value: 'SUPER_ADMIN', label: 'Super Admin' },
+  { value: 'ADMIN', label: 'Admin' },
   { value: 'GOLD', label: 'Gold' },
   { value: 'STANDARD', label: 'Standard' },
   { value: 'BASIC', label: 'Basic' },
@@ -136,40 +51,66 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [users, setUsers] = useState(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Stats
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    pending: 0,
+    banned: 0,
+  });
 
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(users.length / itemsPerPage);
+
+  const loadUsers = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchUsers({
+        role: roleFilter,
+        status: statusFilter,
+        search: search || undefined,
+        page: currentPage,
+        pageSize: itemsPerPage,
+      });
+      setUsers(data.users);
+      setTotalPages(Math.ceil(data.total / itemsPerPage));
+      setTotalCount(data.total);
+
+      // Update stats on first load or when filters are reset
+      if (roleFilter === 'all' && statusFilter === 'all' && !search) {
+        const activeCount = data.users.filter((u: User) => u.status === 'ACTIVE').length;
+        const pendingCount = data.users.filter((u: User) => u.status === 'PENDING').length;
+        const bannedCount = data.users.filter((u: User) => u.status === 'BANNED').length;
+        setStats({
+          total: data.total,
+          active: activeCount,
+          pending: pendingCount,
+          banned: bannedCount,
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa načítať používateľov');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [roleFilter, statusFilter, search, currentPage]);
 
   useEffect(() => {
-    setIsLoading(true);
+    loadUsers();
+  }, [loadUsers]);
 
-    setTimeout(() => {
-      let filtered = [...mockUsers];
-
-      if (search) {
-        filtered = filtered.filter(
-          (u) =>
-            u.email.toLowerCase().includes(search.toLowerCase()) ||
-            u.displayName?.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-
-      if (roleFilter !== 'all') {
-        filtered = filtered.filter((u) => u.role === roleFilter);
-      }
-
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((u) => u.status === statusFilter);
-      }
-
-      setUsers(filtered);
-      setCurrentPage(1);
-      setIsLoading(false);
-    }, 300);
-  }, [search, roleFilter, statusFilter]);
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [roleFilter, statusFilter, search]);
 
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -236,22 +177,62 @@ export default function AdminUsersPage() {
     });
   };
 
-  const handleChangeRole = (userId: string, newRole: string) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
+  const handleChangeRole = async (userId: string, newRole: string) => {
+    try {
+      setIsSubmitting(true);
+      await updateUserRole(userId, newRole);
+      setUsers(users.map(u => u.id === userId ? { ...u, role: newRole as User['role'] } : u));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zmeniť rolu');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleBanUser = (userId: string) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, status: 'BANNED' } : u));
+  const handleBanUser = async (userId: string) => {
+    if (!confirm('Naozaj chcete zablokovať tohto používateľa?')) return;
+
+    try {
+      setIsSubmitting(true);
+      await banUser(userId);
+      setUsers(users.map(u => u.id === userId ? { ...u, status: 'BANNED' as const, isActive: false } : u));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa zablokovať používateľa');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleUnbanUser = (userId: string) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, status: 'ACTIVE' } : u));
+  const handleUnbanUser = async (userId: string) => {
+    try {
+      setIsSubmitting(true);
+      await unbanUser(userId);
+      setUsers(users.map(u => u.id === userId ? { ...u, status: 'ACTIVE' as const, isActive: true } : u));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Nepodarilo sa odblokovať používateľa');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const paginatedUsers = users.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
+              <p className="text-destructive">{error}</p>
+              <Button onClick={loadUsers} variant="outline">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Skúsiť znova
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -259,14 +240,14 @@ export default function AdminUsersPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{mockUsers.length}</div>
+            <div className="text-2xl font-bold">{stats.total || totalCount}</div>
             <p className="text-sm text-muted-foreground">Celkom používateľov</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-green-600">
-              {mockUsers.filter(u => u.status === 'ACTIVE').length}
+              {stats.active}
             </div>
             <p className="text-sm text-muted-foreground">Aktívnych</p>
           </CardContent>
@@ -274,7 +255,7 @@ export default function AdminUsersPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-amber-600">
-              {mockUsers.filter(u => u.status === 'PENDING').length}
+              {stats.pending}
             </div>
             <p className="text-sm text-muted-foreground">Čakajúcich na overenie</p>
           </CardContent>
@@ -282,7 +263,7 @@ export default function AdminUsersPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-red-600">
-              {mockUsers.filter(u => u.status === 'BANNED').length}
+              {stats.banned}
             </div>
             <p className="text-sm text-muted-foreground">Zablokovaných</p>
           </CardContent>
@@ -343,7 +324,13 @@ export default function AdminUsersPage() {
       {/* Users List */}
       <Card>
         <CardHeader>
-          <CardTitle>Používatelia ({users.length})</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Používatelia ({totalCount})</CardTitle>
+            <Button variant="outline" size="sm" onClick={loadUsers}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Obnoviť
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -356,7 +343,7 @@ export default function AdminUsersPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {paginatedUsers.map((user) => (
+              {users.map((user) => (
                 <div
                   key={user.id}
                   className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors"
@@ -371,7 +358,7 @@ export default function AdminUsersPage() {
                       <div>
                         <p className="font-medium">
                           {user.displayName || 'Bez mena'}
-                          {user.verified && (
+                          {user.emailVerified && (
                             <ShieldCheck className="inline h-4 w-4 ml-1 text-green-600" />
                           )}
                         </p>
@@ -385,11 +372,11 @@ export default function AdminUsersPage() {
                     <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        Registrácia: {formatDate(user.registeredAt)}
+                        Registrácia: {formatDate(user.createdAt)}
                       </span>
                       <span className="flex items-center gap-1">
                         <FileText className="h-3 w-3" />
-                        {user.reportsCount} hlásení, {user.commentsCount} komentárov
+                        {user.reportsCount || 0} hlásení, {user.commentsCount || 0} komentárov
                       </span>
                     </div>
                   </div>
@@ -402,6 +389,7 @@ export default function AdminUsersPage() {
                       <Select
                         value={user.role}
                         onValueChange={(value) => handleChangeRole(user.id, value)}
+                        disabled={isSubmitting}
                       >
                         <SelectTrigger className="w-[130px] h-8">
                           <UserCog className="h-4 w-4 mr-1" />
@@ -422,6 +410,7 @@ export default function AdminUsersPage() {
                           size="sm"
                           onClick={() => handleUnbanUser(user.id)}
                           className="text-green-600"
+                          disabled={isSubmitting}
                         >
                           Odblokovať
                         </Button>
@@ -431,6 +420,7 @@ export default function AdminUsersPage() {
                           size="sm"
                           onClick={() => handleBanUser(user.id)}
                           className="text-red-600"
+                          disabled={isSubmitting}
                         >
                           <Ban className="h-4 w-4" />
                         </Button>
@@ -450,7 +440,7 @@ export default function AdminUsersPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground">
-                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, users.length)} z {users.length}
+                Zobrazené {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, totalCount)} z {totalCount}
               </p>
               <div className="flex items-center gap-2">
                 <Button
