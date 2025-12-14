@@ -74,40 +74,34 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
 # ===========================================================================
-# PRODUCTION STAGE - Minimal production image
+# PRODUCTION STAGE - Minimal production image (Next.js Standalone)
 # ===========================================================================
 FROM node:20-slim AS production
 
-# Install system dependencies including OpenSSL for Prisma
+# Install only essential system dependencies for runtime
 RUN apt-get update && apt-get install -y \
     curl \
     openssl \
-    libssl-dev \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@9 --activate
-
 WORKDIR /app
 
-# Create non-root user with proper home directory
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 --home /app nextjs
+    adduser --system --uid 1001 nextjs
 
-# Copy necessary files from builder
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/prisma ./prisma
+# Copy standalone build output (includes server.js and minimal node_modules)
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 
-# Generate Prisma client
-RUN pnpm prisma generate
+# Copy static files (required for Next.js standalone mode)
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Create cache directory for corepack and change ownership
-RUN mkdir -p /app/.cache && chown -R nextjs:nodejs /app
+# Copy public assets
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Copy prisma schema for potential migrations
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Switch to non-root user
 USER nextjs
@@ -118,12 +112,12 @@ EXPOSE 3000
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV COREPACK_HOME=/app/.cache/corepack
 
 # Health check - uses dedicated lightweight health endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
     CMD curl -f http://localhost:3000/api/v1/health || exit 1
 
-# Start production server
-CMD ["pnpm", "start"]
+# Start standalone server (NOT pnpm start - standalone uses node directly)
+CMD ["node", "server.js"]
