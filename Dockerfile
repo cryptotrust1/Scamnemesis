@@ -91,9 +91,9 @@ RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
 
-# Create non-root user
+# Create non-root user with proper home directory
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+    adduser --system --uid 1001 --home /app nextjs
 
 # Copy necessary files from builder
 COPY --from=builder /app/package.json ./package.json
@@ -106,8 +106,8 @@ COPY --from=builder /app/prisma ./prisma
 # Generate Prisma client
 RUN pnpm prisma generate
 
-# Change ownership
-RUN chown -R nextjs:nodejs /app
+# Create cache directory for corepack and change ownership
+RUN mkdir -p /app/.cache && chown -R nextjs:nodejs /app
 
 # Switch to non-root user
 USER nextjs
@@ -119,6 +119,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV COREPACK_HOME=/app/.cache/corepack
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
