@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-// Database statistics
+// Database statistics - primary
 const stats = [
   { label: 'Malicious IP Addresses', value: '612M+', icon: Globe },
   { label: 'Stolen Vehicles Database', value: '12M+', icon: Database },
@@ -29,27 +29,47 @@ const stats = [
   { label: 'Dissolved Companies', value: '6.7M+', icon: FileText },
 ];
 
+// Additional stats from demo
+const additionalStats = [
+  { label: 'Crypto Scam Projects', value: '9,221+' },
+  { label: 'Ransomware Wallets', value: '11,186+' },
+  { label: 'Scam Calls (US)', value: '2M+' },
+  { label: 'CFPB Complaints', value: '3M+' },
+  { label: 'IC3 Reports (2024)', value: '859,000' },
+];
+
 const totalStats = [
   { label: 'Records', value: '640M+' },
   { label: 'Data Sources', value: '130+' },
   { label: 'Categories', value: '8' },
   { label: 'Access', value: '24/7' },
+  { label: 'Update Frequency', value: '5 min' },
 ];
 
-// Feature roadmap data
+// Feature roadmap data - complete list from demo
 const roadmapFeatures = [
-  { name: 'API: dispatch data to third parties', progress: 80, status: 'development' },
+  // Functional (100%)
   { name: 'Scam search 38+ identifiers', progress: 100, status: 'functional' },
   { name: 'Case linking similarities', progress: 100, status: 'functional' },
+  // In Development
+  { name: 'API: dispatch data to third parties', progress: 80, status: 'development' },
   { name: 'Media processing + OCR', progress: 80, status: 'development' },
-  { name: 'Website widget', progress: 24, status: 'development' },
-  { name: 'Blockchain analysis', progress: 56, status: 'development' },
-  { name: 'CTI Cyber Threat Intelligence', progress: 52, status: 'development' },
-  { name: 'AI/NLP tool for OSINT', progress: 50, status: 'planned' },
   { name: 'AI image/video deepfake detection', progress: 69, status: 'development' },
-  { name: 'Graph database nodes & relationships', progress: 61, status: 'development' },
-  { name: 'Email verification', progress: 50, status: 'planned' },
   { name: 'People & company search', progress: 68, status: 'development' },
+  { name: 'Graph database nodes & relationships', progress: 61, status: 'development' },
+  { name: 'Domain score & reputation', progress: 59, status: 'development' },
+  { name: 'Reverse face search', progress: 58, status: 'development' },
+  { name: 'Media forensics - geolocation & edits', progress: 57, status: 'development' },
+  { name: 'Blockchain analysis', progress: 56, status: 'development' },
+  { name: 'Media forensics - advanced modules', progress: 53, status: 'development' },
+  { name: 'CTI Cyber Threat Intelligence', progress: 52, status: 'development' },
+  { name: 'Similar face matching', progress: 52, status: 'development' },
+  // Planned
+  { name: 'Email verification', progress: 50, status: 'planned' },
+  { name: 'AI/NLP tool for OSINT', progress: 50, status: 'planned' },
+  { name: 'Website widget - reporting + search', progress: 24, status: 'planned' },
+  { name: 'AI bot "Is this a scam?"', progress: 0, status: 'planned' },
+  { name: 'Data enrichment from 130+ sources', progress: 0, status: 'planned' },
 ];
 
 // Services
@@ -239,6 +259,7 @@ export default function HomePage() {
       {/* Database Stats Section */}
       <section className="w-full py-12 bg-[#0E74FF] text-white">
         <div className="container px-4 md:px-6">
+          {/* Primary stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             {stats.map((stat) => {
               const Icon = stat.icon;
@@ -251,6 +272,16 @@ export default function HomePage() {
               );
             })}
           </div>
+          {/* Additional stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8 pt-6 border-t border-white/20">
+            {additionalStats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-xl md:text-2xl font-bold">{stat.value}</div>
+                <div className="text-xs opacity-80">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+          {/* Total stats */}
           <div className="flex flex-wrap justify-center gap-8 pt-6 border-t border-white/20">
             {totalStats.map((stat) => (
               <div key={stat.label} className="text-center">
