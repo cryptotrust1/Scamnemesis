@@ -37,14 +37,15 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            # Stop all containers first
+            # Stop all containers and clean up
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
-            # Remove old volumes if corrupted (optional - uncomment if needed)
-            # docker volume rm scamnemesis_redis_data_prod || true
+            # Remove old images to prevent conflicts
+            docker rmi scamnemesis-app scamnemesis-ml-service 2>/dev/null || true
+            docker builder prune -f || true
 
-            # Build and start all services
-            docker compose -f docker-compose.prod.yml build app
+            # Build and start all services with fresh images
+            docker compose -f docker-compose.prod.yml build --no-cache --pull
             docker compose -f docker-compose.prod.yml up -d
 
             # Wait for services to be healthy
