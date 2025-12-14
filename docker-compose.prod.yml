@@ -100,7 +100,7 @@ services:
       - "traefik.http.routers.app-www-http.entrypoints=web"
       - "traefik.http.routers.app-www-http.middlewares=https-redirect"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/verify"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
       interval: 30s
       timeout: 15s
       retries: 5
