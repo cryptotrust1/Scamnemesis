@@ -80,7 +80,7 @@ jobs:
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
             # Remove old images to prevent conflicts
-            docker rmi scamnemesis-app scamnemesis-ml-service 2>/dev/null || true
+            docker rmi scamnemesis-app scamnemesis-ml-service scamnemesis-migrations 2>/dev/null || true
             docker builder prune -f || true
 
             # Build and start all services with fresh images
