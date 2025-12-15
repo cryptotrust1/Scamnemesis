@@ -34,12 +34,12 @@ export async function POST(
       );
     }
 
-    // Update cluster status
+    // Update cluster status (using correct enum value: IGNORED instead of DISMISSED)
     const updatedCluster = await prisma.$transaction(async (tx) => {
       const updated = await tx.duplicateCluster.update({
         where: { id },
         data: {
-          status: 'DISMISSED',
+          status: 'IGNORED',
         },
       });
 

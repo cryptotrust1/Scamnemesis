@@ -35,8 +35,8 @@ export async function POST(
         select: {
           id: true,
           email: true,
-          firstName: true,
-          lastName: true,
+          name: true,
+          displayName: true,
           role: true,
           isActive: true,
           emailVerified: true,
@@ -61,9 +61,7 @@ export async function POST(
     return NextResponse.json({
       id: updatedUser.id,
       email: updatedUser.email,
-      displayName: updatedUser.firstName && updatedUser.lastName
-        ? `${updatedUser.firstName} ${updatedUser.lastName}`
-        : null,
+      displayName: updatedUser.displayName || updatedUser.name || null,
       role: updatedUser.role,
       status: !updatedUser.emailVerified ? 'PENDING' : 'ACTIVE',
       isActive: true,

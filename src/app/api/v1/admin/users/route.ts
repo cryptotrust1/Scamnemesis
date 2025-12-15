@@ -37,8 +37,8 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { email: { contains: search, mode: 'insensitive' } },
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { displayName: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -52,8 +52,8 @@ export async function GET(request: NextRequest) {
         select: {
           id: true,
           email: true,
-          firstName: true,
-          lastName: true,
+          name: true,
+          displayName: true,
           role: true,
           isActive: true,
           emailVerified: true,
@@ -74,11 +74,8 @@ export async function GET(request: NextRequest) {
     const formattedUsers = users.map((user) => ({
       id: user.id,
       email: user.email,
-      displayName: user.firstName && user.lastName
-        ? `${user.firstName} ${user.lastName}`
-        : user.firstName || user.lastName || null,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      displayName: user.displayName || user.name || null,
+      name: user.name,
       role: user.role,
       status: !user.isActive
         ? 'BANNED'
