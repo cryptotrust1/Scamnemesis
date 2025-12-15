@@ -13,6 +13,20 @@ export const dynamic = 'force-dynamic';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@scamnemesis.com';
 const SITE_NAME = process.env.SITE_NAME || 'ScamNemesis';
 
+/**
+ * Escape HTML to prevent XSS attacks
+ */
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char] || char);
+}
+
 const ContactSchema = z.object({
   name: z.string().min(2, 'Meno musí mať aspoň 2 znaky').max(100),
   email: z.string().email('Neplatná emailová adresa'),
@@ -73,16 +87,16 @@ export async function POST(request: NextRequest) {
             </div>
             <div class="content">
               <div class="info-box">
-                <p><strong>Od:</strong> ${name} &lt;${email}&gt;</p>
-                <p><strong>Dôvod:</strong> ${reasonLabels[reason]}</p>
-                <p><strong>Predmet:</strong> ${subject}</p>
+                <p><strong>Od:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p>
+                <p><strong>Dôvod:</strong> ${escapeHtml(reasonLabels[reason])}</p>
+                <p><strong>Predmet:</strong> ${escapeHtml(subject)}</p>
               </div>
               <h3>Správa:</h3>
               <div class="message-box">
-                <p>${message.replace(/\n/g, '<br>')}</p>
+                <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
               </div>
               <p style="color: #666; font-size: 14px;">
-                Pre odpoveď použite: <a href="mailto:${email}">${email}</a>
+                Pre odpoveď použite: <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>
               </p>
             </div>
             <div class="footer">
@@ -131,11 +145,11 @@ Pre odpoveď použite: ${email}
               <h1>✅ Správa prijatá</h1>
             </div>
             <div class="content">
-              <p>Dobrý deň ${name},</p>
+              <p>Dobrý deň ${escapeHtml(name)},</p>
               <p>Ďakujeme za vašu správu. Prijali sme ju a budeme sa vám snažiť odpovedať čo najskôr.</p>
               <div class="message-box">
-                <p><strong>Predmet:</strong> ${subject}</p>
-                <p><strong>Dôvod:</strong> ${reasonLabels[reason]}</p>
+                <p><strong>Predmet:</strong> ${escapeHtml(subject)}</p>
+                <p><strong>Dôvod:</strong> ${escapeHtml(reasonLabels[reason])}</p>
               </div>
               <p>Na väčšinu správ odpovedáme do 2-3 pracovných dní.</p>
               <p>S pozdravom,<br>Tím ${SITE_NAME}</p>

@@ -453,9 +453,11 @@ export default function SearchPage() {
       // Set search mode
       params.set('mode', 'auto');
 
-      // Pagination
-      params.set('page', currentPage.toString());
-      params.set('limit', '10');
+      // Pagination - API expects offset, not page
+      const pageSize = 10;
+      const offset = (currentPage - 1) * pageSize;
+      params.set('offset', offset.toString());
+      params.set('limit', pageSize.toString());
 
       // Filters
       if (filters.fraudType && filters.fraudType !== 'all') {

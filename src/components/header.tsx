@@ -10,24 +10,26 @@ import { cn } from '@/lib/utils';
 import { i18n, type Locale } from '@/i18n/config';
 
 const primaryNav = [
-  { name: { en: 'Scam Checker', sk: 'Kontrola podvodov' }, href: '/search' },
-  { name: { en: 'Report Scam', sk: 'Nahlásiť podvod' }, href: '/report/new' },
-  { name: { en: 'I was scammed', sk: 'Bol som podvedený' }, href: '/i-was-scammed-need-help' },
+  { name: { en: 'Scam Checker', sk: 'Kontrola podvodov', cs: 'Kontrola podvodů', de: 'Betrugscheck' }, href: '/search' },
+  { name: { en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }, href: '/report/new' },
+  { name: { en: 'I was scammed', sk: 'Bol som podvedený', cs: 'Byl jsem podveden', de: 'Ich wurde betrogen' }, href: '/i-was-scammed-need-help' },
 ];
 
 const secondaryNav = [
-  { name: { en: 'Verify service/product', sk: 'Overiť službu/produkt' }, href: '/verify-serviceproduct' },
-  { name: { en: 'Scam Prevention', sk: 'Prevencia podvodov' }, href: '/scam-prevention' },
-  { name: { en: 'Scammer Removal', sk: 'Odstránenie podvodníkov' }, href: '/scammer-removal' },
-  { name: { en: 'Money Recovery', sk: 'Vymáhanie peňazí' }, href: '/money-recovery' },
-  { name: { en: 'Training Courses', sk: 'Školenia a kurzy' }, href: '/training-courses' },
-  { name: { en: 'Support us', sk: 'Podporte nás' }, href: '/support-us' },
-  { name: { en: 'Contact us', sk: 'Kontaktujte nás' }, href: '/contact-us' },
+  { name: { en: 'Verify service/product', sk: 'Overiť službu/produkt', cs: 'Ověřit službu/produkt', de: 'Service/Produkt prüfen' }, href: '/verify-serviceproduct' },
+  { name: { en: 'Scam Prevention', sk: 'Prevencia podvodov', cs: 'Prevence podvodů', de: 'Betrugsprävention' }, href: '/scam-prevention' },
+  { name: { en: 'Scammer Removal', sk: 'Odstránenie podvodníkov', cs: 'Odstranění podvodníků', de: 'Betrügerentfernung' }, href: '/scammer-removal' },
+  { name: { en: 'Money Recovery', sk: 'Vymáhanie peňazí', cs: 'Vymáhání peněz', de: 'Geldrückgewinnung' }, href: '/money-recovery' },
+  { name: { en: 'Training Courses', sk: 'Školenia a kurzy', cs: 'Školení a kurzy', de: 'Schulungen' }, href: '/training-courses' },
+  { name: { en: 'Support us', sk: 'Podporte nás', cs: 'Podpořte nás', de: 'Unterstützen Sie uns' }, href: '/support-us' },
+  { name: { en: 'Contact us', sk: 'Kontaktujte nás', cs: 'Kontaktujte nás', de: 'Kontaktieren Sie uns' }, href: '/contact-us' },
 ];
 
 const languages = [
   { code: 'en' as Locale, name: 'English', flag: '🇬🇧' },
   { code: 'sk' as Locale, name: 'Slovenčina', flag: '🇸🇰' },
+  { code: 'cs' as Locale, name: 'Čeština', flag: '🇨🇿' },
+  { code: 'de' as Locale, name: 'Deutsch', flag: '🇩🇪' },
 ];
 
 export function Header() {
@@ -135,7 +137,7 @@ export function Header() {
                 'text-foreground hover:bg-muted'
               )}
             >
-              {currentLocale === 'sk' ? 'Ďalšie' : 'Others'}
+              {{ en: 'Others', sk: 'Ďalšie', cs: 'Další', de: 'Weitere' }[currentLocale]}
               <ChevronDown className={cn('ml-1 h-4 w-4 transition-transform', othersOpen && 'rotate-180')} />
             </button>
             {othersOpen && (
@@ -203,7 +205,7 @@ export function Header() {
           {/* Report Button */}
           <Button asChild className="hidden md:inline-flex bg-[#0E74FF] hover:bg-[#0E74FF]/90">
             <Link href={getLocalizedHref('/report/new')}>
-              {currentLocale === 'sk' ? 'Nahlásiť podvod' : 'Report Scam'}
+              {{ en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }[currentLocale]}
             </Link>
           </Button>
 
@@ -260,7 +262,7 @@ export function Header() {
             {/* Mobile Language Selector - FIXED */}
             <div className="px-4 py-2">
               <p className="text-sm text-muted-foreground mb-2">
-                {currentLocale === 'sk' ? 'Jazyk' : 'Language'}
+                {{ en: 'Language', sk: 'Jazyk', cs: 'Jazyk', de: 'Sprache' }[currentLocale]}
               </p>
               <div className="flex gap-2">
                 {languages.map((lang) => (

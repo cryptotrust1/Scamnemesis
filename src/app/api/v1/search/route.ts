@@ -86,7 +86,25 @@ const searchParamsSchema = z.object({
   date_to: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   offset: z.coerce.number().int().min(0).default(0),
+  sort: z.enum(['created_at', 'financial_loss', 'relevance']).default('created_at'),
+  order: z.enum(['asc', 'desc']).default('desc'),
 });
+
+type SortField = 'created_at' | 'financial_loss' | 'relevance';
+type SortOrder = 'asc' | 'desc';
+
+/**
+ * Build orderBy clause based on sort parameters
+ */
+function buildOrderBy(sort: SortField, order: SortOrder): Record<string, 'asc' | 'desc'> {
+  switch (sort) {
+    case 'financial_loss':
+      return { financialLoss: order };
+    case 'created_at':
+    default:
+      return { createdAt: order };
+  }
+}
 
 type SearchMode = 'auto' | 'exact' | 'fuzzy' | 'semantic';
 
@@ -178,7 +196,9 @@ async function exactSearch(
   types: string[],
   filters: Record<string, unknown>,
   limit: number,
-  offset: number
+  offset: number,
+  sort: SortField = 'created_at',
+  order: SortOrder = 'desc'
 ): Promise<{ results: SearchResult[]; total: number }> {
   const orConditions: Record<string, unknown>[] = [];
 
@@ -234,7 +254,7 @@ async function exactSearch(
         cryptoInfo: true,
         digitalFootprint: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: buildOrderBy(sort, order),
       take: limit,
       skip: offset,
     }),
@@ -296,7 +316,9 @@ async function fuzzySearch(
   query: string,
   filters: Record<string, unknown>,
   limit: number,
-  offset: number
+  offset: number,
+  sort: SortField = 'created_at',
+  order: SortOrder = 'desc'
 ): Promise<{ results: SearchResult[]; total: number }> {
   const normalizedQuery = query.toLowerCase().trim();
 
@@ -322,7 +344,7 @@ async function fuzzySearch(
       include: {
         perpetrators: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: sort === 'relevance' ? { createdAt: order } : buildOrderBy(sort, order),
       take: limit,
       skip: offset,
     }),
@@ -379,12 +401,14 @@ async function semanticSearch(
   query: string,
   filters: Record<string, unknown>,
   limit: number,
-  offset: number
+  offset: number,
+  sort: SortField = 'created_at',
+  order: SortOrder = 'desc'
 ): Promise<{ results: SearchResult[]; total: number }> {
   // Check if embedding service is available
   if (!isEmbeddingServiceAvailable()) {
     console.warn('[Search] Embedding service not available, falling back to fuzzy search');
-    return fuzzySearch(query, filters, limit, offset);
+    return fuzzySearch(query, filters, limit, offset, sort, order);
   }
 
   // Generate embedding for the search query
@@ -392,7 +416,7 @@ async function semanticSearch(
 
   if (!embeddingResult.success || !embeddingResult.embedding) {
     console.warn('[Search] Failed to generate embedding, falling back to fuzzy search');
-    return fuzzySearch(query, filters, limit, offset);
+    return fuzzySearch(query, filters, limit, offset, sort, order);
   }
 
   const embedding = embeddingResult.embedding;
@@ -469,7 +493,7 @@ async function semanticSearch(
   } catch (error) {
     console.error('[Search] Semantic search error:', error);
     // Fall back to fuzzy search on error
-    return fuzzySearch(query, filters, limit, offset);
+    return fuzzySearch(query, filters, limit, offset, sort, order);
   }
 }
 
@@ -512,7 +536,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { q, mode, fields, country, fraud_type, date_from, date_to, limit, offset } = parsed.data;
+    const { q, mode, fields, country, fraud_type, date_from, date_to, limit, offset, sort, order } = parsed.data;
 
     // Build filters
     const filters: Record<string, unknown> = {};
@@ -546,27 +570,27 @@ export async function GET(request: NextRequest) {
     // Execute search based on mode
     if (mode === 'auto') {
       // Try exact search first
-      const exactResults = await exactSearch(q, searchTypes, filters, limit, offset);
+      const exactResults = await exactSearch(q, searchTypes, filters, limit, offset, sort, order);
 
       if (exactResults.total > 0) {
         results = exactResults.results;
         total = exactResults.total;
       } else {
         // Fall back to fuzzy search
-        const fuzzyResults = await fuzzySearch(q, filters, limit, offset);
+        const fuzzyResults = await fuzzySearch(q, filters, limit, offset, sort, order);
         results = fuzzyResults.results;
         total = fuzzyResults.total;
       }
     } else if (mode === 'exact') {
-      const exactResults = await exactSearch(q, searchTypes, filters, limit, offset);
+      const exactResults = await exactSearch(q, searchTypes, filters, limit, offset, sort, order);
       results = exactResults.results;
       total = exactResults.total;
     } else if (mode === 'fuzzy') {
-      const fuzzyResults = await fuzzySearch(q, filters, limit, offset);
+      const fuzzyResults = await fuzzySearch(q, filters, limit, offset, sort, order);
       results = fuzzyResults.results;
       total = fuzzyResults.total;
     } else if (mode === 'semantic') {
-      const semanticResults = await semanticSearch(q, filters, limit, offset);
+      const semanticResults = await semanticSearch(q, filters, limit, offset, sort, order);
       results = semanticResults.results;
       total = semanticResults.total;
     }
