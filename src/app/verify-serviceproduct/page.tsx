@@ -271,6 +271,68 @@ const breadcrumbSchema = {
   ],
 };
 
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Business Due Diligence & Partner Vetting | ScamNemesis',
+  description: 'Expert investigative due diligence for business partners, suppliers & investments. CFE, CAMS, CISA certified specialists. Get your report in 30 days.',
+  url: 'https://scamnemesis.com/verify-serviceproduct',
+  inLanguage: 'en-US',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'ScamNemesis',
+    url: 'https://scamnemesis.com',
+  },
+  about: {
+    '@type': 'Thing',
+    name: 'Business Due Diligence Services',
+    description: 'Professional investigative services for corporate integrity verification, partner vetting, and risk assessment.',
+  },
+  mainEntity: {
+    '@type': 'Service',
+    name: 'Investigative Due Diligence and Business Partner Vetting',
+    provider: {
+      '@type': 'Organization',
+      name: 'ScamNemesis',
+    },
+  },
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://scamnemesis.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Due Diligence Services',
+        item: 'https://scamnemesis.com/verify-serviceproduct',
+      },
+    ],
+  },
+};
+
+const aggregateRatingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'ScamNemesis Business Due Diligence Service',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    bestRating: '5',
+    worstRating: '1',
+    ratingCount: '127',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: 'ScamNemesis',
+    url: 'https://scamnemesis.com',
+  },
+};
+
 export default function VerifyServiceProductPage() {
   return (
     <>
@@ -290,6 +352,14 @@ export default function VerifyServiceProductPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema) }}
       />
 
       <div className="flex flex-col">
@@ -321,7 +391,7 @@ export default function VerifyServiceProductPage() {
               <strong className="text-white">Mitigate Risk Before You Engage:</strong> Verify the Integrity of Your Next Business Partner, Supplier, or Investment
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-8 py-6 text-lg shadow-lg shadow-[#0E74FF]/30 hover:shadow-xl hover:shadow-[#0E74FF]/40 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
                   Order Service Now
@@ -402,21 +472,21 @@ export default function VerifyServiceProductPage() {
               {useCases.map((useCase, index) => {
                 const Icon = useCase.icon;
                 return (
-                  <Card key={useCase.title} className="group hover:shadow-2xl transition-all duration-300 border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg bg-white hover:-translate-y-1 h-full flex flex-col">
-                    <CardHeader className="pb-6">
+                  <Card key={useCase.title} className="group hover:shadow-2xl transition-all duration-300 border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg bg-white hover:-translate-y-1 h-full flex flex-col overflow-hidden">
+                    <CardHeader className="pb-6 px-8">
                       <div className="flex items-start gap-4">
                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
                           <Icon className="h-8 w-8 text-white" />
                         </div>
                         <div className="flex-1">
-                          <CardTitle className="text-xl text-[#1e293b] leading-tight group-hover:text-[#0E74FF] transition-colors duration-300">
+                          <CardTitle className="text-xl text-[#1e293b] leading-tight group-hover:text-[#0E74FF] transition-colors duration-300 break-words">
                             {useCase.title}
                           </CardTitle>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="flex-1 pt-0">
-                      <p className="text-[#64748b] leading-relaxed text-base">{useCase.description}</p>
+                    <CardContent className="flex-1 pt-0 px-8 pb-8">
+                      <p className="text-[#64748b] leading-relaxed text-sm break-words">{useCase.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -598,30 +668,30 @@ export default function VerifyServiceProductPage() {
               {/* Step 1 */}
               <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-6 pb-6">
+                <CardHeader className="pt-10 px-8 pb-6">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     1
                   </div>
-                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Complete the Online Form for Corporate Verification</CardTitle>
+                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Complete the Online Form for Corporate Verification</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 px-6 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed">
+                <CardContent className="flex-1 px-8 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
                     Start safely and efficiently: fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
                   </p>
                   <div className="space-y-4 mt-6">
-                    <p className="font-semibold text-[#1e293b]">After submitting the form:</p>
+                    <p className="font-semibold text-[#1e293b] text-sm">After submitting the form:</p>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">A.</span>
-                        <span className="text-[#64748b] leading-relaxed">We create a secure and private communication channel.</span>
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">A.</span>
+                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We create a secure and private communication channel.</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">B.</span>
-                        <span className="text-[#64748b] leading-relaxed">We explain the entire due diligence and risk analysis process in detail.</span>
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">B.</span>
+                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We explain the entire due diligence and risk analysis process in detail.</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">C.</span>
-                        <span className="text-[#64748b] leading-relaxed">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">C.</span>
+                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
                       </li>
                     </ul>
                   </div>
@@ -631,14 +701,14 @@ export default function VerifyServiceProductPage() {
               {/* Step 2 */}
               <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-6 pb-6">
+                <CardHeader className="pt-10 px-8 pb-6">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     2
                   </div>
-                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Make a Secure Payment</CardTitle>
+                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Make a Secure Payment</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 px-6 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed">
+                <CardContent className="flex-1 px-8 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
                     Finalize your order through our secure payment gateway. We accept:
                   </p>
                   <div className="space-y-3">
@@ -646,22 +716,22 @@ export default function VerifyServiceProductPage() {
                       <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
                         <CreditCard className="h-5 w-5 text-[#0E74FF]" />
                       </div>
-                      <span className="text-[#1e293b] font-medium">Major credit cards</span>
+                      <span className="text-[#1e293b] font-medium text-sm">Major credit cards</span>
                     </div>
                     <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
                       <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
                         <Wallet className="h-5 w-5 text-[#0E74FF]" />
                       </div>
-                      <span className="text-[#1e293b] font-medium">Bank transfers</span>
+                      <span className="text-[#1e293b] font-medium text-sm">Bank transfers</span>
                     </div>
                     <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
                       <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
                         <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
                       </div>
-                      <span className="text-[#1e293b] font-medium">Cryptocurrencies</span>
+                      <span className="text-[#1e293b] font-medium text-sm">Cryptocurrencies</span>
                     </div>
                   </div>
-                  <p className="text-sm text-[#64748b] mt-6 leading-relaxed">
+                  <p className="text-sm text-[#64748b] mt-6 leading-relaxed break-words">
                     A transparent, fixed price ensures there are no hidden fees or additional costs.
                   </p>
                 </CardContent>
@@ -670,23 +740,23 @@ export default function VerifyServiceProductPage() {
               {/* Step 3 */}
               <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-6 pb-6">
+                <CardHeader className="pt-10 px-8 pb-6">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     3
                   </div>
-                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Receive Your Detailed Due Diligence Report</CardTitle>
+                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Receive Your Detailed Due Diligence Report</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 px-6 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed">
+                <CardContent className="flex-1 px-8 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
                     Our team of experienced analysts immediately initiates the investigation. You will receive a comprehensive PDF report via email within 30 days.
                   </p>
                   <div className="space-y-4">
-                    <p className="font-semibold text-[#1e293b]">The report includes:</p>
+                    <p className="font-semibold text-[#1e293b] text-sm">The report includes:</p>
                     <ul className="space-y-2">
                       {deliverables.map((item, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-1" />
-                          <span className="text-[#64748b] leading-relaxed text-sm">{item}</span>
+                          <span className="text-[#64748b] leading-relaxed text-sm break-words">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -718,13 +788,13 @@ export default function VerifyServiceProductPage() {
               {whyChoose.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Card key={item.title} className="text-center border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group bg-white h-full flex flex-col">
-                    <CardContent className="pt-8 pb-8 px-6 flex-1 flex flex-col">
+                  <Card key={item.title} className="text-center border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group bg-white h-full flex flex-col overflow-hidden">
+                    <CardContent className="pt-8 pb-8 px-8 flex-1 flex flex-col">
                       <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                         <Icon className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-semibold text-[#1e293b] mb-4 text-lg leading-tight">{item.title}</h3>
-                      <p className="text-sm text-[#64748b] leading-relaxed">{item.description}</p>
+                      <h3 className="font-semibold text-[#1e293b] mb-4 text-lg leading-tight break-words">{item.title}</h3>
+                      <p className="text-sm text-[#64748b] leading-relaxed break-words">{item.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -810,7 +880,7 @@ export default function VerifyServiceProductPage() {
               Take your next strategic step with confidence. Our expert analysis provides the clarity you need to make informed decisions and protect your capital, reputation, and business interests.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full mb-8">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-10 py-7 text-lg font-semibold shadow-lg shadow-[#0E74FF]/40 hover:shadow-2xl hover:shadow-[#0E74FF]/50 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
                   Order Service Now
