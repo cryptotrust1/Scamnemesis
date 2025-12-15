@@ -17,7 +17,6 @@ import {
   Lock,
   CheckCircle2,
   AlertTriangle,
-  FileSearch,
   BarChart3,
   Network,
   Share2,
@@ -30,12 +29,10 @@ import {
   Lightbulb,
   TrendingUp,
   Eye,
-  Handshake,
+  Link2,
   Clock,
-  BadgeCheck,
   UserCheck,
   FileCheck,
-  Workflow,
   PieChart,
   LineChart,
   MapPin,
@@ -1050,7 +1047,7 @@ export default function NewReportPage() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">
-                  <Handshake className="h-4 w-4" />
+                  <Link2 className="h-4 w-4" />
                   Global Network
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
