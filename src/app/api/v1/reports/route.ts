@@ -10,6 +10,7 @@ import { z } from 'zod';
 import prisma from '@/lib/db';
 import { requireAuth, requireRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
+import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
 
 export const dynamic = 'force-dynamic';
 
@@ -338,7 +339,21 @@ export async function POST(request: NextRequest) {
       return newReport;
     });
 
-    // TODO: Trigger duplicate detection job
+    // Run duplicate detection (async, non-blocking)
+    let duplicateResult = {
+      hasDuplicates: false,
+      clusterId: null as string | null,
+      matches: [] as Array<{ reportId: string; similarity: number }>,
+      totalMatches: 0,
+    };
+
+    try {
+      duplicateResult = await runDuplicateDetection(report.id);
+      console.log(`[Reports] Duplicate detection for ${report.id}: ${duplicateResult.totalMatches} matches`);
+    } catch (duplicateError) {
+      // Log but don't fail the request - duplicate detection is not critical
+      console.error('[Reports] Duplicate detection error:', duplicateError);
+    }
 
     return NextResponse.json(
       {
@@ -346,9 +361,9 @@ export async function POST(request: NextRequest) {
         status: report.status.toLowerCase(),
         created_at: report.createdAt.toISOString(),
         duplicate_check: {
-          has_duplicates: false,
-          cluster_id: null,
-          match_count: 0,
+          has_duplicates: duplicateResult.hasDuplicates,
+          cluster_id: duplicateResult.clusterId,
+          match_count: duplicateResult.totalMatches,
         },
       },
       { status: 201 }
