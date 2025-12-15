@@ -1,0 +1,321 @@
+{
+  "common": {
+    "search": "Vyhľadať",
+    "reportScam": "Nahlásiť podvod",
+    "learnMore": "Zistiť viac",
+    "getStarted": "Začať",
+    "contactUs": "Kontaktujte nás",
+    "readMore": "Čítať viac",
+    "viewAll": "Zobraziť všetko",
+    "email": "E-mail",
+    "phone": "Telefón",
+    "company": "Spoločnosť",
+    "website": "Webová stránka",
+    "sources": "Zdroje",
+    "status": "Stav",
+    "functional": "Funkčné",
+    "inDevelopment": "Vo vývoji",
+    "planned": "Plánované",
+    "complete": "Dokončené",
+    "feature": "Funkcia",
+    "whatItsFor": "Na čo to slúži",
+    "startFreeTraining": "Začať bezplatné školenie",
+    "bookConsultation": "Rezervovať bezplatnú konzultáciu",
+    "freeConsultation": "Bezplatná konzultácia"
+  },
+  "nav": {
+    "home": "Domov",
+    "about": "O nás",
+    "services": "Služby",
+    "training": "Školenia",
+    "support": "Podporte nás",
+    "contact": "Kontakt"
+  },
+  "home": {
+    "hero": {
+      "badge": "Platforma na prevenciu podvodov",
+      "title": "Je to podvod? Overte akúkoľvek",
+      "titleHighlight": "webstránku, osobu, firmu, telefón alebo e-mail",
+      "titleEnd": "okamžite",
+      "description": "Overte podvody okamžite 🔎 — skontrolujte <strong>osoby</strong>, <strong>webstránky</strong>, <strong>firmy</strong>, <strong>pracovné ponuky</strong>, <strong>e-maily</strong>, <strong>telefónne čísla</strong>, <strong>zoznamovacie profily</strong> a oveľa viac. Využite <strong>bezplatnú ochranu v reálnom čase</strong> 🛡️. Našli ste podvod alebo vás podviedli? ⚠️ <strong>Nahláste to teraz</strong> — vaše varovanie môže <strong>ochrániť ostatných</strong>. Preskúmajte naše <strong>bezpečnostné služby</strong> 🔐.",
+      "searchPlaceholder": "Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, krypto peňaženky...",
+      "records": "640M+ záznamov",
+      "sources": "130+ zdrojov",
+      "realtime": "Aktualizácie v reálnom čase",
+      "free": "Vždy zadarmo"
+    },
+    "database": {
+      "badge": "Dáta v reálnom čase",
+      "title": "Naša databáza v číslach",
+      "description": "Prístup v reálnom čase k viac ako 640 miliónom overených záznamov o podvodoch zo 130+ dôveryhodných globálnych zdrojov vrátane FBI, OFAC, Interpolu a medzinárodných orgánov činných v trestnom konaní",
+      "note": "(Niektoré zdroje dát sa stále integrujú) Aktualizácie každých 5 minút",
+      "categoriesTitle": "Komplexné kategórie databázy podvodov",
+      "totalCoverage": "Celkové pokrytie databázy",
+      "totalRecords": "Celkový počet záznamov",
+      "dataSources": "Zdroje dát",
+      "categories": "Kategórie",
+      "realtimeAccess": "Prístup v reálnom čase",
+      "updateFrequency": "Frekvencia aktualizácií",
+      "sourcesFooter": "Overené zdroje dát zahŕňajú FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre a 120+ ďalších overených globálnych databáz od orgánov činných v trestnom konaní a agentúr na ochranu spotrebiteľov po celom svete.",
+      "stats": {
+        "maliciousIPs": "Škodlivé IP adresy",
+        "stolenVehicles": "Databáza odcudzených vozidiel",
+        "phishingURLs": "Overené phishingové URL",
+        "dissolvedCompanies": "Zrušené spoločnosti"
+      },
+      "categoryTitles": {
+        "crypto": "Kryptomenové podvody",
+        "emails": "E-maily a domény",
+        "phones": "Telefónne čísla",
+        "ips": "IP adresy",
+        "sanctions": "Sankcie a zoznamy",
+        "social": "Sociálne siete",
+        "financial": "Finančné podvody",
+        "vehicles": "Odcudzené vozidlá"
+      }
+    },
+    "faq": {
+      "1": {
+        "title": "1. Pre koho je táto platforma určená?",
+        "content": "ScamNemesis je pre ľudí, ktorí chcú overiť osobu, firmu, telefónne číslo, e-mail alebo webovú stránku. Zoznam nájdete tu. Je tiež pre ľudí, ktorí už boli podvedení a chcú nahlásiť svoj prípad a spojiť sa s ďalšími obeťami toho istého páchateľa. Platforma pomáha bežným používateľom aj profesionálom — polícii, novinárom, právnikom, analytikom, bankám a burzám. Nahlásené prípady môžu byť odoslané partnerom cez API, ktorí môžu pozastaviť platby na ochranu vašich peňazí (služba v príprave). Všetky hlásenia sú pred zverejnením manuálne preskúmané odborníkmi.\n\nRozlíšiť podvod od legitímnej služby je dnes ťažké — každý môže byť oklamaný. Ak sa vám to stalo, nie ste sami; sme tu, aby sme vám pomohli."
+      },
+      "2": {
+        "title": "2. Aký problém riešime?",
+        "content": "Neexistuje jediné \"globálne\" číslo, ale údaje ukazujú, že online podvody vzrástli približne o 2 300 % medzi rokmi 2019 a 2024; v roku 2024 odhadované straty dosiahli 1,03 bilióna USD. V praxi môže jeden podvodník vytvoriť 10 – 100 prípadov mesačne, čo fragmentuje dôkazy a vážne preťažuje políciu, čo sťažuje efektívne riešenie prípadov.\n\nScamNemesis prináša poriadok do tohto chaosu: konsoliduje hlásenia a dôkazy do jedného koordinovaného prípadu, automaticky spája obete s podobnými vzorcami, šetrí čas vyšetrovateľom a urýchľuje vyšetrovanie. Funguje aj preventívne — ktokoľvek môže overiť osobu, firmu, doménu, telefónne číslo a 38 ďalších identifikátorov spojených s podvodmi. Nástroj je bezplatný a dostupný pre každého."
+      },
+      "3": {
+        "title": "3. Ako používať ScamNemesis?",
+        "content": "Vyhľadávanie:\n\nV hornej časti nájdete vyhľadávací panel, kde môžete zadať meno, e-mail, telefónne číslo a ďalšie identifikátory, zoznam je tu. Výsledky sú zobrazené podľa skóre zhody — čím nižšie sa položka nachádza, tým slabšia je zhoda, preto odporúčame skontrolovať viac prípadov. Kliknutím na Prípad sa otvorí hlásenie so všetkými informáciami poskytnutými nahlasovateľom. Niektoré údaje sú z bezpečnostných a právnych dôvodov anonymizované. Hlásenia môžu obsahovať fotografie, dokumenty a komentáre od iných; môžete pridať aj vlastný komentár. Funkcia \"Nájsť podobné prípady\" zobrazuje záznamy s najvyššou podobnosťou a presne vysvetľuje, čo sa zhodovalo a do akej miery (napr. rovnaké telefónne číslo).\n\nNahlasovanie:\n\nAk ste boli podvedení, kliknite na Nahlásiť podvod. Otvorí sa formulár — väčšina polí je voliteľná, ale odporúčame pridať čo najviac detailov. Údaje nahlasovateľa sú prísne anonymné a nezdieľajú sa; nevyžadujeme skutočné meno ani primárny e-mail (môžete použiť samostatnú adresu len na tento účel). Uchovajte si svoje prístupové údaje v bezpečí. E-mailom dostanete inštrukcie a odkaz na správu vášho prípadu — pridanie, úpravu alebo vymazanie z databázy.\n\nInterpretácia zhôd:\n\nPamätajte, že rovnaké meno ≠ rovnaká osoba. Ak hľadáte \"Ján Novák\" na Slovensku a nájdete \"Ján Novák\" v Česku pre iný typ podvodu, pravdepodobne ide len o menovca. Vyhodnoťte kontext (krajina, typ podvodu, čas, ďalšie identifikátory). Najspoľahlivejšie signály sú jedinečné údaje ako e-mail, telefónne číslo, bankový účet/IBAN alebo krypto adresa. Nevyvodzujte unáhlené závery — buďte opatrní."
+      },
+      "4": {
+        "title": "4. Prečo je to dôležité?",
+        "content": "Každý nenahlásený podvod pomáha podvodníkom osloviť viac obetí, spôsobuje viac zničených životov a vytvára viac utrpenia pre obete a ich rodiny. Chceme to zastaviť.\n\nKeď komunity zdieľajú údaje naprieč krajinami, objavujú sa vzorce: tá istá \"investičná príležitosť\" sa objavuje v desiatkach štátov, identická profilová fotka beží na desiatkach falošných účtov a tá istá krypto peňaženka je prepojená so známymi podvodnými sieťami. Zdieľaná inteligencia láme ich najväčšiu výhodu — izoláciu. Varovanie jednej osoby sa stáva ochranou pre všetkých.\n\nScamNemesis zjednocuje, čistí a vyhodnocuje tieto signály, aby vyšetrovacie tímy mohli prioritizovať to, na čom záleží. Preto budujeme jednoduché integrácie — API, widget a forenzné nástroje — aby sa údaje mohli okamžite použiť v externých systémoch na poskytnutie skutočnej prevencie a rýchlejšej reakcie."
+      },
+      "5": {
+        "title": "5. Prečo sme vytvorili tento projekt?",
+        "content": "Projekt sa zrodil z hnevu a frustrácie z neefektívnych policajných metód. Sami sme sa stali obeťami podvodu a polícia nemohla pomôcť, pretože bola preťažená a nemala nástroje ani odbornosť na riešenie moderných typov podvodov. Keď niekto stratí všetky svoje peniaze, je to pre neho a jeho rodinu devastujúce. Toto musí prestať!\n\nPolicajné jednotky, od ktorých sa očakáva, že \"pomôžu\" v najťažších chvíľach a budú spoľahlivé, často nemôžu pomôcť, zatiaľ čo moderná podvodná kriminalita rastie alarmujúcim tempom.\n\nJe čas konať, preto sme sa rozhodli využiť naše znalosti OSINT, hackingu a spravodajstva na pomoc ľuďom a vyšetrovacím tímom s prevenciou a detekciou podvodov."
+      },
+      "6": {
+        "title": "6. Čo je ScamNemesis?",
+        "content": "Komunitou riadená verifikačná a spravodajská platforma, ktorá kombinuje databázu nahlásených podvodov, sledovanie blockchainu, monitorovanie naprieč 130+ zdrojmi dát, overovanie telefónov a e-mailov, rozpoznávanie tvárí, forenznú analýzu dokumentov (OCR + analýza metadát) a mapovanie vzťahov. Napríklad môžete zadať telefónne číslo, krypto peňaženku alebo meno osoby a okamžite vidieť, či je označené, s kým/čím je prepojené a ktorému vzorcu správania zodpovedá.\n\nTiež budujeme forenzné nástroje používané vyšetrovateľmi a integrujeme ich do našej platformy, aby boli ešte efektívnejšie. Zdieľame signály s orgánmi činnými v trestnom konaní, partnerskými bankami a ďalšími vysokorizikovými platformami, aby sme maximalizovali vaše šance na vrátenie prostriedkov, ak sa stanete obeťou."
+      },
+      "7": {
+        "title": "7. Čo tu nájdete?",
+        "content": "Vyhľadávací systém pre viac ako 38 identifikátorov (napr. meno, e-mail, telefón atď.), ktorý vám pomôže zistiť, či máte do činenia s podvodníkom a ochrániť vaše aktíva. Nájdete presný zoznam podporovaných identifikátorov a návod, ako vyhľadávať v našom systéme.\n\nKeď existuje zhoda, zobrazí sa hlásenie so všetkými dostupnými detailmi o podozrivom a relevantnými informáciami o prípade, ktoré vám pomôžu minimalizovať riziko. Môžete tiež nahlásiť incident a nájsť ďalšie obete toho istého páchateľa — prostredníctvom koordinácie a zdieľania informácií sa šance na odhalenie a stíhanie výrazne zvyšujú."
+      },
+      "8": {
+        "title": "8. Kto stojí za týmto projektom?",
+        "content": "Medzinárodný tím vyšetrovateľov a etických hackerov z troch kontinentov a viac ako piatich krajín — experti na kybernetickú bezpečnosť, analýzu dát a profesionáli so školením a skúsenosťami v spravodajskom remesle.\n\nNaším cieľom je zostať navždy bezplatní. Pretože čisté samofinancovanie nie je dlhodobo udržateľné, časť projektu bude zahŕňať reklamu a budeme hľadať dodatočnú podporu prostredníctvom grantov a darov od verejnosti (ak chcete pomôcť, môžete prispieť tu). Všetky metodológie, zdroje dát a financovanie budú verejne zdokumentované. Staviame na transparentnosti, pretože dôvera sa musí zaslúžiť — nie len deklarovať."
+      },
+      "9": {
+        "title": "9. Čo plánujeme do budúcnosti?",
+        "content": "Nižšie si môžete prezrieť tabuľku, ktorá presne ukazuje, čo budujeme ďalej a čo sme už spustili. ScamNemesis si kladie za cieľ stať sa najefektívnejším a najrozšírenejším nástrojom na aktívne narušenie, prevenciu a detekciu podvodov. Koncept je vo vývoji viac ako rok. Veríme, že so ScamNemesis môžeme výrazne znížiť podvody."
+      }
+    },
+    "roadmap": {
+      "title": "Zoznam funkcií a služieb, ktoré budujeme",
+      "description": "Pri každej položke uvádzame jej stav, percento dokončenia a stručnú poznámku, na čo slúži."
+    },
+    "services": {
+      "title": "Ďalšie služby",
+      "recovery": {
+        "title": "Služby na vymáhanie prostriedkov",
+        "description": "Vymáhanie prostriedkov stratených podvodom. Kombinujeme digitálnu forenznú analýzu, OSINT a právnu koordináciu na sledovanie, zmrazenie a vymáhanie vašich peňazí — rýchlo, eticky a obhájiteľne.",
+        "included": "Čo služba zahŕňa",
+        "when": "Kedy je táto služba vhodná",
+        "price": "5 hodín práce vyšetrovateľa",
+        "priceNote": "Túto službu ponúkame ako reakciu na spoločnosti, ktoré účtujú 3 500 – 10 000 € a často len nahlásia prípad finančnej inštitúcii. Takéto praktiky považujeme za podvodné a neetické.",
+        "cta": "Začať vymáhanie peňazí",
+        "features": {
+          "analysis": { "title": "Analýza prípadu", "desc": "Posúdenie reálnej šance na vymoženie, zhromažďovanie a vyhodnocovanie dôkazov." },
+          "forensics": { "title": "Digitálna forenzná analýza", "desc": "Sledovanie blockchainu, OSINT, analýza komunikácie a metadát." },
+          "freezing": { "title": "Zmrazenie aktív", "desc": "Kontaktovanie bánk a búrz, príprava a zasielanie zmrazovacích listov." },
+          "legal": { "title": "Právna koordinácia", "desc": "Príprava príkazov a podaní, koordinácia s advokátmi a orgánmi." },
+          "documentation": { "title": "Príprava dokumentácie na vymáhanie", "desc": "Arbitráž, súdne spory, mimosúdne vyrovnanie." },
+          "support": { "title": "Podpora obetí", "desc": "Nahlasovanie, priebežná komunikácia, odporúčania a prevencia." }
+        },
+        "suitable": {
+          "1": "Ak ste sa stali obeťou podvodných prevodov (krypto/fiat), phishingu, \"romantických\" a investičných schém.",
+          "2": "Ak ste zažili prevzatie účtu a podozrivé výbery cez burzu alebo banku.",
+          "3": "Ak potrebujete rýchlo zablokovať aktíva a poskytnúť obhájiteľné dôkazy."
+        }
+      },
+      "dueDiligence": {
+        "title": "SLUŽBY DUE DILIGENCE",
+        "description": "Nezávislý skríning partnerov, klientov a investícií. Kombinujeme OSINT, AML/KYB postupy a právnu perspektívu, aby ste mohli robiť rozhodnutia na základe overiteľných faktov — rýchlo, diskrétne a obhájiteľne.",
+        "included": "Čo je zahrnuté",
+        "when": "Kedy je táto služba vhodná",
+        "cta": "Začať Due Diligence",
+        "features": {
+          "entity": { "title": "Identifikácia entity a UBO", "desc": "KYB/KYC, overenie registrácií, vlastnícka štruktúra, kontroly PEP a sankcií." },
+          "reputation": { "title": "Reputačný a právny skríning", "desc": "negatívne médiá, súdne spory, insolvenčné registre, regulačné opatrenia." },
+          "financial": { "title": "Finančné a prevádzkové ukazovatele", "desc": "základné finančné zdravie, afiliácie, červené vlajky (dlhy, daňové nedoplatky)." },
+          "technical": { "title": "Technická a bezpečnostná stopa", "desc": "domény, infraštruktúra, e-maily, úniky dát, digitálne stopy kľúčových osôb." },
+          "business": { "title": "Obchodné väzby a konflikty záujmov", "desc": "mapovanie siete partnerov, rizikové prepojenia, politická expozícia." },
+          "deliverables": { "title": "Výstupy", "desc": "súhrn rizík (RAG), podrobná správa s dôkazmi, červené vlajky a odporúčané opatrenia (monitoring, zmluvné klauzuly)." }
+        },
+        "appropriate": {
+          "1": "Onboarding nového klienta/dodávateľa alebo riadenie rizík tretích strán (TPRM).",
+          "2": "M&A, joint venture, vstup investora, franšíza/licencovanie.",
+          "3": "Podozrenie na prepojenia s podvodmi, sankcionovanými subjektmi alebo praním špinavých peňazí.",
+          "4": "Plnenie AML/CTF povinností alebo požiadaviek od banky, investora alebo interného compliance auditu."
+        }
+      },
+      "investigation": {
+        "title": "FIREMNÉ VYŠETROVANIA",
+        "description": "Interné a externé vyšetrovania pre firmy. Kombinujeme OSINT, digitálnu forenznú analýzu a finančnú analytiku s platformou ScamNemesis (správa dôkazov, reťazec úschovy) — diskrétne, zákonné a obhájiteľné.",
+        "included": "Čo je zahrnuté",
+        "when": "Kedy je táto služba vhodná",
+        "cta": "Začať vyšetrovanie",
+        "features": {
+          "scoping": { "title": "Rozsah a zachovanie", "desc": "rýchle hypotézy, zachovanie dôkazov." },
+          "forensics": { "title": "Digitálna forenzná analýza", "desc": "zariadenia, e-mail, logy, cloud." },
+          "osint": { "title": "OSINT a reputačná analýza", "desc": "mapovanie osôb/firiem, väzby, negatívne médiá." },
+          "financial": { "title": "Finančné vyšetrovanie", "desc": "toky (banka/krypto), falošné faktúry, úplatky." },
+          "incident": { "title": "Reakcia na incidenty", "desc": "BEC/ransomvér/insider, zmiernenie škôd." },
+          "legal": { "title": "Právna koordinácia", "desc": "podania, komunikácia s orgánmi." }
+        },
+        "appropriate": {
+          "1": "Podozrenie na interný podvod alebo konflikt záujmov.",
+          "2": "Únik dát, kompromitované účty, ransomvér/BEC.",
+          "3": "Faktúrový podvod, \"fantómový\" dodávatelia, kolúzia.",
+          "4": "Zneužitie značky/IP: klonované weby, falošné profily.",
+          "5": "Predsúdna alebo compliance fáza, keď potrebujete obhájiteľné dôkazy pre predstavenstvo, banku alebo audítora."
+        }
+      },
+      "training": {
+        "title": "BEZPEČNOSTNÉ ŠKOLENIA A KONZULTÁCIE",
+        "description": "Bezpečnostné školenia a konzultácie pre tímy a manažment. Používame reálne scenáre zo ScamNemesis (OSINT, podvody, reakcia na incidenty), aby boli postupy praktické, merateľné a obhájiteľné.",
+        "included": "Čo je zahrnuté",
+        "when": "Kedy je táto služba vhodná",
+        "cta": "Preskúmať školenia a kurzy",
+        "features": {
+          "awareness": { "title": "Program bezpečnostného povedomia a boja proti podvodom", "desc": "podľa rolí, pre financie/CS/podporu." },
+          "phishing": { "title": "Simulácie phishingu/smishingu", "desc": "+ rýchle \"opravné\" mikrolekcie." },
+          "tabletop": { "title": "Cvičenia reakcie na incidenty za stolom", "desc": "BEC, ransomvér, únik dát." },
+          "osint": { "title": "OSINT a hygiena súkromia", "desc": "bezpečné vyhľadávanie, ochrana identity a metadát." },
+          "policy": { "title": "Vývoj politík a príručiek", "desc": "IR runbooky, toky nahlasovania, reťazec úschovy." },
+          "consulting": { "title": "Procesné konzultácie", "desc": "TPRM/AML/KYB a príprava auditných dôkazov." }
+        },
+        "appropriate": {
+          "1": "Pri onboardingu nových zamestnancov alebo škálovaní tímov s prístupom k peniazom/dátam.",
+          "2": "Po incidente na zníženie rizika opakovania a skrátenie času reakcie.",
+          "3": "Pred auditom alebo investíciou, alebo pri onboardingu veľkého klienta (TPRM/AML požiadavky).",
+          "4": "Ak čelíte phishingu, zneužitiu značky alebo podvodným objednávkam.",
+          "5": "Keď potrebujete praktické príručky pre predstavenstvo, financie a tímy v prvej línii."
+        }
+      }
+    },
+    "consultation": {
+      "title": "REZERVUJTE SI BEZPLATNÚ KONZULTÁCIU TERAZ",
+      "description": "Radi by sme sa dozvedeli viac o individuálnych potrebách vašej spoločnosti. Preto ponúkame 15-minútový konzultačný hovor."
+    },
+    "freeTraining": {
+      "badge": "Učte sa a chráňte sa",
+      "title": "Bezplatné bezpečnostné školenia a kurzy — Naučte sa rozpoznať podvody",
+      "description": "Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, krypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.",
+      "topicsTitle": "Najpopulárnejšie témy:",
+      "topics": [
+        "Ako predchádzať podvodom v podnikaní",
+        "Poistenie ochrany identity",
+        "Experian ochrana proti krádeži identity",
+        "Bezpečnosť na internete",
+        "10 spôsobov, ako predchádzať kybernetickej kriminalite",
+        "Ako rozpoznať podvod",
+        "Linka pomoci pre obete podvodov",
+        "Nahlásenie kybernetickej kriminality polícii"
+      ]
+    },
+    "certifications": {
+      "description": "Roky skúseností a certifikácie od popredných inštitúcií — profesionáli na vašej strane."
+    }
+  },
+  "contactUs": {
+    "title": "Kontaktujte nás",
+    "description": "Môžete nás kontaktovať e-mailom. Ak však chcete nahlásiť podvod, kliknite na tlačidlo nižšie a vyplňte formulár — bez neho vám nebudeme môcť efektívne pomôcť.",
+    "emailLabel": "Pošlite nám e-mail",
+    "reportButton": "Nahlásiť podvod"
+  },
+  "supportUs": {
+    "title": "Podporte nás",
+    "subtitle": "Pridajte sa k našej misii",
+    "description": "ScamNemesis je neziskový komunitný projekt. Budujeme nástroje, ktoré pomáhajú ľuďom overovať identity, nahlasovať podvody a získavať späť stratené prostriedky. Vaša podpora nám pomáha udržiavať servery, vyvíjať nové funkcie a udržiavať platformu bezplatnú pre všetkých.",
+    "howToHelp": "Ako môžete pomôcť",
+    "donate": {
+      "title": "Finančná podpora",
+      "description": "Každý dar nám pomáha udržiavať a vylepšovať platformu. Prijímame krypto aj tradičné platby."
+    },
+    "spread": {
+      "title": "Šírte informácie",
+      "description": "Zdieľajte ScamNemesis s priateľmi, rodinou a kolegami. Čím viac ľudí o nás vie, tým bezpečnejší sú všetci."
+    },
+    "contribute": {
+      "title": "Prispejte",
+      "description": "Ste vývojár, dizajnér alebo bezpečnostný expert? Pridajte sa k nášmu tímu a pomôžte budovať budúcnosť prevencie podvodov."
+    },
+    "report": {
+      "title": "Nahlasujte podvody",
+      "description": "Každé hlásenie posilňuje našu databázu a pomáha chrániť ostatných. Vaša skúsenosť môže zachrániť niekoho iného."
+    },
+    "cryptoTitle": "Podporte kryptomenou",
+    "cryptoDescription": "Prijímame rôzne kryptomeny. Kliknite pre skopírovanie adresy peňaženky.",
+    "thankYou": "Ďakujeme za vašu podporu!"
+  },
+  "trainingCourses": {
+    "title": "Školenia a kurzy",
+    "subtitle": "Naučte sa chrániť",
+    "description": "Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, krypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.",
+    "coursesTitle": "Dostupné kurzy",
+    "comingSoon": "Ďalšie kurzy už čoskoro..."
+  },
+  "moneyRecovery": {
+    "title": "Vymáhanie peňazí",
+    "subtitle": "Získajte svoje peniaze späť",
+    "description": "Vymáhanie prostriedkov stratených podvodom. Kombinujeme digitálnu forenznú analýzu, OSINT a právnu koordináciu na sledovanie, zmrazenie a vymáhanie vašich peňazí — rýchlo, eticky a obhájiteľne.",
+    "howItWorks": "Ako to funguje",
+    "step1": {
+      "title": "Úvodné posúdenie",
+      "description": "Vyhodnotíme váš prípad, aby sme určili pravdepodobnosť vymoženia a najlepší prístup."
+    },
+    "step2": {
+      "title": "Vyšetrovanie",
+      "description": "Náš tím sleduje prostriedky pomocou analýzy blockchainu, OSINT a ďalších forenzných techník."
+    },
+    "step3": {
+      "title": "Zmrazenie aktív",
+      "description": "Kontaktujeme banky a burzy, aby zmrazili aktíva skôr, ako môžu byť presunuté."
+    },
+    "step4": {
+      "title": "Vymáhanie",
+      "description": "Spolupracujeme s právnymi partnermi na vymáhaní vašich prostriedkov prostredníctvom vhodných kanálov."
+    },
+    "pricing": "Cenník",
+    "pricingNote": "Ponúkame transparentné ceny za 600 € za 5 hodín práce vyšetrovateľa. Žiadne skryté poplatky.",
+    "getStarted": "Začať proces vymáhania"
+  },
+  "scammerRemoval": {
+    "title": "Odstránenie podvodníkov",
+    "subtitle": "Firemné vyšetrovania a ochrana značky",
+    "description": "Interné a externé vyšetrovania pre firmy. Kombinujeme OSINT, digitálnu forenznú analýzu a finančnú analytiku s platformou ScamNemesis — diskrétne, zákonné a obhájiteľné.",
+    "servicesTitle": "Naše služby",
+    "brandProtection": {
+      "title": "Ochrana značky",
+      "description": "Identifikujeme a odstraňujeme falošné webové stránky, profily na sociálnych sieťach a podvodné použitie vašej značky."
+    },
+    "internalInvestigation": {
+      "title": "Interné vyšetrovanie",
+      "description": "Diskrétne vyšetrovanie podozrení na interný podvod, konflikty záujmov a porušenia politík."
+    },
+    "incidentResponse": {
+      "title": "Reakcia na incidenty",
+      "description": "Rýchla reakcia na BEC, ransomvér, úniky dát a ďalšie bezpečnostné incidenty."
+    },
+    "getStarted": "Začať vyšetrovanie"
+  },
+  "meta": {
+    "home": {
+      "title": "Je to podvod? Overte akúkoľvek webstránku, osobu, firmu, telefón alebo e-mail okamžite | ScamNemesis",
+      "description": "Overte podvody okamžite - skontrolujte osoby, webstránky, firmy, pracovné ponuky, e-maily, telefónne čísla, zoznamovacie profily. Bezplatná ochrana v reálnom čase s 640M+ záznamami."
+    }
+  }
+}

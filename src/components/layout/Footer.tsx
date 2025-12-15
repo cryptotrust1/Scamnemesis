@@ -2,10 +2,57 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Footer.module.css';
 
-export const Footer: React.FC = () => {
+export interface FooterProps {
+  locale?: 'en' | 'sk';
+}
+
+const translations = {
+  en: {
+    description: 'We protect the community from scammers. Report, search, and stay informed.',
+    quickLinks: 'Quick Links',
+    search: 'Search',
+    report: 'Report Scam',
+    stats: 'Statistics',
+    verify: 'Quick Verification',
+    information: 'Information',
+    about: 'About',
+    faq: 'FAQ',
+    apiDocs: 'API Documentation',
+    contact: 'Contact',
+    legal: 'Legal',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
+    gdpr: 'GDPR',
+    copyright: 'All rights reserved.',
+  },
+  sk: {
+    description: 'Chránime komunitu pred podvodníkmi. Nahlasujte, vyhľadávajte a buďte informovaní.',
+    quickLinks: 'Rýchle odkazy',
+    search: 'Vyhľadávanie',
+    report: 'Nahlásiť podvod',
+    stats: 'Štatistiky',
+    verify: 'Rýchle overenie',
+    information: 'Informácie',
+    about: 'O projekte',
+    faq: 'FAQ',
+    apiDocs: 'API dokumentácia',
+    contact: 'Kontakt',
+    legal: 'Právne',
+    privacy: 'Ochrana súkromia',
+    terms: 'Podmienky používania',
+    gdpr: 'GDPR',
+    copyright: 'Všetky práva vyhradené.',
+  },
+};
+
+export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const currentLocale = pathname?.startsWith('/sk') ? 'sk' : pathname?.startsWith('/en') ? 'en' : locale;
+  const t = translations[currentLocale] || translations.en;
 
   return (
     <footer className={styles.footer}>
@@ -14,44 +61,43 @@ export const Footer: React.FC = () => {
         <div className={styles.grid}>
           {/* Brand section */}
           <div className={styles.brand}>
-            <Link href="/" className={styles.logo}>
+            <Link href={`/${currentLocale}`} className={styles.logo}>
               <span className={styles.logoIcon}>🛡️</span>
               <span className={styles.logoText}>ScamNemesis</span>
             </Link>
             <p className={styles.description}>
-              Chránime komunitu pred podvodníkmi. Nahlasujte, vyhľadávajte a buďte informovaní.
+              {t.description}
             </p>
           </div>
 
           {/* Quick links */}
           <div className={styles.linkGroup}>
-            <h4 className={styles.linkGroupTitle}>Rýchle odkazy</h4>
+            <h4 className={styles.linkGroupTitle}>{t.quickLinks}</h4>
             <nav className={styles.links}>
-              <Link href="/search" className={styles.link}>Vyhľadávanie</Link>
-              <Link href="/report" className={styles.link}>Nahlásiť podvod</Link>
-              <Link href="/stats" className={styles.link}>Štatistiky</Link>
-              <Link href="/verify" className={styles.link}>Rýchle overenie</Link>
+              <Link href={`/${currentLocale}/search`} className={styles.link}>{t.search}</Link>
+              <Link href={`/${currentLocale}/report/new`} className={styles.link}>{t.report}</Link>
+              <Link href={`/${currentLocale}/support-us`} className={styles.link}>{currentLocale === 'sk' ? 'Podporte nás' : 'Support Us'}</Link>
+              <Link href={`/${currentLocale}/training-courses`} className={styles.link}>{currentLocale === 'sk' ? 'Školenia' : 'Training'}</Link>
             </nav>
           </div>
 
           {/* Info links */}
           <div className={styles.linkGroup}>
-            <h4 className={styles.linkGroupTitle}>Informácie</h4>
+            <h4 className={styles.linkGroupTitle}>{t.information}</h4>
             <nav className={styles.links}>
-              <Link href="/about" className={styles.link}>O projekte</Link>
-              <Link href="/faq" className={styles.link}>FAQ</Link>
-              <Link href="/api-docs" className={styles.link}>API dokumentácia</Link>
-              <Link href="/contact" className={styles.link}>Kontakt</Link>
+              <Link href={`/${currentLocale}/about`} className={styles.link}>{t.about}</Link>
+              <Link href={`/${currentLocale}/money-recovery`} className={styles.link}>{currentLocale === 'sk' ? 'Vymáhanie peňazí' : 'Money Recovery'}</Link>
+              <Link href={`/${currentLocale}/scammer-removal`} className={styles.link}>{currentLocale === 'sk' ? 'Vyšetrovania' : 'Investigations'}</Link>
+              <Link href={`/${currentLocale}/contact-us`} className={styles.link}>{t.contact}</Link>
             </nav>
           </div>
 
           {/* Legal */}
           <div className={styles.linkGroup}>
-            <h4 className={styles.linkGroupTitle}>Právne</h4>
+            <h4 className={styles.linkGroupTitle}>{t.legal}</h4>
             <nav className={styles.links}>
-              <Link href="/privacy" className={styles.link}>Ochrana súkromia</Link>
-              <Link href="/terms" className={styles.link}>Podmienky používania</Link>
-              <Link href="/gdpr" className={styles.link}>GDPR</Link>
+              <Link href={`/${currentLocale}/privacy`} className={styles.link}>{t.privacy}</Link>
+              <Link href={`/${currentLocale}/terms`} className={styles.link}>{t.terms}</Link>
             </nav>
           </div>
         </div>
@@ -59,7 +105,7 @@ export const Footer: React.FC = () => {
         {/* Bottom bar */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {currentYear} ScamNemesis. Všetky práva vyhradené.
+            © {currentYear} ScamNemesis. {t.copyright}
           </p>
           <div className={styles.social}>
             <a

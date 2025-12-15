@@ -1,0 +1,321 @@
+{
+  "common": {
+    "search": "Search",
+    "reportScam": "Report Scam",
+    "learnMore": "Learn More",
+    "getStarted": "Get Started",
+    "contactUs": "Contact Us",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "website": "Website",
+    "sources": "Sources",
+    "status": "Status",
+    "functional": "Functional",
+    "inDevelopment": "In development",
+    "planned": "Planned",
+    "complete": "Complete",
+    "feature": "Feature",
+    "whatItsFor": "What it's for",
+    "startFreeTraining": "Start Free Training",
+    "bookConsultation": "Book a free consultation",
+    "freeConsultation": "Free Consultation"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "training": "Training",
+    "support": "Support Us",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero": {
+      "badge": "Fraud Prevention Platform",
+      "title": "Is It a Scam? Check Any",
+      "titleHighlight": "Website, Person, Company, Phone or Email",
+      "titleEnd": "Instantly",
+      "description": "Check scams instantly 🔎 — verify <strong>people</strong>, <strong>websites</strong>, <strong>companies</strong>, <strong>job offers</strong>, <strong>emails</strong>, <strong>phone numbers</strong>, <strong>dating profiles</strong>, and much more. Enjoy <strong>free real-time protection</strong> 🛡️. Found a scam or got scammed? ⚠️ <strong>Report it now</strong> — your warning could <strong>protect others</strong>. Explore our <strong>security services</strong> 🔐.",
+      "searchPlaceholder": "Search by name, email, phone, website, IBAN, crypto wallet...",
+      "records": "640M+ Records",
+      "sources": "130+ Sources",
+      "realtime": "Real-time Updates",
+      "free": "Always Free"
+    },
+    "database": {
+      "badge": "Real-time Data",
+      "title": "Our Database in Numbers",
+      "description": "Real-time access to over 640 million verified fraud records from 130+ trusted global sources including FBI, OFAC, Interpol, and international law enforcement agencies",
+      "note": "(Some data sources are still being integrated) Updates every 5 minutes",
+      "categoriesTitle": "Comprehensive Fraud Database Categories",
+      "totalCoverage": "Total Database Coverage",
+      "totalRecords": "Total Records",
+      "dataSources": "Data Sources",
+      "categories": "Categories",
+      "realtimeAccess": "Real-time Access",
+      "updateFrequency": "Update Frequency",
+      "sourcesFooter": "Verified data sources include FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre, and 120+ additional verified global databases from law enforcement and consumer protection agencies worldwide.",
+      "stats": {
+        "maliciousIPs": "Malicious IP Addresses",
+        "stolenVehicles": "Stolen Vehicles Database",
+        "phishingURLs": "Verified Phishing URLs",
+        "dissolvedCompanies": "Dissolved Companies"
+      },
+      "categoryTitles": {
+        "crypto": "Cryptocurrency Fraud",
+        "emails": "Emails & Domains",
+        "phones": "Phone Numbers",
+        "ips": "IP Addresses",
+        "sanctions": "Sanctions & Lists",
+        "social": "Social Media",
+        "financial": "Financial Fraud",
+        "vehicles": "Stolen Vehicles"
+      }
+    },
+    "faq": {
+      "1": {
+        "title": "1. Who is this platform for?",
+        "content": "ScamNemesis is for people who want to verify a person, company, phone number, email, or website The list can be found here. It's also for people who have already been scammed and want to report their case and connect with other victims of the same perpetrator. The platform helps both everyday users and professionals — police, journalists, lawyers, analysts, banks, and exchanges. Reported cases can be sent to partners via API who can pause payments to protect your money (service in preparation). All reports are manually reviewed by experts before publication.\n\nDistinguishing a scam from a legitimate service is hard today — anyone can be fooled. If it happened to you, you're not alone; we're here to help."
+      },
+      "2": {
+        "title": "2. What problem are we solving?",
+        "content": "There is no single \"global\" number, but data shows that online fraud grew by roughly 2,300% between 2019 and 2024; in 2024, estimated losses reached USD 1.03 trillion. In practice, one scammer can create 10–100 cases per month, which fragments evidence and severely overloads the police, making effective case resolution difficult.\n\nScamNemesis brings order to this chaos: it consolidates reports and evidence into a single coordinated case, automatically links victims with similar patterns, saves investigators time, and accelerates investigations. It also works preventively — anyone can verify a person, company, domain, phone number, and 38 additional identifiers associated with scams. The tool is free and available to everyone."
+      },
+      "3": {
+        "title": "3. How to use ScamNemesis?",
+        "content": "Search:\n\nAt the top, you'll find the search bar where you can enter a name, email, phone number, and other identifiers list is here. Results are shown by match score — the lower an item appears, the weaker the match, so we recommend checking more cases. Clicking a Case opens a report with all information provided by the reporter. Some data is anonymized for safety and legal reasons. Reports may include photos, documents, and comments from others; you can also add your own comment. The \"Find similar cases\" feature shows records with the highest similarity and explains exactly what matched and to what degree (e.g., the same phone number).\n\nReporting:\n\nIf you've been scammed, click Report scam. A form will open — most fields are optional, but we recommend adding as many details as possible. Reporter data is kept strictly anonymous and not shared; we don't require a real name or primary email (you can use a separate address just for this). Keep your access details safe. You will receive instructions and a link by email to manage your case — add, edit, or delete it from the database.\n\nInterpreting matches:\n\nRemember that the same name ≠ the same person. If you search \"John Smith\" in the USA and find a \"John Smith\" in the UK for a different type of scam, it's likely just a namesake. Evaluate the context (country, scam type, time, other identifiers). The most reliable signals are unique data such as email, phone number, bank account/IBAN, or a crypto address. Don't jump to conclusions — stay cautious."
+      },
+      "4": {
+        "title": "4. Why is this important?",
+        "content": "Every unreported scam helps scammers reach more victims, causes more ruined lives, and creates more suffering for victims and their families. We want to stop that.\n\nWhen communities share data across countries, patterns emerge: the same \"investment opportunity\" pops up in dozens of states, the identical profile photo runs across dozens of fake accounts, and the same crypto wallet links to known scam networks. Shared intelligence breaks their biggest advantage — isolation. One person's warning becomes protection for everyone.\n\nScamNemesis unifies, cleans, and evaluates these signals so investigative teams can prioritize what matters. That's why we build simple integrations — API, widget, and forensic tools — so data can be used immediately in external systems to deliver real prevention and a faster response."
+      },
+      "5": {
+        "title": "5. Why did we create this project?",
+        "content": "The project was born out of anger and frustration with ineffective police methods. We ourselves became victims of fraud, and the police could not help because they were overwhelmed and lacked the tools and expertise to tackle modern types of scams. When someone loses all their money, it is devastating for them and their family. This has to stop!\n\nPolice units that are expected to \"help\" in the hardest moments and be reliable often cannot assist, while modern scam crime is growing at an alarming scale.\n\nIt is time to act, so we decided to use our knowledge of OSINT, hacking, and intelligence to help people and investigative teams with prevention and detection of fraud."
+      },
+      "6": {
+        "title": "6. What is ScamNemesis?",
+        "content": "A community-driven verification and intelligence platform that combines a reported-scam database, blockchain tracing, monitoring across 130+ data sources, phone and email verification, face recognition, document forensics (OCR + metadata analysis), and relationship mapping. For example, you can enter a phone number, crypto wallet, or a person's name and instantly see whether it's flagged, who/what it is linked to, and which behavior pattern it matches.\n\nWe are also building forensic tools used by investigators and integrating them into our platform to be even more effective. We share signals with law-enforcement authorities, partner banks, and other high-risk platforms to maximize your chances of recovering funds if you become a victim."
+      },
+      "7": {
+        "title": "7. What will you find here?",
+        "content": "A search system for more than 38 identifiers (e.g., name, email, phone, etc.) that helps you determine whether you're dealing with a scammer and protect your assets. You'll find the exact list of supported identifiers and a guide on how to search in our system.\n\nWhen there's a match, a report appears with all available details about the suspect and relevant case information to help you minimize risk. You can also report an incident and find other victims of the same perpetrator — through coordination and information sharing, the chances of exposure and prosecution rise significantly."
+      },
+      "8": {
+        "title": "8. Who is behind this project?",
+        "content": "An international team of investigators and ethical hackers from three continents and more than five countries — experts in cybersecurity, data analytics, and professionals with training and experience in intelligence tradecraft.\n\nOur goal is to remain free forever. Because pure self-funding is not sustainable long term, part of the project will include advertising, and we will seek additional support through grants and donations from the public (if you'd like to help, you can donate here). All methodology, data sources, and funding will be publicly documented. We build on transparency because trust must be earned — not merely declared."
+      },
+      "9": {
+        "title": "9. What are we planning for the future?",
+        "content": "Below, you can view a table that shows exactly what we are building next and what we have already shipped. ScamNemesis aims to become the most effective and widely adopted tool for active fraud disruption, prevention, and detection. The concept has been in development for over a year. We believe that with ScamNemesis, we can significantly reduce fraud."
+      }
+    },
+    "roadmap": {
+      "title": "List of Features and Services We're Building",
+      "description": "For each item we list its status, completion percentage, and a brief note on what it's for."
+    },
+    "services": {
+      "title": "Other Services",
+      "recovery": {
+        "title": "Fraud Recovery Services",
+        "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
+        "included": "What the service includes",
+        "when": "When this service is suitable",
+        "price": "5 hours of investigator work",
+        "priceNote": "We offer this service in response to companies that charge €3,500–€10,000 and often only report the case to a financial institution. We consider such practices fraudulent and unethical.",
+        "cta": "Start Money Recovery",
+        "features": {
+          "analysis": { "title": "Case analysis", "desc": "Assessment of the real chance of recovery, evidence collection and evaluation." },
+          "forensics": { "title": "Digital forensics", "desc": "Blockchain tracing, OSINT, communication and metadata analysis." },
+          "freezing": { "title": "Asset freezing", "desc": "Contacting banks and exchanges, preparing and sending Freezing Letters." },
+          "legal": { "title": "Legal coordination", "desc": "Drafting orders and filings, coordination with attorneys and authorities." },
+          "documentation": { "title": "Preparation of recovery documentation", "desc": "Arbitration, litigation, out-of-court settlement." },
+          "support": { "title": "Victim support", "desc": "Reporting, ongoing communication, recommendations and prevention." }
+        },
+        "suitable": {
+          "1": "If you became a victim of fraudulent transfers (crypto/fiat), phishing, \"romance,\" and investment schemes.",
+          "2": "If you experienced account takeover and suspicious withdrawals via an exchange or bank.",
+          "3": "If you need to quickly block assets and provide defensible evidence."
+        }
+      },
+      "dueDiligence": {
+        "title": "DUE DILIGENCE SERVICES",
+        "description": "Independent screening of partners, clients, and investments. We combine OSINT, AML/KYB procedures, and a legal perspective so you can make decisions based on verifiable facts—fast, discreet, and defensible.",
+        "included": "What's included",
+        "when": "When this service is appropriate",
+        "cta": "Start Due Diligence",
+        "features": {
+          "entity": { "title": "Entity and UBO identification", "desc": "KYB/KYC, verification of registrations, ownership structure, PEP and sanctions checks." },
+          "reputation": { "title": "Reputational and legal screening", "desc": "adverse media, litigation, insolvency registers, regulatory actions." },
+          "financial": { "title": "Financial and operational indicators", "desc": "baseline financial health, affiliations, red flags (debt, tax arrears)." },
+          "technical": { "title": "Technical and security footprint", "desc": "domains, infrastructure, emails, data leaks, digital footprints of key people." },
+          "business": { "title": "Business ties and conflicts of interest", "desc": "network mapping of partners, risky connections, political exposure." },
+          "deliverables": { "title": "Deliverables", "desc": "risk summary (RAG), detailed report with evidence, red flags, and recommended actions (monitoring, contractual clauses)." }
+        },
+        "appropriate": {
+          "1": "Onboarding a new client/vendor or third-party risk management (TPRM).",
+          "2": "M&A, joint venture, investor entry, franchise/licensing.",
+          "3": "Suspected links to fraud, sanctioned entities, or money laundering.",
+          "4": "Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit."
+        }
+      },
+      "investigation": {
+        "title": "CORPORATE INVESTIGATIONS",
+        "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform (evidence management, chain of custody)—discreet, lawful, and defensible.",
+        "included": "What's included",
+        "when": "When this service is appropriate",
+        "cta": "Start Investigation",
+        "features": {
+          "scoping": { "title": "Scoping & preservation", "desc": "rapid hypotheses, evidence preservation." },
+          "forensics": { "title": "Digital forensics", "desc": "devices, email, logs, cloud." },
+          "osint": { "title": "OSINT & reputational analysis", "desc": "mapping people/companies, links, adverse media." },
+          "financial": { "title": "Financial investigation", "desc": "flows (bank/crypto), fake invoices, kickbacks." },
+          "incident": { "title": "Incident response", "desc": "BEC/ransomware/insider, damage mitigation." },
+          "legal": { "title": "Legal coordination", "desc": "filings, communication with authorities." }
+        },
+        "appropriate": {
+          "1": "Suspected internal fraud or conflict of interest.",
+          "2": "Data breach, compromised accounts, ransomware/BEC.",
+          "3": "Invoice fraud, \"ghost\" vendors, collusion.",
+          "4": "Brand/IP abuse: cloned websites, fake profiles.",
+          "5": "Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor."
+        }
+      },
+      "training": {
+        "title": "SECURITY TRAINING & CONSULTING",
+        "description": "Security training and consulting for teams and management. We use real scenarios from ScamNemesis (OSINT, fraud, incident response) to make procedures practical, measurable, and defensible.",
+        "included": "What's included",
+        "when": "When this service is appropriate",
+        "cta": "Explore Training & Courses",
+        "features": {
+          "awareness": { "title": "Security awareness & anti-fraud program", "desc": "role-based, for finance/CS/support." },
+          "phishing": { "title": "Phishing/smishing simulations", "desc": "+ quick \"fix-it\" micro-lessons." },
+          "tabletop": { "title": "Incident response tabletop exercises", "desc": "BEC, ransomware, data breach." },
+          "osint": { "title": "OSINT & privacy hygiene", "desc": "safe searching, identity and metadata protection." },
+          "policy": { "title": "Policy and playbook development", "desc": "IR runbooks, reporting flows, chain of custody." },
+          "consulting": { "title": "Process consulting", "desc": "TPRM/AML/KYB and preparation of audit evidence." }
+        },
+        "appropriate": {
+          "1": "When onboarding new hires or scaling teams with access to money/data.",
+          "2": "After an incident to reduce repeat risk and shorten response time.",
+          "3": "Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).",
+          "4": "If you face phishing, brand abuse, or fraudulent orders.",
+          "5": "When you need practical playbooks for the board, finance, and frontline teams."
+        }
+      }
+    },
+    "consultation": {
+      "title": "BOOK A FREE CONSULTATION NOW",
+      "description": "We would love to learn more about your company's individual needs. That's why we offer a 15-minute consultation call."
+    },
+    "freeTraining": {
+      "badge": "Learn & Protect",
+      "title": "Free Security Training & Courses — Learn to Spot Scams",
+      "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
+      "topicsTitle": "Most Popular Topics:",
+      "topics": [
+        "How to prevent fraud in business",
+        "Identity protection insurance",
+        "Experian Identity Theft Protection",
+        "Safety on the internet",
+        "10 ways to prevent cybercrime",
+        "How to recognize a scam",
+        "Scammer helpline",
+        "Report cybercrime to the police"
+      ]
+    },
+    "certifications": {
+      "description": "Years of experience and certifications from leading institutions — professionals on your side."
+    }
+  },
+  "contactUs": {
+    "title": "Contact us",
+    "description": "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
+    "emailLabel": "Send us an email",
+    "reportButton": "Report scam"
+  },
+  "supportUs": {
+    "title": "Support us",
+    "subtitle": "Join our mission",
+    "description": "ScamNemesis is a non-profit community project. We are building tools that help people verify identities, report fraud, and recover lost funds. Your support helps us maintain servers, develop new features, and keep the platform free for everyone.",
+    "howToHelp": "How you can help",
+    "donate": {
+      "title": "Financial Support",
+      "description": "Every donation helps us maintain and improve the platform. We accept crypto and traditional payments."
+    },
+    "spread": {
+      "title": "Spread the Word",
+      "description": "Share ScamNemesis with friends, family, and colleagues. The more people know about us, the safer everyone becomes."
+    },
+    "contribute": {
+      "title": "Contribute",
+      "description": "Are you a developer, designer, or security expert? Join our team and help build the future of fraud prevention."
+    },
+    "report": {
+      "title": "Report Scams",
+      "description": "Every report strengthens our database and helps protect others. Your experience can save someone else."
+    },
+    "cryptoTitle": "Support with Cryptocurrency",
+    "cryptoDescription": "We accept various cryptocurrencies. Click to copy the wallet address.",
+    "thankYou": "Thank you for your support!"
+  },
+  "trainingCourses": {
+    "title": "Training & Courses",
+    "subtitle": "Learn to protect yourself",
+    "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
+    "coursesTitle": "Available Courses",
+    "comingSoon": "More courses coming soon..."
+  },
+  "moneyRecovery": {
+    "title": "Money Recovery",
+    "subtitle": "Get your money back",
+    "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
+    "howItWorks": "How it works",
+    "step1": {
+      "title": "Initial Assessment",
+      "description": "We evaluate your case to determine the likelihood of recovery and the best approach."
+    },
+    "step2": {
+      "title": "Investigation",
+      "description": "Our team traces the funds using blockchain analysis, OSINT, and other forensic techniques."
+    },
+    "step3": {
+      "title": "Asset Freezing",
+      "description": "We contact banks and exchanges to freeze the assets before they can be moved."
+    },
+    "step4": {
+      "title": "Recovery",
+      "description": "We work with legal partners to recover your funds through appropriate channels."
+    },
+    "pricing": "Pricing",
+    "pricingNote": "We offer transparent pricing at €600 for 5 hours of investigator work. No hidden fees.",
+    "getStarted": "Start Recovery Process"
+  },
+  "scammerRemoval": {
+    "title": "Scammer Removal",
+    "subtitle": "Corporate investigations & brand protection",
+    "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform—discreet, lawful, and defensible.",
+    "servicesTitle": "Our Services",
+    "brandProtection": {
+      "title": "Brand Protection",
+      "description": "We identify and take down fake websites, social media profiles, and fraudulent use of your brand."
+    },
+    "internalInvestigation": {
+      "title": "Internal Investigation",
+      "description": "Discreet investigation of suspected internal fraud, conflicts of interest, and policy violations."
+    },
+    "incidentResponse": {
+      "title": "Incident Response",
+      "description": "Rapid response to BEC, ransomware, data breaches, and other security incidents."
+    },
+    "getStarted": "Start Investigation"
+  },
+  "meta": {
+    "home": {
+      "title": "Is It a Scam? Check Any Website, Person, Company, Phone or Email Instantly | ScamNemesis",
+      "description": "Check scams instantly - verify people, websites, companies, job offers, emails, phone numbers, dating profiles. Free real-time protection with 640M+ records."
+    }
+  }
+}

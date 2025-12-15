@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -32,6 +33,245 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+// Translation helper type
+type Locale = 'en' | 'sk';
+
+// Get translations based on locale
+const getTranslations = (locale: Locale) => {
+  const translations = {
+    en: {
+      hero: {
+        badge: 'Fraud Prevention Platform',
+        title1: 'Is It a Scam? Check Any',
+        titleHighlight: 'Website, Person, Company, Phone or Email',
+        title2: 'Instantly',
+        description: 'Check scams instantly 🔎 — verify <strong>people</strong>, <strong>websites</strong>, <strong>companies</strong>, <strong>job offers</strong>, <strong>emails</strong>, <strong>phone numbers</strong>, <strong>dating profiles</strong>, and much more. Enjoy <strong>free real-time protection</strong> 🛡️. Found a scam or got scammed? ⚠️ <strong>Report it now</strong> — your warning could <strong>protect others</strong>. Explore our <strong>security services</strong> 🔐.',
+        searchPlaceholder: 'Search by name, email, phone, website, IBAN, crypto wallet...',
+        search: 'Search',
+        records: '640M+ Records',
+        sources: '130+ Sources',
+        realtime: 'Real-time Updates',
+        free: 'Always Free',
+      },
+      database: {
+        badge: 'Real-time Data',
+        title: 'Our Database in Numbers',
+        description: 'Real-time access to over 640 million verified fraud records from 130+ trusted global sources including FBI, OFAC, Interpol, and international law enforcement agencies',
+        note: '(Some data sources are still being integrated) Updates every 5 minutes',
+        categoriesTitle: 'Comprehensive Fraud Database Categories',
+        totalCoverage: 'Total Database Coverage',
+        totalRecords: 'Total Records',
+        dataSources: 'Data Sources',
+        categories: 'Categories',
+        realtimeAccess: 'Real-time Access',
+        updateFreq: 'Update Frequency',
+        sourcesFooter: 'Verified data sources include FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre, and 120+ additional verified global databases from law enforcement and consumer protection agencies worldwide.',
+        maliciousIPs: 'Malicious IP Addresses',
+        stolenVehicles: 'Stolen Vehicles Database',
+        phishingURLs: 'Verified Phishing URLs',
+        dissolvedCompanies: 'Dissolved Companies',
+      },
+      roadmap: {
+        title: "List of Features and Services We're Building",
+        description: "For each item we list its status, completion percentage, and a brief note on what it's for.",
+        feature: 'Feature',
+        status: 'Status',
+        complete: 'Complete',
+        whatFor: "What it's for",
+        functional: 'Functional',
+        inDevelopment: 'In development',
+        planned: 'Planned',
+      },
+      services: {
+        title: 'Other Services',
+        included: 'What the service includes',
+        when: 'When this service is suitable',
+        recovery: {
+          title: 'Fraud Recovery Services',
+          description: 'Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.',
+          priceNote: '5 hours of investigator work',
+          priceDesc: 'We offer this service in response to companies that charge €3,500–€10,000 and often only report the case to a financial institution. We consider such practices fraudulent and unethical.',
+          cta: 'Start Money Recovery',
+        },
+        dueDiligence: {
+          title: 'DUE DILIGENCE SERVICES',
+          description: "Independent screening of partners, clients, and investments. We combine OSINT, AML/KYB procedures, and a legal perspective so you can make decisions based on verifiable facts—fast, discreet, and defensible.",
+          cta: 'Start Due Diligence',
+        },
+        investigation: {
+          title: 'CORPORATE INVESTIGATIONS',
+          description: 'Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform (evidence management, chain of custody)—discreet, lawful, and defensible.',
+          cta: 'Start Investigation',
+        },
+        training: {
+          title: 'SECURITY TRAINING & CONSULTING',
+          description: 'Security training and consulting for teams and management. We use real scenarios from ScamNemesis (OSINT, fraud, incident response) to make procedures practical, measurable, and defensible.',
+          cta: 'Explore Training & Courses',
+        },
+      },
+      consultation: {
+        badge: 'Free Consultation',
+        title: 'BOOK A FREE CONSULTATION NOW',
+        description: "We would love to learn more about your company's individual needs. That's why we offer a 15-minute consultation call.",
+        cta: 'Book a free consultation',
+      },
+      freeTraining: {
+        badge: 'Learn & Protect',
+        title: 'Free Security Training & Courses — Learn to Spot Scams',
+        description: 'Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.',
+        topicsTitle: 'Most Popular Topics:',
+        cta: 'Start Free Training',
+      },
+      certifications: {
+        description: 'Years of experience and certifications from leading institutions — professionals on your side.',
+      },
+    },
+    sk: {
+      hero: {
+        badge: 'Platforma na prevenciu podvodov',
+        title1: 'Je to podvod? Overte akúkoľvek',
+        titleHighlight: 'webstránku, osobu, firmu, telefón alebo e-mail',
+        title2: 'okamžite',
+        description: 'Overte podvody okamžite 🔎 — skontrolujte <strong>osoby</strong>, <strong>webstránky</strong>, <strong>firmy</strong>, <strong>pracovné ponuky</strong>, <strong>e-maily</strong>, <strong>telefónne čísla</strong>, <strong>zoznamovacie profily</strong> a oveľa viac. Využite <strong>bezplatnú ochranu v reálnom čase</strong> 🛡️. Našli ste podvod alebo vás podviedli? ⚠️ <strong>Nahláste to teraz</strong> — vaše varovanie môže <strong>ochrániť ostatných</strong>. Preskúmajte naše <strong>bezpečnostné služby</strong> 🔐.',
+        searchPlaceholder: 'Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, krypto peňaženky...',
+        search: 'Vyhľadať',
+        records: '640M+ záznamov',
+        sources: '130+ zdrojov',
+        realtime: 'Aktualizácie v reálnom čase',
+        free: 'Vždy zadarmo',
+      },
+      database: {
+        badge: 'Dáta v reálnom čase',
+        title: 'Naša databáza v číslach',
+        description: 'Prístup v reálnom čase k viac ako 640 miliónom overených záznamov o podvodoch zo 130+ dôveryhodných globálnych zdrojov vrátane FBI, OFAC, Interpolu a medzinárodných orgánov činných v trestnom konaní',
+        note: '(Niektoré zdroje dát sa stále integrujú) Aktualizácie každých 5 minút',
+        categoriesTitle: 'Komplexné kategórie databázy podvodov',
+        totalCoverage: 'Celkové pokrytie databázy',
+        totalRecords: 'Celkový počet záznamov',
+        dataSources: 'Zdroje dát',
+        categories: 'Kategórie',
+        realtimeAccess: 'Prístup v reálnom čase',
+        updateFreq: 'Frekvencia aktualizácií',
+        sourcesFooter: 'Overené zdroje dát zahŕňajú FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre a 120+ ďalších overených globálnych databáz.',
+        maliciousIPs: 'Škodlivé IP adresy',
+        stolenVehicles: 'Databáza odcudzených vozidiel',
+        phishingURLs: 'Overené phishingové URL',
+        dissolvedCompanies: 'Zrušené spoločnosti',
+      },
+      roadmap: {
+        title: 'Zoznam funkcií a služieb, ktoré budujeme',
+        description: 'Pri každej položke uvádzame jej stav, percento dokončenia a stručnú poznámku, na čo slúži.',
+        feature: 'Funkcia',
+        status: 'Stav',
+        complete: 'Dokončené',
+        whatFor: 'Na čo to slúži',
+        functional: 'Funkčné',
+        inDevelopment: 'Vo vývoji',
+        planned: 'Plánované',
+      },
+      services: {
+        title: 'Ďalšie služby',
+        included: 'Čo služba zahŕňa',
+        when: 'Kedy je táto služba vhodná',
+        recovery: {
+          title: 'Služby na vymáhanie prostriedkov',
+          description: 'Vymáhanie prostriedkov stratených podvodom. Kombinujeme digitálnu forenznú analýzu, OSINT a právnu koordináciu na sledovanie, zmrazenie a vymáhanie vašich peňazí — rýchlo, eticky a obhájiteľne.',
+          priceNote: '5 hodín práce vyšetrovateľa',
+          priceDesc: 'Túto službu ponúkame ako reakciu na spoločnosti, ktoré účtujú 3 500 – 10 000 € a často len nahlásia prípad finančnej inštitúcii. Takéto praktiky považujeme za podvodné a neetické.',
+          cta: 'Začať vymáhanie peňazí',
+        },
+        dueDiligence: {
+          title: 'SLUŽBY DUE DILIGENCE',
+          description: 'Nezávislý skríning partnerov, klientov a investícií. Kombinujeme OSINT, AML/KYB postupy a právnu perspektívu, aby ste mohli robiť rozhodnutia na základe overiteľných faktov — rýchlo, diskrétne a obhájiteľne.',
+          cta: 'Začať Due Diligence',
+        },
+        investigation: {
+          title: 'FIREMNÉ VYŠETROVANIA',
+          description: 'Interné a externé vyšetrovania pre firmy. Kombinujeme OSINT, digitálnu forenznú analýzu a finančnú analytiku s platformou ScamNemesis (správa dôkazov, reťazec úschovy) — diskrétne, zákonné a obhájiteľné.',
+          cta: 'Začať vyšetrovanie',
+        },
+        training: {
+          title: 'BEZPEČNOSTNÉ ŠKOLENIA A KONZULTÁCIE',
+          description: 'Bezpečnostné školenia a konzultácie pre tímy a manažment. Používame reálne scenáre zo ScamNemesis (OSINT, podvody, reakcia na incidenty), aby boli postupy praktické, merateľné a obhájiteľné.',
+          cta: 'Preskúmať školenia a kurzy',
+        },
+      },
+      consultation: {
+        badge: 'Bezplatná konzultácia',
+        title: 'REZERVUJTE SI BEZPLATNÚ KONZULTÁCIU TERAZ',
+        description: 'Radi by sme sa dozvedeli viac o individuálnych potrebách vašej spoločnosti. Preto ponúkame 15-minútový konzultačný hovor.',
+        cta: 'Rezervovať bezplatnú konzultáciu',
+      },
+      freeTraining: {
+        badge: 'Učte sa a chráňte sa',
+        title: 'Bezplatné bezpečnostné školenia a kurzy — Naučte sa rozpoznať podvody',
+        description: 'Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, krypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.',
+        topicsTitle: 'Najpopulárnejšie témy:',
+        cta: 'Začať bezplatné školenie',
+      },
+      certifications: {
+        description: 'Roky skúseností a certifikácie od popredných inštitúcií — profesionáli na vašej strane.',
+      },
+    },
+  };
+  return translations[locale] || translations.en;
+};
+
+// FAQ translations
+const getFaqSections = (locale: Locale) => {
+  if (locale === 'sk') {
+    return [
+      { id: '1', title: '1. Pre koho je táto platforma určená?', content: 'ScamNemesis je pre ľudí, ktorí chcú overiť osobu, firmu, telefónne číslo, e-mail alebo webovú stránku. Zoznam nájdete tu. Je tiež pre ľudí, ktorí už boli podvedení a chcú nahlásiť svoj prípad a spojiť sa s ďalšími obeťami toho istého páchateľa. Platforma pomáha bežným používateľom aj profesionálom — polícii, novinárom, právnikom, analytikom, bankám a burzám.\n\nRozlíšiť podvod od legitímnej služby je dnes ťažké — každý môže byť oklamaný. Ak sa vám to stalo, nie ste sami; sme tu, aby sme vám pomohli.', icon: Users, color: 'blue' },
+      { id: '2', title: '2. Aký problém riešime?', content: 'Neexistuje jediné \"globálne\" číslo, ale údaje ukazujú, že online podvody vzrástli približne o 2 300 % medzi rokmi 2019 a 2024; v roku 2024 odhadované straty dosiahli 1,03 bilióna USD.\n\nScamNemesis prináša poriadok do tohto chaosu: konsoliduje hlásenia a dôkazy do jedného koordinovaného prípadu, automaticky spája obete s podobnými vzorcami, šetrí čas vyšetrovateľom a urýchľuje vyšetrovanie.', icon: AlertTriangle, color: 'amber' },
+      { id: '3', title: '3. Ako používať ScamNemesis?', content: 'Vyhľadávanie:\n\nV hornej časti nájdete vyhľadávací panel, kde môžete zadať meno, e-mail, telefónne číslo a ďalšie identifikátory. Výsledky sú zobrazené podľa skóre zhody.\n\nNahlasovanie:\n\nAk ste boli podvedení, kliknite na Nahlásiť podvod. Otvorí sa formulár — väčšina polí je voliteľná, ale odporúčame pridať čo najviac detailov.\n\nInterpretácia zhôd:\n\nPamätajte, že rovnaké meno ≠ rovnaká osoba. Vyhodnoťte kontext (krajina, typ podvodu, čas, ďalšie identifikátory).', icon: Search, color: 'cyan' },
+      { id: '4', title: '4. Prečo je to dôležité?', content: 'Každý nenahlásený podvod pomáha podvodníkom osloviť viac obetí, spôsobuje viac zničených životov a vytvára viac utrpenia pre obete a ich rodiny. Chceme to zastaviť.\n\nKeď komunity zdieľajú údaje naprieč krajinami, objavujú sa vzorce. Zdieľaná inteligencia láme ich najväčšiu výhodu — izoláciu. Varovanie jednej osoby sa stáva ochranou pre všetkých.', icon: Shield, color: 'emerald' },
+      { id: '5', title: '5. Prečo sme vytvorili tento projekt?', content: 'Projekt sa zrodil z hnevu a frustrácie z neefektívnych policajných metód. Sami sme sa stali obeťami podvodu a polícia nemohla pomôcť, pretože bola preťažená a nemala nástroje ani odbornosť na riešenie moderných typov podvodov.\n\nJe čas konať, preto sme sa rozhodli využiť naše znalosti OSINT, hackingu a spravodajstva na pomoc ľuďom a vyšetrovacím tímom s prevenciou a detekciou podvodov.', icon: Target, color: 'rose' },
+      { id: '6', title: '6. Čo je ScamNemesis?', content: 'Komunitou riadená verifikačná a spravodajská platforma, ktorá kombinuje databázu nahlásených podvodov, sledovanie blockchainu, monitorovanie naprieč 130+ zdrojmi dát, overovanie telefónov a e-mailov, rozpoznávanie tvárí, forenznú analýzu dokumentov a mapovanie vzťahov.', icon: Database, color: 'indigo' },
+      { id: '7', title: '7. Čo tu nájdete?', content: 'Vyhľadávací systém pre viac ako 38 identifikátorov (napr. meno, e-mail, telefón atď.), ktorý vám pomôže zistiť, či máte do činenia s podvodníkom a ochrániť vaše aktíva.\n\nKeď existuje zhoda, zobrazí sa hlásenie so všetkými dostupnými detailmi o podozrivom.', icon: FileSearch, color: 'purple' },
+      { id: '8', title: '8. Kto stojí za týmto projektom?', content: 'Medzinárodný tím vyšetrovateľov a etických hackerov z troch kontinentov a viac ako piatich krajín — experti na kybernetickú bezpečnosť, analýzu dát a profesionáli so školením a skúsenosťami v spravodajskom remesle.\n\nNaším cieľom je zostať navždy bezplatní. Staviame na transparentnosti, pretože dôvera sa musí zaslúžiť.', icon: Users, color: 'teal' },
+      { id: '9', title: '9. Čo plánujeme do budúcnosti?', content: 'Nižšie si môžete prezrieť tabuľku, ktorá presne ukazuje, čo budujeme ďalej a čo sme už spustili. ScamNemesis si kladie za cieľ stať sa najefektívnejším a najrozšírenejším nástrojom na aktívne narušenie, prevenciu a detekciu podvodov.', icon: Sparkles, color: 'orange' },
+    ];
+  }
+  // Return English FAQ (original)
+  return [
+    { id: '1', title: '1. Who is this platform for?', content: `ScamNemesis is for people who want to verify a person, company, phone number, email, or website The list can be found here. It's also for people who have already been scammed and want to report their case and connect with other victims of the same perpetrator. The platform helps both everyday users and professionals — police, journalists, lawyers, analysts, banks, and exchanges.\n\nDistinguishing a scam from a legitimate service is hard today — anyone can be fooled. If it happened to you, you're not alone; we're here to help.`, icon: Users, color: 'blue' },
+    { id: '2', title: '2. What problem are we solving?', content: `There is no single "global" number, but data shows that online fraud grew by roughly 2,300% between 2019 and 2024; in 2024, estimated losses reached USD 1.03 trillion.\n\nScamNemesis brings order to this chaos: it consolidates reports and evidence into a single coordinated case, automatically links victims with similar patterns, saves investigators time, and accelerates investigations.`, icon: AlertTriangle, color: 'amber' },
+    { id: '3', title: '3. How to use ScamNemesis?', content: `Search:\n\nAt the top, you'll find the search bar where you can enter a name, email, phone number, and other identifiers. Results are shown by match score.\n\nReporting:\n\nIf you've been scammed, click Report scam. A form will open — most fields are optional, but we recommend adding as many details as possible.\n\nInterpreting matches:\n\nRemember that the same name ≠ the same person. Evaluate the context (country, scam type, time, other identifiers).`, icon: Search, color: 'cyan' },
+    { id: '4', title: '4. Why is this important?', content: `Every unreported scam helps scammers reach more victims, causes more ruined lives, and creates more suffering for victims and their families. We want to stop that.\n\nWhen communities share data across countries, patterns emerge. Shared intelligence breaks their biggest advantage — isolation. One person's warning becomes protection for everyone.`, icon: Shield, color: 'emerald' },
+    { id: '5', title: '5. Why did we create this project?', content: `The project was born out of anger and frustration with ineffective police methods. We ourselves became victims of fraud, and the police could not help because they were overwhelmed and lacked the tools and expertise to tackle modern types of scams.\n\nIt is time to act, so we decided to use our knowledge of OSINT, hacking, and intelligence to help people and investigative teams with prevention and detection of fraud.`, icon: Target, color: 'rose' },
+    { id: '6', title: '6. What is ScamNemesis?', content: `A community-driven verification and intelligence platform that combines a reported-scam database, blockchain tracing, monitoring across 130+ data sources, phone and email verification, face recognition, document forensics (OCR + metadata analysis), and relationship mapping.`, icon: Database, color: 'indigo' },
+    { id: '7', title: '7. What will you find here?', content: `A search system for more than 38 identifiers (e.g., name, email, phone, etc.) that helps you determine whether you're dealing with a scammer and protect your assets.\n\nWhen there's a match, a report appears with all available details about the suspect.`, icon: FileSearch, color: 'purple' },
+    { id: '8', title: '8. Who is behind this project?', content: `An international team of investigators and ethical hackers from three continents and more than five countries — experts in cybersecurity, data analytics, and professionals with training and experience in intelligence tradecraft.\n\nOur goal is to remain free forever. We build on transparency because trust must be earned.`, icon: Users, color: 'teal' },
+    { id: '9', title: '9. What are we planning for the future?', content: `Below, you can view a table that shows exactly what we are building next and what we have already shipped. ScamNemesis aims to become the most effective and widely adopted tool for active fraud disruption, prevention, and detection.`, icon: Sparkles, color: 'orange' },
+  ];
+};
+
+// Training topics by locale
+const getTrainingTopics = (locale: Locale) => {
+  if (locale === 'sk') {
+    return [
+      'Ako predchádzať podvodom v podnikaní',
+      'Poistenie ochrany identity',
+      'Experian ochrana proti krádeži identity',
+      'Bezpečnosť na internete',
+      '10 spôsobov, ako predchádzať kybernetickej kriminalite',
+      'Ako rozpoznať podvod',
+      'Linka pomoci pre obete podvodov',
+      'Nahlásenie kybernetickej kriminality polícii',
+    ];
+  }
+  return [
+    'How to prevent fraud in business',
+    'Identity protection insurance',
+    'Experian Identity Theft Protection',
+    'Safety on the internet',
+    '10 ways to prevent cybercrime',
+    'How to recognize a scam',
+    'Scammer helpline',
+    'Report cybercrime to the police',
+  ];
+};
 
 // JSON-LD Schemas
 const organizationSchema = {
@@ -114,101 +354,6 @@ const serviceSchema = {
   },
 };
 
-// FAQ sections data
-const faqSections = [
-  {
-    id: '1',
-    title: '1. Who is this platform for?',
-    content: `ScamNemesis is for people who want to verify a person, company, phone number, email, or website The list can be found here. It's also for people who have already been scammed and want to report their case and connect with other victims of the same perpetrator. The platform helps both everyday users and professionals — police, journalists, lawyers, analysts, banks, and exchanges. Reported cases can be sent to partners via API who can pause payments to protect your money (service in preparation). All reports are manually reviewed by experts before publication.
-
-Distinguishing a scam from a legitimate service is hard today — anyone can be fooled. If it happened to you, you're not alone; we're here to help.`,
-    icon: Users,
-    color: 'blue',
-  },
-  {
-    id: '2',
-    title: '2. What problem are we solving?',
-    content: `There is no single "global" number, but data shows that online fraud grew by roughly 2,300% between 2019 and 2024; in 2024, estimated losses reached USD 1.03 trillion. In practice, one scammer can create 10–100 cases per month, which fragments evidence and severely overloads the police, making effective case resolution difficult.
-
-ScamNemesis brings order to this chaos: it consolidates reports and evidence into a single coordinated case, automatically links victims with similar patterns, saves investigators time, and accelerates investigations. It also works preventively — anyone can verify a person, company, domain, phone number, and 38 additional identifiers associated with scams. The tool is free and available to everyone.`,
-    icon: AlertTriangle,
-    color: 'amber',
-  },
-  {
-    id: '3',
-    title: '3. How to use ScamNemesis?',
-    content: `Search:
-
-At the top, you'll find the search bar where you can enter a name, email, phone number, and other identifiers list is here. Results are shown by match score — the lower an item appears, the weaker the match, so we recommend checking more cases. Clicking a Case opens a report with all information provided by the reporter. Some data is anonymized for safety and legal reasons. Reports may include photos, documents, and comments from others; you can also add your own comment. The "Find similar cases" feature shows records with the highest similarity and explains exactly what matched and to what degree (e.g., the same phone number).
-
-Reporting:
-
-If you've been scammed, click Report scam. A form will open — most fields are optional, but we recommend adding as many details as possible. Reporter data is kept strictly anonymous and not shared; we don't require a real name or primary email (you can use a separate address just for this). Keep your access details safe. You will receive instructions and a link by email to manage your case — add, edit, or delete it from the database.
-
-Interpreting matches:
-
-Remember that the same name ≠ the same person. If you search "John Smith" in the USA and find a "John Smith" in the UK for a different type of scam, it's likely just a namesake. Evaluate the context (country, scam type, time, other identifiers). The most reliable signals are unique data such as email, phone number, bank account/IBAN, or a crypto address. Don't jump to conclusions — stay cautious.`,
-    icon: Search,
-    color: 'cyan',
-  },
-  {
-    id: '4',
-    title: '4. Why is this important?',
-    content: `Every unreported scam helps scammers reach more victims, causes more ruined lives, and creates more suffering for victims and their families. We want to stop that.
-
-When communities share data across countries, patterns emerge: the same "investment opportunity" pops up in dozens of states, the identical profile photo runs across dozens of fake accounts, and the same crypto wallet links to known scam networks. Shared intelligence breaks their biggest advantage — isolation. One person's warning becomes protection for everyone.
-
-ScamNemesis unifies, cleans, and evaluates these signals so investigative teams can prioritize what matters. That's why we build simple integrations — API, widget, and forensic tools — so data can be used immediately in external systems to deliver real prevention and a faster response.`,
-    icon: Shield,
-    color: 'emerald',
-  },
-  {
-    id: '5',
-    title: '5. Why did we create this project?',
-    content: `The project was born out of anger and frustration with ineffective police methods. We ourselves became victims of fraud, and the police could not help because they were overwhelmed and lacked the tools and expertise to tackle modern types of scams. When someone loses all their money, it is devastating for them and their family. This has to stop!
-
-Police units that are expected to "help" in the hardest moments and be reliable often cannot assist, while modern scam crime is growing at an alarming scale.
-
-It is time to act, so we decided to use our knowledge of OSINT, hacking, and intelligence to help people and investigative teams with prevention and detection of fraud.`,
-    icon: Target,
-    color: 'rose',
-  },
-  {
-    id: '6',
-    title: '6. What is ScamNemesis?',
-    content: `A community-driven verification and intelligence platform that combines a reported-scam database, blockchain tracing, monitoring across 130+ data sources, phone and email verification, face recognition, document forensics (OCR + metadata analysis), and relationship mapping. For example, you can enter a phone number, crypto wallet, or a person's name and instantly see whether it's flagged, who/what it is linked to, and which behavior pattern it matches.
-
-We are also building forensic tools used by investigators and integrating them into our platform to be even more effective. We share signals with law-enforcement authorities, partner banks, and other high-risk platforms to maximize your chances of recovering funds if you become a victim.`,
-    icon: Database,
-    color: 'indigo',
-  },
-  {
-    id: '7',
-    title: '7. What will you find here?',
-    content: `A search system for more than 38 identifiers (e.g., name, email, phone, etc.) that helps you determine whether you're dealing with a scammer and protect your assets. You'll find the exact list of supported identifiers and a guide on how to search in our system.
-
-When there's a match, a report appears with all available details about the suspect and relevant case information to help you minimize risk. You can also report an incident and find other victims of the same perpetrator — through coordination and information sharing, the chances of exposure and prosecution rise significantly.`,
-    icon: FileSearch,
-    color: 'purple',
-  },
-  {
-    id: '8',
-    title: '8. Who is behind this project?',
-    content: `An international team of investigators and ethical hackers from three continents and more than five countries — experts in cybersecurity, data analytics, and professionals with training and experience in intelligence tradecraft.
-
-Our goal is to remain free forever. Because pure self-funding is not sustainable long term, part of the project will include advertising, and we will seek additional support through grants and donations from the public (if you'd like to help, you can donate here). All methodology, data sources, and funding will be publicly documented. We build on transparency because trust must be earned — not merely declared.`,
-    icon: Users,
-    color: 'teal',
-  },
-  {
-    id: '9',
-    title: '9. What are we planning for the future?',
-    content: `Below, you can view a table that shows exactly what we are building next and what we have already shipped. ScamNemesis aims to become the most effective and widely adopted tool for active fraud disruption, prevention, and detection. The concept has been in development for over a year. We believe that with ScamNemesis, we can significantly reduce fraud.`,
-    icon: Sparkles,
-    color: 'orange',
-  },
-];
-
 // Roadmap features
 const roadmapFeatures = [
   { name: 'API: dispatch data to three parties', status: 'development', progress: 80, description: 'With a single call we send relevant information to the bank/payment gateway and to authorities — this speeds up blocking transactions and escalation.' },
@@ -230,18 +375,6 @@ const roadmapFeatures = [
   { name: 'AI bot "Is this a scam?"', status: 'planned', progress: 0, description: 'A chat assistant that quickly advises based on signals: what to watch for, what to verify, and which steps to take.' },
   { name: 'Domain score & reputation', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, blacklists, hosting, technology — resulting in a domain risk score.' },
   { name: 'Media forensics — advanced modules', status: 'planned', progress: 53, description: 'Advanced tools for image, video, and audio (manipulation localization, liveness, chain of custody).' },
-];
-
-// Training topics
-const trainingTopics = [
-  'How to prevent fraud in business',
-  'Identity protection insurance',
-  'Experian Identity Theft Protection',
-  'Safety on the internet',
-  '10 ways to prevent cybercrime',
-  'How to recognize a scam',
-  'Scammer helpline',
-  'Report cybercrime to the police',
 ];
 
 // Database categories
@@ -382,13 +515,19 @@ const trainingFeatures = [
 ];
 
 export default function HomePage() {
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'en';
+  const t = getTranslations(locale);
+  const faqSections = getFaqSections(locale);
+  const trainingTopics = getTrainingTopics(locale);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      window.location.href = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
     }
   };
 
@@ -448,22 +587,23 @@ export default function HomePage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
                 <Shield className="w-5 h-5 text-blue-400" />
-                <span className="text-sm font-medium text-slate-300">Fraud Prevention Platform</span>
+                <span className="text-sm font-medium text-slate-300">{t.hero.badge}</span>
               </div>
 
               {/* Main Heading */}
               <div className="space-y-8">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight">
-                  <span className="text-white">Is It a Scam? Check Any </span>
+                  <span className="text-white">{t.hero.title1} </span>
                   <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    Website, Person, Company, Phone or Email
+                    {t.hero.titleHighlight}
                   </span>
-                  <span className="text-white"> Instantly</span>
+                  <span className="text-white"> {t.hero.title2}</span>
                 </h1>
 
-                <p className="text-lg sm:text-xl lg:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                  Check scams instantly 🔎 — verify <strong className="text-white">people</strong>, <strong className="text-white">websites</strong>, <strong className="text-white">companies</strong>, <strong className="text-white">job offers</strong>, <strong className="text-white">emails</strong>, <strong className="text-white">phone numbers</strong>, <strong className="text-white">dating profiles</strong>, and much more. Enjoy <strong className="text-white">free real-time protection</strong> 🛡️. Found a scam or got scammed? ⚠️ <strong className="text-white">Report it now</strong> — your warning could <strong className="text-white">protect others</strong>. Explore our <strong className="text-white">security services</strong> 🔐.
-                </p>
+                <p
+                  className="text-lg sm:text-xl lg:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: t.hero.description.replace(/<strong>/g, '<strong class="text-white">') }}
+                />
               </div>
 
               {/* Search Bar */}
@@ -477,7 +617,7 @@ export default function HomePage() {
                     <Search className="w-6 h-6 text-blue-300 ml-4 flex-shrink-0" />
                     <Input
                       type="text"
-                      placeholder="Search by name, email, phone, website, IBAN, crypto wallet..."
+                      placeholder={t.hero.searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="flex-1 bg-transparent border-0 text-white placeholder-blue-300/50 outline-none text-base sm:text-lg py-4 focus:ring-0 focus-visible:ring-0"
@@ -486,7 +626,7 @@ export default function HomePage() {
                       type="submit"
                       className="px-6 sm:px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 flex items-center gap-2"
                     >
-                      <span className="hidden sm:inline">Search</span>
+                      <span className="hidden sm:inline">{t.hero.search}</span>
                       <Search className="w-5 h-5" />
                     </Button>
                   </div>
@@ -496,19 +636,19 @@ export default function HomePage() {
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm">
                   <div className="flex items-center gap-2 text-slate-300">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>640M+ Records</span>
+                    <span>{t.hero.records}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-300">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>130+ Sources</span>
+                    <span>{t.hero.sources}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-300">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>Real-time Updates</span>
+                    <span>{t.hero.realtime}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-300">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>Always Free</span>
+                    <span>{t.hero.free}</span>
                   </div>
                 </div>
               </div>
