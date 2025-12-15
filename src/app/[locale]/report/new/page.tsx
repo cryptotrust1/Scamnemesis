@@ -521,35 +521,123 @@ export default function NewReportPage() {
     setIsSubmitting(true);
 
     try {
-      // Prepare form data with files
-      const submitData = new FormData();
+      // Step 1: Upload evidence files to S3
+      let uploadedEvidence: Array<{ type: string; file_key: string; description?: string }> = [];
 
-      // Add form fields
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            submitData.append(key, JSON.stringify(value));
-          } else if (typeof value === 'boolean' || typeof value === 'number') {
-            submitData.append(key, String(value));
-          } else if (typeof value === 'string') {
-            submitData.append(key, value);
+      if (files.length > 0) {
+        const filesToUpload = files.filter((f) => f.file);
+
+        if (filesToUpload.length > 0) {
+          toast.info('Nahrávanie súborov...');
+
+          const uploadFormData = new FormData();
+          filesToUpload.forEach((f) => {
+            if (f.file) {
+              uploadFormData.append('files', f.file);
+            }
+          });
+
+          const uploadResponse = await fetch('/api/v1/evidence/upload', {
+            method: 'POST',
+            body: uploadFormData,
+          });
+
+          if (!uploadResponse.ok) {
+            const uploadError = await uploadResponse.json().catch(() => ({}));
+            throw new Error(uploadError.message || 'Chyba pri nahrávaní súborov');
           }
-        }
-      });
 
-      // Add files
-      files.forEach((file, index) => {
-        if (file.file) {
-          submitData.append(`files`, file.file);
-          if (file.description) {
-            submitData.append(`fileDescriptions[${index}]`, file.description);
-          }
-        }
-      });
+          const uploadResult = await uploadResponse.json();
 
+          // Map uploaded files to evidence format
+          uploadedEvidence = uploadResult.uploaded.map(
+            (uploaded: { fileKey: string; mimeType: string }, index: number) => {
+              const originalFile = filesToUpload[index];
+              return {
+                type: uploaded.mimeType.startsWith('image/')
+                  ? 'SCREENSHOT'
+                  : uploaded.mimeType.startsWith('video/')
+                  ? 'VIDEO'
+                  : uploaded.mimeType.includes('pdf')
+                  ? 'DOCUMENT'
+                  : 'OTHER',
+                file_key: uploaded.fileKey,
+                description: originalFile?.description,
+              };
+            }
+          );
+        }
+      }
+
+      // Step 2: Prepare report data as JSON
+      const reportData = {
+        incident: {
+          fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
+          date: formData.incidentDate,
+          summary: formData.title || 'Report',
+          description: formData.description,
+          financial_loss: formData.amount
+            ? {
+                amount: parseFloat(String(formData.amount)),
+                currency: formData.currency || 'EUR',
+              }
+            : undefined,
+          location: {
+            city: formData.city,
+            postal_code: formData.postalCode,
+            country: formData.country,
+          },
+        },
+        perpetrator: {
+          full_name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          address: formData.address
+            ? { street: formData.address }
+            : undefined,
+        },
+        digital_footprints: {
+          website_url: formData.website,
+          telegram: formData.socialMedia?.includes('telegram') ? formData.socialMedia : undefined,
+          whatsapp: formData.socialMedia?.includes('whatsapp') ? formData.socialMedia : undefined,
+          instagram: formData.socialMedia?.includes('instagram') ? formData.socialMedia : undefined,
+          facebook: formData.socialMedia?.includes('facebook') ? formData.socialMedia : undefined,
+        },
+        financial: formData.iban
+          ? {
+              iban: formData.iban,
+              account_number: formData.bankAccount,
+            }
+          : undefined,
+        crypto: formData.cryptoWallet
+          ? {
+              wallet_address: formData.cryptoWallet,
+            }
+          : undefined,
+        company:
+          formData.perpetratorType === 'COMPANY' && formData.companyName
+            ? {
+                name: formData.companyName,
+                vat_tax_id: formData.companyId,
+              }
+            : undefined,
+        evidence: uploadedEvidence.length > 0 ? uploadedEvidence : undefined,
+        reporter: {
+          name: formData.reporterName,
+          email: formData.reporterEmail || 'anonymous@scamnemesis.com',
+          phone: formData.reporterPhone,
+          preferred_language: 'sk',
+          consent: formData.agreeToGDPR || false,
+        },
+      };
+
+      // Step 3: Submit report
       const response = await fetch('/api/v1/reports', {
         method: 'POST',
-        body: submitData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData),
       });
 
       if (response.ok) {
@@ -563,7 +651,7 @@ export default function NewReportPage() {
       }
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('Chyba pri odosielaní hlásenia');
+      toast.error(error instanceof Error ? error.message : 'Chyba pri odosielaní hlásenia');
     } finally {
       setIsSubmitting(false);
     }
