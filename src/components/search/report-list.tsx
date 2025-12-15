@@ -32,7 +32,7 @@ const fraudTypeLabels: Record<string, string> = {
   PHISHING: 'Phishing',
   IDENTITY_THEFT: 'Krádež identity',
   ECOMMERCE_FRAUD: 'E-commerce podvod',
-  CRYPTO_SCAM: 'Krypto podvod',
+  CRYPTO_SCAM: 'Crypto podvod',
   JOB_SCAM: 'Pracovný podvod',
   RENTAL_FRAUD: 'Podvod s prenájmom',
   LOAN_SCAM: 'Podvod s pôžičkou',

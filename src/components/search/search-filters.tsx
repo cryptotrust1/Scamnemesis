@@ -39,7 +39,7 @@ const fraudTypes = [
   { value: 'PHISHING', label: 'Phishing' },
   { value: 'IDENTITY_THEFT', label: 'Krádež identity' },
   { value: 'ECOMMERCE_FRAUD', label: 'E-commerce podvod' },
-  { value: 'CRYPTO_SCAM', label: 'Krypto podvod' },
+  { value: 'CRYPTO_SCAM', label: 'Crypto podvod' },
   { value: 'JOB_SCAM', label: 'Pracovný podvod' },
   { value: 'RENTAL_FRAUD', label: 'Podvod s prenájmom' },
   { value: 'LOAN_SCAM', label: 'Podvod s pôžičkou' },

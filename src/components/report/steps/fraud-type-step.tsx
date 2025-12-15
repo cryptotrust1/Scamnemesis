@@ -56,7 +56,7 @@ const fraudTypes = [
   },
   {
     value: 'CRYPTO_SCAM',
-    label: 'Krypto podvod',
+    label: 'Crypto podvod',
     description: 'Podvody s kryptomenami, falošné burzy, rug pulls',
     icon: Coins,
     color: 'text-amber-500',

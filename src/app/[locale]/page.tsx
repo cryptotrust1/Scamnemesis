@@ -134,7 +134,7 @@ const getTranslations = (locale: Locale) => {
         titleHighlight: 'webstránku, osobu, firmu, telefón alebo e-mail',
         title2: 'okamžite',
         description: 'Overte podvody okamžite 🔎 — skontrolujte <strong>osoby</strong>, <strong>webstránky</strong>, <strong>firmy</strong>, <strong>pracovné ponuky</strong>, <strong>e-maily</strong>, <strong>telefónne čísla</strong>, <strong>zoznamovacie profily</strong> a oveľa viac. Využite <strong>bezplatnú ochranu v reálnom čase</strong> 🛡️. Našli ste podvod alebo vás podviedli? ⚠️ <strong>Nahláste to teraz</strong> — vaše varovanie môže <strong>ochrániť ostatných</strong>. Preskúmajte naše <strong>bezpečnostné služby</strong> 🔐.',
-        searchPlaceholder: 'Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, krypto peňaženky...',
+        searchPlaceholder: 'Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, crypto peňaženky...',
         search: 'Vyhľadať',
         records: '640M+ záznamov',
         sources: '130+ zdrojov',
@@ -206,7 +206,7 @@ const getTranslations = (locale: Locale) => {
       freeTraining: {
         badge: 'Učte sa a chráňte sa',
         title: 'Bezplatné bezpečnostné školenia a kurzy — Naučte sa rozpoznať podvody',
-        description: 'Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, krypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.',
+        description: 'Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, crypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.',
         topicsTitle: 'Najpopulárnejšie témy:',
         cta: 'Začať bezplatné školenie',
       },

@@ -47,7 +47,7 @@ const FRAUD_TYPES = [
   { value: 'RENTAL_FRAUD', label: 'Prenájom' },
   { value: 'SMS_SCAM', label: 'SMS podvod' },
   { value: 'TECH_SUPPORT', label: 'Tech support' },
-  { value: 'CRYPTO_SCAM', label: 'Krypto podvod' },
+  { value: 'CRYPTO_SCAM', label: 'Crypto podvod' },
 ];
 
 const STATUSES = [
