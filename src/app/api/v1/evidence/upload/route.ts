@@ -14,20 +14,27 @@ import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-// S3 Configuration
+// S3/MinIO Configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
-const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'minioadmin';
-const S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'minioadmin';
+const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY;
+const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Initialize S3 Client
+// Warn about missing S3 credentials
+if (!S3_ACCESS_KEY || !S3_SECRET_KEY) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
+  }
+}
+
+// Initialize S3 Client (with fallback for development)
 const s3Client = new S3Client({
   endpoint: S3_ENDPOINT,
   region: S3_REGION,
   credentials: {
-    accessKeyId: S3_ACCESS_KEY,
-    secretAccessKey: S3_SECRET_KEY,
+    accessKeyId: S3_ACCESS_KEY || 'minioadmin',
+    secretAccessKey: S3_SECRET_KEY || 'minioadmin',
   },
   forcePathStyle: true, // Required for MinIO
 });

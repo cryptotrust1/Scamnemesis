@@ -5,8 +5,16 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { UserRole } from '@prisma/client';
 
+// JWT Secret - MUST be set in production
+const jwtSecretString = process.env.JWT_SECRET;
+if (!jwtSecretString) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+  console.warn('[JWT] WARNING: JWT_SECRET not set. Using development fallback. Set JWT_SECRET for production!');
+}
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'default-secret-change-in-production'
+  jwtSecretString || 'dev-jwt-secret-not-for-production'
 );
 const JWT_ISSUER = 'scamnemesis';
 const JWT_AUDIENCE = 'scamnemesis-api';

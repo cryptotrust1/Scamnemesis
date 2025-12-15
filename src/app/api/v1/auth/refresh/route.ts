@@ -16,8 +16,13 @@ import { jwtVerify } from 'jose';
 
 export const dynamic = 'force-dynamic';
 
+// JWT Secret - uses same env var as jwt.ts
+const jwtSecretString = process.env.JWT_SECRET;
+if (!jwtSecretString && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'default-secret-change-in-production'
+  jwtSecretString || 'dev-jwt-secret-not-for-production'
 );
 
 const refreshSchema = z.object({

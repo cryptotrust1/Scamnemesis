@@ -10,7 +10,16 @@ import { Client as TypesenseClient } from 'typesense';
 const TYPESENSE_HOST = process.env.TYPESENSE_HOST || 'localhost';
 const TYPESENSE_PORT = parseInt(process.env.TYPESENSE_PORT || '8108');
 const TYPESENSE_PROTOCOL = process.env.TYPESENSE_PROTOCOL || 'http';
-const TYPESENSE_API_KEY = process.env.TYPESENSE_API_KEY || 'xyz';
+const TYPESENSE_API_KEY = process.env.TYPESENSE_API_KEY;
+
+// Warn about missing Typesense API key
+if (!TYPESENSE_API_KEY) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[Typesense] TYPESENSE_API_KEY must be set in production!');
+  } else {
+    console.warn('[Typesense] TYPESENSE_API_KEY not set. Using development fallback.');
+  }
+}
 
 // Collection names
 export const COLLECTIONS = {
@@ -31,7 +40,7 @@ export function getTypesenseClient(): TypesenseClient {
           protocol: TYPESENSE_PROTOCOL,
         },
       ],
-      apiKey: TYPESENSE_API_KEY,
+      apiKey: TYPESENSE_API_KEY || 'xyz', // Development fallback
       connectionTimeoutSeconds: 10,
     });
   }
