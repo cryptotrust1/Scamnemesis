@@ -3,44 +3,100 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { i18n, type Locale } from '@/i18n/config';
 
 const primaryNav = [
-  { name: 'Scam Checker', href: '/search' },
-  { name: 'Report Scam', href: '/report/new' },
-  { name: 'I was scammed', href: '/i-was-scammed-need-help' },
+  { name: { en: 'Scam Checker', sk: 'Kontrola podvodov' }, href: '/search' },
+  { name: { en: 'Report Scam', sk: 'Nahlásiť podvod' }, href: '/report/new' },
+  { name: { en: 'I was scammed', sk: 'Bol som podvedený' }, href: '/i-was-scammed-need-help' },
 ];
 
 const secondaryNav = [
-  { name: 'Verify service/product', href: '/verify-serviceproduct' },
-  { name: 'Scam Prevention', href: '/scam-prevention' },
-  { name: 'Scammer Removal', href: '/scammer-removal' },
-  { name: 'Money Recovery', href: '/money-recovery' },
-  { name: 'Training Courses', href: '/training-courses' },
-  { name: 'Support us', href: '/support-us' },
-  { name: 'Contact us', href: '/contact-us' },
+  { name: { en: 'Verify service/product', sk: 'Overiť službu/produkt' }, href: '/verify-serviceproduct' },
+  { name: { en: 'Scam Prevention', sk: 'Prevencia podvodov' }, href: '/scam-prevention' },
+  { name: { en: 'Scammer Removal', sk: 'Odstránenie podvodníkov' }, href: '/scammer-removal' },
+  { name: { en: 'Money Recovery', sk: 'Vymáhanie peňazí' }, href: '/money-recovery' },
+  { name: { en: 'Training Courses', sk: 'Školenia a kurzy' }, href: '/training-courses' },
+  { name: { en: 'Support us', sk: 'Podporte nás' }, href: '/support-us' },
+  { name: { en: 'Contact us', sk: 'Kontaktujte nás' }, href: '/contact-us' },
 ];
 
 const languages = [
-  { code: 'en', name: 'English' },
-  { code: 'sk', name: 'Slovenčina' },
+  { code: 'en' as Locale, name: 'English', flag: '🇬🇧' },
+  { code: 'sk' as Locale, name: 'Slovenčina', flag: '🇸🇰' },
 ];
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [othersOpen, setOthersOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState('en');
+
+  // Get current locale from pathname
+  const getCurrentLocale = (): Locale => {
+    if (!pathname) return i18n.defaultLocale;
+    const segments = pathname.split('/');
+    const potentialLocale = segments[1];
+    if (i18n.locales.includes(potentialLocale as Locale)) {
+      return potentialLocale as Locale;
+    }
+    return i18n.defaultLocale;
+  };
+
+  const currentLocale = getCurrentLocale();
+
+  // Get path without locale prefix
+  const getPathWithoutLocale = (): string => {
+    if (!pathname) return '/';
+    const segments = pathname.split('/');
+    if (i18n.locales.includes(segments[1] as Locale)) {
+      return '/' + segments.slice(2).join('/') || '/';
+    }
+    return pathname;
+  };
+
+  // Navigate to new locale
+  const changeLocale = (newLocale: Locale) => {
+    console.log('[LanguageSwitch] Changing locale to:', newLocale);
+    console.log('[LanguageSwitch] Current pathname:', pathname);
+
+    const pathWithoutLocale = getPathWithoutLocale();
+    const newPath = `/${newLocale}${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
+
+    console.log('[LanguageSwitch] Path without locale:', pathWithoutLocale);
+    console.log('[LanguageSwitch] New path:', newPath);
+
+    // Store locale preference
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('locale', newLocale);
+      document.documentElement.lang = newLocale;
+    }
+
+    setLangOpen(false);
+    router.push(newPath);
+  };
+
+  // Build localized href
+  const getLocalizedHref = (href: string): string => {
+    return `/${currentLocale}${href}`;
+  };
+
+  // Check if current path matches href
+  const isActive = (href: string): boolean => {
+    const localizedHref = getLocalizedHref(href);
+    return pathname === localizedHref || pathname === href;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href={`/${currentLocale}`} className="flex items-center space-x-2">
           <Image
             src="/images/logo-scam-blue.png"
             alt="ScamNemesis"
@@ -57,15 +113,15 @@ export function Header() {
           {primaryNav.map((item) => (
             <Link
               key={item.href}
-              href={item.href}
+              href={getLocalizedHref(item.href)}
               className={cn(
                 'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                pathname === item.href
+                isActive(item.href)
                   ? 'bg-[#0E74FF] text-white'
                   : 'text-foreground hover:bg-muted'
               )}
             >
-              {item.name}
+              {item.name[currentLocale]}
             </Link>
           ))}
 
@@ -79,7 +135,7 @@ export function Header() {
                 'text-foreground hover:bg-muted'
               )}
             >
-              Others
+              {currentLocale === 'sk' ? 'Ďalšie' : 'Others'}
               <ChevronDown className={cn('ml-1 h-4 w-4 transition-transform', othersOpen && 'rotate-180')} />
             </button>
             {othersOpen && (
@@ -87,15 +143,15 @@ export function Header() {
                 {secondaryNav.map((item) => (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={getLocalizedHref(item.href)}
                     className={cn(
                       'block px-4 py-2 text-sm transition-colors',
-                      pathname === item.href
+                      isActive(item.href)
                         ? 'bg-[#0E74FF] text-white'
                         : 'text-foreground hover:bg-muted'
                     )}
                   >
-                    {item.name}
+                    {item.name[currentLocale]}
                   </Link>
                 ))}
               </div>
@@ -105,33 +161,38 @@ export function Header() {
 
         {/* Right Side Actions */}
         <div className="flex items-center space-x-2">
-          {/* Language Selector */}
+          {/* Language Selector - FIXED VERSION */}
           <div className="relative hidden md:block">
             <button
-              onClick={() => setLangOpen(!langOpen)}
-              onBlur={() => setTimeout(() => setLangOpen(false), 150)}
+              onClick={() => {
+                console.log('[LanguageSwitch] Dropdown clicked, current state:', langOpen);
+                setLangOpen(!langOpen);
+              }}
+              onBlur={() => setTimeout(() => setLangOpen(false), 200)}
               className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-muted transition-colors"
             >
               <Globe className="h-4 w-4 mr-2" />
-              {languages.find(l => l.code === currentLang)?.name}
+              <span className="mr-1">{languages.find(l => l.code === currentLocale)?.flag}</span>
+              {languages.find(l => l.code === currentLocale)?.name}
               <ChevronDown className={cn('ml-1 h-4 w-4 transition-transform', langOpen && 'rotate-180')} />
             </button>
             {langOpen && (
-              <div className="absolute top-full right-0 mt-1 w-40 bg-background border rounded-lg shadow-lg py-2 z-50">
+              <div className="absolute top-full right-0 mt-1 w-44 bg-background border rounded-lg shadow-lg py-2 z-50">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
                     onClick={() => {
-                      setCurrentLang(lang.code);
-                      setLangOpen(false);
+                      console.log('[LanguageSwitch] Language button clicked:', lang.code);
+                      changeLocale(lang.code);
                     }}
                     className={cn(
                       'block w-full text-left px-4 py-2 text-sm transition-colors',
-                      currentLang === lang.code
+                      currentLocale === lang.code
                         ? 'bg-[#0E74FF] text-white'
                         : 'text-foreground hover:bg-muted'
                     )}
                   >
+                    <span className="mr-2">{lang.flag}</span>
                     {lang.name}
                   </button>
                 ))}
@@ -141,7 +202,9 @@ export function Header() {
 
           {/* Report Button */}
           <Button asChild className="hidden md:inline-flex bg-[#0E74FF] hover:bg-[#0E74FF]/90">
-            <Link href="/report/new">Report Scam</Link>
+            <Link href={getLocalizedHref('/report/new')}>
+              {currentLocale === 'sk' ? 'Nahlásiť podvod' : 'Report Scam'}
+            </Link>
           </Button>
 
           {/* Mobile Menu Button */}
@@ -165,49 +228,57 @@ export function Header() {
             {primaryNav.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={getLocalizedHref(item.href)}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   'block px-4 py-3 rounded-md text-base font-medium transition-colors',
-                  pathname === item.href
+                  isActive(item.href)
                     ? 'bg-[#0E74FF] text-white'
                     : 'text-foreground hover:bg-muted'
                 )}
               >
-                {item.name}
+                {item.name[currentLocale]}
               </Link>
             ))}
             <div className="border-t my-2" />
             {secondaryNav.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={getLocalizedHref(item.href)}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   'block px-4 py-3 rounded-md text-base font-medium transition-colors',
-                  pathname === item.href
+                  isActive(item.href)
                     ? 'bg-[#0E74FF] text-white'
                     : 'text-foreground hover:bg-muted'
                 )}
               >
-                {item.name}
+                {item.name[currentLocale]}
               </Link>
             ))}
             <div className="border-t my-2" />
+            {/* Mobile Language Selector - FIXED */}
             <div className="px-4 py-2">
-              <p className="text-sm text-muted-foreground mb-2">Language</p>
+              <p className="text-sm text-muted-foreground mb-2">
+                {currentLocale === 'sk' ? 'Jazyk' : 'Language'}
+              </p>
               <div className="flex gap-2">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
-                    onClick={() => setCurrentLang(lang.code)}
+                    onClick={() => {
+                      console.log('[LanguageSwitch] Mobile button clicked:', lang.code);
+                      changeLocale(lang.code);
+                      setMobileMenuOpen(false);
+                    }}
                     className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                      currentLang === lang.code
+                      'px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2',
+                      currentLocale === lang.code
                         ? 'bg-[#0E74FF] text-white'
                         : 'bg-muted text-foreground'
                     )}
                   >
+                    <span>{lang.flag}</span>
                     {lang.name}
                   </button>
                 ))}
