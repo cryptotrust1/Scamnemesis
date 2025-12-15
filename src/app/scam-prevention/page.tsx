@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Script from 'next/script';
 import {
   Shield,
   AlertTriangle,
@@ -194,9 +195,224 @@ const reportingChannels = [
   { name: 'Better Business Bureau Scam Tracker', url: 'bbb.org/scamtracker', description: 'Report and research scams' },
 ];
 
+// JSON-LD Schemas for SEO
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Comprehensive Anti-Scam Guide: Prevention, Detection & Recovery',
+  description: 'Your practical security guide to identifying threats, preventing financial losses, and responding effectively to fraud.',
+  datePublished: '2025-01-01',
+  dateModified: '2025-12-15',
+  author: {
+    '@type': 'Organization',
+    name: 'ScamNemesis',
+    url: 'https://scamnemesis.com',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ScamNemesis',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://scamnemesis.com/images/logo.png',
+      width: 600,
+      height: 60,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://scamnemesis.com/scam-prevention',
+  },
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'What to Do If You Have Been Scammed - 5-Step Immediate Action Protocol',
+  description: 'Critical steps to take within 24 hours of discovering a scam to maximize recovery chances.',
+  totalTime: 'PT2H',
+  estimatedCost: {
+    '@type': 'PriceSpecification',
+    priceCurrency: 'USD',
+    price: '0',
+  },
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Stop all communication and transfers immediately',
+      text: 'Cease contact with the suspected scammer and halt any ongoing transactions.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Contact your financial institution within 24 hours',
+      text: 'Report fraudulent transactions and request holds, reversals, or account freezes as needed.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Secure all accounts with new passwords',
+      text: 'Change passwords for all potentially compromised accounts using strong, unique credentials.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'Document everything comprehensively',
+      text: 'Save all communications, receipts, screenshots, and transaction records before they disappear.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'File official reports with authorities',
+      text: 'Report to local police, FBI IC3, FTC, and relevant regulatory bodies to create official record.',
+    },
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is a scam?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A scam is a fraudulent scheme designed to deceive individuals into parting with money, personal information, or assets through false promises, misrepresentation, or manipulation. Scams exploit human psychology, trust, and emotional vulnerabilities to bypass rational decision-making.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What are the warning signs of a scam?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Key warning signs include: pressure to act quickly or maintain secrecy, requests for unconventional payment methods, unrealistic promises or guarantees, missing regulatory verification, communication red flags like grammar errors, insistence on specific communication channels, requests for sensitive information, and resistance to independent verification.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What should I do if I have been scammed?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Take immediate action: 1) Stop all communication and transfers immediately, 2) Contact your financial institution within 24 hours, 3) Secure all accounts with new passwords, 4) Document everything comprehensively, 5) File official reports with authorities including local police, FBI IC3, and FTC.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How can I recover money lost to a scam?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Recovery depends on the payment method used. Credit/debit cards have 60-day chargeback windows. Bank transfers require action within 24 hours. Cryptocurrency recovery is very limited. Gift cards and cash have extremely low recovery rates. Time is critical - act immediately and contact your financial institution.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Where can I report a scam?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Report scams to multiple authorities: Federal Trade Commission (ReportFraud.ftc.gov), FBI Internet Crime Complaint Center (ic3.gov), local police department, State Attorney General, AARP Fraud Watch Network (877-908-3360), and Better Business Bureau Scam Tracker (bbb.org/scamtracker).',
+      },
+    },
+  ],
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '12 Most Prevalent Scam Categories',
+  description: 'Common fraud schemes to recognize and avoid',
+  numberOfItems: 12,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Investment Fraud' },
+    { '@type': 'ListItem', position: 2, name: 'Romance Scams' },
+    { '@type': 'ListItem', position: 3, name: 'Phishing Attacks' },
+    { '@type': 'ListItem', position: 4, name: 'E-commerce Fraud' },
+    { '@type': 'ListItem', position: 5, name: 'Technical Support Fraud' },
+    { '@type': 'ListItem', position: 6, name: 'Employment Scams' },
+    { '@type': 'ListItem', position: 7, name: 'Rental Fraud' },
+    { '@type': 'ListItem', position: 8, name: 'Lottery/Prize Scams' },
+    { '@type': 'ListItem', position: 9, name: 'Charity Fraud' },
+    { '@type': 'ListItem', position: 10, name: 'Government Impersonation' },
+    { '@type': 'ListItem', position: 11, name: 'Healthcare Fraud' },
+    { '@type': 'ListItem', position: 12, name: 'Home Service Scams' },
+  ],
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'ScamNemesis',
+  url: 'https://scamnemesis.com',
+  logo: 'https://scamnemesis.com/images/logo.png',
+  description: 'Leading platform for scam prevention, fraud reporting, and victim support.',
+  sameAs: [
+    'https://twitter.com/scamnemesis',
+    'https://facebook.com/scamnemesis',
+    'https://linkedin.com/company/scamnemesis',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'support@scamnemesis.com',
+    availableLanguage: ['English'],
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://scamnemesis.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Scam Prevention Guide',
+      item: 'https://scamnemesis.com/scam-prevention',
+    },
+  ],
+};
+
 export default function ScamPreventionPage() {
   return (
-    <div className="flex flex-col">
+    <>
+      {/* JSON-LD Schemas */}
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <Script
+        id="itemlist-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <div className="flex flex-col">
       {/* Hero Section - Clean minimal style */}
       <section className="w-full py-16 md:py-20 bg-white">
         <div className="container px-4 md:px-6">
@@ -665,6 +881,7 @@ export default function ScamPreventionPage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
