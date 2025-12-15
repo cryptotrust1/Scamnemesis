@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter, usePathname } from 'next/navigation';
 import { Globe } from 'lucide-react';
 import { Button } from './button';
 import {
@@ -9,8 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from './select';
-import { useI18n } from '@/lib/i18n/context';
-import { locales, localeNames, localeFlags, type Locale } from '@/lib/i18n';
+import { i18n, type Locale } from '@/i18n/config';
+
+const localeNames: Record<Locale, string> = {
+  sk: 'Slovensky',
+  en: 'English',
+};
+
+const localeFlags: Record<Locale, string> = {
+  sk: '🇸🇰',
+  en: '🇬🇧',
+};
 
 interface LanguageSelectorProps {
   variant?: 'dropdown' | 'buttons';
@@ -25,17 +35,56 @@ export function LanguageSelector({
   showLabel = false,
   className,
 }: LanguageSelectorProps) {
-  const { locale, setLocale } = useI18n();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Get current locale from pathname
+  const getCurrentLocale = (): Locale => {
+    if (!pathname) return i18n.defaultLocale;
+    const segments = pathname.split('/');
+    const potentialLocale = segments[1];
+    if (i18n.locales.includes(potentialLocale as Locale)) {
+      return potentialLocale as Locale;
+    }
+    return i18n.defaultLocale;
+  };
+
+  const currentLocale = getCurrentLocale();
+
+  // Navigate to new locale
+  const changeLocale = (newLocale: Locale) => {
+    const currentPath = pathname || '/';
+    const segments = currentPath.split('/');
+    const currentPathLocale = segments[1];
+
+    let newPath: string;
+    if (i18n.locales.includes(currentPathLocale as Locale)) {
+      // Replace existing locale in path
+      segments[1] = newLocale;
+      newPath = segments.join('/');
+    } else {
+      // Add locale prefix to path
+      newPath = `/${newLocale}${currentPath}`;
+    }
+
+    // Store locale preference
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('locale', newLocale);
+      document.documentElement.lang = newLocale;
+    }
+
+    router.push(newPath);
+  };
 
   if (variant === 'buttons') {
     return (
       <div className={`flex items-center gap-1 ${className || ''}`}>
-        {locales.map((loc) => (
+        {i18n.locales.map((loc) => (
           <Button
             key={loc}
-            variant={locale === loc ? 'default' : 'ghost'}
+            variant={currentLocale === loc ? 'default' : 'ghost'}
             size="sm"
-            onClick={() => setLocale(loc)}
+            onClick={() => changeLocale(loc)}
             className="min-w-[40px]"
           >
             {showFlags && <span className="mr-1">{localeFlags[loc]}</span>}
@@ -47,16 +96,16 @@ export function LanguageSelector({
   }
 
   return (
-    <Select value={locale} onValueChange={(value) => setLocale(value as Locale)}>
+    <Select value={currentLocale} onValueChange={(value) => changeLocale(value as Locale)}>
       <SelectTrigger className={`w-auto min-w-[120px] ${className || ''}`}>
         <Globe className="h-4 w-4 mr-2" />
         <SelectValue>
-          {showFlags && <span className="mr-1">{localeFlags[locale]}</span>}
-          {showLabel ? localeNames[locale] : locale.toUpperCase()}
+          {showFlags && <span className="mr-1">{localeFlags[currentLocale]}</span>}
+          {showLabel ? localeNames[currentLocale] : currentLocale.toUpperCase()}
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {locales.map((loc) => (
+        {i18n.locales.map((loc) => (
           <SelectItem key={loc} value={loc}>
             {showFlags && <span className="mr-2">{localeFlags[loc]}</span>}
             {localeNames[loc]}
