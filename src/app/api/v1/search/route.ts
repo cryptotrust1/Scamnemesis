@@ -7,9 +7,74 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/db';
+import { Prisma } from '@prisma/client';
 import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
+import { generateSearchEmbedding, isEmbeddingServiceAvailable } from '@/lib/services/embeddings';
 
 export const dynamic = 'force-dynamic';
+
+/**
+ * Mask sensitive data based on user role
+ */
+function maskField(
+  value: string | null | undefined,
+  fieldType: 'email' | 'phone' | 'name',
+  userRole: string
+): string | null {
+  if (!value) return null;
+
+  // Admin and Super Admin see everything unmasked
+  if (['ADMIN', 'SUPER_ADMIN'].includes(userRole)) {
+    return value;
+  }
+
+  // Gold tier sees partial masking
+  if (userRole === 'GOLD') {
+    switch (fieldType) {
+      case 'email':
+        const [local, domain] = value.split('@');
+        if (!domain) return '***@***.***';
+        return `${local.slice(0, 2)}***@${domain}`;
+      case 'phone':
+        return value.slice(0, 4) + '****' + value.slice(-2);
+      case 'name':
+        const parts = value.split(' ');
+        return parts.map(p => p[0] + '***').join(' ');
+      default:
+        return value;
+    }
+  }
+
+  // Standard tier sees more masking
+  if (userRole === 'STANDARD') {
+    switch (fieldType) {
+      case 'email':
+        const [local2, domain2] = value.split('@');
+        if (!domain2) return '***@***.***';
+        return `${local2[0]}***@***`;
+      case 'phone':
+        return value.slice(0, 3) + '*****' + value.slice(-2);
+      case 'name':
+        const parts2 = value.split(' ');
+        return parts2.map(p => p[0] + '***').join(' ');
+      default:
+        return value;
+    }
+  }
+
+  // Basic tier and anonymous see heavy masking
+  switch (fieldType) {
+    case 'email':
+      return '***@***.***';
+    case 'phone':
+      return '***-***-' + value.slice(-2);
+    case 'name':
+      const parts3 = value.split(' ');
+      return parts3.map(p => p[0] + '.').join(' ');
+    default:
+      return '***';
+  }
+}
 
 const searchParamsSchema = z.object({
   q: z.string().min(2).max(500),
@@ -193,7 +258,39 @@ async function exactSearch(
 }
 
 /**
- * Perform fuzzy search (name-based)
+ * Calculate string similarity using Levenshtein distance
+ */
+function calculateSimilarity(str1: string, str2: string): number {
+  const s1 = str1.toLowerCase();
+  const s2 = str2.toLowerCase();
+
+  if (s1 === s2) return 1.0;
+  if (s1.length === 0 || s2.length === 0) return 0.0;
+
+  // Simple trigram similarity calculation
+  const getTrigrams = (s: string): Set<string> => {
+    const trigrams = new Set<string>();
+    const padded = `  ${s} `;
+    for (let i = 0; i < padded.length - 2; i++) {
+      trigrams.add(padded.substring(i, i + 3));
+    }
+    return trigrams;
+  };
+
+  const trigrams1 = getTrigrams(s1);
+  const trigrams2 = getTrigrams(s2);
+
+  let intersection = 0;
+  trigrams1.forEach((t) => {
+    if (trigrams2.has(t)) intersection++;
+  });
+
+  const union = trigrams1.size + trigrams2.size - intersection;
+  return union > 0 ? intersection / union : 0;
+}
+
+/**
+ * Perform fuzzy search (name-based) with actual similarity scores
  */
 async function fuzzySearch(
   query: string,
@@ -231,22 +328,149 @@ async function fuzzySearch(
     }),
   ]);
 
-  const results: SearchResult[] = reports.map((report) => ({
-    id: report.publicId,
-    score: 0.8, // TODO: Calculate actual similarity score
-    source: 'fuzzy' as const,
-    perpetrator: {
-      name: report.perpetrators[0]?.fullName,
-    },
-    fraud_type: report.fraudType.toLowerCase(),
-    country: report.locationCountry || undefined,
-    incident_date: report.incidentDate?.toISOString().split('T')[0],
-    highlights: {
-      name: report.perpetrators[0]?.fullName ? [report.perpetrators[0].fullName] : [],
-    },
-  }));
+  // Calculate actual similarity scores
+  const results: SearchResult[] = reports.map((report) => {
+    const perpetratorName = report.perpetrators[0]?.fullName || '';
+    const nickname = report.perpetrators[0]?.nickname || '';
+    const username = report.perpetrators[0]?.username || '';
+
+    // Calculate similarity against all relevant fields and take the best match
+    const nameScore = calculateSimilarity(normalizedQuery, perpetratorName);
+    const nicknameScore = calculateSimilarity(normalizedQuery, nickname);
+    const usernameScore = calculateSimilarity(normalizedQuery, username);
+    const bestScore = Math.max(nameScore, nicknameScore, usernameScore);
+
+    // Boost score if query is contained in the name (substring match)
+    const containsBoost =
+      perpetratorName.toLowerCase().includes(normalizedQuery) ||
+      nickname.toLowerCase().includes(normalizedQuery) ||
+      username.toLowerCase().includes(normalizedQuery)
+        ? 0.2
+        : 0;
+
+    const finalScore = Math.min(1.0, bestScore + containsBoost);
+
+    return {
+      id: report.publicId,
+      score: Math.round(finalScore * 100) / 100, // Round to 2 decimal places
+      source: 'fuzzy' as const,
+      perpetrator: {
+        name: report.perpetrators[0]?.fullName,
+      },
+      fraud_type: report.fraudType.toLowerCase(),
+      country: report.locationCountry || undefined,
+      incident_date: report.incidentDate?.toISOString().split('T')[0],
+      highlights: {
+        name: report.perpetrators[0]?.fullName ? [report.perpetrators[0].fullName] : [],
+      },
+    };
+  });
+
+  // Sort by score descending
+  results.sort((a, b) => b.score - a.score);
 
   return { results, total };
+}
+
+/**
+ * Perform semantic search using vector embeddings
+ */
+async function semanticSearch(
+  query: string,
+  filters: Record<string, unknown>,
+  limit: number,
+  offset: number
+): Promise<{ results: SearchResult[]; total: number }> {
+  // Check if embedding service is available
+  if (!isEmbeddingServiceAvailable()) {
+    console.warn('[Search] Embedding service not available, falling back to fuzzy search');
+    return fuzzySearch(query, filters, limit, offset);
+  }
+
+  // Generate embedding for the search query
+  const embeddingResult = await generateSearchEmbedding(query);
+
+  if (!embeddingResult.success || !embeddingResult.embedding) {
+    console.warn('[Search] Failed to generate embedding, falling back to fuzzy search');
+    return fuzzySearch(query, filters, limit, offset);
+  }
+
+  const embedding = embeddingResult.embedding;
+  const embeddingStr = `[${embedding.join(',')}]`;
+
+  try {
+    // Build filter conditions for raw SQL
+    const filterConditions: string[] = ["r.status = 'APPROVED'"];
+
+    if (filters.locationCountry) {
+      filterConditions.push(`r.location_country = '${filters.locationCountry}'`);
+    }
+    if (filters.fraudType) {
+      filterConditions.push(`r.fraud_type = '${filters.fraudType}'`);
+    }
+
+    const whereClause = filterConditions.join(' AND ');
+
+    // Use pgvector cosine similarity search
+    const results = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        public_id: string;
+        fraud_type: string;
+        location_country: string | null;
+        incident_date: Date | null;
+        perpetrator_name: string | null;
+        similarity: number;
+      }>
+    >`
+      SELECT
+        r.id,
+        r.public_id,
+        r.fraud_type,
+        r.location_country,
+        r.incident_date,
+        p.full_name as perpetrator_name,
+        1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
+      FROM reports r
+      LEFT JOIN perpetrators p ON p.report_id = r.id
+      WHERE ${Prisma.raw(whereClause)}
+        AND p.name_embedding IS NOT NULL
+        AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+      ORDER BY similarity DESC
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `;
+
+    // Get total count
+    const countResult = await prisma.$queryRaw<[{ count: bigint }]>`
+      SELECT COUNT(DISTINCT r.id) as count
+      FROM reports r
+      LEFT JOIN perpetrators p ON p.report_id = r.id
+      WHERE ${Prisma.raw(whereClause)}
+        AND p.name_embedding IS NOT NULL
+        AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+    `;
+
+    const total = Number(countResult[0]?.count || 0);
+
+    const searchResults: SearchResult[] = results.map((row) => ({
+      id: row.public_id,
+      score: Math.round(row.similarity * 100) / 100,
+      source: 'semantic' as const,
+      perpetrator: {
+        name: row.perpetrator_name,
+      },
+      fraud_type: row.fraud_type.toLowerCase(),
+      country: row.location_country || undefined,
+      incident_date: row.incident_date?.toISOString().split('T')[0],
+    }));
+
+    return { results: searchResults, total };
+  } catch (error) {
+    console.error('[Search] Semantic search error:', error);
+    // Fall back to fuzzy search on error
+    return fuzzySearch(query, filters, limit, offset);
+  }
 }
 
 /**
@@ -259,7 +483,7 @@ export async function GET(request: NextRequest) {
     if (rateLimitError) return rateLimitError;
 
     // Authentication (optional for basic search)
-    const _auth = await optionalAuth(request);
+    const auth = await optionalAuth(request);
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
@@ -342,15 +566,24 @@ export async function GET(request: NextRequest) {
       results = fuzzyResults.results;
       total = fuzzyResults.total;
     } else if (mode === 'semantic') {
-      // TODO: Implement semantic search with embeddings
-      // For now, fall back to fuzzy
-      const fuzzyResults = await fuzzySearch(q, filters, limit, offset);
-      results = fuzzyResults.results;
-      total = fuzzyResults.total;
+      const semanticResults = await semanticSearch(q, filters, limit, offset);
+      results = semanticResults.results;
+      total = semanticResults.total;
     }
 
+    // Determine user role for masking
+    const isAdmin = auth.scopes?.some(s => s.startsWith('admin:')) || false;
+    const userRole = isAdmin ? 'ADMIN' : (auth.user ? (auth.user.role || 'STANDARD') : 'BASIC');
+
     // Apply masking based on user role
-    // TODO: Implement field-level masking
+    results = results.map((result) => ({
+      ...result,
+      perpetrator: {
+        name: maskField(result.perpetrator.name, 'name', userRole),
+        phone: maskField(result.perpetrator.phone, 'phone', userRole),
+        email: maskField(result.perpetrator.email, 'email', userRole),
+      },
+    }));
 
     // Build facets
     const facets: Record<string, Record<string, number>> = {};
