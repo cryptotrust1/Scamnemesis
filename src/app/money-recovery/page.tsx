@@ -1,301 +1,735 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Shield,
   Search,
+  FileText,
   Scale,
   Users,
   ArrowRight,
   CheckCircle,
-  Target,
+  Download,
+  AlertTriangle,
+  Brain,
+  Fingerprint,
+  Building2,
+  Clock,
+  Mail,
+  CreditCard,
+  Sparkles,
+  Eye,
+  Lock,
+  Zap,
+  FileCheck,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Script from 'next/script';
 
-const services = [
-  {
-    number: '1',
-    title: 'Intelligence Analysis and Fraud Mapping',
-    description: 'Collecting transaction data, crypto addresses, IP traces, and all available digital footprints to map the fraud network.',
-    icon: Search,
-    image: '/images/pages/money-recovery.jpg',
-  },
-  {
-    number: '2',
-    title: 'Forensic Tracking and Evidence Collection',
-    description: 'Using blockchain analysis and OSINT tools to trace funds and gather court-admissible evidence.',
-    icon: Target,
-    image: '/images/pages/forensic-tracking.jpg',
-  },
-  {
-    number: '3',
-    title: 'Legal Assessment and Recommendations',
-    description: 'Lawyer-prepared case analysis with jurisdiction determination and recovery strategy recommendations.',
-    icon: Scale,
-    image: '/images/pages/legal-assessment.jpg',
-  },
-  {
-    number: '4',
-    title: 'Cooperation with Authorities and Support',
-    description: 'Providing comprehensive evidence materials for criminal proceedings and coordinating with law enforcement.',
-    icon: Users,
-    image: '/images/pages/investigation-team.jpg',
-  },
-];
-
+// 4-Step Process Data
 const processSteps = [
   {
-    step: '1',
-    title: 'Report the Scam',
-    description: 'Fill out our detailed intake form with all information about the fraud incident, including transaction details and communication records.',
+    step: 1,
+    title: 'Intelligence Analysis and Fraud Mapping',
+    description: 'Our analysts collect all available data – transactions, crypto addresses, IP traces, emails, phone numbers, and identifiers of individuals or companies. This information is processed into a forensic report that clearly shows the structure of the fraud, the entities involved, and the flow of funds.',
+    icon: Brain,
+    color: 'blue',
   },
   {
-    step: '2',
-    title: 'Order the Service',
-    description: 'Complete the €600 payment to start the investigation. Our team reviews your case and assigns a dedicated investigator.',
+    step: 2,
+    title: 'Forensic Tracking and Evidence Collection',
+    description: 'We use advanced blockchain analysis tools and OSINT (open-source intelligence) to trace the movement of your funds. If we identify links to exchanges, service providers, or banks, we prepare legal documentation to approach them with the goal of freezing assets or obtaining data on the perpetrators.',
+    icon: Fingerprint,
+    color: 'purple',
   },
   {
-    step: '3',
-    title: 'Investigation Begins',
-    description: 'Your specialist contacts you for additional details and begins comprehensive forensic tracking, evidence collection, and legal assessment.',
+    step: 3,
+    title: 'Legal Assessment and Recommendations',
+    description: 'Our lawyers prepare a fundamental legal analysis of the case – including the classification of the offense, determination of jurisdiction, and recommendations for further action. The report also includes an evaluation of the likelihood of successfully recovering funds and a proposal of specific steps to be taken (e.g., filing a criminal complaint, a civil lawsuit, or direct communication with financial institutions).',
+    icon: Scale,
+    color: 'cyan',
+  },
+  {
+    step: 4,
+    title: 'Cooperation with Authorities and Support in Subsequent Stages',
+    description: 'Based on the prepared evidence, we provide materials that can be used in criminal proceedings and, if agreed, we can also coordinate communication with the police, prosecutors, or international partners. This ensures that law enforcement authorities have complete and relevant information from the very beginning, which significantly accelerates the investigation.',
+    icon: Building2,
+    color: 'emerald',
   },
 ];
+
+// How to Access Service Steps
+const accessSteps = [
+  {
+    step: 1,
+    title: 'Fill Out the Form',
+    description: 'Fill out our form as thoroughly as possible — it helps us gain a clearer understanding of your case.',
+    icon: FileText,
+    cta: 'Click here',
+    ctaLink: '/report/new',
+  },
+  {
+    step: 2,
+    title: 'Contact Us & Pay',
+    description: 'Contact us using the button on the right. Enter your email and case number, then complete the payment (the fee is €600). Our specialist will start reviewing your case immediately. Step 1 is to report the case to the relevant institutions. We then begin preparing the evidence package and conducting the investigation, followed by Step 3.',
+    icon: CreditCard,
+    cta: 'Click here',
+    ctaLink: '/contact-us',
+  },
+  {
+    step: 3,
+    title: 'Investigation Begins',
+    description: 'We will contact you with additional questions, inform you about how long the process will take, and ask for any specific supplementary information if needed.',
+    icon: Search,
+    cta: null,
+    ctaLink: null,
+  },
+];
+
+// JSON-LD Schemas
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Professional Fraud Investigation & Money Recovery Service',
+  description: 'Comprehensive fraud investigation combining blockchain analysis, forensic tracking, and legal assessment for crypto scams and investment fraud recovery.',
+  serviceType: 'Fraud Investigation and Money Recovery',
+  provider: {
+    '@type': 'Organization',
+    name: 'ScamNemesis',
+    url: 'https://scamnemesis.com',
+  },
+  areaServed: 'Worldwide',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Fraud Recovery Services',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        name: 'Investigation Package',
+        description: 'Comprehensive fraud analysis including blockchain analysis, OSINT research, and legal assessment',
+        price: '600',
+        priceCurrency: 'EUR',
+      },
+    ],
+  },
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Order Professional Money Recovery Investigation',
+  description: 'Step-by-step guide to accessing professional fraud investigation and money recovery services',
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Fill Out the Form',
+      text: 'Fill out our comprehensive intake form with all details about the fraud incident',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Contact Us & Complete Payment',
+      text: 'Enter your email and case number, then complete the €600 payment. Our specialist will start reviewing your case immediately.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Investigation Begins',
+      text: 'We contact you with additional questions and begin the comprehensive investigation process.',
+    },
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What does your money recovery service include?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Our €600 investigation package includes intelligence analysis, fraud mapping, blockchain forensics, OSINT research, legal assessment with jurisdiction determination, and a comprehensive court-ready evidence package.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is your service different from typical money recovery services?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Typical recovery services charge $3,000-$10,000 and often only assist with filing reports. We perform deep analysis, intelligence work, and legal assessment for only €600. We never promise guaranteed refunds – services that do are often scams themselves.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can you guarantee money recovery?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No legitimate service can guarantee 100% recovery. Services that promise guaranteed refunds are often scams. We provide honest assessment, thorough investigation, and court-ready evidence that significantly improves your chances of recovery.',
+      },
+    },
+  ],
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'ScamNemesis',
+  url: 'https://scamnemesis.com',
+  logo: 'https://scamnemesis.com/logo.png',
+  description: 'Professional fraud investigation and money recovery platform for victims of crypto scams and investment fraud.',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@scamnemesis.com',
+    contactType: 'customer support',
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://scamnemesis.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Money Recovery',
+      item: 'https://scamnemesis.com/money-recovery',
+    },
+  ],
+};
 
 export default function MoneyRecoveryPage() {
   return (
-    <div className="flex flex-col">
-      {/* Hero Section - Clean minimal style */}
-      <section className="w-full py-16 md:py-20 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <Shield className="h-12 w-12 mx-auto mb-5 text-[#0E74FF]" />
-            <h1 className="text-2xl font-semibold text-[#1e293b] sm:text-3xl md:text-4xl mb-5">
-              What to do if you have been scammed? Get quick and effective help
-            </h1>
-            <p className="text-base text-[#64748b] md:text-lg mb-6 max-w-3xl mx-auto leading-relaxed">
-              Professional fraud investigation and fund recovery for crypto scams and investment fraud. Our team combines digital forensics, OSINT, and legal coordination to help you recover your money.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-                <Link href="/report/new">
-                  Report a Scam
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" className="border-[#e8e8e8] hover:bg-[#f8fafc]" asChild>
-                <Link href="/contact-us">
-                  Order Service
-                </Link>
-              </Button>
+    <>
+      {/* JSON-LD Schemas */}
+      <Script
+        id="service-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <div className="flex flex-col min-h-screen">
+        {/* Hero Section - Premium Dark Gradient */}
+        <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+          {/* Animated gradient orbs */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/15 rounded-full blur-3xl animate-pulse delay-1000" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-500/10 rounded-full blur-3xl" />
+          </div>
+
+          {/* Grid pattern overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+
+          <div className="container relative z-10 px-4 md:px-6">
+            <div className="max-w-5xl mx-auto text-center">
+              {/* Icon with glow effect */}
+              <div className="relative inline-flex mb-10">
+                <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-xl scale-150" />
+                <div className="relative bg-gradient-to-br from-blue-500 to-cyan-500 p-6 rounded-2xl shadow-2xl shadow-blue-500/20">
+                  <Shield className="h-14 w-14 md:h-16 md:w-16 text-white" />
+                </div>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-8 leading-tight tracking-tight">
+                What to do if you have been scammed?{' '}
+                <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                  Get quick and effective help
+                </span>
+              </h1>
+
+              <p className="text-lg md:text-xl lg:text-2xl text-slate-300/90 max-w-4xl mx-auto mb-12 leading-relaxed">
+                ScamNemesis enables you to respond to fraud quickly and effectively. We are a service that truly helps clients – we conduct intelligence work, gather evidence, and deliver it, which is crucial for success in legal proceedings. At the same time, we provide a basic legal analysis of your case, including an assessment of your options and the likelihood of recovering funds.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105 text-lg px-10 py-7"
+                  asChild
+                >
+                  <Link href="/report/new">
+                    <Zap className="mr-3 h-6 w-6" />
+                    Order Refund Recovery Service
+                    <ArrowRight className="ml-3 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Pricing Section */}
-      <section className="w-full py-16 bg-muted/30">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-2 border-[#0E74FF]">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Investigation Package</CardTitle>
-                <CardDescription>Comprehensive fraud analysis and recovery assistance</CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="mb-6">
-                  <span className="text-5xl font-bold text-[#0E74FF]">€600</span>
-                  <span className="text-muted-foreground ml-2">one-time fee</span>
+        {/* Value Proposition Section */}
+        <section className="w-full py-20 md:py-28 bg-white dark:bg-slate-950">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                {/* Left Column - Our Service */}
+                <div className="space-y-8">
+                  <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium">
+                    <CheckCircle className="h-4 w-4" />
+                    Our Approach
+                  </div>
+
+                  <div className="space-y-6">
+                    <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 leading-relaxed">
+                      Our initial service is transparent and affordable. We thoroughly examine your case, present the investigative techniques we use, and clearly explain your legal options. After the consultation and delivery of the report, you will know exactly whether it is worth pursuing further action.
+                    </p>
+
+                    <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 leading-relaxed">
+                      With us, you won&apos;t find empty promises – services that guarantee a 100% refund, though it may be difficult to hear, are in fact scams. Their approach to clients is highly unethical and non-transparent.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-muted-foreground mb-6">
-                  Includes 5 hours of investigator work, blockchain analysis, OSINT research, and a comprehensive case report.
-                </p>
-                <ul className="text-left space-y-3 mb-8">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Full transaction tracing</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Blockchain analysis</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>OSINT investigation</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Legal assessment</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Court-ready evidence package</span>
-                  </li>
-                </ul>
-                <Button className="w-full bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-                  <Link href="/report/new">Start Now</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
-      {/* Services Section */}
-      <section className="w-full py-16 md:py-24">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-4">Our Services</h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Comprehensive fraud investigation combining digital forensics, blockchain analysis, and legal expertise
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card key={service.number} className="overflow-hidden">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={service.image}
-                      alt={service.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold shadow-lg">
-                      {service.number}
+                {/* Right Column - Comparison */}
+                <div className="space-y-8">
+                  <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-sm font-medium">
+                    <AlertTriangle className="h-4 w-4" />
+                    Why We&apos;re Different
+                  </div>
+
+                  <div className="space-y-6">
+                    <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 leading-relaxed">
+                      Typical &quot;money recovery&quot; services often only assist with filing fraud reports and send emails on your behalf – they do not perform deep analysis, intelligence work, or legal assessment, and their fees range from $3,000 to $10,000.
+                    </p>
+
+                    <Card className="border-2 border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 shadow-xl">
+                      <CardContent className="p-8">
+                        <div className="flex items-baseline gap-4 mb-4">
+                          <span className="text-5xl md:text-6xl font-bold text-blue-600 dark:text-blue-400">€600</span>
+                          <span className="text-lg text-slate-600 dark:text-slate-400">one-time fee</span>
+                        </div>
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                          Our analysis costs only €600, and the evidence and report you receive will be a valuable legal asset in any dispute.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How Does It Work - Section Header */}
+        <section className="w-full py-20 md:py-28 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-6xl mx-auto">
+              {/* Section Header */}
+              <div className="text-center mb-16 md:mb-24">
+                <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-medium mb-6">
+                  <Sparkles className="h-4 w-4" />
+                  Our Process
+                </div>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white mb-6">
+                  How does the money recovery process work?
+                </h2>
+              </div>
+
+              {/* 4-Step Process Cards */}
+              <div className="grid md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
+                {processSteps.map((step) => {
+                  const Icon = step.icon;
+                  const colorClasses = {
+                    blue: {
+                      gradient: 'from-blue-500 to-blue-600',
+                      shadow: 'shadow-blue-500/25',
+                      light: 'from-blue-50 to-blue-50/50 dark:from-blue-950/20 dark:to-blue-900/10',
+                      border: 'border-blue-200 dark:border-blue-800/50',
+                      number: 'bg-blue-500',
+                    },
+                    purple: {
+                      gradient: 'from-purple-500 to-purple-600',
+                      shadow: 'shadow-purple-500/25',
+                      light: 'from-purple-50 to-purple-50/50 dark:from-purple-950/20 dark:to-purple-900/10',
+                      border: 'border-purple-200 dark:border-purple-800/50',
+                      number: 'bg-purple-500',
+                    },
+                    cyan: {
+                      gradient: 'from-cyan-500 to-cyan-600',
+                      shadow: 'shadow-cyan-500/25',
+                      light: 'from-cyan-50 to-cyan-50/50 dark:from-cyan-950/20 dark:to-cyan-900/10',
+                      border: 'border-cyan-200 dark:border-cyan-800/50',
+                      number: 'bg-cyan-500',
+                    },
+                    emerald: {
+                      gradient: 'from-emerald-500 to-emerald-600',
+                      shadow: 'shadow-emerald-500/25',
+                      light: 'from-emerald-50 to-emerald-50/50 dark:from-emerald-950/20 dark:to-emerald-900/10',
+                      border: 'border-emerald-200 dark:border-emerald-800/50',
+                      number: 'bg-emerald-500',
+                    },
+                  };
+                  const colors = colorClasses[step.color as keyof typeof colorClasses];
+
+                  return (
+                    <Card
+                      key={step.step}
+                      className={`group relative overflow-hidden ${colors.border} bg-gradient-to-br ${colors.light} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2`}
+                    >
+                      {/* Decorative corner */}
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-current/5 to-transparent rounded-bl-full" />
+
+                      <CardHeader className="pb-4">
+                        <div className="flex items-start gap-6">
+                          {/* Step Number */}
+                          <div className={`flex-shrink-0 w-14 h-14 rounded-xl ${colors.number} flex items-center justify-center text-white font-bold text-2xl shadow-lg ${colors.shadow}`}>
+                            {step.step}
+                          </div>
+
+                          {/* Icon */}
+                          <div className={`p-4 rounded-xl bg-gradient-to-br ${colors.gradient} ${colors.shadow} shadow-lg`}>
+                            <Icon className="h-8 w-8 text-white" />
+                          </div>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="space-y-6">
+                        <CardTitle className="text-xl md:text-2xl text-slate-900 dark:text-white leading-tight">
+                          {step.title}
+                        </CardTitle>
+
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base md:text-lg">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Important Information Section */}
+        <section className="w-full py-20 md:py-28 bg-white dark:bg-slate-950">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-4xl mx-auto">
+              {/* Warning Box */}
+              <Card className="relative overflow-hidden border-2 border-amber-200 dark:border-amber-800/50 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 shadow-xl">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full" />
+
+                <CardContent className="relative z-10 p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col md:flex-row items-start gap-8">
+                    <div className="flex-shrink-0 p-5 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
+                      <AlertTriangle className="h-10 w-10 text-white" />
+                    </div>
+
+                    <div className="space-y-6">
+                      <h2 className="text-2xl md:text-3xl font-bold text-amber-900 dark:text-amber-100">
+                        Important Information – Please Read
+                      </h2>
+
+                      <p className="text-lg text-amber-800 dark:text-amber-200 leading-relaxed">
+                        Take a look at an example of how we investigate cases, and you can also view a sample of our report.
+                      </p>
+
+                      <p className="text-base text-amber-700 dark:text-amber-300 leading-relaxed">
+                        Note: this is only a sample — the scope may vary depending on the type of fraud. However, we place great emphasis on detail and thoroughness in every investigation.
+                      </p>
                     </div>
                   </div>
-                  <CardHeader>
-                    <Icon className="h-8 w-8 text-[#0E74FF] mb-2" />
-                    <CardTitle className="text-xl">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{service.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="w-full py-16 bg-muted/30">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold text-center mb-4">3-Step Process to Access the Service</h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Get started with our professional fraud investigation service in three simple steps
-          </p>
-          <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
-            {processSteps.map((item) => (
-              <Card key={item.step} className="text-center">
-                <CardHeader>
-                  <div className="w-16 h-16 rounded-full bg-[#0E74FF] text-white flex items-center justify-center font-bold text-2xl mx-auto mb-4">
-                    {item.step}
-                  </div>
-                  <CardTitle className="text-xl">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{item.description}</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-          <div className="flex justify-center gap-4 mt-12">
-            <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-              <Link href="/report/new">
-                Report a Scam
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/contact-us">
-                Order Service
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Differentiation Section */}
-      <section className="w-full py-16">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-2 border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl md:text-3xl">What Makes Us Different</CardTitle>
-                <CardDescription className="text-base">
-                  No empty promises - just honest, professional investigation
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="bg-white dark:bg-gray-900 rounded-lg p-6 border-2 border-[#0E74FF]">
-                  <h3 className="font-semibold text-lg mb-3 text-center">Transparent Pricing</h3>
-                  <div className="flex items-center justify-center gap-4 flex-wrap">
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-1">Our Price</div>
-                      <div className="text-4xl font-bold text-[#0E74FF]">€600</div>
-                    </div>
-                    <div className="text-2xl text-muted-foreground">vs</div>
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground mb-1">Typical Services</div>
-                      <div className="text-3xl font-bold text-red-500 line-through">$3,000-$10,000</div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-muted-foreground text-center">
-                  Unlike typical &quot;money recovery&quot; services that only file reports and send emails without deep analysis:
-                </p>
-                <ul className="grid md:grid-cols-2 gap-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Real forensic investigation, not just paperwork</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Honest about recovery likelihood</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Court-ready evidence packages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Blockchain analysis and OSINT tools</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section - Clean minimal style */}
-      <section className="w-full py-16 md:py-20 bg-[#f8fafc] border-t border-[#e8e8e8]">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-5 text-center max-w-2xl mx-auto">
-            <h2 className="text-xl font-semibold text-[#1e293b] sm:text-2xl">
-              Ready to start your recovery?
-            </h2>
-            <p className="text-[#64748b] leading-relaxed">
-              With us, you won&apos;t find empty promises — services that guarantee 100% refunds are actually scams. We offer honest, professional investigation.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 pt-2">
-              <Button className="bg-[#0E74FF] hover:bg-[#0E74FF]/90" asChild>
-                <Link href="/report/new">
-                  Report a Scam
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" className="border-[#e8e8e8] hover:bg-white" asChild>
-                <Link href="/contact-us">
-                  Order Service
-                </Link>
-              </Button>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        {/* Sample Report Download Section */}
+        <section className="w-full py-20 md:py-28 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-4xl mx-auto">
+              {/* Premium Download Card */}
+              <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 shadow-2xl shadow-blue-500/25">
+                {/* Decorative patterns */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:32px_32px]" />
+                <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+                <CardContent className="relative z-10 p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-12">
+                    {/* PDF Icon */}
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl scale-110" />
+                        <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-8 border border-white/30">
+                          <FileText className="h-20 w-20 md:h-24 md:w-24 text-white" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 text-center lg:text-left space-y-6">
+                      <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+                        Sample Investigation Report
+                      </h3>
+
+                      <p className="text-lg md:text-xl text-blue-100 leading-relaxed">
+                        Here you can download a sample report similar to the one you will receive. However, each report is different and depends on the type of fraud. Our intelligence work is always extensive and detailed.
+                      </p>
+
+                      <Button
+                        size="lg"
+                        className="bg-white text-blue-700 hover:bg-blue-50 shadow-xl shadow-black/10 text-lg px-10 py-7 font-semibold"
+                        asChild
+                      >
+                        <Link href="/pdf/sample-report.pdf" target="_blank">
+                          <Download className="mr-3 h-6 w-6" />
+                          Download Here
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* How to Access Service Section */}
+        <section className="w-full py-20 md:py-28 bg-white dark:bg-slate-950">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-5xl mx-auto">
+              {/* Section Header */}
+              <div className="text-center mb-16 md:mb-24">
+                <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-6">
+                  <Eye className="h-4 w-4" />
+                  Getting Started
+                </div>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white mb-6">
+                  How can I access the money recovery service?
+                </h2>
+              </div>
+
+              {/* 3-Step Access Process */}
+              <div className="space-y-8 md:space-y-10">
+                {accessSteps.map((step, index) => {
+                  const Icon = step.icon;
+                  const isLast = index === accessSteps.length - 1;
+
+                  return (
+                    <div key={step.step} className="relative">
+                      {/* Connector Line */}
+                      {!isLast && (
+                        <div className="hidden md:block absolute left-10 top-32 w-1 h-20 bg-gradient-to-b from-blue-300 to-emerald-300 dark:from-blue-700 dark:to-emerald-700" />
+                      )}
+
+                      <Card className="relative overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <CardContent className="p-8 md:p-10 lg:p-12">
+                          <div className="flex flex-col md:flex-row items-start gap-8">
+                            {/* Step Number */}
+                            <div className="flex-shrink-0">
+                              <div className={`w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-3xl text-white shadow-lg ${
+                                step.step === 1 ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/25' :
+                                step.step === 2 ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-500/25' :
+                                'bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-500/25'
+                              }`}>
+                                {step.step}
+                              </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 space-y-6">
+                              <div className="flex items-center gap-4">
+                                <div className={`p-3 rounded-xl ${
+                                  step.step === 1 ? 'bg-blue-100 dark:bg-blue-900/30' :
+                                  step.step === 2 ? 'bg-purple-100 dark:bg-purple-900/30' :
+                                  'bg-emerald-100 dark:bg-emerald-900/30'
+                                }`}>
+                                  <Icon className={`h-6 w-6 ${
+                                    step.step === 1 ? 'text-blue-600 dark:text-blue-400' :
+                                    step.step === 2 ? 'text-purple-600 dark:text-purple-400' :
+                                    'text-emerald-600 dark:text-emerald-400'
+                                  }`} />
+                                </div>
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
+                                  Step {step.step}
+                                </h3>
+                              </div>
+
+                              <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                                {step.description}
+                              </p>
+
+                              {step.cta && step.ctaLink && (
+                                <Button
+                                  size="lg"
+                                  className={`${
+                                    step.step === 1 ? 'bg-blue-600 hover:bg-blue-700' :
+                                    'bg-purple-600 hover:bg-purple-700'
+                                  } text-white shadow-lg transition-all duration-300 hover:scale-105`}
+                                  asChild
+                                >
+                                  <Link href={step.ctaLink}>
+                                    {step.cta}
+                                    <ExternalLink className="ml-2 h-5 w-5" />
+                                  </Link>
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Indicators Section */}
+        <section className="w-full py-16 md:py-20 bg-gradient-to-r from-slate-50 via-blue-50 to-slate-50 dark:from-slate-900 dark:via-blue-950/20 dark:to-slate-900 border-y border-slate-200 dark:border-slate-800">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+                {/* Trust Badge 1 */}
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg">
+                    <Lock className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 dark:text-white mb-1">256-bit SSL</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Military-grade encryption</p>
+                  </div>
+                </div>
+
+                {/* Trust Badge 2 */}
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg">
+                    <Shield className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 dark:text-white mb-1">Data Privacy</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">GDPR compliant</p>
+                  </div>
+                </div>
+
+                {/* Trust Badge 3 */}
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg">
+                    <Users className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 dark:text-white mb-1">Expert Team</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Legal & blockchain certified</p>
+                  </div>
+                </div>
+
+                {/* Trust Badge 4 */}
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-lg">
+                    <Clock className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 dark:text-white mb-1">24h Response</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Fast investigation start</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA Section */}
+        <section className="relative w-full py-20 md:py-28 lg:py-32 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-cyan-500/15 rounded-full blur-3xl" />
+          </div>
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+
+          <div className="container relative z-10 px-4 md:px-6">
+            <div className="max-w-4xl mx-auto text-center space-y-10">
+              <div className="relative inline-flex mb-6">
+                <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-xl scale-150" />
+                <div className="relative bg-gradient-to-br from-blue-500 to-cyan-500 p-5 rounded-2xl shadow-2xl">
+                  <FileCheck className="h-12 w-12 text-white" />
+                </div>
+              </div>
+
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+                Ready to Start Your Investigation?
+              </h2>
+
+              <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Don&apos;t let scammers get away with your money. Our professional team is ready to help you gather evidence and pursue recovery.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-6 justify-center pt-4">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105 text-lg px-10 py-7"
+                  asChild
+                >
+                  <Link href="/report/new">
+                    <Zap className="mr-3 h-6 w-6" />
+                    Order Recovery Service
+                  </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-slate-400 text-white hover:bg-white/10 hover:border-white text-lg px-10 py-7"
+                  asChild
+                >
+                  <Link href="/contact-us">
+                    <Mail className="mr-3 h-5 w-5" />
+                    Contact Us
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="flex flex-wrap justify-center gap-8 pt-8 text-slate-400 text-sm">
+                <div className="flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  <span>Secure & Confidential</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>€600 Transparent Pricing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>24h Response Time</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
