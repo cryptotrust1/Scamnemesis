@@ -1,0 +1,116 @@
+import type { Metadata } from 'next';
+import { i18n, type Locale } from '@/i18n/config';
+import { Inter } from 'next/font/google';
+import '../globals.css';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+
+const inter = Inter({ subsets: ['latin', 'latin-ext'] });
+
+export async function generateStaticParams() {
+  return i18n.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  const titles = {
+    en: 'Is It a Scam? Check Any Website, Person, Company, Phone or Email Instantly | ScamNemesis',
+    sk: 'Je to podvod? Overte akúkoľvek webstránku, osobu, firmu, telefón alebo e-mail okamžite | ScamNemesis',
+  };
+
+  const descriptions = {
+    en: 'Check scams instantly - verify people, websites, companies, job offers, emails, phone numbers, dating profiles. Free real-time protection with 640M+ records from 130+ trusted sources.',
+    sk: 'Overte podvody okamžite - skontrolujte osoby, webstránky, firmy, pracovné ponuky, e-maily, telefónne čísla, zoznamovacie profily. Bezplatná ochrana v reálnom čase s 640M+ záznamami.',
+  };
+
+  return {
+    title: {
+      default: titles[locale] || titles.en,
+      template: '%s | ScamNemesis',
+    },
+    description: descriptions[locale] || descriptions.en,
+    keywords: locale === 'sk'
+      ? ['kontrola podvodov', 'prevencia podvodov', 'overenie webu', 'kontrola podvodníka', 'overenie e-mailu', 'kontrola telefónneho čísla', 'nahlásenie podvodu', 'ochrana pred podvodmi', 'kybernetická bezpečnosť', 'kryptomenové podvody', 'phishing', 'romantické podvody', 'investičné podvody', 'krádeže identity', 'overenie firmy', 'online bezpečnosť', 'kontrola IBAN', 'sledovanie blockchainu', 'vymáhanie peňazí', 'digitálna forenzná analýza', 'OSINT', 'due diligence', 'firemné vyšetrovania', 'bezpečnostné školenia']
+      : ['scam checker', 'fraud prevention', 'verify website', 'scammer check', 'email verification', 'phone number check', 'report scam', 'fraud protection', 'cybersecurity', 'cryptocurrency scams', 'phishing', 'romance scams', 'investment fraud', 'identity theft', 'company verification', 'online safety', 'IBAN check', 'blockchain tracing', 'money recovery', 'digital forensics', 'OSINT', 'due diligence', 'corporate investigations', 'security training'],
+    authors: [{ name: 'ScamNemesis Team' }],
+    creator: 'ScamNemesis',
+    publisher: 'ScamNemesis',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    metadataBase: new URL('https://scamnemesis.com'),
+    alternates: {
+      canonical: `https://scamnemesis.com/${locale}`,
+      languages: {
+        'en': 'https://scamnemesis.com/en',
+        'sk': 'https://scamnemesis.com/sk',
+      },
+    },
+    openGraph: {
+      type: 'website',
+      locale: locale === 'sk' ? 'sk_SK' : 'en_US',
+      alternateLocale: locale === 'sk' ? 'en_US' : 'sk_SK',
+      url: `https://scamnemesis.com/${locale}`,
+      siteName: 'ScamNemesis',
+      title: titles[locale] || titles.en,
+      description: descriptions[locale] || descriptions.en,
+      images: [
+        {
+          url: 'https://scamnemesis.com/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: 'ScamNemesis - Fraud Prevention Platform',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: titles[locale] || titles.en,
+      description: descriptions[locale] || descriptions.en,
+      images: ['https://scamnemesis.com/og-image.png'],
+      creator: '@scamnemesis',
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    verification: {
+      google: 'your-google-verification-code',
+    },
+    category: 'Security',
+  };
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+
+  return (
+    <html lang={locale} suppressHydrationWarning>
+      <body className={`${inter.className} antialiased`}>
+        <Header locale={locale} />
+        <main className="min-h-screen">{children}</main>
+        <Footer locale={locale} />
+      </body>
+    </html>
+  );
+}

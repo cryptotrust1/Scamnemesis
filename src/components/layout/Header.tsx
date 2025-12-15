@@ -2,62 +2,101 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 
 export interface HeaderProps {
   isLoggedIn?: boolean;
   userName?: string;
   onLogout?: () => void;
+  locale?: 'en' | 'sk';
 }
+
+const translations = {
+  en: {
+    search: 'Search',
+    report: 'Report Scam',
+    stats: 'Statistics',
+    about: 'About',
+    login: 'Login',
+    register: 'Register',
+    logout: 'Logout',
+  },
+  sk: {
+    search: 'Vyhľadávanie',
+    report: 'Nahlásiť podvod',
+    stats: 'Štatistiky',
+    about: 'O projekte',
+    login: 'Prihlásiť',
+    register: 'Registrovať',
+    logout: 'Odhlásiť',
+  },
+};
 
 export const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
   userName,
   onLogout,
+  locale = 'en',
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const t = translations[locale] || translations.en;
+
+  // Get current locale from path or use provided locale
+  const currentLocale = pathname?.startsWith('/sk') ? 'sk' : pathname?.startsWith('/en') ? 'en' : locale;
+  const otherLocale = currentLocale === 'en' ? 'sk' : 'en';
+
+  // Get path without locale prefix for language switch
+  const pathWithoutLocale = pathname?.replace(/^\/(en|sk)/, '') || '/';
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         {/* Logo */}
-        <Link href="/" className={styles.logo}>
+        <Link href={`/${currentLocale}`} className={styles.logo}>
           <span className={styles.logoIcon}>🛡️</span>
           <span className={styles.logoText}>ScamNemesis</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className={styles.nav}>
-          <Link href="/search" className={styles.navLink}>
-            Vyhľadávanie
+          <Link href={`/${currentLocale}/search`} className={styles.navLink}>
+            {t.search}
           </Link>
-          <Link href="/report" className={styles.navLink}>
-            Nahlásiť podvod
+          <Link href={`/${currentLocale}/report/new`} className={styles.navLink}>
+            {t.report}
           </Link>
-          <Link href="/stats" className={styles.navLink}>
-            Štatistiky
-          </Link>
-          <Link href="/about" className={styles.navLink}>
-            O projekte
+          <Link href={`/${currentLocale}/about`} className={styles.navLink}>
+            {t.about}
           </Link>
         </nav>
 
-        {/* Auth section */}
+        {/* Language Switcher & Auth section */}
         <div className={styles.auth}>
+          {/* Language Switcher */}
+          <Link
+            href={`/${otherLocale}${pathWithoutLocale}`}
+            className={styles.langSwitch}
+            title={otherLocale === 'sk' ? 'Slovenčina' : 'English'}
+          >
+            {otherLocale.toUpperCase()}
+          </Link>
+
           {isLoggedIn ? (
             <div className={styles.userMenu}>
               <span className={styles.userName}>{userName}</span>
               <button onClick={onLogout} className={styles.logoutBtn}>
-                Odhlásiť
+                {t.logout}
               </button>
             </div>
           ) : (
             <div className={styles.authButtons}>
-              <Link href="/auth/login" className={styles.loginBtn}>
-                Prihlásiť
+              <Link href={`/${currentLocale}/auth/login`} className={styles.loginBtn}>
+                {t.login}
               </Link>
-              <Link href="/auth/register" className={styles.registerBtn}>
-                Registrovať
+              <Link href={`/${currentLocale}/auth/register`} className={styles.registerBtn}>
+                {t.register}
               </Link>
             </div>
           )}
@@ -88,17 +127,22 @@ export const Header: React.FC<HeaderProps> = ({
       {mobileMenuOpen && (
         <div className={styles.mobileMenu}>
           <nav className={styles.mobileNav}>
-            <Link href="/search" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
-              Vyhľadávanie
+            <Link href={`/${currentLocale}/search`} className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
+              {t.search}
             </Link>
-            <Link href="/report" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
-              Nahlásiť podvod
+            <Link href={`/${currentLocale}/report/new`} className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
+              {t.report}
             </Link>
-            <Link href="/stats" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
-              Štatistiky
+            <Link href={`/${currentLocale}/about`} className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
+              {t.about}
             </Link>
-            <Link href="/about" className={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
-              O projekte
+            {/* Language switcher in mobile */}
+            <Link
+              href={`/${otherLocale}${pathWithoutLocale}`}
+              className={styles.mobileNavLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              🌐 {otherLocale === 'sk' ? 'Slovenčina' : 'English'}
             </Link>
           </nav>
           <div className={styles.mobileAuth}>
@@ -106,16 +150,16 @@ export const Header: React.FC<HeaderProps> = ({
               <>
                 <span className={styles.userName}>{userName}</span>
                 <button onClick={onLogout} className={styles.logoutBtn}>
-                  Odhlásiť
+                  {t.logout}
                 </button>
               </>
             ) : (
               <>
-                <Link href="/auth/login" className={styles.loginBtn} onClick={() => setMobileMenuOpen(false)}>
-                  Prihlásiť
+                <Link href={`/${currentLocale}/auth/login`} className={styles.loginBtn} onClick={() => setMobileMenuOpen(false)}>
+                  {t.login}
                 </Link>
-                <Link href="/auth/register" className={styles.registerBtn} onClick={() => setMobileMenuOpen(false)}>
-                  Registrovať
+                <Link href={`/${currentLocale}/auth/register`} className={styles.registerBtn} onClick={() => setMobileMenuOpen(false)}>
+                  {t.register}
                 </Link>
               </>
             )}
