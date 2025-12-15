@@ -23,7 +23,7 @@ const FRAUD_TYPE_LABELS: Record<string, string> = {
   'INVESTMENT_FRAUD': 'Investičné podvody',
   'ROMANCE_SCAM': 'Romance scam',
   'PHISHING': 'Phishing',
-  'CRYPTO_SCAM': 'Krypto podvody',
+  'CRYPTO_SCAM': 'Crypto podvody',
   'TECH_SUPPORT': 'Tech support',
   'RENTAL_FRAUD': 'Prenájom',
   'SMS_SCAM': 'SMS podvody',

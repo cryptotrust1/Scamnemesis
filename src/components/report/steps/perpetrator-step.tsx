@@ -215,7 +215,7 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
             <div className="space-y-2">
               <label htmlFor="cryptoWallet" className="text-sm font-medium">
-                Krypto peňaženka
+                Crypto peňaženka
               </label>
               <Input
                 id="cryptoWallet"
@@ -224,7 +224,7 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                 onChange={(e) => onChange('cryptoWallet', e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Zadajte celú adresu krypto peňaženky kam ste posielali peniaze
+                Zadajte celú adresu crypto peňaženky kam ste posielali peniaze
               </p>
             </div>
           </div>

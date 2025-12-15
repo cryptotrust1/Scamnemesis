@@ -38,7 +38,7 @@ const sectionTitles = {
 
 const descriptions = {
   en: 'We help victims of crypto scams and investment frauds. Our team of lawyers, forensic analysts, and ethical hackers provides rapid fraud assistance, scammer investigations, and money recovery support.',
-  sk: 'Pomáhame obetiam krypto podvodov a investičných podvodov. Náš tím právnikov, forenzných analytikov a etických hackerov poskytuje rýchlu pomoc pri podvodoch, vyšetrovanie podvodníkov a podporu pri vymáhaní peňazí.',
+  sk: 'Pomáhame obetiam crypto podvodov a investičných podvodov. Náš tím právnikov, forenzných analytikov a etických hackerov poskytuje rýchlu pomoc pri podvodoch, vyšetrovanie podvodníkov a podporu pri vymáhaní peňazí.',
 };
 
 const copyright = {

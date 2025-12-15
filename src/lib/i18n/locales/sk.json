@@ -78,7 +78,7 @@
       "phishing": "Phishing",
       "identity": "Krádež identity",
       "ecommerce": "E-commerce podvod",
-      "crypto": "Krypto podvod",
+      "crypto": "Crypto podvod",
       "job": "Pracovný podvod",
       "rental": "Podvod s prenájmom",
       "loan": "Podvod s pôžičkou",
@@ -104,7 +104,7 @@
       "socialMedia": "Sociálne siete",
       "iban": "IBAN",
       "bankAccount": "Banka",
-      "cryptoWallet": "Krypto peňaženka",
+      "cryptoWallet": "Crypto peňaženka",
       "reporterName": "Vaše meno",
       "reporterEmail": "Váš email",
       "reporterPhone": "Váš telefón"

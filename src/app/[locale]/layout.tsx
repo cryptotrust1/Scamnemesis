@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { i18n, type Locale } from '@/i18n/config';
 import { Inter } from 'next/font/google';
 import '../globals.css';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 
 const inter = Inter({ subsets: ['latin', 'latin-ext'] });
 
@@ -107,9 +107,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <Header locale={locale} />
+        <Header />
         <main className="min-h-screen">{children}</main>
-        <Footer locale={locale} />
+        <Footer />
       </body>
     </html>
   );

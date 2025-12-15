@@ -134,7 +134,7 @@ const getTranslations = (locale: Locale) => {
         titleHighlight: 'webstránku, osobu, firmu, telefón alebo e-mail',
         title2: 'okamžite',
         description: 'Overte podvody okamžite 🔎 — skontrolujte <strong>osoby</strong>, <strong>webstránky</strong>, <strong>firmy</strong>, <strong>pracovné ponuky</strong>, <strong>e-maily</strong>, <strong>telefónne čísla</strong>, <strong>zoznamovacie profily</strong> a oveľa viac. Využite <strong>bezplatnú ochranu v reálnom čase</strong> 🛡️. Našli ste podvod alebo vás podviedli? ⚠️ <strong>Nahláste to teraz</strong> — vaše varovanie môže <strong>ochrániť ostatných</strong>. Preskúmajte naše <strong>bezpečnostné služby</strong> 🔐.',
-        searchPlaceholder: 'Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, krypto peňaženky...',
+        searchPlaceholder: 'Hľadajte podľa mena, e-mailu, telefónu, webu, IBAN, crypto peňaženky...',
         search: 'Vyhľadať',
         records: '640M+ záznamov',
         sources: '130+ zdrojov',
@@ -206,7 +206,7 @@ const getTranslations = (locale: Locale) => {
       freeTraining: {
         badge: 'Učte sa a chráňte sa',
         title: 'Bezplatné bezpečnostné školenia a kurzy — Naučte sa rozpoznať podvody',
-        description: 'Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, krypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.',
+        description: 'Bezplatné, praktické lekcie a kontrolné zoznamy na identifikáciu phishingu, crypto/investičných podvodov, falošných internetových obchodov a podvodov na sociálnych sieťach. Naučte sa overovať webové stránky, osoby a IBAN; chrániť svoju identitu a kreditné skóre; a bezpečne nahlasovať kybernetickú kriminalitu — krok za krokom.',
         topicsTitle: 'Najpopulárnejšie témy:',
         cta: 'Začať bezplatné školenie',
       },
@@ -354,128 +354,255 @@ const serviceSchema = {
   },
 };
 
-// Roadmap features
-const roadmapFeatures = [
-  { name: 'API: dispatch data to three parties', status: 'development', progress: 80, description: 'With a single call we send relevant information to the bank/payment gateway and to authorities — this speeds up blocking transactions and escalation.' },
-  { name: 'Scam search (38+ identifiers)', status: 'functional', progress: 100, description: 'Search by email, phone, name, IBAN, domain, IP, crypto wallet, etc., across our database and external sources.' },
-  { name: 'Case linking (similarities)', status: 'functional', progress: 100, description: 'Automatically links related cases by matching indicators and patterns (email, phone, domain, wallet…).' },
-  { name: 'Media processing + OCR', status: 'functional', progress: 80, description: 'Upload screenshots, chats, and documents → OCR extracts the text and saves it to the database for further searching.' },
-  { name: 'Website widget (reporting + search)', status: 'development', progress: 24, description: 'Simple embed for partner sites — people can report and search directly on their own website.' },
-  { name: 'Blockchain analysis', status: 'development', progress: 56, description: 'Mapping the flow of cryptocurrencies flagged on-chain as stolen or linked to criminal activity.' },
-  { name: 'CTI (Cyber Threat Intelligence)', status: 'development', progress: 52, description: 'Cyber threat intelligence; the goal is broad visibility and current trends for prevention, detection, and response — without vendor lock-in.' },
-  { name: 'AI/NLP tool for OSINT collection', status: 'development', progress: 50, description: 'Continuously monitors dozens of online sources and automatically builds a clean news feed; NLP removes duplicates, classifies content by scam type, and prepares short reports. Watchlists with keywords and entities instantly alert on new matches and trigger alerts on spikes in mentions.' },
-  { name: 'AI image and video detection (deepfake)', status: 'development', progress: 69, description: 'Detects AI-generated content and manipulations; explains signals and assigns a risk score.' },
-  { name: 'Graph database (nodes & relationships)', status: 'development', progress: 61, description: 'Network views of links between people, companies, accounts, and cases; quick "who with whom" and "money to where".' },
-  { name: 'Data enrichment from 130+ external sources', status: 'development', progress: 0, description: 'Integrations for OSINT, reputation, and security feeds for emails, phones, IPs, domains, and blockchain.' },
-  { name: 'Email verification (existence/registrations/age*)', status: 'planned', progress: 50, description: 'Checks deliverability, where the email is used/registered, and where possible, signals of account age*.' },
-  { name: 'People & company search', status: 'development', progress: 68, description: 'With a single query searches open registers, gazettes, and available court decisions; returns a summary with sources.' },
-  { name: 'Reverse face search', status: 'planned', progress: 58, description: 'Upload a photo and the system finds matches in the internal database and social networks (with spoof protection).' },
-  { name: 'Similar face matching (upload)', status: 'planned', progress: 52, description: 'Compares and ranks the most similar faces; supports batch queries.' },
-  { name: 'Media forensics: geolocation & edits', status: 'planned', progress: 57, description: 'EXIF/metadata, ELA, manipulation detection, geo-cues, audio-video inconsistencies.' },
-  { name: 'AI bot "Is this a scam?"', status: 'planned', progress: 0, description: 'A chat assistant that quickly advises based on signals: what to watch for, what to verify, and which steps to take.' },
-  { name: 'Domain score & reputation', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, blacklists, hosting, technology — resulting in a domain risk score.' },
-  { name: 'Media forensics — advanced modules', status: 'planned', progress: 53, description: 'Advanced tools for image, video, and audio (manipulation localization, liveness, chain of custody).' },
-];
+// Locale-aware roadmap features
+const getRoadmapFeatures = (locale: Locale) => {
+  if (locale === 'sk') {
+    return [
+      { name: 'API: odoslanie dát tretím stranám', status: 'development', progress: 80, description: 'Jedným volaním odosielame relevantné informácie banke/platobnej bráne a úradom — urýchľuje to blokovanie transakcií a eskaláciu.' },
+      { name: 'Vyhľadávanie podvodov (38+ identifikátorov)', status: 'functional', progress: 100, description: 'Vyhľadávanie podľa e-mailu, telefónu, mena, IBAN, domény, IP, crypto peňaženky atď. v našej databáze a externých zdrojoch.' },
+      { name: 'Prepájanie prípadov (podobnosti)', status: 'functional', progress: 100, description: 'Automaticky prepája súvisiace prípady porovnávaním indikátorov a vzorcov (e-mail, telefón, doména, peňaženka…).' },
+      { name: 'Spracovanie médií + OCR', status: 'functional', progress: 80, description: 'Nahranie screenshotov, chatov a dokumentov → OCR extrahuje text a ukladá ho do databázy na ďalšie vyhľadávanie.' },
+      { name: 'Widget pre webové stránky (nahlasovanie + vyhľadávanie)', status: 'development', progress: 24, description: 'Jednoduchý embed pre partnerské stránky — ľudia môžu nahlasovať a vyhľadávať priamo na svojej webstránke.' },
+      { name: 'Blockchain analýza', status: 'development', progress: 56, description: 'Mapovanie tokov kryptomien označených na blockchainu ako ukradnuté alebo prepojené s kriminálnou činnosťou.' },
+      { name: 'CTI (Cyber Threat Intelligence)', status: 'development', progress: 52, description: 'Kybernetická spravodajská analýza; cieľom je široký prehľad a aktuálne trendy pre prevenciu, detekciu a reakciu — bez vendor lock-in.' },
+      { name: 'AI/NLP nástroj na OSINT zber', status: 'development', progress: 50, description: 'Nepretržite monitoruje desiatky online zdrojov a automaticky vytvára čistý spravodajský kanál; NLP odstraňuje duplikáty, klasifikuje obsah podľa typu podvodu a pripravuje krátke správy.' },
+      { name: 'AI detekcia obrázkov a videa (deepfake)', status: 'development', progress: 69, description: 'Detekuje AI-generovaný obsah a manipulácie; vysvetľuje signály a priraďuje rizikové skóre.' },
+      { name: 'Grafová databáza (uzly a vzťahy)', status: 'development', progress: 61, description: 'Sieťové zobrazenia prepojení medzi ľuďmi, firmami, účtami a prípadmi; rýchle "kto s kým" a "kam smerovali peniaze".' },
+      { name: 'Obohatenie dát zo 130+ externých zdrojov', status: 'development', progress: 0, description: 'Integrácie pre OSINT, reputačné a bezpečnostné feedy pre e-maily, telefóny, IP, domény a blockchain.' },
+      { name: 'Overenie e-mailu (existencia/registrácie/vek*)', status: 'planned', progress: 50, description: 'Kontroluje doručiteľnosť, kde je e-mail použitý/registrovaný a kde je to možné, signály o veku účtu*.' },
+      { name: 'Vyhľadávanie osôb a firiem', status: 'development', progress: 68, description: 'Jedným dopytom prehľadá otvorené registre, vestníky a dostupné súdne rozhodnutia; vracia súhrn so zdrojmi.' },
+      { name: 'Reverzné vyhľadávanie tvárí', status: 'planned', progress: 58, description: 'Nahrajte fotografiu a systém nájde zhody v internej databáze a sociálnych sieťach (s ochranou proti podvrhu).' },
+      { name: 'Porovnávanie podobných tvárí (nahratie)', status: 'planned', progress: 52, description: 'Porovnáva a zoraďuje najpodobnejšie tváre; podporuje dávkové dopyty.' },
+      { name: 'Forenzná analýza médií: geolokácia a úpravy', status: 'planned', progress: 57, description: 'EXIF/metadáta, ELA, detekcia manipulácií, geo-stopy, audio-video nezrovnalosti.' },
+      { name: 'AI bot "Je to podvod?"', status: 'planned', progress: 0, description: 'Chatový asistent, ktorý rýchlo poradí na základe signálov: na čo si dať pozor, čo overiť a aké kroky podniknúť.' },
+      { name: 'Skóre domény a reputácia', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, blacklisty, hosting, technológie — výsledkom je rizikové skóre domény.' },
+      { name: 'Forenzná analýza médií — pokročilé moduly', status: 'planned', progress: 53, description: 'Pokročilé nástroje pre obraz, video a audio (lokalizácia manipulácií, liveness, chain of custody).' },
+    ];
+  }
+  return [
+    { name: 'API: dispatch data to three parties', status: 'development', progress: 80, description: 'With a single call we send relevant information to the bank/payment gateway and to authorities — this speeds up blocking transactions and escalation.' },
+    { name: 'Scam search (38+ identifiers)', status: 'functional', progress: 100, description: 'Search by email, phone, name, IBAN, domain, IP, crypto wallet, etc., across our database and external sources.' },
+    { name: 'Case linking (similarities)', status: 'functional', progress: 100, description: 'Automatically links related cases by matching indicators and patterns (email, phone, domain, wallet…).' },
+    { name: 'Media processing + OCR', status: 'functional', progress: 80, description: 'Upload screenshots, chats, and documents → OCR extracts the text and saves it to the database for further searching.' },
+    { name: 'Website widget (reporting + search)', status: 'development', progress: 24, description: 'Simple embed for partner sites — people can report and search directly on their own website.' },
+    { name: 'Blockchain analysis', status: 'development', progress: 56, description: 'Mapping the flow of cryptocurrencies flagged on-chain as stolen or linked to criminal activity.' },
+    { name: 'CTI (Cyber Threat Intelligence)', status: 'development', progress: 52, description: 'Cyber threat intelligence; the goal is broad visibility and current trends for prevention, detection, and response — without vendor lock-in.' },
+    { name: 'AI/NLP tool for OSINT collection', status: 'development', progress: 50, description: 'Continuously monitors dozens of online sources and automatically builds a clean news feed; NLP removes duplicates, classifies content by scam type, and prepares short reports. Watchlists with keywords and entities instantly alert on new matches and trigger alerts on spikes in mentions.' },
+    { name: 'AI image and video detection (deepfake)', status: 'development', progress: 69, description: 'Detects AI-generated content and manipulations; explains signals and assigns a risk score.' },
+    { name: 'Graph database (nodes & relationships)', status: 'development', progress: 61, description: 'Network views of links between people, companies, accounts, and cases; quick "who with whom" and "money to where".' },
+    { name: 'Data enrichment from 130+ external sources', status: 'development', progress: 0, description: 'Integrations for OSINT, reputation, and security feeds for emails, phones, IPs, domains, and blockchain.' },
+    { name: 'Email verification (existence/registrations/age*)', status: 'planned', progress: 50, description: 'Checks deliverability, where the email is used/registered, and where possible, signals of account age*.' },
+    { name: 'People & company search', status: 'development', progress: 68, description: 'With a single query searches open registers, gazettes, and available court decisions; returns a summary with sources.' },
+    { name: 'Reverse face search', status: 'planned', progress: 58, description: 'Upload a photo and the system finds matches in the internal database and social networks (with spoof protection).' },
+    { name: 'Similar face matching (upload)', status: 'planned', progress: 52, description: 'Compares and ranks the most similar faces; supports batch queries.' },
+    { name: 'Media forensics: geolocation & edits', status: 'planned', progress: 57, description: 'EXIF/metadata, ELA, manipulation detection, geo-cues, audio-video inconsistencies.' },
+    { name: 'AI bot "Is this a scam?"', status: 'planned', progress: 0, description: 'A chat assistant that quickly advises based on signals: what to watch for, what to verify, and which steps to take.' },
+    { name: 'Domain score & reputation', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, blacklists, hosting, technology — resulting in a domain risk score.' },
+    { name: 'Media forensics — advanced modules', status: 'planned', progress: 53, description: 'Advanced tools for image, video, and audio (manipulation localization, liveness, chain of custody).' },
+  ];
+};
 
-// Database categories
-const databaseCategories = [
-  {
-    title: 'Cryptocurrency Fraud',
-    icon: Coins,
-    color: 'orange',
-    stats: [
-      { label: 'Crypto Addresses', value: '50,000+' },
-      { label: 'Scam Projects', value: '9,221+' },
-      { label: 'Ransomware Wallets', value: '11,186+' },
-      { label: 'Blockchain Chains', value: '16+' },
-    ],
-    sources: 'Chainabuse, CryptoScamDB, ScamSniffer, OpenSanctions Ransomwhere',
-  },
-  {
-    title: 'Emails & Domains',
-    icon: Mail,
-    color: 'blue',
-    stats: [
-      { label: 'Phishing URLs', value: '9M+' },
-      { label: 'Malicious Domains', value: '2.29M+' },
-      { label: 'Discord Scam Links', value: '30,000+' },
-      { label: 'Spam Domains', value: 'Billions' },
-    ],
-    sources: 'PhishTank, URLhaus, OpenPhish, Google Safe Browsing, Spamhaus',
-  },
-  {
-    title: 'Phone Numbers',
-    icon: Phone,
-    color: 'purple',
-    stats: [
-      { label: 'Scam Calls (US)', value: '2M+' },
-      { label: 'Robocall Reports', value: '1.2M+' },
-      { label: 'Known Scammers', value: '4M+' },
-      { label: 'Daily Updates', value: '✓' },
-    ],
-    sources: 'FTC DNC API, ScamSearch.io, Community databases',
-  },
-  {
-    title: 'IP Addresses',
-    icon: Network,
-    color: 'green',
-    stats: [
-      { label: 'Malicious IPs', value: '612M+' },
-      { label: 'Tor Exit Nodes', value: '2,000+' },
-      { label: 'Threat Indicators', value: 'Millions' },
-      { label: 'Network Blocks', value: 'Hundreds' },
-    ],
-    sources: 'AbuseIPDB, ThreatFox, FireHOL, AlienVault OTX, Spamhaus',
-  },
-  {
-    title: 'Sanctions & Lists',
-    icon: AlertTriangle,
-    color: 'red',
-    stats: [
-      { label: 'OFAC SDN Entities', value: '12,000+' },
-      { label: 'FBI Most Wanted', value: '1,000+' },
-      { label: 'UN Individuals', value: '669' },
-      { label: 'Global Sources', value: '130+' },
-    ],
-    sources: 'OFAC, FBI, UN, EU, UK OFSI, OpenSanctions',
-  },
-  {
-    title: 'Social Media',
-    icon: Users,
-    color: 'indigo',
-    stats: [
-      { label: 'Telegram Channels', value: '120,979' },
-      { label: 'Twitter Bot Accounts', value: '50,538+' },
-      { label: 'Instagram Fakes', value: '3,600+' },
-      { label: 'LinkedIn Profiles', value: '3,600+' },
-    ],
-    sources: 'TGDataset, TwiBot-20, Discord AntiScam, InstaFake',
-  },
-  {
-    title: 'Financial Fraud',
-    icon: CreditCard,
-    color: 'cyan',
-    stats: [
-      { label: 'CFPB Complaints', value: '3M+' },
-      { label: 'IC3 Reports (2024)', value: '859,000' },
-      { label: 'Australia Reports', value: '494,000' },
-      { label: 'Dissolved Companies', value: '6.7M+' },
-    ],
-    sources: 'CFPB, FBI IC3, Scamwatch AU, Companies House UK',
-  },
-  {
-    title: 'Stolen Vehicles',
-    icon: Car,
-    color: 'slate',
-    stats: [
-      { label: 'Interpol Database', value: '12M+' },
-      { label: 'US Coverage', value: '87%' },
-      { label: 'NICB VINCheck', value: '5 Years' },
-      { label: 'Real-time Updates', value: '✓' },
-    ],
-    sources: 'Interpol SMV, NICB VINCheck, NMVTIS',
-  },
-];
+// Locale-aware database categories
+const getDatabaseCategories = (locale: Locale) => {
+  if (locale === 'sk') {
+    return [
+      {
+        title: 'Crypto podvody',
+        icon: Coins,
+        color: 'orange',
+        stats: [
+          { label: 'Crypto adresy', value: '50,000+' },
+          { label: 'Podvodné projekty', value: '9,221+' },
+          { label: 'Ransomware peňaženky', value: '11,186+' },
+          { label: 'Blockchain reťazce', value: '16+' },
+        ],
+        sources: 'Chainabuse, CryptoScamDB, ScamSniffer, OpenSanctions Ransomwhere',
+      },
+      {
+        title: 'E-maily a domény',
+        icon: Mail,
+        color: 'blue',
+        stats: [
+          { label: 'Phishing URL', value: '9M+' },
+          { label: 'Škodlivé domény', value: '2.29M+' },
+          { label: 'Discord scam odkazy', value: '30,000+' },
+          { label: 'Spam domény', value: 'Miliardy' },
+        ],
+        sources: 'PhishTank, URLhaus, OpenPhish, Google Safe Browsing, Spamhaus',
+      },
+      {
+        title: 'Telefónne čísla',
+        icon: Phone,
+        color: 'purple',
+        stats: [
+          { label: 'Podvodné hovory (US)', value: '2M+' },
+          { label: 'Robocall hlásenia', value: '1.2M+' },
+          { label: 'Známi podvodníci', value: '4M+' },
+          { label: 'Denné aktualizácie', value: '✓' },
+        ],
+        sources: 'FTC DNC API, ScamSearch.io, Komunitné databázy',
+      },
+      {
+        title: 'IP adresy',
+        icon: Network,
+        color: 'green',
+        stats: [
+          { label: 'Škodlivé IP', value: '612M+' },
+          { label: 'Tor Exit Nodes', value: '2,000+' },
+          { label: 'Indikátory hrozieb', value: 'Milióny' },
+          { label: 'Sieťové bloky', value: 'Stovky' },
+        ],
+        sources: 'AbuseIPDB, ThreatFox, FireHOL, AlienVault OTX, Spamhaus',
+      },
+      {
+        title: 'Sankcie a zoznamy',
+        icon: AlertTriangle,
+        color: 'red',
+        stats: [
+          { label: 'OFAC SDN entity', value: '12,000+' },
+          { label: 'FBI Most Wanted', value: '1,000+' },
+          { label: 'OSN jednotlivci', value: '669' },
+          { label: 'Globálne zdroje', value: '130+' },
+        ],
+        sources: 'OFAC, FBI, UN, EU, UK OFSI, OpenSanctions',
+      },
+      {
+        title: 'Sociálne siete',
+        icon: Users,
+        color: 'indigo',
+        stats: [
+          { label: 'Telegram kanály', value: '120,979' },
+          { label: 'Twitter bot účty', value: '50,538+' },
+          { label: 'Instagram falošné profily', value: '3,600+' },
+          { label: 'LinkedIn profily', value: '3,600+' },
+        ],
+        sources: 'TGDataset, TwiBot-20, Discord AntiScam, InstaFake',
+      },
+      {
+        title: 'Finančné podvody',
+        icon: CreditCard,
+        color: 'cyan',
+        stats: [
+          { label: 'CFPB sťažnosti', value: '3M+' },
+          { label: 'IC3 hlásenia (2024)', value: '859,000' },
+          { label: 'Austrália hlásenia', value: '494,000' },
+          { label: 'Zrušené firmy', value: '6.7M+' },
+        ],
+        sources: 'CFPB, FBI IC3, Scamwatch AU, Companies House UK',
+      },
+      {
+        title: 'Odcudzené vozidlá',
+        icon: Car,
+        color: 'slate',
+        stats: [
+          { label: 'Interpol databáza', value: '12M+' },
+          { label: 'US pokrytie', value: '87%' },
+          { label: 'NICB VINCheck', value: '5 rokov' },
+          { label: 'Aktualizácie v reálnom čase', value: '✓' },
+        ],
+        sources: 'Interpol SMV, NICB VINCheck, NMVTIS',
+      },
+    ];
+  }
+  return [
+    {
+      title: 'Cryptocurrency Fraud',
+      icon: Coins,
+      color: 'orange',
+      stats: [
+        { label: 'Crypto Addresses', value: '50,000+' },
+        { label: 'Scam Projects', value: '9,221+' },
+        { label: 'Ransomware Wallets', value: '11,186+' },
+        { label: 'Blockchain Chains', value: '16+' },
+      ],
+      sources: 'Chainabuse, CryptoScamDB, ScamSniffer, OpenSanctions Ransomwhere',
+    },
+    {
+      title: 'Emails & Domains',
+      icon: Mail,
+      color: 'blue',
+      stats: [
+        { label: 'Phishing URLs', value: '9M+' },
+        { label: 'Malicious Domains', value: '2.29M+' },
+        { label: 'Discord Scam Links', value: '30,000+' },
+        { label: 'Spam Domains', value: 'Billions' },
+      ],
+      sources: 'PhishTank, URLhaus, OpenPhish, Google Safe Browsing, Spamhaus',
+    },
+    {
+      title: 'Phone Numbers',
+      icon: Phone,
+      color: 'purple',
+      stats: [
+        { label: 'Scam Calls (US)', value: '2M+' },
+        { label: 'Robocall Reports', value: '1.2M+' },
+        { label: 'Known Scammers', value: '4M+' },
+        { label: 'Daily Updates', value: '✓' },
+      ],
+      sources: 'FTC DNC API, ScamSearch.io, Community databases',
+    },
+    {
+      title: 'IP Addresses',
+      icon: Network,
+      color: 'green',
+      stats: [
+        { label: 'Malicious IPs', value: '612M+' },
+        { label: 'Tor Exit Nodes', value: '2,000+' },
+        { label: 'Threat Indicators', value: 'Millions' },
+        { label: 'Network Blocks', value: 'Hundreds' },
+      ],
+      sources: 'AbuseIPDB, ThreatFox, FireHOL, AlienVault OTX, Spamhaus',
+    },
+    {
+      title: 'Sanctions & Lists',
+      icon: AlertTriangle,
+      color: 'red',
+      stats: [
+        { label: 'OFAC SDN Entities', value: '12,000+' },
+        { label: 'FBI Most Wanted', value: '1,000+' },
+        { label: 'UN Individuals', value: '669' },
+        { label: 'Global Sources', value: '130+' },
+      ],
+      sources: 'OFAC, FBI, UN, EU, UK OFSI, OpenSanctions',
+    },
+    {
+      title: 'Social Media',
+      icon: Users,
+      color: 'indigo',
+      stats: [
+        { label: 'Telegram Channels', value: '120,979' },
+        { label: 'Twitter Bot Accounts', value: '50,538+' },
+        { label: 'Instagram Fakes', value: '3,600+' },
+        { label: 'LinkedIn Profiles', value: '3,600+' },
+      ],
+      sources: 'TGDataset, TwiBot-20, Discord AntiScam, InstaFake',
+    },
+    {
+      title: 'Financial Fraud',
+      icon: CreditCard,
+      color: 'cyan',
+      stats: [
+        { label: 'CFPB Complaints', value: '3M+' },
+        { label: 'IC3 Reports (2024)', value: '859,000' },
+        { label: 'Australia Reports', value: '494,000' },
+        { label: 'Dissolved Companies', value: '6.7M+' },
+      ],
+      sources: 'CFPB, FBI IC3, Scamwatch AU, Companies House UK',
+    },
+    {
+      title: 'Stolen Vehicles',
+      icon: Car,
+      color: 'slate',
+      stats: [
+        { label: 'Interpol Database', value: '12M+' },
+        { label: 'US Coverage', value: '87%' },
+        { label: 'NICB VINCheck', value: '5 Years' },
+        { label: 'Real-time Updates', value: '✓' },
+      ],
+      sources: 'Interpol SMV, NICB VINCheck, NMVTIS',
+    },
+  ];
+};
 
 // Service features data
 const recoveryFeatures = [
@@ -705,7 +832,7 @@ export default function HomePage() {
 
             {/* Category Tables Grid */}
             <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
-              {databaseCategories.map((category) => {
+              {getDatabaseCategories(locale).map((category) => {
                 const Icon = category.icon;
                 const colors = getColorClasses(category.color);
                 return (
@@ -859,7 +986,7 @@ export default function HomePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                  {roadmapFeatures.map((feature, index) => (
+                  {getRoadmapFeatures(locale).map((feature, index) => (
                     <tr
                       key={feature.name}
                       className={`${

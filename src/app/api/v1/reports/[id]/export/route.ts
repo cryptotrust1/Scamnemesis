@@ -57,7 +57,7 @@ function generateReportHTML(report: ReportForExport): string {
     PHISHING: 'Phishing',
     IDENTITY_THEFT: 'Kradez identity',
     ECOMMERCE_FRAUD: 'E-commerce podvod',
-    CRYPTO_SCAM: 'Krypto podvod',
+    CRYPTO_SCAM: 'Crypto podvod',
     JOB_SCAM: 'Pracovny podvod',
     RENTAL_FRAUD: 'Podvod s prenajmom',
     LOAN_SCAM: 'Podvod s pozickou',
