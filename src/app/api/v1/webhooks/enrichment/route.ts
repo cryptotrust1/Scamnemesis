@@ -5,7 +5,12 @@ import { createHmac, timingSafeEqual } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'dev-webhook-secret';
+// SECURITY: Webhook secret must be set in production
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+
+if (!WEBHOOK_SECRET) {
+  console.warn('[Webhook] WARNING: WEBHOOK_SECRET not set. Webhook endpoint will reject all requests.');
+}
 
 const EnrichmentWebhookSchema = z.object({
   event_type: z.enum(['enrichment_complete', 'enrichment_failed', 'enrichment_partial']),
@@ -50,16 +55,24 @@ export async function POST(request: NextRequest) {
     // Get raw body for signature verification
     const rawBody = await request.text();
 
-    // Verify webhook signature
-    const signature = request.headers.get('x-webhook-secret');
+    // SECURITY: Reject if webhook secret is not configured
+    if (!WEBHOOK_SECRET) {
+      console.error('[Webhook] WEBHOOK_SECRET not configured - rejecting request');
+      return NextResponse.json(
+        { error: 'server_error', message: 'Webhook endpoint not configured' },
+        { status: 503 }
+      );
+    }
 
-    // In production, use HMAC signature verification
-    // For simplicity, we also accept direct secret comparison
-    const isValidSignature =
-      signature === WEBHOOK_SECRET ||
-      verifyWebhookSignature(rawBody, signature, WEBHOOK_SECRET);
+    // Verify webhook signature using HMAC-SHA256
+    // The signature should be passed in x-webhook-signature header
+    const signature = request.headers.get('x-webhook-signature');
+
+    // SECURITY: Only use HMAC verification - no plaintext comparison
+    const isValidSignature = verifyWebhookSignature(rawBody, signature, WEBHOOK_SECRET);
 
     if (!isValidSignature) {
+      console.warn('[Webhook] Invalid signature received');
       return NextResponse.json(
         { error: 'unauthorized', message: 'Invalid webhook signature' },
         { status: 401 }
