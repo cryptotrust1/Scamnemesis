@@ -241,6 +241,7 @@ model Report {
   evidence          Evidence[]
   comments          Comment[]
   duplicateClusters DuplicateClusterReport[]
+  views             ReportView[]
 
   @@index([status])
   @@index([severity])
@@ -548,6 +549,8 @@ model ReportView {
   ipHash    String   @map("ip_hash")
   userAgent String?  @map("user_agent")
   createdAt DateTime @default(now()) @map("created_at")
+
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@unique([reportId, ipHash])
   @@index([reportId])
