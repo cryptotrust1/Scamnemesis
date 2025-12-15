@@ -468,27 +468,23 @@ export default function VerifyServiceProductPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {useCases.map((useCase, index) => {
+            <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
+              {useCases.map((useCase) => {
                 const Icon = useCase.icon;
                 return (
-                  <Card key={useCase.title} className="group hover:shadow-2xl transition-all duration-300 border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg bg-white hover:-translate-y-1 h-full flex flex-col overflow-hidden">
-                    <CardHeader className="pb-6 px-8">
-                      <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                          <Icon className="h-8 w-8 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-xl text-[#1e293b] leading-tight group-hover:text-[#0E74FF] transition-colors duration-300 break-words">
-                            {useCase.title}
-                          </CardTitle>
-                        </div>
+                  <div key={useCase.title} className="group">
+                    <div className="flex items-start gap-5 mb-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                        <Icon className="h-7 w-7 text-white" />
                       </div>
-                    </CardHeader>
-                    <CardContent className="flex-1 pt-0 px-8 pb-8">
-                      <p className="text-[#64748b] leading-relaxed text-sm break-words">{useCase.description}</p>
-                    </CardContent>
-                  </Card>
+                      <h3 className="text-xl font-bold text-[#1e293b] leading-tight pt-3 group-hover:text-[#0E74FF] transition-colors duration-300">
+                        {useCase.title}
+                      </h3>
+                    </div>
+                    <p className="text-[#64748b] leading-relaxed text-base pl-[76px]">
+                      {useCase.description}
+                    </p>
+                  </div>
                 );
               })}
             </div>
@@ -664,105 +660,90 @@ export default function VerifyServiceProductPage() {
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
               {/* Step 1 */}
-              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
-                    1
-                  </div>
-                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Complete the Online Form for Corporate Verification</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 px-8 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
-                    Start safely and efficiently: fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
-                  </p>
-                  <div className="space-y-4 mt-6">
-                    <p className="font-semibold text-[#1e293b] text-sm">After submitting the form:</p>
-                    <ul className="space-y-3">
-                      <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">A.</span>
-                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We create a secure and private communication channel.</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">B.</span>
-                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We explain the entire due diligence and risk analysis process in detail.</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem] text-sm">C.</span>
-                        <span className="text-[#64748b] leading-relaxed text-sm break-words">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
+                  1
+                </div>
+                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                  Complete the Online Form for Corporate Verification
+                </h3>
+                <p className="text-[#64748b] mb-6 leading-relaxed">
+                  Start safely and efficiently: fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
+                </p>
+                <div className="text-left max-w-sm mx-auto">
+                  <p className="font-semibold text-[#1e293b] mb-3">After submitting the form:</p>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-3">
+                      <span className="text-[#0E74FF] font-bold">A.</span>
+                      <span className="text-[#64748b] leading-relaxed">We create a secure and private communication channel.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-[#0E74FF] font-bold">B.</span>
+                      <span className="text-[#64748b] leading-relaxed">We explain the entire due diligence and risk analysis process in detail.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-[#0E74FF] font-bold">C.</span>
+                      <span className="text-[#64748b] leading-relaxed">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
               {/* Step 2 */}
-              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
-                    2
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
+                  2
+                </div>
+                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                  Make a Secure Payment
+                </h3>
+                <p className="text-[#64748b] mb-6 leading-relaxed">
+                  Finalize your order through our secure payment gateway. We accept:
+                </p>
+                <div className="space-y-3 max-w-xs mx-auto">
+                  <div className="flex items-center gap-3">
+                    <CreditCard className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
+                    <span className="text-[#1e293b]">Major credit cards</span>
                   </div>
-                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Make a Secure Payment</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 px-8 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
-                    Finalize your order through our secure payment gateway. We accept:
-                  </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
-                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
-                        <CreditCard className="h-5 w-5 text-[#0E74FF]" />
-                      </div>
-                      <span className="text-[#1e293b] font-medium text-sm">Major credit cards</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
-                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
-                        <Wallet className="h-5 w-5 text-[#0E74FF]" />
-                      </div>
-                      <span className="text-[#1e293b] font-medium text-sm">Bank transfers</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
-                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
-                        <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
-                      </div>
-                      <span className="text-[#1e293b] font-medium text-sm">Cryptocurrencies</span>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <Wallet className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
+                    <span className="text-[#1e293b]">Bank transfers</span>
                   </div>
-                  <p className="text-sm text-[#64748b] mt-6 leading-relaxed break-words">
-                    A transparent, fixed price ensures there are no hidden fees or additional costs.
-                  </p>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-3">
+                    <Bitcoin className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
+                    <span className="text-[#1e293b]">Cryptocurrencies</span>
+                  </div>
+                </div>
+                <p className="text-[#64748b] mt-6 leading-relaxed">
+                  A transparent, fixed price ensures there are no hidden fees or additional costs.
+                </p>
+              </div>
 
               {/* Step 3 */}
-              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
-                <CardHeader className="pt-10 px-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
-                    3
-                  </div>
-                  <CardTitle className="text-lg leading-relaxed text-[#1e293b] break-words">Receive Your Detailed Due Diligence Report</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 px-8 pb-8">
-                  <p className="text-[#64748b] mb-6 leading-relaxed text-sm break-words">
-                    Our team of experienced analysts immediately initiates the investigation. You will receive a comprehensive PDF report via email within 30 days.
-                  </p>
-                  <div className="space-y-4">
-                    <p className="font-semibold text-[#1e293b] text-sm">The report includes:</p>
-                    <ul className="space-y-2">
-                      {deliverables.map((item, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-1" />
-                          <span className="text-[#64748b] leading-relaxed text-sm break-words">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
+                  3
+                </div>
+                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                  Receive Your Detailed Due Diligence Report
+                </h3>
+                <p className="text-[#64748b] mb-6 leading-relaxed">
+                  Our team of experienced analysts immediately initiates the investigation. You will receive a comprehensive PDF report via email within 30 days.
+                </p>
+                <div className="text-left max-w-sm mx-auto">
+                  <p className="font-semibold text-[#1e293b] mb-3">The report includes:</p>
+                  <ul className="space-y-2">
+                    {deliverables.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-[#64748b] leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -784,19 +765,17 @@ export default function VerifyServiceProductPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
               {whyChoose.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Card key={item.title} className="text-center border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group bg-white h-full flex flex-col overflow-hidden">
-                    <CardContent className="pt-8 pb-8 px-8 flex-1 flex flex-col">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
-                        <Icon className="h-8 w-8 text-white" />
-                      </div>
-                      <h3 className="font-semibold text-[#1e293b] mb-4 text-lg leading-tight break-words">{item.title}</h3>
-                      <p className="text-sm text-[#64748b] leading-relaxed break-words">{item.description}</p>
-                    </CardContent>
-                  </Card>
+                  <div key={item.title} className="text-center group">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                      <Icon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1e293b] mb-4 text-lg leading-tight">{item.title}</h3>
+                    <p className="text-[#64748b] leading-relaxed">{item.description}</p>
+                  </div>
                 );
               })}
             </div>
