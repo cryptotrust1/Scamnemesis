@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Investigative Due Diligence & Business Partner Vetting | ScamNemesis',
-  description: 'Professional investigative due diligence services. Verify business partners, suppliers, and investments before you engage. Expert-led investigations with CFE, CAMS, CISA, CISM, OSCP certified specialists. 360 intelligence profile delivered within 30 days.',
+  title: 'Business Due Diligence & Partner Vetting | ScamNemesis',
+  description: 'Expert investigative due diligence for business partners, suppliers & investments. CFE, CAMS, CISA certified specialists. Get your report in 30 days.',
   keywords: [
     'due diligence',
     'business partner vetting',
@@ -21,24 +21,28 @@ export const metadata: Metadata = {
     'vendor vetting',
   ],
   openGraph: {
-    title: 'Investigative Due Diligence & Business Partner Vetting | ScamNemesis',
-    description: 'Mitigate Risk Before You Engage: Verify the Integrity of Your Next Business Partner, Supplier, or Investment. Expert-led investigations with certified specialists.',
+    title: 'Business Due Diligence & Partner Vetting | ScamNemesis',
+    description: 'Expert investigative due diligence for business partners, suppliers & investments. CFE, CAMS certified specialists. 30-day delivery.',
+    url: 'https://scamnemesis.com/verify-serviceproduct',
     type: 'website',
     locale: 'en_US',
     siteName: 'ScamNemesis',
     images: [
       {
-        url: '/images/og-due-diligence.jpg',
+        url: 'https://scamnemesis.com/images/og-due-diligence.jpg',
         width: 1200,
         height: 630,
-        alt: 'ScamNemesis Due Diligence Services',
+        alt: 'ScamNemesis Business Due Diligence and Partner Vetting Services',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Investigative Due Diligence & Business Partner Vetting',
-    description: 'Mitigate Risk Before You Engage. Expert-led corporate investigations with CFE, CAMS, CISA certified specialists.',
+    site: '@ScamNemesis',
+    creator: '@ScamNemesis',
+    title: 'Business Due Diligence & Partner Vetting',
+    description: 'Expert investigative due diligence for business partners, suppliers & investments. CFE, CAMS certified specialists. 30-day delivery.',
+    images: ['https://scamnemesis.com/images/og-due-diligence.jpg'],
   },
   alternates: {
     canonical: 'https://scamnemesis.com/verify-serviceproduct',
@@ -54,6 +58,8 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  authors: [{ name: 'ScamNemesis' }],
+  category: 'Business Services',
 };
 
 export default function VerifyServiceProductLayout({

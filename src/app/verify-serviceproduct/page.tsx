@@ -125,11 +125,176 @@ const whyChoose = [
 
 const ORDER_FORM_URL = 'https://opnform.com/forms/contact-form-2qck1j';
 
+// JSON-LD Schema Markup for SEO
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'ScamNemesis',
+  url: 'https://scamnemesis.com',
+  logo: 'https://scamnemesis.com/logo.png',
+  description: 'Professional investigative due diligence and business partner vetting services with certified fraud examiners and intelligence specialists.',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'Customer Service',
+    availableLanguage: ['en'],
+  },
+};
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Investigative Due Diligence and Business Partner Vetting',
+  provider: {
+    '@type': 'Organization',
+    name: 'ScamNemesis',
+    url: 'https://scamnemesis.com',
+  },
+  areaServed: {
+    '@type': 'Place',
+    name: 'Worldwide',
+  },
+  description: 'Comprehensive investigative due diligence services for business partners, suppliers, and investments. Expert-led investigations with CFE, CAMS, CISA, CISM, OSCP certified specialists delivering 360-degree intelligence profiles within 30 days.',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Due Diligence Services',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Corporate Identity & Legal Architecture Verification',
+          description: 'Verification of legal structure, ownership, and regulatory status across international business registries.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Financial Integrity & Reputational Risk Assessment',
+          description: 'Analysis of financial health and reputational profile through public records, court filings, and media sources.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Digital Footprint & Asset Mapping',
+          description: 'OSINT and cyber intelligence analysis of online presence, domain history, and digital infrastructure.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Leadership & UBO Background Screening',
+          description: 'Thorough background investigations into key individuals and ultimate beneficial owners (UBOs).',
+        },
+      },
+    ],
+  },
+  offers: {
+    '@type': 'Offer',
+    price: 'Contact for Quote',
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    deliveryLeadTime: {
+      '@type': 'QuantitativeValue',
+      value: 30,
+      unitCode: 'DAY',
+    },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'When is due diligence essential for evaluating strategic partnerships?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does ScamNemesis vet suppliers and vendors?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What certifications do your investigators hold?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Each investigation is conducted by certified specialists holding credentials such as CFE (Certified Fraud Examiner), CAMS (Certified Anti-Money Laundering Specialist), CISA (Certified Information Systems Auditor), CISM (Certified Information Security Manager), and OSCP (Offensive Security Certified Professional).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is included in the due diligence report?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The comprehensive PDF report includes: verification of corporate identity and legal status, analysis of ownership and management structure including Ultimate Beneficial Owners (UBOs), assessment of financial integrity and solvency, reputation and risk evaluation, and audit of digital footprint and online assets.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does a due diligence investigation take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You will receive a comprehensive PDF report via email within 30 days from the initiation of the investigation.',
+      },
+    },
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://scamnemesis.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Due Diligence Services',
+      item: 'https://scamnemesis.com/verify-serviceproduct',
+    },
+  ],
+};
+
 export default function VerifyServiceProductPage() {
   return (
-    <div className="flex flex-col">
+    <>
+      {/* JSON-LD Schema Markup for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <div className="flex flex-col">
       {/* Hero Section - Premium Design */}
-      <section className="relative w-full py-20 md:py-28 lg:py-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
+      <section className="relative w-full py-24 md:py-32 lg:py-40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -138,14 +303,14 @@ export default function VerifyServiceProductPage() {
         </div>
 
         {/* Gradient Orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#0E74FF]/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0E74FF]/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#0E74FF]/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0E74FF]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
 
         <div className="container px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E74FF]/20 border border-[#0E74FF]/30 mb-6">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8 hover:bg-[#0E74FF]/30 transition-colors duration-300">
               <Shield className="h-4 w-4 text-[#0E74FF]" />
-              <span className="text-sm font-medium text-[#0E74FF]">Professional Due Diligence Services</span>
+              <span className="text-sm font-semibold text-[#0E74FF]">Professional Due Diligence Services</span>
             </div>
 
             <h1 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
@@ -156,14 +321,14 @@ export default function VerifyServiceProductPage() {
               <strong className="text-white">Mitigate Risk Before You Engage:</strong> Verify the Integrity of Your Next Business Partner, Supplier, or Investment
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-8 py-6 text-lg" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-8 py-6 text-lg shadow-lg shadow-[#0E74FF]/30 hover:shadow-xl hover:shadow-[#0E74FF]/40 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
                   Order Service Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-slate-500 text-white hover:bg-white/10 px-8 py-6 text-lg" asChild>
+              <Button size="lg" variant="outline" className="border-2 border-slate-500 text-white hover:bg-white/10 hover:border-white px-8 py-6 text-lg backdrop-blur-sm hover:scale-105 transition-all duration-300" asChild>
                 <Link href="#process">
                   Learn More
                 </Link>
@@ -177,11 +342,12 @@ export default function VerifyServiceProductPage() {
       <section className="w-full py-16 md:py-24 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none text-center">
+            <div className="space-y-8 text-center">
               <p className="text-lg md:text-xl text-[#64748b] leading-relaxed">
                 In today&apos;s interconnected global economy, every new business relationship presents both opportunity and risk. Unidentified liabilities, reputational issues, or non-compliant practices within a partner&apos;s operations can lead to significant financial loss, legal exposure, and brand damage. Standard background checks are no longer sufficient.
               </p>
-              <p className="text-lg md:text-xl text-[#1e293b] leading-relaxed font-medium mt-6">
+              <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+              <p className="text-lg md:text-xl text-[#1e293b] leading-relaxed font-semibold">
                 ScamNemesis provides comprehensive, expert-led investigative due diligence that delivers the critical intelligence you need to make strategic decisions with confidence. Our rapid, in-depth analysis uncovers the facts behind the figures, ensuring the entities you engage with are legitimate, reliable, and aligned with your standards of integrity.
               </p>
             </div>
@@ -190,13 +356,24 @@ export default function VerifyServiceProductPage() {
       </section>
 
       {/* Confidentiality Banner */}
-      <section className="w-full py-8 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4]">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-white text-center md:text-left">
-            <Lock className="h-8 w-8 flex-shrink-0" />
-            <div>
-              <p className="font-semibold text-lg">Guaranteed Confidentiality and Discretion</p>
-              <p className="text-white/90">We protect your privacy. All information is confidential and anonymous. We never share it without your consent.</p>
+      <section className="w-full py-12 md:py-16 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+
+        <div className="container px-4 md:px-6 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-white text-center md:text-left">
+              <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 border border-white/30">
+                <Lock className="h-8 w-8" />
+              </div>
+              <div className="space-y-2">
+                <p className="font-bold text-xl md:text-2xl">Guaranteed Confidentiality and Discretion</p>
+                <p className="text-white/95 text-base md:text-lg leading-relaxed">We protect your privacy. All information is confidential and anonymous. We never share it without your consent.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -206,17 +383,17 @@ export default function VerifyServiceProductPage() {
       <section className="w-full py-16 md:py-24 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#0E74FF]/10 mb-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 mb-8 shadow-lg border border-[#0E74FF]/20">
                 <Briefcase className="h-8 w-8 text-[#0E74FF]" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
                 Investigative Due Diligence for Business Partners
               </h2>
-              <p className="text-xl text-[#64748b] max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-[#64748b] max-w-3xl mx-auto mb-4 font-medium">
                 When is Professional Due Diligence Essential?
               </p>
-              <p className="text-lg text-[#64748b] max-w-3xl mx-auto mt-4">
+              <p className="text-base md:text-lg text-[#64748b] max-w-3xl mx-auto leading-relaxed">
                 Our confidential investigative services are designed for high-stakes business scenarios where thorough vetting is non-negotiable. We provide critical intelligence for:
               </p>
             </div>
@@ -225,21 +402,21 @@ export default function VerifyServiceProductPage() {
               {useCases.map((useCase, index) => {
                 const Icon = useCase.icon;
                 return (
-                  <Card key={useCase.title} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white">
-                    <CardHeader className="pb-4">
+                  <Card key={useCase.title} className="group hover:shadow-2xl transition-all duration-300 border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg bg-white hover:-translate-y-1 h-full flex flex-col">
+                    <CardHeader className="pb-6">
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="h-7 w-7 text-white" />
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                          <Icon className="h-8 w-8 text-white" />
                         </div>
-                        <div>
-                          <CardTitle className="text-xl text-[#1e293b] leading-tight">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl text-[#1e293b] leading-tight group-hover:text-[#0E74FF] transition-colors duration-300">
                             {useCase.title}
                           </CardTitle>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-[#64748b] leading-relaxed">{useCase.description}</p>
+                    <CardContent className="flex-1 pt-0">
+                      <p className="text-[#64748b] leading-relaxed text-base">{useCase.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -254,13 +431,13 @@ export default function VerifyServiceProductPage() {
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#0E74FF]/10 mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 mb-8 shadow-lg border border-[#0E74FF]/20">
                 <Eye className="h-8 w-8 text-[#0E74FF]" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
                 Our Investigative Process: Elite Due Diligence Across 4 Operational Layers
               </h2>
-              <p className="text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
                 Every investigation we conduct is executed as a precision operation — combining the methodology of intelligence agencies with the analytical discipline of top-tier investigators. Our approach is built on four powerful pillars and leverages hundreds of global data sources, advanced OSINT techniques, and proprietary databases. The result goes far beyond standard &quot;verification&quot; — it&apos;s a comprehensive intelligence-driven risk analysis.
               </p>
             </div>
@@ -270,19 +447,19 @@ export default function VerifyServiceProductPage() {
                 const Icon = pillar.icon;
                 const isEven = index % 2 === 0;
                 return (
-                  <Card key={pillar.number} className="overflow-hidden border-0 shadow-xl">
+                  <Card key={pillar.number} className="overflow-hidden border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl hover:shadow-2xl transition-all duration-500 group">
                     <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
                       {/* Content Side */}
-                      <div className="flex-1 p-8 md:p-12 flex flex-col justify-center">
-                        <div className="flex items-center gap-4 mb-6">
-                          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl shadow-lg">
+                      <div className="flex-1 p-8 md:p-12 flex flex-col justify-center bg-white">
+                        <div className="flex items-center gap-4 mb-8">
+                          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                             {pillar.number}
                           </div>
-                          <div className="w-12 h-12 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
-                            <Icon className="h-6 w-6 text-[#0E74FF]" />
+                          <div className="w-14 h-14 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
+                            <Icon className="h-7 w-7 text-[#0E74FF]" />
                           </div>
                         </div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-[#1e293b] mb-4">
+                        <h3 className="text-2xl md:text-3xl font-bold text-[#1e293b] mb-6 leading-tight">
                           {pillar.title}
                         </h3>
                         <p className="text-lg text-[#64748b] leading-relaxed">
@@ -291,13 +468,13 @@ export default function VerifyServiceProductPage() {
                       </div>
 
                       {/* Visual Side */}
-                      <div className="flex-1 bg-gradient-to-br from-slate-100 to-slate-200 p-8 md:p-12 flex items-center justify-center min-h-[300px]">
-                        <div className="relative">
-                          <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center shadow-2xl">
-                            <Icon className="h-16 w-16 md:h-20 md:w-20 text-white" />
+                      <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 p-8 md:p-12 flex items-center justify-center min-h-[320px]">
+                        <div className="relative group-hover:scale-105 transition-transform duration-500">
+                          <div className="w-40 h-40 md:w-48 md:h-48 rounded-3xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center shadow-2xl group-hover:shadow-[#0E74FF]/40 group-hover:rotate-3 transition-all duration-500">
+                            <Icon className="h-20 w-20 md:h-24 md:w-24 text-white" />
                           </div>
-                          <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                            <CheckCircle className="h-5 w-5 text-white" />
+                          <div className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-green-500 flex items-center justify-center shadow-lg animate-pulse">
+                            <CheckCircle className="h-6 w-6 text-white" />
                           </div>
                         </div>
                       </div>
@@ -316,12 +493,12 @@ export default function VerifyServiceProductPage() {
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E74FF]/20 border border-[#0E74FF]/30 mb-6">
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8 hover:bg-[#0E74FF]/30 transition-colors duration-300">
                   <FileCheck className="h-4 w-4 text-[#0E74FF]" />
-                  <span className="text-sm font-medium text-[#0E74FF]">What You Get</span>
+                  <span className="text-sm font-semibold text-[#0E74FF]">What You Get</span>
                 </div>
 
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                   Due Diligence Report
                 </h2>
 
@@ -330,51 +507,55 @@ export default function VerifyServiceProductPage() {
                 </p>
 
                 <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                    <FileText className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1" />
+                  <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+                    <FileText className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-1">Comprehensive and Practical Report</h4>
-                      <p className="text-slate-400 text-sm">The result of our work is a detailed, clearly structured PDF report, delivered within 30 days. The document is designed as a practical guide for strategic decision-making.</p>
+                      <h4 className="font-semibold mb-2">Comprehensive and Practical Report</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">The result of our work is a detailed, clearly structured PDF report, delivered within 30 days. The document is designed as a practical guide for strategic decision-making.</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                    <Target className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1" />
+                  <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+                    <Target className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-1">360° Intelligence Profile</h4>
-                      <p className="text-slate-400 text-sm">Complete view of corporate risks, financial integrity, reputation, and trustworthiness. Our due diligence is a proactive tool for protecting capital, reputation, and business interests.</p>
+                      <h4 className="font-semibold mb-2">360° Intelligence Profile</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">Complete view of corporate risks, financial integrity, reputation, and trustworthiness. Our due diligence is a proactive tool for protecting capital, reputation, and business interests.</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                    <DollarSign className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1" />
+                  <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+                    <DollarSign className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-1">Transparent Pricing and No Surprises</h4>
-                      <p className="text-slate-400 text-sm">Our services are offered at a fixed price, with no additional or hidden fees. You know exactly what you are getting – no unpleasant surprises.</p>
+                      <h4 className="font-semibold mb-2">Transparent Pricing and No Surprises</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">Our services are offered at a fixed price, with no additional or hidden fees. You know exactly what you are getting – no unpleasant surprises.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-                <h3 className="text-xl font-semibold mb-6 flex items-center gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500" />
+              <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 md:p-10 border border-white/10 hover:border-white/20 transition-colors duration-300">
+                <h3 className="text-xl md:text-2xl font-bold mb-8 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                  </div>
                   Report Includes:
                 </h3>
                 <ul className="space-y-4">
                   {deliverables.map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                    <li key={index} className="flex items-start gap-4 group">
+                      <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1 group-hover:bg-green-500/30 transition-colors duration-300">
+                        <CheckCircle className="h-4 w-4 text-green-400" />
                       </div>
-                      <span className="text-slate-300">{item}</span>
+                      <span className="text-slate-300 text-base leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
 
-                <p className="mt-8 text-center text-slate-400 text-sm">
-                  This 360° intelligence profile provides critical insights for strategic decision-making, capital protection, and minimizing legal or financial risks.
-                </p>
+                <div className="mt-8 pt-8 border-t border-white/10">
+                  <p className="text-center text-slate-400 text-sm leading-relaxed">
+                    This 360° intelligence profile provides critical insights for strategic decision-making, capital protection, and minimizing legal or financial risks.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -382,15 +563,17 @@ export default function VerifyServiceProductPage() {
       </section>
 
       {/* Quote Section */}
-      <section className="w-full py-16 md:py-20 bg-[#f8fafc]">
+      <section className="w-full py-16 md:py-24 bg-gradient-to-br from-[#f8fafc] to-white">
         <div className="container px-4 md:px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="relative">
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-8xl text-[#0E74FF]/20 font-serif">&quot;</div>
-              <blockquote className="text-2xl md:text-3xl font-light text-[#1e293b] italic leading-relaxed relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-xl border border-slate-200">
+              <div className="absolute -top-6 -left-6 w-12 h-12 bg-[#0E74FF] rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-3xl text-white font-serif">&quot;</span>
+              </div>
+              <blockquote className="text-2xl md:text-3xl lg:text-4xl font-light text-[#1e293b] italic leading-relaxed text-center">
                 Luck is a matter of preparation meeting opportunity.
               </blockquote>
-              <cite className="block mt-6 text-lg font-semibold text-[#0E74FF] not-italic">
+              <cite className="block mt-8 text-lg md:text-xl font-semibold text-[#0E74FF] not-italic text-center">
                 — Seneca
               </cite>
             </div>
@@ -403,42 +586,42 @@ export default function VerifyServiceProductPage() {
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#0E74FF]/10 mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 mb-8 shadow-lg border border-[#0E74FF]/20">
                 <Target className="h-8 w-8 text-[#0E74FF]" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-4 leading-tight">
                 Launch Your Confidential Corporate Investigation & Due Diligence in 3 Simple Steps
               </h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Step 1 */}
-              <Card className="relative border-0 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4]" />
-                <CardHeader className="pt-8">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
+                <CardHeader className="pt-10 px-6 pb-6">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     1
                   </div>
-                  <CardTitle className="text-xl">Complete the Online Form for Corporate Verification</CardTitle>
+                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Complete the Online Form for Corporate Verification</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-[#64748b] mb-4">
+                <CardContent className="flex-1 px-6 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed">
                     Start safely and efficiently: fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
                   </p>
-                  <div className="space-y-2 mt-4 text-sm">
+                  <div className="space-y-4 mt-6">
                     <p className="font-semibold text-[#1e293b]">After submitting the form:</p>
-                    <ul className="space-y-2">
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#0E74FF] font-semibold">A.</span>
-                        <span className="text-[#64748b]">We create a secure and private communication channel.</span>
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">A.</span>
+                        <span className="text-[#64748b] leading-relaxed">We create a secure and private communication channel.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#0E74FF] font-semibold">B.</span>
-                        <span className="text-[#64748b]">We explain the entire due diligence and risk analysis process in detail.</span>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">B.</span>
+                        <span className="text-[#64748b] leading-relaxed">We explain the entire due diligence and risk analysis process in detail.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#0E74FF] font-semibold">C.</span>
-                        <span className="text-[#64748b]">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#0E74FF] font-semibold flex-shrink-0 min-w-[1.5rem]">C.</span>
+                        <span className="text-[#64748b] leading-relaxed">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
                       </li>
                     </ul>
                   </div>
@@ -446,58 +629,64 @@ export default function VerifyServiceProductPage() {
               </Card>
 
               {/* Step 2 */}
-              <Card className="relative border-0 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4]" />
-                <CardHeader className="pt-8">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
+                <CardHeader className="pt-10 px-6 pb-6">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     2
                   </div>
-                  <CardTitle className="text-xl">Make a Secure Payment</CardTitle>
+                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Make a Secure Payment</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-[#64748b] mb-4">
+                <CardContent className="flex-1 px-6 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed">
                     Finalize your order through our secure payment gateway. We accept:
                   </p>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                      <CreditCard className="h-5 w-5 text-[#0E74FF]" />
-                      <span className="text-[#1e293b]">Major credit cards</span>
+                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
+                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
+                        <CreditCard className="h-5 w-5 text-[#0E74FF]" />
+                      </div>
+                      <span className="text-[#1e293b] font-medium">Major credit cards</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                      <Wallet className="h-5 w-5 text-[#0E74FF]" />
-                      <span className="text-[#1e293b]">Bank transfers</span>
+                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
+                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
+                        <Wallet className="h-5 w-5 text-[#0E74FF]" />
+                      </div>
+                      <span className="text-[#1e293b] font-medium">Bank transfers</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                      <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
-                      <span className="text-[#1e293b]">Cryptocurrencies</span>
+                    <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-[#0E74FF]/30 hover:bg-slate-100 transition-all duration-300 group">
+                      <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center group-hover:bg-[#0E74FF]/20 transition-colors duration-300">
+                        <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
+                      </div>
+                      <span className="text-[#1e293b] font-medium">Cryptocurrencies</span>
                     </div>
                   </div>
-                  <p className="text-sm text-[#64748b] mt-4">
+                  <p className="text-sm text-[#64748b] mt-6 leading-relaxed">
                     A transparent, fixed price ensures there are no hidden fees or additional costs.
                   </p>
                 </CardContent>
               </Card>
 
               {/* Step 3 */}
-              <Card className="relative border-0 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4]" />
-                <CardHeader className="pt-8">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <Card className="relative border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0E74FF] to-[#0a5ed4] group-hover:h-3 transition-all duration-300" />
+                <CardHeader className="pt-10 px-6 pb-6">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                     3
                   </div>
-                  <CardTitle className="text-xl">Receive Your Detailed Due Diligence Report</CardTitle>
+                  <CardTitle className="text-xl leading-relaxed text-[#1e293b]">Receive Your Detailed Due Diligence Report</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-[#64748b] mb-4">
+                <CardContent className="flex-1 px-6 pb-8">
+                  <p className="text-[#64748b] mb-6 leading-relaxed">
                     Our team of experienced analysts immediately initiates the investigation. You will receive a comprehensive PDF report via email within 30 days.
                   </p>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-4">
                     <p className="font-semibold text-[#1e293b]">The report includes:</p>
-                    <ul className="space-y-1">
+                    <ul className="space-y-2">
                       {deliverables.map((item, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
-                          <span className="text-[#64748b]">{item}</span>
+                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-1" />
+                          <span className="text-[#64748b] leading-relaxed text-sm">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -513,29 +702,29 @@ export default function VerifyServiceProductPage() {
       <section className="w-full py-16 md:py-24 bg-[#f8fafc]">
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#0E74FF]/10 mb-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 mb-8 shadow-lg border border-[#0E74FF]/20">
                 <ShieldCheck className="h-8 w-8 text-[#0E74FF]" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
                 Why Choose ScamNemesis for Advanced Business Intelligence?
               </h2>
-              <p className="text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
                 Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations. Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
               {whyChoose.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Card key={item.title} className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                    <CardContent className="pt-8 pb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Card key={item.title} className="text-center border border-slate-200 hover:border-[#0E74FF]/30 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group bg-white h-full flex flex-col">
+                    <CardContent className="pt-8 pb-8 px-6 flex-1 flex flex-col">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-xl group-hover:shadow-[#0E74FF]/30 transition-all duration-300">
                         <Icon className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-semibold text-[#1e293b] mb-2">{item.title}</h3>
-                      <p className="text-sm text-[#64748b]">{item.description}</p>
+                      <h3 className="font-semibold text-[#1e293b] mb-4 text-lg leading-tight">{item.title}</h3>
+                      <p className="text-sm text-[#64748b] leading-relaxed">{item.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -544,12 +733,12 @@ export default function VerifyServiceProductPage() {
 
             {/* Certifications */}
             <div className="text-center">
-              <p className="text-sm text-[#64748b] mb-4">Our team holds elite certifications:</p>
-              <div className="flex flex-wrap justify-center gap-3">
+              <p className="text-sm text-[#64748b] mb-6 font-medium">Our team holds elite certifications:</p>
+              <div className="flex flex-wrap justify-center gap-4">
                 {certifications.map((cert) => (
                   <div
                     key={cert.name}
-                    className="px-6 py-3 bg-white text-[#0E74FF] rounded-xl font-semibold border-2 border-[#0E74FF]/20 hover:border-[#0E74FF] transition-colors duration-300 cursor-default"
+                    className="px-6 py-3 bg-white text-[#0E74FF] rounded-xl font-semibold border-2 border-[#0E74FF]/20 hover:border-[#0E74FF] hover:bg-[#0E74FF]/5 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-default"
                     title={cert.full}
                   >
                     {cert.name}®
@@ -565,27 +754,36 @@ export default function VerifyServiceProductPage() {
       <section className="w-full py-16 md:py-24 bg-white">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
-            <Card className="border-0 shadow-2xl overflow-hidden">
-              <div className="bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] p-8 md:p-12 text-white">
-                <FileText className="h-12 w-12 mb-6 opacity-80" />
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                  Comprehensive Due Diligence Report
-                </h2>
-                <h3 className="text-xl mb-6 opacity-90">
-                  Protect your business interests.
-                </h3>
-                <p className="text-lg leading-relaxed opacity-90 mb-6">
-                  Order your Due Diligence report today. Take your next strategic step with confidence. Our expert analysis provides the clarity you need to avoid working with unsuitable partners and helps you save significant time and money.
-                </p>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6">
-                  <p className="text-lg italic">
-                    &quot;I paid $5,000 for the analysis and saved $1.5 million on a bad investment.&quot;
-                  </p>
-                  <p className="text-sm mt-2 opacity-80">— One of our satisfied clients</p>
+            <Card className="border border-slate-200 shadow-2xl overflow-hidden hover:shadow-3xl transition-shadow duration-500">
+              <div className="bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] p-8 md:p-12 lg:p-16 text-white relative overflow-hidden">
+                {/* Subtle background pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E")`,
+                  }} />
                 </div>
-                <p className="opacity-90">
-                  This perfectly illustrates the value of our service. Business risk always exists, but with us, you can significantly reduce it.
-                </p>
+
+                <div className="relative z-10">
+                  <FileText className="h-12 w-12 mb-8 opacity-90" />
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+                    Comprehensive Due Diligence Report
+                  </h2>
+                  <h3 className="text-xl md:text-2xl mb-8 opacity-95">
+                    Protect your business interests.
+                  </h3>
+                  <p className="text-lg leading-relaxed opacity-95 mb-8">
+                    Order your Due Diligence report today. Take your next strategic step with confidence. Our expert analysis provides the clarity you need to avoid working with unsuitable partners and helps you save significant time and money.
+                  </p>
+                  <div className="bg-white/15 backdrop-blur-md rounded-2xl p-6 md:p-8 mb-8 border border-white/20 shadow-lg">
+                    <p className="text-xl md:text-2xl italic leading-relaxed">
+                      &quot;I paid $5,000 for the analysis and saved $1.5 million on a bad investment.&quot;
+                    </p>
+                    <p className="text-sm md:text-base mt-4 opacity-90 font-medium">— One of our satisfied clients</p>
+                  </div>
+                  <p className="text-base md:text-lg opacity-95 leading-relaxed">
+                    This perfectly illustrates the value of our service. Business risk always exists, but with us, you can significantly reduce it.
+                  </p>
+                </div>
               </div>
             </Card>
           </div>
@@ -593,40 +791,52 @@ export default function VerifyServiceProductPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="w-full py-20 md:py-28 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+      <section className="w-full py-24 md:py-32 lg:py-40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-10 right-10 w-64 h-64 bg-[#0E74FF]/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-[#0E74FF]/10 rounded-full blur-3xl" />
+        <div className="absolute top-10 right-10 w-64 h-64 bg-[#0E74FF]/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-[#0E74FF]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
 
         <div className="container px-4 md:px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#0E74FF] mb-8 shadow-lg shadow-[#0E74FF]/30">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#0E74FF] mb-8 shadow-lg shadow-[#0E74FF]/40 hover:scale-110 transition-transform duration-300">
               <Shield className="h-10 w-10 text-white" />
             </div>
 
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               Protect Your Business Today
             </h2>
 
-            <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed max-w-2xl mx-auto">
               Take your next strategic step with confidence. Our expert analysis provides the clarity you need to make informed decisions and protect your capital, reputation, and business interests.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-10 py-7 text-lg font-semibold shadow-lg shadow-[#0E74FF]/30 hover:shadow-xl hover:shadow-[#0E74FF]/40 transition-all duration-300" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-10 py-7 text-lg font-semibold shadow-lg shadow-[#0E74FF]/40 hover:shadow-2xl hover:shadow-[#0E74FF]/50 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
                   Order Service Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
             </div>
 
-            <p className="mt-8 text-slate-400 text-sm">
-              Fixed-price model with no hidden fees. Confidential and secure.
-            </p>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center items-center text-slate-400 text-sm">
+              <div className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                <span>Confidential & Secure</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                <span>No Hidden Fees</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="h-4 w-4" />
+                <span>Expert Analysis</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
