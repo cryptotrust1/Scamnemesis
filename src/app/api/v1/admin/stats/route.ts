@@ -27,7 +27,6 @@ export async function GET(request: NextRequest) {
       reportsThisWeek,
       reportsLastWeek,
       pendingComments,
-      reportedComments,
       pendingDuplicates,
       fraudTypeStats,
       recentReports,
@@ -59,10 +58,8 @@ export async function GET(request: NextRequest) {
           createdAt: { gte: twoWeeksAgo, lt: weekAgo },
         },
       }),
-      // Pending comments
-      prisma.comment.count({ where: { status: 'PENDING' } }),
-      // Reported comments
-      prisma.comment.count({ where: { isReported: true } }),
+      // Pending comments (using correct enum value)
+      prisma.comment.count({ where: { status: 'PENDING_MODERATION' } }),
       // Pending duplicate clusters
       prisma.duplicateCluster.count({ where: { status: 'PENDING' } }),
       // Fraud type distribution
@@ -72,20 +69,18 @@ export async function GET(request: NextRequest) {
         orderBy: { _count: { id: 'desc' } },
         take: 5,
       }),
-      // Recent reports
+      // Recent reports (using correct field names)
       prisma.report.findMany({
         take: 5,
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           publicId: true,
-          title: true,
+          summary: true,
           status: true,
           fraudType: true,
           createdAt: true,
-          reporter: {
-            select: { email: true },
-          },
+          reporterEmail: true,
         },
       }),
     ]);
@@ -109,12 +104,12 @@ export async function GET(request: NextRequest) {
     const formattedRecentReports = recentReports.map((report) => ({
       id: report.id,
       publicId: report.publicId,
-      title: report.title,
+      title: report.summary,
       status: report.status,
       fraudType: report.fraudType,
       createdAt: report.createdAt.toISOString(),
-      reporterEmail: report.reporter?.email
-        ? `${report.reporter.email.substring(0, 3)}***@${report.reporter.email.split('@')[1]}`
+      reporterEmail: report.reporterEmail
+        ? `${report.reporterEmail.substring(0, 3)}***@${report.reporterEmail.split('@')[1]}`
         : null,
     }));
 
@@ -128,7 +123,7 @@ export async function GET(request: NextRequest) {
       reportsThisWeek,
       reportsChange,
       pendingComments,
-      reportedComments,
+      reportedComments: 0, // No isReported field in schema
       pendingDuplicates,
       fraudTypeDistribution,
       recentReports: formattedRecentReports,
