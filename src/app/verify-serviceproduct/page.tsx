@@ -650,7 +650,7 @@ export default function VerifyServiceProductPage() {
       {/* 3-Step Process */}
       <section className="w-full py-16 md:py-24 bg-white">
         <div className="container px-4 md:px-6">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 mb-8 shadow-lg border border-[#0E74FF]/20">
                 <Target className="h-8 w-8 text-[#0E74FF]" />
@@ -660,88 +660,114 @@ export default function VerifyServiceProductPage() {
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
-              {/* Step 1 */}
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
-                  1
-                </div>
-                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                  Complete the Online Form for Corporate Verification
-                </h3>
-                <p className="text-[#64748b] mb-6 leading-relaxed">
-                  Start safely and efficiently: fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
-                </p>
-                <div className="text-left max-w-sm mx-auto">
-                  <p className="font-semibold text-[#1e293b] mb-3">After submitting the form:</p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#0E74FF] font-bold">A.</span>
-                      <span className="text-[#64748b] leading-relaxed">We create a secure and private communication channel.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#0E74FF] font-bold">B.</span>
-                      <span className="text-[#64748b] leading-relaxed">We explain the entire due diligence and risk analysis process in detail.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#0E74FF] font-bold">C.</span>
-                      <span className="text-[#64748b] leading-relaxed">We provide an exact quote based on the scope of the report and the complexity of the verification.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+            {/* Timeline Container */}
+            <div className="relative">
+              {/* Horizontal Line - visible on md+ */}
+              <div className="hidden md:block absolute top-8 left-[16.67%] right-[16.67%] h-0.5 bg-gradient-to-r from-[#0E74FF] via-[#0E74FF] to-[#0E74FF]" />
 
-              {/* Step 2 */}
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
-                  2
+              <div className="grid md:grid-cols-3 gap-12">
+                {/* Step 1 */}
+                <div className="relative">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl shadow-lg z-10 relative">
+                      1
+                    </div>
+                    <div className="mt-8 text-center">
+                      <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                        Complete the Online Form
+                      </h3>
+                      <p className="text-[#64748b] leading-relaxed mb-6">
+                        Fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
+                      </p>
+                      <div className="bg-[#f8fafc] rounded-2xl p-6 text-left">
+                        <p className="font-semibold text-[#1e293b] mb-4 text-sm">After submitting:</p>
+                        <ul className="space-y-3">
+                          <li className="flex items-start gap-3">
+                            <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">A</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">We create a secure and private communication channel.</span>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">B</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">We explain the entire due diligence process in detail.</span>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">C</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">We provide an exact quote based on scope and complexity.</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                  Make a Secure Payment
-                </h3>
-                <p className="text-[#64748b] mb-6 leading-relaxed">
-                  Finalize your order through our secure payment gateway. We accept:
-                </p>
-                <div className="space-y-3 max-w-xs mx-auto">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
-                    <span className="text-[#1e293b]">Major credit cards</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Wallet className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
-                    <span className="text-[#1e293b]">Bank transfers</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Bitcoin className="h-5 w-5 text-[#0E74FF] flex-shrink-0" />
-                    <span className="text-[#1e293b]">Cryptocurrencies</span>
-                  </div>
-                </div>
-                <p className="text-[#64748b] mt-6 leading-relaxed">
-                  A transparent, fixed price ensures there are no hidden fees or additional costs.
-                </p>
-              </div>
 
-              {/* Step 3 */}
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
-                  3
+                {/* Step 2 */}
+                <div className="relative">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl shadow-lg z-10 relative">
+                      2
+                    </div>
+                    <div className="mt-8 text-center">
+                      <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                        Make a Secure Payment
+                      </h3>
+                      <p className="text-[#64748b] leading-relaxed mb-6">
+                        Finalize your order through our secure payment gateway. We accept multiple payment methods:
+                      </p>
+                      <div className="bg-[#f8fafc] rounded-2xl p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
+                              <CreditCard className="h-5 w-5 text-[#0E74FF]" />
+                            </div>
+                            <span className="text-[#1e293b] font-medium">Major credit cards</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
+                              <Wallet className="h-5 w-5 text-[#0E74FF]" />
+                            </div>
+                            <span className="text-[#1e293b] font-medium">Bank transfers</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
+                              <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
+                            </div>
+                            <span className="text-[#1e293b] font-medium">Cryptocurrencies</span>
+                          </div>
+                        </div>
+                        <p className="text-[#64748b] text-sm mt-4 leading-relaxed">
+                          Transparent, fixed pricing with no hidden fees.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                  Receive Your Detailed Due Diligence Report
-                </h3>
-                <p className="text-[#64748b] mb-6 leading-relaxed">
-                  Our team of experienced analysts immediately initiates the investigation. You will receive a comprehensive PDF report via email within 30 days.
-                </p>
-                <div className="text-left max-w-sm mx-auto">
-                  <p className="font-semibold text-[#1e293b] mb-3">The report includes:</p>
-                  <ul className="space-y-2">
-                    {deliverables.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-[#64748b] leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                {/* Step 3 */}
+                <div className="relative">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] text-white flex items-center justify-center font-bold text-2xl shadow-lg z-10 relative">
+                      3
+                    </div>
+                    <div className="mt-8 text-center">
+                      <h3 className="text-xl font-bold text-[#1e293b] mb-4">
+                        Receive Your Report
+                      </h3>
+                      <p className="text-[#64748b] leading-relaxed mb-6">
+                        Our analysts initiate the investigation immediately. Receive your comprehensive PDF report via email within 30 days.
+                      </p>
+                      <div className="bg-[#f8fafc] rounded-2xl p-6 text-left">
+                        <p className="font-semibold text-[#1e293b] mb-4 text-sm text-center">Report includes:</p>
+                        <ul className="space-y-2">
+                          {deliverables.map((item, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                              <span className="text-[#64748b] text-sm leading-relaxed">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
