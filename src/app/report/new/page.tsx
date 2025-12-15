@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Script from 'next/script';
 import {
   ArrowLeft,
@@ -1217,7 +1218,7 @@ export default function NewReportPage() {
                   <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
                 </a>
 
-                <a
+                <Link
                   href="/help"
                   className="flex items-center justify-center gap-3 p-6 rounded-2xl bg-card border hover:border-primary/50 hover:shadow-lg transition-all duration-300 group"
                 >
@@ -1229,7 +1230,7 @@ export default function NewReportPage() {
                     <div className="text-sm text-muted-foreground">FAQs & Guides</div>
                   </div>
                   <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
-                </a>
+                </Link>
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
