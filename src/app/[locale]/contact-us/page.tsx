@@ -1,9 +1,73 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Mail, AlertTriangle, Shield, Clock, Headphones } from 'lucide-react';
 
+type Locale = 'en' | 'sk';
+
+const getTranslations = (locale: Locale) => {
+  const translations = {
+    en: {
+      badge: 'Get in Touch',
+      title: 'Contact',
+      titleHighlight: 'us',
+      description: "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
+      emailLabel: 'Email us at',
+      reportPrompt: 'Need to report fraud?',
+      reportButton: 'Report scam',
+      quickResponse: {
+        title: 'Quick Response',
+        description: 'We respond to all inquiries within 24-48 hours',
+      },
+      confidential: {
+        title: 'Confidential',
+        description: 'Your information is protected and kept strictly confidential',
+      },
+      expertSupport: {
+        title: 'Expert Support',
+        description: 'Our team of specialists is here to assist you',
+      },
+      cta: {
+        title: 'Ready to take action?',
+        description: "If you've been affected by fraud, don't wait. Submit a detailed report so our team can begin investigating your case.",
+        button: 'Report scam',
+      },
+    },
+    sk: {
+      badge: 'Kontaktujte nás',
+      title: 'Kontaktujte',
+      titleHighlight: 'nás',
+      description: 'Môžete nás kontaktovať e-mailom. Ak však chcete nahlásiť podvod, kliknite na tlačidlo nižšie a vyplňte formulár — bez neho vám nebudeme môcť účinne pomôcť.',
+      emailLabel: 'Napíšte nám na',
+      reportPrompt: 'Potrebujete nahlásiť podvod?',
+      reportButton: 'Nahlásiť podvod',
+      quickResponse: {
+        title: 'Rýchla odpoveď',
+        description: 'Na všetky otázky odpovedáme do 24-48 hodín',
+      },
+      confidential: {
+        title: 'Dôverné',
+        description: 'Vaše informácie sú chránené a prísne dôverné',
+      },
+      expertSupport: {
+        title: 'Odborná podpora',
+        description: 'Náš tím špecialistov je tu, aby vám pomohol',
+      },
+      cta: {
+        title: 'Ste pripravení konať?',
+        description: 'Ak ste sa stali obeťou podvodu, nečakajte. Odošlite podrobnú správu, aby náš tím mohol začať vyšetrovať váš prípad.',
+        button: 'Nahlásiť podvod',
+      },
+    },
+  };
+  return translations[locale] || translations.en;
+};
+
 export default function ContactUsPage() {
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'en';
+  const t = getTranslations(locale);
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -88,20 +152,20 @@ export default function ContactUsPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
                 <Headphones className="w-5 h-5 text-blue-400" />
-                <span className="text-sm font-medium text-slate-300">Get in Touch</span>
+                <span className="text-sm font-medium text-slate-300">{t.badge}</span>
               </div>
 
               {/* Main Heading */}
               <div className="space-y-8">
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-                  <span className="text-white">Contact </span>
+                  <span className="text-white">{t.title} </span>
                   <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    us
+                    {t.titleHighlight}
                   </span>
                 </h1>
 
                 <p className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-light">
-                  You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won&apos;t be able to help you effectively.
+                  {t.description}
                 </p>
               </div>
 
@@ -115,7 +179,7 @@ export default function ContactUsPage() {
                     <Mail className="w-8 h-8 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm text-slate-400 mb-1">Email us at</p>
+                    <p className="text-sm text-slate-400 mb-1">{t.emailLabel}</p>
                     <span className="text-2xl sm:text-3xl font-semibold text-white group-hover:text-blue-300 transition-colors">
                       info@scamnemesis.com
                     </span>
@@ -127,17 +191,17 @@ export default function ContactUsPage() {
               <div className="pt-12 space-y-6">
                 <div className="flex items-center justify-center gap-3 text-amber-400">
                   <AlertTriangle className="w-5 h-5" />
-                  <span className="text-sm font-medium">Need to report fraud?</span>
+                  <span className="text-sm font-medium">{t.reportPrompt}</span>
                 </div>
 
                 <Link
-                  href="/report/new"
+                  href={`/${locale}/report/new`}
                   className="group relative inline-flex items-center gap-3 px-12 py-6 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white text-xl font-semibold shadow-2xl shadow-blue-500/30 hover:shadow-blue-400/40 transition-all duration-300 hover:scale-105 overflow-hidden"
                 >
                   {/* Shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
-                  <span className="relative">Report scam</span>
+                  <span className="relative">{t.reportButton}</span>
                   <svg
                     className="relative w-6 h-6 group-hover:translate-x-1 transition-transform"
                     fill="none"
@@ -166,9 +230,9 @@ export default function ContactUsPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 mb-6">
                   <Clock className="w-8 h-8 text-emerald-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Quick Response</h3>
+                <h3 className="text-xl font-semibold text-white mb-3">{t.quickResponse.title}</h3>
                 <p className="text-slate-400 leading-relaxed">
-                  We respond to all inquiries within 24-48 hours
+                  {t.quickResponse.description}
                 </p>
               </div>
 
@@ -177,9 +241,9 @@ export default function ContactUsPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 mb-6">
                   <Shield className="w-8 h-8 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Confidential</h3>
+                <h3 className="text-xl font-semibold text-white mb-3">{t.confidential.title}</h3>
                 <p className="text-slate-400 leading-relaxed">
-                  Your information is protected and kept strictly confidential
+                  {t.confidential.description}
                 </p>
               </div>
 
@@ -188,9 +252,9 @@ export default function ContactUsPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 mb-6">
                   <Headphones className="w-8 h-8 text-purple-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Expert Support</h3>
+                <h3 className="text-xl font-semibold text-white mb-3">{t.expertSupport.title}</h3>
                 <p className="text-slate-400 leading-relaxed">
-                  Our team of specialists is here to assist you
+                  {t.expertSupport.description}
                 </p>
               </div>
             </div>
@@ -204,16 +268,16 @@ export default function ContactUsPage() {
           <div className="relative max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
             <div className="p-12 sm:p-16 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-sm">
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-                Ready to take action?
+                {t.cta.title}
               </h2>
               <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
-                If you&apos;ve been affected by fraud, don&apos;t wait. Submit a detailed report so our team can begin investigating your case.
+                {t.cta.description}
               </p>
               <Link
-                href="/report/new"
+                href={`/${locale}/report/new`}
                 className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-white text-slate-900 text-lg font-semibold hover:bg-slate-100 transition-all duration-300 hover:scale-105 shadow-xl"
               >
-                Report scam
+                {t.cta.button}
                 <svg
                   className="w-5 h-5"
                   fill="none"

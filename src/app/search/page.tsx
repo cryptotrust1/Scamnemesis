@@ -360,82 +360,43 @@ const scamCategories = [
   },
 ];
 
-// Mock data
-const mockReports: Report[] = [
-  {
-    id: '1',
-    title: 'Investičný podvod s kryptomenami - ponuka vysokých výnosov',
-    description: 'Bol som kontaktovaný cez Facebook s ponukou investície do Bitcoinu. Sľúbili 300% výnos za 3 mesiace. Po vložení 15,000 EUR prestali odpovedať.',
-    fraudType: 'INVESTMENT_FRAUD',
-    country: 'Slovensko',
-    city: 'Bratislava',
-    amount: 15000,
-    currency: 'EUR',
-    status: 'APPROVED',
-    createdAt: '2025-12-09',
-    perpetratorName: 'Mic***l Nov**',
-    perpetratorPhone: '+421 9** *** 456',
-    perpetratorEmail: 'm*****@email.com',
-    similarReportsCount: 12,
-  },
-  {
-    id: '2',
-    title: 'Romance scam - zoznamka a požiadavka o peniaze',
-    description: 'Stretol som ženu na Tinderi, po mesiaci písania požiadala o 8,500 EUR na operáciu matky. Po zaslaní peňazí zmazala účet.',
-    fraudType: 'ROMANCE_SCAM',
-    country: 'Česká republika',
-    city: 'Praha',
-    amount: 8500,
-    currency: 'EUR',
-    status: 'APPROVED',
-    createdAt: '2025-12-08',
-    perpetratorName: 'Kat***a Dvořáková',
-    perpetratorEmail: 'k*****@seznam.cz',
-    similarReportsCount: 5,
-  },
-  {
-    id: '3',
-    title: 'Phishing email - podvrhnutá správa od Tatra banky',
-    description: 'Dostal som email údajne od Tatra banky s výzvou na overenie účtu. Link viedol na falošnú stránku kde som zadal prihlasovacie údaje.',
-    fraudType: 'PHISHING',
-    country: 'Slovensko',
-    city: 'Košice',
-    amount: 0,
-    currency: 'EUR',
-    status: 'APPROVED',
-    createdAt: '2025-12-08',
-    perpetratorEmail: 'info@tatrabank-verify.com',
-    similarReportsCount: 23,
-  },
-  {
-    id: '4',
-    title: 'Podvod s prenájmom bytu - vopred zaplatená záloha',
-    description: 'Našiel som inzerát na prenájom bytu v centre Bratislavy za výhodnú cenu. Majiteľ požadoval zálohu 2,000 EUR. Po zaplatení prestal odpovedať a byt neexistoval.',
-    fraudType: 'RENTAL_FRAUD',
-    country: 'Slovensko',
-    city: 'Bratislava',
-    amount: 2000,
-    currency: 'EUR',
-    status: 'PENDING',
-    createdAt: '2025-12-07',
-    perpetratorName: 'Pet** Hor***',
-    perpetratorPhone: '+421 9** *** 789',
-  },
-  {
-    id: '5',
-    title: 'Falošná charita - pomoc pre deti na Ukrajine',
-    description: 'Organizácia zbierala peniaze na pomoc deťom utečencom. Po vyzbieraní 45,000 EUR zmizli. Charita nikdy nebola registrovaná.',
-    fraudType: 'FAKE_CHARITY',
-    country: 'Slovensko',
-    city: 'Žilina',
-    amount: 45000,
-    currency: 'EUR',
-    status: 'APPROVED',
-    createdAt: '2025-12-06',
-    perpetratorName: 'Nadácia P***a deť**',
-    similarReportsCount: 8,
-  },
-];
+// API Response Interface
+interface SearchApiResponse {
+  results: Array<{
+    id: string;
+    public_id?: string;
+    summary?: string;
+    description?: string;
+    fraud_type?: string;
+    status?: string;
+    created_at: string;
+    financial_loss?: {
+      amount?: number;
+      currency?: string;
+    };
+    location?: {
+      country?: string;
+      city?: string;
+    };
+    perpetrator?: {
+      name?: string;
+      phone?: string;
+      email?: string;
+    };
+    similar_count?: number;
+  }>;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+  };
+  facets: {
+    fraud_types: Array<{ value: string; count: number }>;
+    countries: Array<{ value: string; count: number }>;
+    statuses: Array<{ value: string; count: number }>;
+  };
+}
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -455,50 +416,117 @@ export default function SearchPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState('date-desc');
-  const [totalResults] = useState(243);
+  const [totalResults, setTotalResults] = useState(0);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [showFieldMap, setShowFieldMap] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentPage, sortBy]);
 
   const handleSearch = async () => {
+    // Require at least 2 characters for search
+    if (filters.query && filters.query.length < 2) {
+      setSearchError('Enter at least 2 characters to search');
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
-      let filtered = [...mockReports];
+    setSearchError(null);
+
+    try {
+      // Build query parameters
+      const params = new URLSearchParams();
+
       if (filters.query) {
-        filtered = filtered.filter(
-          (r) =>
-            r.title.toLowerCase().includes(filters.query.toLowerCase()) ||
-            r.description.toLowerCase().includes(filters.query.toLowerCase()) ||
-            r.perpetratorName?.toLowerCase().includes(filters.query.toLowerCase())
-        );
+        params.set('q', filters.query);
       }
-      if (filters.fraudType !== 'all') {
-        filtered = filtered.filter((r) => r.fraudType === filters.fraudType);
+
+      // Set search mode
+      params.set('mode', 'auto');
+
+      // Pagination
+      params.set('page', currentPage.toString());
+      params.set('limit', '10');
+
+      // Filters
+      if (filters.fraudType && filters.fraudType !== 'all') {
+        params.set('fraud_type', filters.fraudType);
       }
-      if (filters.country !== 'all') {
-        filtered = filtered.filter((r) => r.country === filters.country);
+      if (filters.country && filters.country !== 'all') {
+        params.set('country', filters.country);
       }
-      if (filters.status !== 'all') {
-        filtered = filtered.filter((r) => r.status === filters.status);
+      if (filters.dateFrom) {
+        params.set('date_from', filters.dateFrom);
       }
+      if (filters.dateTo) {
+        params.set('date_to', filters.dateTo);
+      }
+
+      // Sorting
       if (sortBy === 'date-desc') {
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        params.set('sort', 'created_at');
+        params.set('order', 'desc');
       } else if (sortBy === 'date-asc') {
-        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        params.set('sort', 'created_at');
+        params.set('order', 'asc');
       } else if (sortBy === 'amount-desc') {
-        filtered.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+        params.set('sort', 'financial_loss');
+        params.set('order', 'desc');
       } else if (sortBy === 'amount-asc') {
-        filtered.sort((a, b) => (a.amount || 0) - (b.amount || 0));
+        params.set('sort', 'financial_loss');
+        params.set('order', 'asc');
+      } else if (sortBy === 'relevance') {
+        params.set('sort', 'relevance');
+        params.set('order', 'desc');
       }
-      setReports(filtered);
+
+      // Call the real API
+      const response = await fetch(`/api/v1/search?${params.toString()}`);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Search error (${response.status})`);
+      }
+
+      const data: SearchApiResponse = await response.json();
+
+      // Transform API response to Report format
+      const transformedReports: Report[] = data.results.map((result) => ({
+        id: result.public_id || result.id,
+        title: result.summary || 'No title',
+        description: result.description || '',
+        fraudType: result.fraud_type as Report['fraudType'],
+        country: result.location?.country || '',
+        city: result.location?.city || '',
+        amount: result.financial_loss?.amount,
+        currency: result.financial_loss?.currency || 'EUR',
+        status: result.status as Report['status'],
+        createdAt: result.created_at,
+        perpetratorName: result.perpetrator?.name,
+        perpetratorPhone: result.perpetrator?.phone,
+        perpetratorEmail: result.perpetrator?.email,
+        similarReportsCount: result.similar_count,
+      }));
+
+      setReports(transformedReports);
+      setTotalResults(data.pagination.total);
+      setTotalPages(data.pagination.total_pages);
+
+    } catch (error) {
+      console.error('[Search] Error:', error);
+      setSearchError(error instanceof Error ? error.message : 'An error occurred while searching');
+      // Fallback to empty results
+      setReports([]);
+      setTotalResults(0);
+      setTotalPages(1);
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   const handleReset = () => {
