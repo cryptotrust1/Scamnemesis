@@ -220,6 +220,9 @@ model Report {
   mergedIntoId String?  @map("merged_into_id")
   mergeCount   Int      @default(0) @map("merge_count")
 
+  // View tracking
+  viewCount    Int      @default(0) @map("view_count")
+
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -535,6 +538,21 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// ==================== VIEW TRACKING ====================
+
+model ReportView {
+  id        String   @id @default(cuid())
+  reportId  String   @map("report_id")
+  ipHash    String   @map("ip_hash")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([reportId, ipHash])
+  @@index([reportId])
+  @@index([createdAt])
+  @@map("report_views")
 }
 
 // ==================== SEARCH INDEX ====================

@@ -5,19 +5,32 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { UserRole } from '@prisma/client';
 
-// JWT Secret - MUST be set in production
-const jwtSecretString = process.env.JWT_SECRET;
-if (!jwtSecretString) {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET environment variable is required in production');
-  }
-  console.warn('[JWT] WARNING: JWT_SECRET not set. Using development fallback. Set JWT_SECRET for production!');
-}
-const JWT_SECRET = new TextEncoder().encode(
-  jwtSecretString || 'dev-jwt-secret-not-for-production'
-);
 const JWT_ISSUER = 'scamnemesis';
 const JWT_AUDIENCE = 'scamnemesis-api';
+
+// Lazy initialization of JWT secret to avoid build-time errors
+let _jwtSecret: Uint8Array | null = null;
+
+function getJwtSecret(): Uint8Array {
+  if (_jwtSecret) return _jwtSecret;
+
+  const jwtSecretString = process.env.JWT_SECRET;
+
+  // Only throw in production at runtime (not during build)
+  if (!jwtSecretString && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+
+  if (!jwtSecretString) {
+    console.warn('[JWT] WARNING: JWT_SECRET not set. Using development fallback. Set JWT_SECRET for production!');
+  }
+
+  _jwtSecret = new TextEncoder().encode(
+    jwtSecretString || 'dev-jwt-secret-not-for-production'
+  );
+
+  return _jwtSecret;
+}
 
 export interface TokenPayload extends JWTPayload {
   sub: string; // User ID
@@ -56,7 +69,7 @@ export async function generateAccessToken(
     .setIssuer(JWT_ISSUER)
     .setAudience(JWT_AUDIENCE)
     .setExpirationTime(expiresIn)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 
   return token;
 }
@@ -72,7 +85,7 @@ export async function generateRefreshToken(userId: string): Promise<string> {
     .setIssuedAt()
     .setIssuer(JWT_ISSUER)
     .setExpirationTime(expiresIn)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 
   return token;
 }
@@ -82,7 +95,7 @@ export async function generateRefreshToken(userId: string): Promise<string> {
  */
 export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET, {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
       issuer: JWT_ISSUER,
       audience: JWT_AUDIENCE,
     });

@@ -16,14 +16,24 @@ import { jwtVerify } from 'jose';
 
 export const dynamic = 'force-dynamic';
 
-// JWT Secret - uses same env var as jwt.ts
-const jwtSecretString = process.env.JWT_SECRET;
-if (!jwtSecretString && process.env.NODE_ENV === 'production') {
-  throw new Error('JWT_SECRET environment variable is required in production');
+// Lazy initialization of JWT secret to avoid build-time errors
+let _jwtSecret: Uint8Array | null = null;
+
+function getJwtSecret(): Uint8Array {
+  if (_jwtSecret) return _jwtSecret;
+
+  const jwtSecretString = process.env.JWT_SECRET;
+
+  if (!jwtSecretString && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+
+  _jwtSecret = new TextEncoder().encode(
+    jwtSecretString || 'dev-jwt-secret-not-for-production'
+  );
+
+  return _jwtSecret;
 }
-const JWT_SECRET = new TextEncoder().encode(
-  jwtSecretString || 'dev-jwt-secret-not-for-production'
-);
 
 const refreshSchema = z.object({
   refresh_token: z.string().min(1),
@@ -49,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Verify the refresh token
     let payload;
     try {
-      const result = await jwtVerify(refresh_token, JWT_SECRET, {
+      const result = await jwtVerify(refresh_token, getJwtSecret(), {
         issuer: 'scamnemesis',
       });
       payload = result.payload;

@@ -1,9 +1,72 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createHash } from 'crypto';
 import { prisma } from '@/lib/db';
 import { getAuthContext } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
+
+/**
+ * Track a report view - increments view count for unique visitors
+ * Uses IP hash for privacy (no raw IPs stored)
+ */
+async function trackReportView(reportId: string, request: NextRequest): Promise<void> {
+  try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || 'unknown';
+
+    // Hash the IP for privacy
+    const ipHash = createHash('sha256')
+      .update(ip + reportId + process.env.VIEW_TRACKING_SALT || 'scamnemesis-salt')
+      .digest('hex')
+      .substring(0, 32);
+
+    const userAgent = request.headers.get('user-agent')?.substring(0, 255);
+
+    // Try to create a new view record (unique per reportId + ipHash)
+    const result = await prisma.reportView.upsert({
+      where: {
+        reportId_ipHash: {
+          reportId,
+          ipHash,
+        },
+      },
+      create: {
+        reportId,
+        ipHash,
+        userAgent,
+      },
+      update: {
+        // Update timestamp on revisit (optional analytics)
+        createdAt: new Date(),
+      },
+    });
+
+    // Only increment view count for new unique visitors
+    // Check if this was a new record (created vs updated)
+    const existingView = await prisma.reportView.findFirst({
+      where: {
+        reportId,
+        ipHash,
+        createdAt: {
+          lt: new Date(Date.now() - 1000), // Created more than 1 second ago
+        },
+      },
+    });
+
+    if (!existingView) {
+      // New unique view - increment counter
+      await prisma.report.update({
+        where: { id: reportId },
+        data: { viewCount: { increment: 1 } },
+      });
+    }
+  } catch (error) {
+    // Don't fail the request if view tracking fails
+    console.error('[ViewTracking] Error:', error);
+  }
+}
 
 // Helper function to mask sensitive data based on user role
 function maskField(value: string | null, fieldType: 'email' | 'phone' | 'iban' | 'name' | 'wallet', userRole: string): string | null {
@@ -233,14 +296,13 @@ export async function GET(
       created_at: report.createdAt.toISOString(),
 
       // Stats
-      view_count: 0, // TODO: Implement view tracking
+      view_count: report.viewCount,
       comment_count: report.comments.length,
       related_reports_count: report.mergeCount,
     };
 
-    // Track view (async, don't wait)
-    // TODO: Implement view tracking with rate limiting
-    // trackReportView(report.id, request.headers.get('x-forwarded-for'));
+    // Track view (async, don't wait for it)
+    trackReportView(report.id, request).catch(() => {});
 
     return NextResponse.json(response);
   } catch (error) {
