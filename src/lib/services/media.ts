@@ -9,12 +9,21 @@ import { prisma } from '@/lib/db';
 import { MediaType, MediaStatus, Prisma } from '@prisma/client';
 import crypto from 'crypto';
 
-// Configuration
+// S3/MinIO Configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
-const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'minioadmin';
-const S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'minioadmin';
+const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY;
+const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
+
+// Warn if using development defaults
+if (!S3_ACCESS_KEY || !S3_SECRET_KEY) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[Media] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
+  } else {
+    console.warn('[Media] S3 credentials not set. Using MinIO development defaults.');
+  }
+}
 
 // ClamAV configuration (reserved for future virus scanning feature)
 const _CLAMAV_HOST = process.env.CLAMAV_HOST || 'localhost';
@@ -40,13 +49,13 @@ const MAGIC_BYTES: Record<string, number[]> = {
   'application/pdf': [0x25, 0x50, 0x44, 0x46], // %PDF
 };
 
-// Initialize S3 Client
+// Initialize S3 Client (with fallback for development)
 const s3Client = new S3Client({
   endpoint: S3_ENDPOINT,
   region: S3_REGION,
   credentials: {
-    accessKeyId: S3_ACCESS_KEY,
-    secretAccessKey: S3_SECRET_KEY,
+    accessKeyId: S3_ACCESS_KEY || 'minioadmin',
+    secretAccessKey: S3_SECRET_KEY || 'minioadmin',
   },
   forcePathStyle: true, // Required for MinIO
 });

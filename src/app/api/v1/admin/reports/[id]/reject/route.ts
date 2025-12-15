@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
+import { emailService } from '@/lib/services/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -89,15 +90,33 @@ export async function POST(
         },
       });
 
-      // TODO: If notify_reporter is true, send notification email to reporter
-      // This would integrate with an email service
-      if (notify_reporter && report.reporter?.email) {
-        // Queue email notification
-        console.log(`Would notify reporter ${report.reporter.email} about rejection: ${reason}`);
-      }
-
       return updated;
     });
+
+    // Send notification email to reporter (outside transaction)
+    if (notify_reporter && report.reporter?.email) {
+      try {
+        const reporterName = report.reporter.name || 'Používateľ';
+        const reportTitle = report.summary || `Report #${report.publicId}`;
+
+        const result = await emailService.sendReportStatusUpdate(
+          report.reporter.email,
+          reporterName,
+          reportTitle,
+          'rejected',
+          reason
+        );
+
+        if (!result.success) {
+          console.error(`[Reject] Failed to send email to ${report.reporter.email}:`, result.error);
+        } else {
+          console.log(`[Reject] Notification sent to ${report.reporter.email}`);
+        }
+      } catch (emailError) {
+        console.error('[Reject] Email notification error:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
 
     return NextResponse.json({
       id: updatedReport.id,

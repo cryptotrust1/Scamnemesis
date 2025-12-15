@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
+import { emailService } from '@/lib/services/email';
 
 export const dynamic = 'force-dynamic';
 
 const ApproveBodySchema = z.object({
   masking_overrides: z.record(z.any()).optional(),
   admin_notes: z.string().optional(),
+  notify_reporter: z.boolean().default(true),
 });
 
 export async function POST(
@@ -37,11 +39,14 @@ export async function POST(
       );
     }
 
-    const { masking_overrides, admin_notes } = validatedBody.data;
+    const { masking_overrides, admin_notes, notify_reporter } = validatedBody.data;
 
     // Find the report
     const report = await prisma.report.findUnique({
       where: { id },
+      include: {
+        reporter: true,
+      },
     });
 
     if (!report) {
@@ -94,6 +99,30 @@ export async function POST(
 
       return updated;
     });
+
+    // Send notification email to reporter (outside transaction)
+    if (notify_reporter && report.reporter?.email) {
+      try {
+        const reporterName = report.reporter.name || 'Používateľ';
+        const reportTitle = report.summary || `Report #${report.publicId}`;
+
+        const result = await emailService.sendReportStatusUpdate(
+          report.reporter.email,
+          reporterName,
+          reportTitle,
+          'approved'
+        );
+
+        if (!result.success) {
+          console.error(`[Approve] Failed to send email to ${report.reporter.email}:`, result.error);
+        } else {
+          console.log(`[Approve] Notification sent to ${report.reporter.email}`);
+        }
+      } catch (emailError) {
+        console.error('[Approve] Email notification error:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
 
     return NextResponse.json({
       id: updatedReport.id,

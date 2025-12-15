@@ -50,9 +50,18 @@ export default function ContactPage() {
     setSubmitStatus('idle');
 
     try {
-      // In production, this would send to an API endpoint
-      // For now, simulate a submission
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch('/api/v1/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Chyba pri odosielaní správy');
+      }
 
       // Reset form on success
       setFormData({
