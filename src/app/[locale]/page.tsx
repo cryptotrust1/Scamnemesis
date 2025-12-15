@@ -663,26 +663,26 @@ export default function HomePage() {
             <div className="text-center mb-20">
               <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8">
                 <Database className="w-4 h-4" />
-                Real-time Data
+                {t.database.badge}
               </div>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-8">
-                Our Database in Numbers
+                {t.database.title}
               </h2>
               <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                Real-time access to over 640 million verified fraud records from 130+ trusted global sources including FBI, OFAC, Interpol, and international law enforcement agencies
+                {t.database.description}
               </p>
               <p className="text-sm text-slate-500 dark:text-slate-500 mt-4">
-                (Some data sources are still being integrated) Updates every 5 minutes
+                {t.database.note}
               </p>
             </div>
 
             {/* Main Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
               {[
-                { value: '612M+', label: 'Malicious IP Addresses' },
-                { value: '12M+', label: 'Stolen Vehicles Database' },
-                { value: '9M+', label: 'Verified Phishing URLs' },
-                { value: '6.7M+', label: 'Dissolved Companies' },
+                { value: '612M+', label: t.database.maliciousIPs },
+                { value: '12M+', label: t.database.stolenVehicles },
+                { value: '9M+', label: t.database.phishingURLs },
+                { value: '6.7M+', label: t.database.dissolvedCompanies },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -700,7 +700,7 @@ export default function HomePage() {
 
             {/* Category Header */}
             <h3 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 dark:text-white mb-12">
-              Comprehensive Fraud Database Categories
+              {t.database.categoriesTitle}
             </h3>
 
             {/* Category Tables Grid */}
@@ -749,15 +749,15 @@ export default function HomePage() {
 
               <div className="relative z-10">
                 <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-10 uppercase tracking-wider">
-                  Total Database Coverage
+                  {t.database.totalCoverage}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-center">
                   {[
-                    { value: '640M+', label: 'Total Records' },
-                    { value: '130+', label: 'Data Sources' },
-                    { value: '8', label: 'Categories' },
-                    { value: '24/7', label: 'Real-time Access' },
-                    { value: '5 min', label: 'Update Frequency' },
+                    { value: '640M+', label: t.database.totalRecords },
+                    { value: '130+', label: t.database.dataSources },
+                    { value: '8', label: t.database.categories },
+                    { value: '24/7', label: t.database.realtimeAccess },
+                    { value: '5 min', label: t.database.updateFreq },
                   ].map((stat) => (
                     <div key={stat.label}>
                       <div className="text-3xl sm:text-4xl lg:text-5xl font-light text-white mb-2 tracking-tight">
@@ -775,7 +775,7 @@ export default function HomePage() {
             {/* Sources Footer */}
             <div className="mt-12 text-center">
               <p className="text-sm text-slate-500 dark:text-slate-500 max-w-5xl mx-auto leading-relaxed">
-                Verified data sources include FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre, and 120+ additional verified global databases from law enforcement and consumer protection agencies worldwide.
+                {t.database.sourcesFooter}
               </p>
             </div>
           </div>
@@ -840,10 +840,10 @@ export default function HomePage() {
             {/* Section Header */}
             <div className="mb-16">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6">
-                List of Features and Services We&apos;re Building
+                {t.roadmap.title}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl">
-                For each item we list its status, completion percentage, and a brief note on what it&apos;s for.
+                {t.roadmap.description}
               </p>
             </div>
 
@@ -852,10 +852,10 @@ export default function HomePage() {
               <table className="w-full min-w-[800px]">
                 <thead>
                   <tr className="bg-gradient-to-r from-blue-600 to-cyan-600">
-                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">Feature</th>
-                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-5 text-center text-sm font-semibold text-white uppercase tracking-wider">Complete</th>
-                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">What it&apos;s for</th>
+                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">{t.roadmap.feature}</th>
+                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">{t.roadmap.status}</th>
+                    <th className="px-6 py-5 text-center text-sm font-semibold text-white uppercase tracking-wider">{t.roadmap.complete}</th>
+                    <th className="px-6 py-5 text-left text-sm font-semibold text-white uppercase tracking-wider">{t.roadmap.whatFor}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -880,10 +880,10 @@ export default function HomePage() {
                           }`}
                         >
                           {feature.status === 'functional'
-                            ? 'Functional'
+                            ? t.roadmap.functional
                             : feature.status === 'development'
-                            ? 'In development'
-                            : 'Planned'}
+                            ? t.roadmap.inDevelopment
+                            : t.roadmap.planned}
                         </span>
                       </td>
                       <td className="px-6 py-5 text-center">
@@ -912,15 +912,15 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap gap-6 justify-center">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span className="text-sm text-slate-600 dark:text-slate-400">Functional</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400">{t.roadmap.functional}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-amber-500" />
-                <span className="text-sm text-slate-600 dark:text-slate-400">In development</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400">{t.roadmap.inDevelopment}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-slate-400" />
-                <span className="text-sm text-slate-600 dark:text-slate-400">Planned</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400">{t.roadmap.planned}</span>
               </div>
             </div>
           </div>
@@ -932,7 +932,7 @@ export default function HomePage() {
             {/* Section Header */}
             <div className="text-center mb-20">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6">
-                Other Services
+                {t.services.title}
               </h2>
             </div>
 
@@ -942,14 +942,14 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                 <div className="bg-gradient-to-r from-rose-600 to-red-600 p-10 sm:p-12">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                    Fraud Recovery Services
+                    {t.services.recovery.title}
                   </h3>
                   <p className="text-lg text-rose-100 leading-relaxed max-w-3xl">
-                    Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.
+                    {t.services.recovery.description}
                   </p>
                 </div>
                 <div className="p-10 sm:p-12">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">What the service includes</h4>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                     {recoveryFeatures.map((feature) => {
                       const Icon = feature.icon;
@@ -968,7 +968,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="mb-10 p-8 rounded-2xl bg-slate-900 dark:bg-slate-800">
-                    <h4 className="text-lg font-bold text-white mb-4">When this service is suitable</h4>
+                    <h4 className="text-lg font-bold text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3 text-slate-300">
                         <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -988,16 +988,16 @@ export default function HomePage() {
                   <div className="p-8 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-center">
                     <div className="mb-6">
                       <span className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-rose-400 to-red-400 bg-clip-text text-transparent">€600</span>
-                      <p className="text-slate-400 mt-2">5 hours of investigator work</p>
+                      <p className="text-slate-400 mt-2">{t.services.recovery.priceNote}</p>
                     </div>
                     <p className="text-sm text-slate-400 mb-8 max-w-2xl mx-auto">
-                      We offer this service in response to companies that charge €3,500–€10,000 and often only report the case to a financial institution. We consider such practices fraudulent and unethical.
+                      {t.services.recovery.priceDesc}
                     </p>
                     <Link
-                      href="/money-recovery"
+                      href={`/${locale}/money-recovery`}
                       className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-lg font-semibold shadow-xl shadow-rose-500/25 transition-all duration-300 hover:scale-105"
                     >
-                      Start Money Recovery
+                      {t.services.recovery.cta}
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
@@ -1008,14 +1008,14 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                 <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-10 sm:p-12">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                    DUE DILIGENCE SERVICES
+                    {t.services.dueDiligence.title}
                   </h3>
                   <p className="text-lg text-blue-100 leading-relaxed max-w-3xl">
-                    Independent screening of partners, clients, and investments. We combine OSINT, AML/KYB procedures, and a legal perspective so you can make decisions based on verifiable facts—fast, discreet, and defensible.
+                    {t.services.dueDiligence.description}
                   </p>
                 </div>
                 <div className="p-10 sm:p-12">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">What&apos;s included</h4>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                     {dueDiligenceFeatures.map((feature) => {
                       const Icon = feature.icon;
@@ -1034,7 +1034,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="mb-10 p-8 rounded-2xl bg-blue-50 dark:bg-blue-950/30">
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">When this service is appropriate</h4>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
@@ -1057,10 +1057,10 @@ export default function HomePage() {
 
                   <div className="text-center">
                     <Link
-                      href="/verify-serviceproduct"
+                      href={`/${locale}/verify-serviceproduct`}
                       className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-lg font-semibold shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105"
                     >
-                      Start Due Diligence
+                      {t.services.dueDiligence.cta}
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
@@ -1071,14 +1071,14 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                 <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-10 sm:p-12">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                    CORPORATE INVESTIGATIONS
+                    {t.services.investigation.title}
                   </h3>
                   <p className="text-lg text-purple-100 leading-relaxed max-w-3xl">
-                    Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform (evidence management, chain of custody)—discreet, lawful, and defensible.
+                    {t.services.investigation.description}
                   </p>
                 </div>
                 <div className="p-10 sm:p-12">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">What&apos;s included</h4>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                     {investigationFeatures.map((feature) => {
                       const Icon = feature.icon;
@@ -1097,7 +1097,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="mb-10 p-8 rounded-2xl bg-purple-50 dark:bg-purple-950/30">
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">When this service is appropriate</h4>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
@@ -1109,7 +1109,7 @@ export default function HomePage() {
                       </li>
                       <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Invoice fraud, "ghost" vendors, collusion.</span>
+                        <span>Invoice fraud, &quot;ghost&quot; vendors, collusion.</span>
                       </li>
                       <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
@@ -1124,10 +1124,10 @@ export default function HomePage() {
 
                   <div className="text-center">
                     <Link
-                      href="/scammer-removal"
+                      href={`/${locale}/scammer-removal`}
                       className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-lg font-semibold shadow-xl shadow-purple-500/25 transition-all duration-300 hover:scale-105"
                     >
-                      Start Investigation
+                      {t.services.investigation.cta}
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
@@ -1138,14 +1138,14 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                 <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-10 sm:p-12">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                    SECURITY TRAINING & CONSULTING
+                    {t.services.training.title}
                   </h3>
                   <p className="text-lg text-emerald-100 leading-relaxed max-w-3xl">
-                    Security training and consulting for teams and management. We use real scenarios from ScamNemesis (OSINT, fraud, incident response) to make procedures practical, measurable, and defensible.
+                    {t.services.training.description}
                   </p>
                 </div>
                 <div className="p-10 sm:p-12">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">What&apos;s included</h4>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                     {trainingFeatures.map((feature) => {
                       const Icon = feature.icon;
@@ -1164,7 +1164,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="mb-10 p-8 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30">
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">When this service is appropriate</h4>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
@@ -1191,10 +1191,10 @@ export default function HomePage() {
 
                   <div className="text-center">
                     <Link
-                      href="/training-courses"
+                      href={`/${locale}/training-courses`}
                       className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg font-semibold shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:scale-105"
                     >
-                      Explore Training & Courses
+                      {t.services.training.cta}
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
@@ -1218,21 +1218,21 @@ export default function HomePage() {
           <div className="relative max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-10">
               <Calendar className="w-5 h-5 text-blue-400" />
-              <span className="text-sm font-medium text-slate-300">Free Consultation</span>
+              <span className="text-sm font-medium text-slate-300">{t.consultation.badge}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-              BOOK A FREE CONSULTATION NOW
+              {t.consultation.title}
             </h2>
             <p className="text-lg sm:text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-              We would love to learn more about your company&apos;s individual needs. That&apos;s why we offer a 15-minute consultation call.
+              {t.consultation.description}
             </p>
 
             <Link
-              href="/contact-us"
+              href={`/${locale}/contact-us`}
               className="group inline-flex items-center gap-3 px-12 py-6 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-400 text-white text-xl font-semibold shadow-2xl shadow-blue-500/30 hover:shadow-blue-400/40 transition-all duration-300 hover:scale-105"
             >
-              Book a free consultation
+              {t.consultation.cta}
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -1244,19 +1244,19 @@ export default function HomePage() {
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-8">
                 <GraduationCap className="w-4 h-4" />
-                Learn & Protect
+                {t.freeTraining.badge}
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6">
-                Free Security Training & Courses — Learn to Spot Scams
+                {t.freeTraining.title}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.
+                {t.freeTraining.description}
               </p>
             </div>
 
             <div className="mb-12">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-                Most Popular Topics:
+                {t.freeTraining.topicsTitle}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {trainingTopics.map((topic) => (
@@ -1272,10 +1272,10 @@ export default function HomePage() {
 
             <div className="text-center">
               <Link
-                href="/training-courses"
+                href={`/${locale}/training-courses`}
                 className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg font-semibold shadow-xl shadow-emerald-500/25 transition-all duration-300 hover:scale-105"
               >
-                Start Free Training
+                {t.freeTraining.cta}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -1286,7 +1286,7 @@ export default function HomePage() {
         <section className="py-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
           <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
             <p className="text-center text-slate-600 dark:text-slate-400 mb-10">
-              Years of experience and certifications from leading institutions — professionals on your side.
+              {t.certifications.description}
             </p>
             <div className="flex flex-wrap justify-center items-center gap-10 sm:gap-14">
               {[1, 2, 3, 4, 5, 6].map((num) => (
