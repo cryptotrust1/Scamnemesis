@@ -138,46 +138,67 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
   const SelectedIcon = selectedFraudType?.icon;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 py-4">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-          <AlertTriangle className="h-8 w-8 text-primary" />
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
+          <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
-        <h2 className="text-2xl font-bold mb-2">Vyberte typ podvodu</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
+        <h2 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+          Vyberte typ podvodu
+        </h2>
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
           Vyberte kategoriu, ktora najlepsie opisuje incident, ktory chcete nahlasit
         </p>
       </div>
 
-      {/* Dropdown Select */}
-      <div className="max-w-md mx-auto space-y-4">
-        <label htmlFor="fraud-type" className="block text-sm font-medium mb-2">
-          Typ podvodu <span className="text-destructive">*</span>
+      {/* Dropdown Select - Centered and Large */}
+      <div className="max-w-xl mx-auto">
+        <label
+          htmlFor="fraud-type"
+          className="block text-base font-semibold mb-3 text-gray-900 dark:text-white"
+        >
+          Typ podvodu <span className="text-red-500">*</span>
         </label>
 
         <Select value={selectedType || ''} onValueChange={onSelect}>
           <SelectTrigger
             id="fraud-type"
             className={cn(
-              "w-full h-12 text-base",
-              selectedType && "border-primary"
+              "w-full h-14 text-lg px-4 bg-white dark:bg-gray-800 border-2 rounded-xl",
+              "text-gray-900 dark:text-white",
+              "hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              selectedType
+                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                : "border-gray-300 dark:border-gray-600"
             )}
           >
-            <SelectValue placeholder="-- Vyberte typ podvodu --" />
+            <SelectValue placeholder="-- Kliknite a vyberte typ podvodu --" />
           </SelectTrigger>
-          <SelectContent className="max-h-[300px]">
+          <SelectContent className="max-h-[400px] bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
             {fraudTypes.map((type) => {
               const Icon = type.icon;
               return (
                 <SelectItem
                   key={type.value}
                   value={type.value}
-                  className="py-3 cursor-pointer"
+                  className="py-4 px-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-blue-50 dark:focus:bg-blue-900/30"
                 >
-                  <div className="flex items-center gap-3">
-                    <Icon className={cn('h-5 w-5 flex-shrink-0', type.color)} />
-                    <span className="font-medium">{type.label}</span>
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "w-10 h-10 rounded-lg flex items-center justify-center",
+                      "bg-gray-100 dark:bg-gray-700"
+                    )}>
+                      <Icon className={cn('h-5 w-5', type.color)} />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-900 dark:text-white block">
+                        {type.label}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {type.description}
+                      </span>
+                    </div>
                   </div>
                 </SelectItem>
               );
@@ -187,21 +208,21 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
 
         {/* Selected Type Details */}
         {selectedFraudType && (
-          <div className="mt-6 p-4 rounded-lg border-2 border-primary/30 bg-primary/5">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 p-2 rounded-lg bg-primary/10">
+          <div className="mt-6 p-6 rounded-xl border-2 border-green-500 bg-green-50 dark:bg-green-900/20">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm">
                 {SelectedIcon && (
-                  <SelectedIcon className={cn('h-6 w-6', selectedFraudType.color)} />
+                  <SelectedIcon className={cn('h-8 w-8', selectedFraudType.color)} />
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="font-semibold text-foreground">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  <span className="font-bold text-lg text-gray-900 dark:text-white">
                     {selectedFraudType.label}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-gray-600 dark:text-gray-300">
                   {selectedFraudType.description}
                 </p>
               </div>
@@ -209,43 +230,12 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
           </div>
         )}
 
-        {/* Helper Text */}
+        {/* Helper Text when nothing selected */}
         {!selectedType && (
-          <p className="text-sm text-muted-foreground text-center mt-4">
-            Po vybere typu podvodu budete moct pokracovat na dalsi krok
+          <p className="text-base text-gray-500 dark:text-gray-400 text-center mt-6">
+            Po vybere typu podvodu kliknite na tlacidlo <strong>&quot;Dalej&quot;</strong> pre pokracovanie
           </p>
         )}
-      </div>
-
-      {/* Quick Selection Cards - Optional Visual Aid */}
-      <div className="mt-8 pt-6 border-t">
-        <p className="text-sm text-muted-foreground text-center mb-4">
-          Alebo vyberte priamo z kategorii:
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-          {fraudTypes.map((type) => {
-            const Icon = type.icon;
-            const isSelected = selectedType === type.value;
-            return (
-              <button
-                key={type.value}
-                type="button"
-                onClick={() => onSelect(type.value)}
-                className={cn(
-                  'flex items-center gap-2 p-3 rounded-lg border text-left transition-all',
-                  'hover:border-primary hover:bg-primary/5',
-                  'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-                  isSelected
-                    ? 'border-primary bg-primary/10 ring-2 ring-primary'
-                    : 'border-border bg-card'
-                )}
-              >
-                <Icon className={cn('h-4 w-4 flex-shrink-0', type.color)} />
-                <span className="text-sm font-medium truncate">{type.label}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
     </div>
   );

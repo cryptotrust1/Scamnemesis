@@ -975,23 +975,35 @@ export default function NewReportPage() {
                   variant="outline"
                   onClick={handlePrevious}
                   disabled={currentStep === 1}
+                  className="!border-gray-400 !text-gray-700 dark:!text-gray-200 dark:!border-gray-500 hover:!bg-gray-100 dark:hover:!bg-gray-700 px-4 py-2"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Späť
                 </Button>
 
-                <Button variant="ghost" onClick={handleSaveDraft}>
+                <Button
+                  variant="ghost"
+                  onClick={handleSaveDraft}
+                  className="!text-gray-700 dark:!text-gray-200 hover:!bg-gray-100 dark:hover:!bg-gray-700 px-4 py-2"
+                >
                   <Save className="h-4 w-4 mr-2" />
                   Uložiť koncept
                 </Button>
 
                 {currentStep < steps.length ? (
-                  <Button onClick={handleNext}>
+                  <Button
+                    onClick={handleNext}
+                    className="!bg-blue-600 hover:!bg-blue-700 !text-white font-semibold px-6 py-3 text-base"
+                  >
                     Ďalej
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 ) : (
-                  <Button onClick={handleSubmit} disabled={isSubmitting}>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="!bg-blue-600 hover:!bg-blue-700 !text-white font-semibold px-6 py-3 text-base disabled:!bg-blue-400"
+                  >
                     {isSubmitting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
