@@ -4,7 +4,6 @@ export const dynamic = 'force-dynamic';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
   ArrowLeft,
   CheckCircle,
@@ -16,14 +15,9 @@ import {
   User,
   Phone,
   Mail,
-  Globe,
-  CreditCard,
-  Building,
-  Car,
   FileText,
   MessageSquare,
   Clock,
-  MapPin,
   DollarSign,
   ExternalLink,
 } from 'lucide-react';
