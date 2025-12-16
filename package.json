@@ -116,7 +116,8 @@
   "license": "MIT",
   "pnpm": {
     "overrides": {
-      "test-exclude": "^7.0.1"
+      "test-exclude": "^7.0.1",
+      "glob": "^10.5.0"
     }
   }
 }
