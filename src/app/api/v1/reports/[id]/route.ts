@@ -168,6 +168,8 @@ export async function GET(
         digitalFootprint: true,
         financialInfo: true,
         cryptoInfo: true,
+        companyInfo: true,
+        vehicleInfo: true,
         evidence: {
           where: {
             // Only show evidence for approved reports
@@ -273,6 +275,28 @@ export async function GET(
         wallet_address: maskField(report.cryptoInfo.walletAddress, 'wallet', userRole),
         blockchain: report.cryptoInfo.blockchain?.toLowerCase(),
         exchange: report.cryptoInfo.exchangeWalletName,
+      } : null,
+
+      // Company info
+      company: report.companyInfo ? {
+        name: report.companyInfo.name,
+        vat_tax_id: report.companyInfo.vatTaxId,
+        address: {
+          street: report.companyInfo.addressStreet,
+          city: report.companyInfo.addressCity,
+          postal_code: report.companyInfo.addressPostal,
+          country: report.companyInfo.addressCountry,
+        },
+      } : null,
+
+      // Vehicle info
+      vehicle: report.vehicleInfo ? {
+        make: report.vehicleInfo.make,
+        model: report.vehicleInfo.model,
+        color: report.vehicleInfo.color,
+        license_plate: report.vehicleInfo.licensePlate,
+        vin: report.vehicleInfo.vin,
+        registered_owner: report.vehicleInfo.registeredOwner,
       } : null,
 
       // Evidence (images, documents)

@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z, type ZodIssue } from 'zod';
+import { SignJWT } from 'jose';
 import prisma from '@/lib/db';
 import {
   hashPassword,
@@ -17,6 +18,9 @@ import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
 
 export const dynamic = 'force-dynamic';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
+const JWT_SECRET = process.env.JWT_SECRET || 'scamnemesis-secret-key';
 
 // Rate limit: 5 registrations per hour per IP
 const REGISTER_RATE_LIMIT = 5;
@@ -138,8 +142,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Send welcome email (async, don't wait for it)
-    emailService.sendWelcome(user.email, user.name).catch((error) => {
+    // Generate email verification token (valid for 24 hours)
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const verificationToken = await new SignJWT({
+      sub: user.id,
+      email: user.email,
+      type: 'email_verification',
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('24h')
+      .sign(secret);
+
+    // Build verification URL
+    const verificationUrl = `${SITE_URL}/auth/verify-email?token=${verificationToken}`;
+
+    // Send welcome email with verification link (async, don't wait for it)
+    emailService.sendWelcome(user.email, user.name || 'User', verificationUrl).catch((error) => {
       console.error('Failed to send welcome email:', error);
       // Don't fail the registration if email fails
     });
@@ -156,7 +175,9 @@ export async function POST(request: NextRequest) {
           email: user.email,
           name: user.name,
           role: user.role,
+          email_verified: false, // Email verification required
         },
+        message: 'Registration successful. Please check your email to verify your account.',
       },
       { status: 201 }
     );

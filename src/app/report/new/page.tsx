@@ -687,6 +687,11 @@ export default function NewReportPage() {
         },
         perpetrator: {
           full_name: formData.name,
+          nickname: formData.nickname,
+          username: formData.username,
+          approx_age: formData.approxAge ? parseInt(formData.approxAge) : undefined,
+          nationality: formData.nationality,
+          physical_description: formData.physicalDescription,
           phone: formData.phone,
           email: formData.email,
           address: formData.address
@@ -699,6 +704,9 @@ export default function NewReportPage() {
           whatsapp: socialMediaParsed.whatsapp,
           instagram: socialMediaParsed.instagram,
           facebook: socialMediaParsed.facebook,
+          signal: formData.signal,
+          tiktok: formData.tiktok,
+          twitter: formData.twitter,
         },
         financial: formData.iban
           ? {

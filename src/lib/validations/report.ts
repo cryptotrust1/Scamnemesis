@@ -89,6 +89,29 @@ export const perpetratorSchema = z.object({
     .max(200, 'Meno môže mať maximálne 200 znakov')
     .optional(),
 
+  // Additional perpetrator details
+  nickname: z.string()
+    .max(100, 'Prezývka môže mať maximálne 100 znakov')
+    .optional(),
+
+  username: z.string()
+    .max(100, 'Užívateľské meno môže mať maximálne 100 znakov')
+    .optional(),
+
+  approxAge: z.string()
+    .optional()
+    .refine((val) => !val || (!isNaN(parseInt(val)) && parseInt(val) >= 0 && parseInt(val) <= 120), {
+      message: 'Vek musí byť číslo medzi 0 a 120',
+    }),
+
+  nationality: z.string()
+    .max(100, 'Národnosť môže mať maximálne 100 znakov')
+    .optional(),
+
+  physicalDescription: z.string()
+    .max(2000, 'Fyzický popis môže mať maximálne 2000 znakov')
+    .optional(),
+
   phone: z.string()
     .optional()
     .refine((val) => !val || /^[+\d\s()-]+$/.test(val), {
@@ -106,6 +129,16 @@ export const perpetratorSchema = z.object({
     .or(z.literal('')),
 
   socialMedia: z.string()
+    .optional(),
+
+  // Additional social media platforms
+  signal: z.string()
+    .optional(),
+
+  tiktok: z.string()
+    .optional(),
+
+  twitter: z.string()
     .optional(),
 
   iban: z.string()
