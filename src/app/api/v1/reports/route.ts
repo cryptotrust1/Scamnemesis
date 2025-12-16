@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { randomBytes } from 'crypto';
 import prisma from '@/lib/db';
 import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
@@ -211,10 +212,12 @@ export async function POST(request: NextRequest) {
       });
 
       if (!anonymousUser) {
-        // Create anonymous user
+        // Create anonymous user with a random password hash (not usable for login)
+        const randomPasswordHash = randomBytes(32).toString('hex');
         anonymousUser = await prisma.user.create({
           data: {
             email: reporterEmail,
+            passwordHash: randomPasswordHash,
             displayName: data.reporter.name || 'Anonymous Reporter',
             role: 'BASIC',
             emailVerified: false,
