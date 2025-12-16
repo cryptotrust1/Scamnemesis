@@ -515,6 +515,100 @@ export default function NewReportPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  /**
+   * Parse social media string into individual platform handles
+   * Supports formats:
+   * - "Facebook: john.smith, Instagram: @jane_smith, Telegram: @user123"
+   * - "facebook.com/john.smith"
+   * - "telegram: @user123"
+   */
+  const parseSocialMedia = (socialMediaString: string | undefined) => {
+    if (!socialMediaString) {
+      return {
+        facebook: undefined,
+        instagram: undefined,
+        telegram: undefined,
+        whatsapp: undefined,
+      };
+    }
+
+    const result = {
+      facebook: undefined as string | undefined,
+      instagram: undefined as string | undefined,
+      telegram: undefined as string | undefined,
+      whatsapp: undefined as string | undefined,
+    };
+
+    // Split by comma to handle multiple entries
+    const entries = socialMediaString.split(',').map((entry) => entry.trim());
+
+    for (const entry of entries) {
+      const lowerEntry = entry.toLowerCase();
+
+      // Check for Facebook
+      if (lowerEntry.includes('facebook') || lowerEntry.includes('fb.com')) {
+        // Extract URL if present
+        const urlMatch = entry.match(/(https?:\/\/)?(www\.)?(facebook\.com|fb\.com)\/[\w./?=&-]+/i);
+        if (urlMatch) {
+          result.facebook = urlMatch[0];
+        } else {
+          // Extract handle after "facebook:" or "fb:"
+          const handleMatch = entry.match(/(?:facebook|fb)\s*:\s*(.+)/i);
+          if (handleMatch) {
+            result.facebook = handleMatch[1].trim();
+          }
+        }
+      }
+
+      // Check for Instagram
+      if (lowerEntry.includes('instagram') || lowerEntry.includes('ig:')) {
+        // Extract URL if present
+        const urlMatch = entry.match(/(https?:\/\/)?(www\.)?instagram\.com\/[\w./?=&-]+/i);
+        if (urlMatch) {
+          result.instagram = urlMatch[0];
+        } else {
+          // Extract handle after "instagram:" or "ig:"
+          const handleMatch = entry.match(/(?:instagram|ig)\s*:\s*(.+)/i);
+          if (handleMatch) {
+            result.instagram = handleMatch[1].trim();
+          }
+        }
+      }
+
+      // Check for Telegram
+      if (lowerEntry.includes('telegram') || lowerEntry.includes('t.me')) {
+        // Extract URL if present
+        const urlMatch = entry.match(/(https?:\/\/)?(www\.)?t\.me\/[\w./?=&-]+/i);
+        if (urlMatch) {
+          result.telegram = urlMatch[0];
+        } else {
+          // Extract handle after "telegram:"
+          const handleMatch = entry.match(/telegram\s*:\s*(.+)/i);
+          if (handleMatch) {
+            result.telegram = handleMatch[1].trim();
+          }
+        }
+      }
+
+      // Check for WhatsApp
+      if (lowerEntry.includes('whatsapp') || lowerEntry.includes('wa.me')) {
+        // Extract URL if present
+        const urlMatch = entry.match(/(https?:\/\/)?(www\.)?wa\.me\/[\w./?=&-]+/i);
+        if (urlMatch) {
+          result.whatsapp = urlMatch[0];
+        } else {
+          // Extract handle/number after "whatsapp:"
+          const handleMatch = entry.match(/whatsapp\s*:\s*(.+)/i);
+          if (handleMatch) {
+            result.whatsapp = handleMatch[1].trim();
+          }
+        }
+      }
+    }
+
+    return result;
+  };
+
   const handleSubmit = async () => {
     if (!validateStep()) return;
 
@@ -570,6 +664,9 @@ export default function NewReportPage() {
       }
 
       // Step 2: Prepare report data as JSON
+      // Parse social media string into individual platform handles
+      const socialMediaParsed = parseSocialMedia(formData.socialMedia);
+
       const reportData = {
         incident: {
           fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
@@ -598,10 +695,10 @@ export default function NewReportPage() {
         },
         digital_footprints: {
           website_url: formData.website,
-          telegram: formData.socialMedia?.includes('telegram') ? formData.socialMedia : undefined,
-          whatsapp: formData.socialMedia?.includes('whatsapp') ? formData.socialMedia : undefined,
-          instagram: formData.socialMedia?.includes('instagram') ? formData.socialMedia : undefined,
-          facebook: formData.socialMedia?.includes('facebook') ? formData.socialMedia : undefined,
+          telegram: socialMediaParsed.telegram,
+          whatsapp: socialMediaParsed.whatsapp,
+          instagram: socialMediaParsed.instagram,
+          facebook: socialMediaParsed.facebook,
         },
         financial: formData.iban
           ? {

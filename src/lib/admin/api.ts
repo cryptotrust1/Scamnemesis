@@ -376,13 +376,22 @@ export interface AuditLogResponse {
   total: number;
   page: number;
   pageSize: number;
+  totalPages: number;
 }
 
-export async function fetchAuditLog(page = 1, pageSize = 20): Promise<AuditLogResponse> {
-  const params = new URLSearchParams({
-    page: String(page),
-    page_size: String(pageSize),
-  });
+export interface AuditLogFilters {
+  action?: string;
+  entityType?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function fetchAuditLog(filters: AuditLogFilters = {}): Promise<AuditLogResponse> {
+  const params = new URLSearchParams();
+  if (filters.action && filters.action !== 'all') params.append('action', filters.action);
+  if (filters.entityType && filters.entityType !== 'all') params.append('entity_type', filters.entityType);
+  params.append('page', String(filters.page || 1));
+  params.append('page_size', String(filters.pageSize || 20));
 
   const response = await fetch(`${API_BASE}/admin/audit?${params}`, {
     headers: getAuthHeaders(),

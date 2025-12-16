@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, useCallback } from 'react';
 import {
   History,
   Search,
@@ -12,6 +14,8 @@ import {
   AlertTriangle,
   Download,
   RefreshCw,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,114 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-
-// Mock data for audit logs
-const mockAuditLogs = [
-  {
-    id: '1',
-    action: 'REPORT_APPROVED',
-    entityType: 'Report',
-    entityId: 'RPT-2024-001',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: { reportTitle: 'Investicny podvod s Bitcoinom', previousStatus: 'PENDING' },
-    createdAt: '2024-12-11T10:30:00Z',
-  },
-  {
-    id: '2',
-    action: 'USER_ROLE_CHANGED',
-    entityType: 'User',
-    entityId: 'usr-123',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: { targetUser: 'jan.novak@email.sk', oldRole: 'BASIC', newRole: 'STANDARD' },
-    createdAt: '2024-12-11T09:15:00Z',
-  },
-  {
-    id: '3',
-    action: 'REPORT_REJECTED',
-    entityType: 'Report',
-    entityId: 'RPT-2024-002',
-    userId: 'admin-2',
-    userName: 'Moderator',
-    userRole: 'MODERATOR',
-    ipAddress: '10.0.0.50',
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-    details: { reportTitle: 'Spam hlasenie', reason: 'Duplicitne hlasenie' },
-    createdAt: '2024-12-11T08:45:00Z',
-  },
-  {
-    id: '4',
-    action: 'COMMENT_DELETED',
-    entityType: 'Comment',
-    entityId: 'cmt-456',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: { reason: 'Nevhodny obsah', commentAuthor: 'anonymous' },
-    createdAt: '2024-12-10T16:20:00Z',
-  },
-  {
-    id: '5',
-    action: 'SETTINGS_UPDATED',
-    entityType: 'Settings',
-    entityId: 'general',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'SUPER_ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: { changes: ['emailNotifications: true -> false', 'maintenanceMode: false -> true'] },
-    createdAt: '2024-12-10T14:00:00Z',
-  },
-  {
-    id: '6',
-    action: 'USER_BANNED',
-    entityType: 'User',
-    entityId: 'usr-789',
-    userId: 'admin-2',
-    userName: 'Moderator',
-    userRole: 'MODERATOR',
-    ipAddress: '10.0.0.50',
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-    details: { targetUser: 'spammer@fake.com', reason: 'Spam a nevhodne spravanie' },
-    createdAt: '2024-12-10T11:30:00Z',
-  },
-  {
-    id: '7',
-    action: 'DUPLICATE_MERGED',
-    entityType: 'Duplicate',
-    entityId: 'dup-001',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: { primaryReport: 'RPT-2024-001', mergedReports: ['RPT-2024-003', 'RPT-2024-004'] },
-    createdAt: '2024-12-09T15:45:00Z',
-  },
-  {
-    id: '8',
-    action: 'LOGIN_SUCCESS',
-    entityType: 'Auth',
-    entityId: 'admin-1',
-    userId: 'admin-1',
-    userName: 'Admin User',
-    userRole: 'ADMIN',
-    ipAddress: '192.168.1.100',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    details: {},
-    createdAt: '2024-12-09T08:00:00Z',
-  },
-];
+import { fetchAuditLog, type AuditLogEntry } from '@/lib/admin/api';
 
 const actionTypes = [
   { value: 'all', label: 'Vsetky akcie' },
@@ -223,35 +120,92 @@ export default function AuditLogPage() {
   const [actionFilter, setActionFilter] = useState('all');
   const [entityFilter, setEntityFilter] = useState('all');
   const [dateRange, setDateRange] = useState('7d');
-  const [selectedLog, setSelectedLog] = useState<typeof mockAuditLogs[0] | null>(null);
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
 
-  // Filter logs
-  const filteredLogs = mockAuditLogs.filter((log) => {
-    if (actionFilter !== 'all' && log.action !== actionFilter) return false;
-    if (entityFilter !== 'all' && log.entityType !== entityFilter) return false;
+  // API state
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const itemsPerPage = 20;
+
+  // Load audit logs
+  const loadAuditLogs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchAuditLog({
+        action: actionFilter,
+        entityType: entityFilter,
+        page: currentPage,
+        pageSize: itemsPerPage,
+      });
+      setAuditLogs(data.entries);
+      setTotalPages(data.totalPages);
+      setTotalCount(data.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa načítať audit log');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [actionFilter, entityFilter, currentPage]);
+
+  useEffect(() => {
+    loadAuditLogs();
+  }, [loadAuditLogs]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [actionFilter, entityFilter]);
+
+  // Filter logs locally by search query
+  const filteredLogs = auditLogs.filter((log: AuditLogEntry) => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
-        log.userName.toLowerCase().includes(query) ||
+        log.userEmail?.toLowerCase().includes(query) ||
         log.entityId.toLowerCase().includes(query) ||
         log.action.toLowerCase().includes(query) ||
-        JSON.stringify(log.details).toLowerCase().includes(query)
+        JSON.stringify(log.changes).toLowerCase().includes(query)
       );
     }
     return true;
   });
 
-  // Stats
+  // Stats - calculated from all logs on current page
   const stats = {
-    total: mockAuditLogs.length,
-    today: mockAuditLogs.filter((l) => {
+    total: totalCount,
+    today: auditLogs.filter((l: AuditLogEntry) => {
       const date = new Date(l.createdAt);
       const today = new Date();
       return date.toDateString() === today.toDateString();
     }).length,
-    approvals: mockAuditLogs.filter((l) => l.action.includes('APPROVED')).length,
-    rejections: mockAuditLogs.filter((l) => l.action.includes('REJECTED') || l.action.includes('BANNED')).length,
+    approvals: auditLogs.filter((l: AuditLogEntry) => l.action.includes('APPROVED')).length,
+    rejections: auditLogs.filter((l: AuditLogEntry) => l.action.includes('REJECTED') || l.action.includes('BANNED')).length,
   };
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
+              <p className="text-destructive">{error}</p>
+              <Button onClick={loadAuditLogs} variant="outline">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Skusit znova
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -261,10 +215,16 @@ export default function AuditLogPage() {
           <h2 className="text-2xl font-bold">Audit Log</h2>
           <p className="text-muted-foreground">Historia vsetkych administrativnych akcii</p>
         </div>
-        <Button variant="outline">
-          <Download className="h-4 w-4 mr-2" />
-          Exportovat
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={loadAuditLogs}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Obnovit
+          </Button>
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Exportovat
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -382,82 +342,113 @@ export default function AuditLogPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">
-            Zaznamy ({filteredLogs.length})
+            Zaznamy ({totalCount})
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {filteredLogs.map((log) => {
-              const ActionIcon = getActionIcon(log.action);
-              const colorClass = getActionColor(log.action);
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : filteredLogs.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Ziadne zaznamy zodpovedajuce filtrom</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredLogs.map((log) => {
+                const ActionIcon = getActionIcon(log.action);
+                const colorClass = getActionColor(log.action);
 
-              return (
-                <div
-                  key={log.id}
-                  className="flex items-start gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => setSelectedLog(selectedLog?.id === log.id ? null : log)}
-                >
-                  <div className={cn('p-2 rounded-lg', colorClass)}>
-                    <ActionIcon className="h-5 w-5" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">{log.userName}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {log.userRole}
-                      </Badge>
-                      <span className="text-muted-foreground">{formatAction(log.action)}</span>
+                return (
+                  <div
+                    key={log.id}
+                    className="flex items-start gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => setSelectedLog(selectedLog?.id === log.id ? null : log)}
+                  >
+                    <div className={cn('p-2 rounded-lg', colorClass)}>
+                      <ActionIcon className="h-5 w-5" />
                     </div>
 
-                    <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                      <span>{log.entityType}:</span>
-                      <code className="bg-muted px-1 rounded text-xs">{log.entityId}</code>
-                    </div>
-
-                    {/* Expanded details */}
-                    {selectedLog?.id === log.id && (
-                      <div className="mt-3 p-3 bg-muted/50 rounded-lg space-y-2 text-sm">
-                        <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <span className="text-muted-foreground">IP adresa:</span>
-                            <span className="ml-2 font-mono">{log.ipAddress}</span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Cas:</span>
-                            <span className="ml-2">{formatDate(log.createdAt)}</span>
-                          </div>
-                        </div>
-                        {Object.keys(log.details).length > 0 && (
-                          <div>
-                            <span className="text-muted-foreground">Detaily:</span>
-                            <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
-                              {JSON.stringify(log.details, null, 2)}
-                            </pre>
-                          </div>
-                        )}
-                        <div>
-                          <span className="text-muted-foreground">User Agent:</span>
-                          <span className="ml-2 text-xs break-all">{log.userAgent}</span>
-                        </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{log.userEmail || 'System'}</span>
+                        <span className="text-muted-foreground">{formatAction(log.action)}</span>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="text-sm text-muted-foreground whitespace-nowrap">
-                    {formatRelativeTime(log.createdAt)}
-                  </div>
-                </div>
-              );
-            })}
+                      <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                        <span>{log.entityType}:</span>
+                        <code className="bg-muted px-1 rounded text-xs">{log.entityId}</code>
+                      </div>
 
-            {filteredLogs.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Ziadne zaznamy zodpovedajuce filtrom</p>
+                      {/* Expanded details */}
+                      {selectedLog?.id === log.id && (
+                        <div className="mt-3 p-3 bg-muted/50 rounded-lg space-y-2 text-sm">
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="text-muted-foreground">IP adresa:</span>
+                              <span className="ml-2 font-mono">{log.ipAddress || 'N/A'}</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Cas:</span>
+                              <span className="ml-2">{formatDate(log.createdAt)}</span>
+                            </div>
+                          </div>
+                          {log.changes && Object.keys(log.changes).length > 0 && (
+                            <div>
+                              <span className="text-muted-foreground">Zmeny:</span>
+                              <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
+                                {JSON.stringify(log.changes, null, 2)}
+                              </pre>
+                            </div>
+                          )}
+                          <div>
+                            <span className="text-muted-foreground">User ID:</span>
+                            <span className="ml-2 text-xs break-all font-mono">{log.userId}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-sm text-muted-foreground whitespace-nowrap">
+                      {formatRelativeTime(log.createdAt)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {!isLoading && totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6 pt-6 border-t">
+              <p className="text-sm text-muted-foreground">
+                Zobrazene {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, totalCount)} z {totalCount}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1 || isLoading}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">
+                  {currentPage} / {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages || isLoading}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
