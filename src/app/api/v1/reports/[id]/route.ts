@@ -6,6 +6,12 @@ import { getAuthContext } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
+// VIEW_TRACKING_SALT is required in production for secure IP hashing
+const VIEW_TRACKING_SALT = process.env.VIEW_TRACKING_SALT;
+if (!VIEW_TRACKING_SALT && process.env.NODE_ENV === 'production') {
+  throw new Error('VIEW_TRACKING_SALT environment variable is required in production.');
+}
+
 /**
  * Track a report view - increments view count for unique visitors
  * Uses IP hash for privacy (no raw IPs stored)
@@ -16,9 +22,11 @@ async function trackReportView(reportId: string, request: NextRequest): Promise<
       || request.headers.get('x-real-ip')
       || 'unknown';
 
-    // Hash the IP for privacy
+    // Hash the IP for privacy using the salt
+    // In development, use a fallback salt (but production requires VIEW_TRACKING_SALT)
+    const salt = VIEW_TRACKING_SALT || 'dev-view-tracking-salt';
     const ipHash = createHash('sha256')
-      .update(ip + reportId + process.env.VIEW_TRACKING_SALT || 'scamnemesis-salt')
+      .update(ip + reportId + salt)
       .digest('hex')
       .substring(0, 32);
 

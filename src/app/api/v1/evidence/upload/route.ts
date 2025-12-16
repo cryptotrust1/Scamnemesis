@@ -21,31 +21,28 @@ const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Check for S3 credentials
+// Check for S3 credentials - required in all environments
 const hasS3Credentials = !!(S3_ACCESS_KEY && S3_SECRET_KEY);
 
-if (!hasS3Credentials && process.env.NODE_ENV === 'production') {
-  console.error('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
+if (!hasS3Credentials) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('S3_ACCESS_KEY and S3_SECRET_KEY environment variables are required in production.');
+  } else {
+    console.warn('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY not set. File uploads will be disabled.');
+    console.warn('[Evidence] Set these environment variables to enable file uploads in development.');
+  }
 }
 
-// Initialize S3 Client - only use fallback in development
+// Initialize S3 Client only if credentials are provided
 const s3Client = hasS3Credentials ? new S3Client({
   endpoint: S3_ENDPOINT,
   region: S3_REGION,
   credentials: {
-    accessKeyId: S3_ACCESS_KEY!,
-    secretAccessKey: S3_SECRET_KEY!,
+    accessKeyId: S3_ACCESS_KEY,
+    secretAccessKey: S3_SECRET_KEY,
   },
   forcePathStyle: true, // Required for MinIO
-}) : (process.env.NODE_ENV !== 'production' ? new S3Client({
-  endpoint: S3_ENDPOINT,
-  region: S3_REGION,
-  credentials: {
-    accessKeyId: 'minioadmin',
-    secretAccessKey: 'minioadmin',
-  },
-  forcePathStyle: true,
-}) : null);
+}) : null;
 
 // Allowed file types for evidence with their magic bytes
 const ALLOWED_TYPES: Record<string, { magicBytes: number[][]; extensions: string[] }> = {

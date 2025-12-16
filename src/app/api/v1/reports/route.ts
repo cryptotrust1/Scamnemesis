@@ -14,6 +14,48 @@ import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Mask a name based on user role for privacy
+ * - ADMIN/SUPER_ADMIN: Full name visible
+ * - GOLD: First name + last initial (e.g., "John D.")
+ * - STANDARD: First initial + last initial (e.g., "J. D.")
+ * - BASIC/anonymous: Fully masked (e.g., "J***")
+ */
+function maskName(name: string | null, userRole: string): string | null {
+  if (!name) return null;
+
+  // Admin and Super Admin see everything unmasked
+  if (['ADMIN', 'SUPER_ADMIN'].includes(userRole)) {
+    return name;
+  }
+
+  const parts = name.trim().split(/\s+/);
+
+  // Gold tier sees partial masking
+  if (userRole === 'GOLD') {
+    if (parts.length === 1) {
+      return parts[0].charAt(0) + '***';
+    }
+    // First name + last initial
+    return parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
+  }
+
+  // Standard tier sees more masking
+  if (userRole === 'STANDARD') {
+    // First initial + last initial
+    if (parts.length === 1) {
+      return parts[0].charAt(0) + '.';
+    }
+    return parts[0].charAt(0) + '. ' + parts[parts.length - 1].charAt(0) + '.';
+  }
+
+  // Basic tier and anonymous see heavy masking
+  if (parts.length === 1) {
+    return parts[0].charAt(0) + '***';
+  }
+  return parts.map((p) => p.charAt(0) + '.').join(' ');
+}
+
 // Validation schemas
 const locationSchema = z.object({
   street: z.string().optional(),
@@ -392,6 +434,11 @@ export async function GET(request: NextRequest) {
     // Authentication
     const authResult = await requireAuth(request, ['reports:read']);
     if (authResult instanceof NextResponse) return authResult;
+    const { auth } = authResult;
+
+    // Determine user role for masking
+    const isAdmin = auth.scopes?.some((s: string) => s.startsWith('admin:'));
+    const userRole = isAdmin ? 'ADMIN' : (auth.user?.role || 'BASIC');
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
@@ -442,7 +489,7 @@ export async function GET(request: NextRequest) {
       skip: offset,
     });
 
-    // Format response (with masking based on role)
+    // Format response with masking based on user role
     const formattedReports = reports.map((report) => ({
       id: report.publicId,
       status: report.status.toLowerCase(),
@@ -451,7 +498,7 @@ export async function GET(request: NextRequest) {
       country: report.locationCountry,
       perpetrator: report.perpetrators[0]
         ? {
-            name: report.perpetrators[0].fullName, // TODO: Apply masking
+            name: maskName(report.perpetrators[0].fullName, userRole),
           }
         : null,
       created_at: report.createdAt.toISOString(),
