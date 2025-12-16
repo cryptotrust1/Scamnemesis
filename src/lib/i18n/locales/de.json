@@ -130,6 +130,43 @@
     "success": {
       "title": "Meldung erfolgreich gesendet!",
       "description": "Vielen Dank fur Ihren Beitrag zum Schutz anderer."
+    },
+    "evidence": {
+      "title": "Beweise & Anhange",
+      "subtitle": "Laden Sie Screenshots, Dokumente oder Videos hoch, die den Betrug beweisen",
+      "categories": {
+        "payment": "Zahlungsnachweise",
+        "fraudsterPhotos": "Fotos des Betrugers",
+        "screenshots": "Screenshots",
+        "damageDocumentation": "Schadensdokumentation",
+        "crimeScene": "Tatortfotos",
+        "other": "Andere Beweise"
+      },
+      "descriptions": {
+        "paymentDesc": "Kontoauszuge, Uberweisungsbelege, Zahlungsbestatigungen",
+        "fraudsterPhotosDesc": "Fotos oder Bilder des Betrugers",
+        "screenshotsDesc": "Screenshots von Gesprachen, Nachrichten, E-Mails",
+        "damageDocumentationDesc": "Dokumente zum Nachweis finanzieller oder anderer Schaden",
+        "crimeSceneDesc": "Fotos von Orten im Zusammenhang mit dem Betrug",
+        "otherDesc": "Alle anderen relevanten Beweise"
+      },
+      "dragDrop": "Dateien hierher ziehen",
+      "orClickToSelect": "oder klicken zum Auswahlen",
+      "selectFiles": "Dateien auswahlen",
+      "addLink": "Link hinzufugen",
+      "add": "Hinzufugen",
+      "urlPlaceholder": "https://...",
+      "descriptionPlaceholder": "Beschreibung (optional)",
+      "maxSize": "Max. 20MB pro Datei",
+      "fileDescription": "Dateibeschreibung (optional)",
+      "tipsTitle": "Tipps fur qualitativ hochwertige Beweise:",
+      "tips": [
+        "Screenshots von Gesprachen mit dem Betruger",
+        "Zahlungsbestatigungen und Uberweisungen",
+        "E-Mails und Nachrichten vom Betruger",
+        "Fotos von gefalschten Dokumenten",
+        "Website-Aufzeichnungen"
+      ]
     }
   },
   "reportDetail": {

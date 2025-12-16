@@ -130,6 +130,43 @@
     "success": {
       "title": "Hlaseni bylo uspesne odeslano!",
       "description": "Dekujeme za vas prispevek k ochrane ostatnich."
+    },
+    "evidence": {
+      "title": "Dukazy a prilohy",
+      "subtitle": "Nahrajte screenshoty, dokumenty nebo videa, ktere dokazuji podvod",
+      "categories": {
+        "payment": "Platebni dukazy",
+        "fraudsterPhotos": "Fotografie podvodnika",
+        "screenshots": "Screenshoty",
+        "damageDocumentation": "Dokumentace skod",
+        "crimeScene": "Fotografie z mista cinu",
+        "other": "Ostatni dukazy"
+      },
+      "descriptions": {
+        "paymentDesc": "Vypisy z uctu, potvrzeni o prevodu, platebni doklady",
+        "fraudsterPhotosDesc": "Fotografie nebo obrazky podvodnika",
+        "screenshotsDesc": "Screenshoty konverzaci, zprav, emailu",
+        "damageDocumentationDesc": "Dokumenty prokazujici financni nebo jinou skodu",
+        "crimeSceneDesc": "Fotografie z mist souvisejicich s podvodem",
+        "otherDesc": "Jakekoli jine relevantni dukazy"
+      },
+      "dragDrop": "Pretahnete soubory sem",
+      "orClickToSelect": "nebo kliknete pro vyber",
+      "selectFiles": "Vybrat soubory",
+      "addLink": "Pridat odkaz",
+      "add": "Pridat",
+      "urlPlaceholder": "https://...",
+      "descriptionPlaceholder": "Popis (volitelne)",
+      "maxSize": "Max. 20MB na soubor",
+      "fileDescription": "Popis souboru (volitelne)",
+      "tipsTitle": "Tipy pro kvalitni dukazy:",
+      "tips": [
+        "Screenshoty konverzaci s podvodnikem",
+        "Potvrzeni o platbach a prevody",
+        "Emaily a zpravy od podvodnika",
+        "Fotografie falesnych dokumentu",
+        "Zaznamy z webovych stranek"
+      ]
     }
   },
   "reportDetail": {

@@ -77,6 +77,8 @@ interface EvidenceFile {
   url?: string;
   description?: string;
   file?: File;
+  category: 'PAYMENT' | 'FRAUDSTER_PHOTOS' | 'SCREENSHOTS' | 'DAMAGE_DOCUMENTATION' | 'CRIME_SCENE' | 'OTHER';
+  externalUrl?: string;
 }
 
 // Step keys for translation lookup
