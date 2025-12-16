@@ -344,6 +344,77 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
           </div>
         </div>
 
+        {/* Vehicle Information (Optional) */}
+        <div className="border-t pt-6">
+          <h3 className="font-semibold mb-2">Informácie o vozidle (voliteľné)</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Ak páchateľ použil vozidlo, zadajte dostupné údaje
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="vehicleMake" className="text-sm font-medium">
+                Značka vozidla
+              </label>
+              <Input
+                id="vehicleMake"
+                placeholder="Napríklad: Škoda, BMW, Mercedes"
+                value={data.vehicleMake || ''}
+                onChange={(e) => onChange('vehicleMake', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="vehicleModel" className="text-sm font-medium">
+                Model vozidla
+              </label>
+              <Input
+                id="vehicleModel"
+                placeholder="Napríklad: Octavia, X5, E-Class"
+                value={data.vehicleModel || ''}
+                onChange={(e) => onChange('vehicleModel', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="vehicleColor" className="text-sm font-medium">
+                Farba vozidla
+              </label>
+              <Input
+                id="vehicleColor"
+                placeholder="Napríklad: Čierna, Biela, Sivá"
+                value={data.vehicleColor || ''}
+                onChange={(e) => onChange('vehicleColor', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="vehicleLicensePlate" className="text-sm font-medium">
+                EČV (evidenčné číslo vozidla)
+              </label>
+              <Input
+                id="vehicleLicensePlate"
+                placeholder="Napríklad: BA-123AB"
+                value={data.vehicleLicensePlate || ''}
+                onChange={(e) => onChange('vehicleLicensePlate', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="vehicleVin" className="text-sm font-medium">
+                VIN číslo (voliteľné)
+              </label>
+              <Input
+                id="vehicleVin"
+                placeholder="17-miestny identifikátor vozidla"
+                value={data.vehicleVin || ''}
+                onChange={(e) => onChange('vehicleVin', e.target.value)}
+                maxLength={17}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="bg-muted/50 rounded-lg p-4">
           <p className="text-sm text-muted-foreground">
             <strong>Tip:</strong> Čím viac informácií poskytnete, tým lepšie budeme môcť varovať ostatných.

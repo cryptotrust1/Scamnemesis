@@ -161,6 +161,27 @@ export const perpetratorSchema = z.object({
 
   address: z.string()
     .optional(),
+
+  // Vehicle info (optional - for cases involving vehicles)
+  vehicleMake: z.string()
+    .max(100, 'Značka môže mať maximálne 100 znakov')
+    .optional(),
+
+  vehicleModel: z.string()
+    .max(100, 'Model môže mať maximálne 100 znakov')
+    .optional(),
+
+  vehicleColor: z.string()
+    .max(50, 'Farba môže mať maximálne 50 znakov')
+    .optional(),
+
+  vehicleLicensePlate: z.string()
+    .max(20, 'EČV môže mať maximálne 20 znakov')
+    .optional(),
+
+  vehicleVin: z.string()
+    .max(17, 'VIN môže mať maximálne 17 znakov')
+    .optional(),
 });
 
 // Evidence Schema

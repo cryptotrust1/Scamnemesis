@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { jwtVerify } from 'jose';
 import { randomBytes, pbkdf2Sync } from 'crypto';
 import { prisma } from '@/lib/db';
-import { checkRateLimit, getRateLimitKey, RATE_LIMITS } from '@/lib/middleware/rate-limit';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,27 +36,23 @@ function hashPassword(password: string): string {
  */
 export async function POST(request: NextRequest) {
   // Rate limiting: 10 attempts per hour per IP
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
+  const ip = getClientIp(request);
 
-  const rateLimitKey = getRateLimitKey('reset-password', ip);
-  const rateLimit = await checkRateLimit(rateLimitKey, {
-    windowMs: RATE_LIMITS.STRICT.windowMs,
-    maxRequests: 10,
-  });
+  const rateLimitKey = `reset-password:${ip}`;
+  const rateLimit = await checkRateLimit(rateLimitKey, 10, 3600000); // 10 per hour
 
   if (!rateLimit.allowed) {
+    const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
     return NextResponse.json(
       {
         error: 'rate_limit_exceeded',
         message: 'Too many password reset attempts. Please try again later.',
-        retry_after: rateLimit.retryAfter,
+        retry_after: retryAfter,
       },
       {
         status: 429,
         headers: {
-          'Retry-After': String(rateLimit.retryAfter),
+          'Retry-After': String(retryAfter),
           'X-RateLimit-Limit': String(10),
           'X-RateLimit-Remaining': '0',
         },

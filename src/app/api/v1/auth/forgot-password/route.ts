@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { emailService } from '@/lib/services/email';
-import { checkRateLimit, getRateLimitKey, RATE_LIMITS } from '@/lib/middleware/rate-limit';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,28 +22,23 @@ const ForgotPasswordSchema = z.object({
  */
 export async function POST(request: NextRequest) {
   // Rate limiting: 5 requests per hour per IP
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
-
-  const rateLimitKey = getRateLimitKey('forgot-password', ip);
-  const rateLimit = await checkRateLimit(rateLimitKey, {
-    windowMs: RATE_LIMITS.STRICT.windowMs,
-    maxRequests: 5,
-  });
+  const ip = getClientIp(request);
+  const rateLimitKey = `forgot-password:${ip}`;
+  const rateLimit = await checkRateLimit(rateLimitKey, 5, 3600000); // 5 per hour
 
   if (!rateLimit.allowed) {
+    const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
     return NextResponse.json(
       {
         error: 'rate_limit_exceeded',
         message: 'Too many password reset requests. Please try again later.',
-        retry_after: rateLimit.retryAfter,
+        retry_after: retryAfter,
       },
       {
         status: 429,
         headers: {
-          'Retry-After': String(rateLimit.retryAfter),
-          'X-RateLimit-Limit': String(5),
+          'Retry-After': String(retryAfter),
+          'X-RateLimit-Limit': '5',
           'X-RateLimit-Remaining': '0',
         },
       }
