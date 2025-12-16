@@ -48,6 +48,9 @@ import { StepWizard } from '@/components/report/step-wizard';
 import { FraudTypeStep } from '@/components/report/steps/fraud-type-step';
 import { BasicInfoStep } from '@/components/report/steps/basic-info-step';
 import { PerpetratorStep } from '@/components/report/steps/perpetrator-step';
+import { DigitalFootprintsStep } from '@/components/report/steps/digital-footprints-step';
+import { FinancialDetailsStep } from '@/components/report/steps/financial-details-step';
+import { CompanyVehicleStep } from '@/components/report/steps/company-vehicle-step';
 import { EvidenceStep } from '@/components/report/steps/evidence-step';
 import { ContactStep } from '@/components/report/steps/contact-step';
 import { ReviewStep } from '@/components/report/steps/review-step';
@@ -57,8 +60,12 @@ import {
   fraudTypeSchema,
   basicInfoSchema,
   perpetratorSchema,
+  digitalFootprintsSchema,
   contactInfoSchema,
   type CompleteReportForm,
+  type DigitalFootprintsForm,
+  type FinancialDetailsForm,
+  type CompanyVehicleForm,
 } from '@/lib/validations/report';
 
 interface EvidenceFile {
@@ -75,9 +82,12 @@ const steps = [
   { id: 1, title: 'Typ podvodu', description: 'Výber kategórie' },
   { id: 2, title: 'Základné info', description: 'Popis incidentu' },
   { id: 3, title: 'Páchateľ', description: 'Údaje o páchateľovi' },
-  { id: 4, title: 'Dôkazy', description: 'Nahratie súborov' },
-  { id: 5, title: 'Kontakt', description: 'Vaše údaje' },
-  { id: 6, title: 'Kontrola', description: 'Kontrola a odoslanie' },
+  { id: 4, title: 'Digitálne stopy', description: 'Online profily' },
+  { id: 5, title: 'Finančné údaje', description: 'Bankové a krypto' },
+  { id: 6, title: 'Firma a vozidlo', description: 'Firemné údaje' },
+  { id: 7, title: 'Dôkazy', description: 'Nahratie súborov' },
+  { id: 8, title: 'Kontakt', description: 'Vaše údaje' },
+  { id: 9, title: 'Kontrola', description: 'Kontrola a odoslanie' },
 ];
 
 // JSON-LD Schema Data
@@ -127,23 +137,41 @@ const howToSchema = {
       '@type': 'HowToStep',
       position: 3,
       name: 'Identify the Perpetrator',
-      text: 'Provide any known information about the scammer such as name, contact details, or payment information.',
+      text: 'Provide any known information about the scammer such as name, contact details, or physical description.',
     },
     {
       '@type': 'HowToStep',
       position: 4,
+      name: 'Digital Footprints',
+      text: 'Add social media profiles, websites, and IP information related to the scam.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Financial Details',
+      text: 'Provide bank accounts, cryptocurrency wallets, or PayPal accounts used in the fraud.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 6,
+      name: 'Company and Vehicle',
+      text: 'Add any company or vehicle information if applicable to the scam.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 7,
       name: 'Upload Evidence',
       text: 'Attach screenshots, documents, or other evidence that supports your report.',
     },
     {
       '@type': 'HowToStep',
-      position: 5,
+      position: 8,
       name: 'Contact Information',
       text: 'Provide your contact details to receive updates about your report.',
     },
     {
       '@type': 'HowToStep',
-      position: 6,
+      position: 9,
       name: 'Review and Submit',
       text: 'Review all information and submit your report to help protect others.',
     },
@@ -438,10 +466,18 @@ export default function NewReportPage() {
         data = {
           perpetratorType: formData.perpetratorType,
           name: formData.name,
+          nickname: formData.nickname,
+          username: formData.username,
+          approxAge: formData.approxAge,
+          nationality: formData.nationality,
+          physicalDescription: formData.physicalDescription,
           phone: formData.phone,
           email: formData.email,
           website: formData.website,
           socialMedia: formData.socialMedia,
+          signal: formData.signal,
+          tiktok: formData.tiktok,
+          twitter: formData.twitter,
           iban: formData.iban,
           bankAccount: formData.bankAccount,
           cryptoWallet: formData.cryptoWallet,
@@ -451,9 +487,37 @@ export default function NewReportPage() {
         };
         break;
       case 4:
+        // Digital Footprints step - optional fields, validate format if provided
+        schema = digitalFootprintsSchema;
+        data = {
+          telegram: formData.telegram,
+          whatsapp: formData.whatsapp,
+          signalNumber: formData.signalNumber,
+          instagram: formData.instagram,
+          facebook: formData.facebook,
+          tiktokHandle: formData.tiktokHandle,
+          twitterHandle: formData.twitterHandle,
+          websiteUrl: formData.websiteUrl,
+          domainName: formData.domainName,
+          domainCreationDate: formData.domainCreationDate,
+          ipAddress: formData.ipAddress,
+          ipCountry: formData.ipCountry,
+          ispProvider: formData.ispProvider,
+          ipAbuseScore: formData.ipAbuseScore,
+        };
+        break;
+      case 5:
+        // Financial Details step - optional, no required validation
+        // The validation schema requires at least one section filled
+        // but we'll make it optional for the form flow
+        return true;
+      case 6:
+        // Company & Vehicle step - optional, no required validation
+        return true;
+      case 7:
         // Evidence step - no required validation
         return true;
-      case 5:
+      case 8:
         schema = contactInfoSchema;
         data = {
           reporterName: formData.reporterName,
@@ -464,7 +528,7 @@ export default function NewReportPage() {
           agreeToGDPR: formData.agreeToGDPR,
         };
         break;
-      case 6:
+      case 9:
         // Review step - validate consents
         if (!formData.agreeToTerms || !formData.agreeToGDPR) {
           toast.error('Musíte súhlasiť s podmienkami a GDPR');
@@ -614,6 +678,11 @@ export default function NewReportPage() {
         },
         perpetrator: {
           full_name: formData.name,
+          nickname: formData.nickname,
+          username: formData.username,
+          approx_age: formData.approxAge ? parseInt(String(formData.approxAge)) : undefined,
+          nationality: formData.nationality,
+          physical_description: formData.physicalDescription,
           phone: formData.phone,
           email: formData.email,
           address: formData.address
@@ -621,30 +690,74 @@ export default function NewReportPage() {
             : undefined,
         },
         digital_footprints: {
-          website_url: formData.website,
-          telegram: formData.socialMedia?.includes('telegram') ? formData.socialMedia : undefined,
-          whatsapp: formData.socialMedia?.includes('whatsapp') ? formData.socialMedia : undefined,
-          instagram: formData.socialMedia?.includes('instagram') ? formData.socialMedia : undefined,
-          facebook: formData.socialMedia?.includes('facebook') ? formData.socialMedia : undefined,
+          telegram: formData.telegram,
+          whatsapp: formData.whatsapp,
+          signal: formData.signalNumber || formData.signal,
+          instagram: formData.instagram,
+          facebook: formData.facebook,
+          tiktok: formData.tiktokHandle || formData.tiktok,
+          twitter: formData.twitterHandle || formData.twitter,
+          website_url: formData.websiteUrl || formData.website,
+          domain_name: formData.domainName,
+          domain_creation_date: formData.domainCreationDate,
+          ip_address: formData.ipAddress,
+          ip_country: formData.ipCountry,
+          isp_provider: formData.ispProvider,
+          ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
         },
-        financial: formData.iban
+        financial: {
+          iban: formData.iban,
+          account_holder_name: formData.accountHolderName,
+          account_number: formData.accountNumber || formData.bankAccount,
+          bank_name: formData.bankName,
+          bank_country: formData.bankCountry,
+          swift_bic: formData.swiftBic,
+          routing_number: formData.routingNumber,
+          bsb_code: formData.bsbCode,
+          sort_code: formData.sortCode,
+          ifsc_code: formData.ifscCode,
+          cnaps_code: formData.cnapsCode,
+          other_details: formData.otherBankingDetails,
+        },
+        crypto: formData.walletAddress || formData.cryptoWallet
           ? {
-              iban: formData.iban,
-              account_number: formData.bankAccount,
+              wallet_address: formData.walletAddress || formData.cryptoWallet,
+              blockchain: formData.blockchain,
+              exchange_name: formData.exchangeName,
+              transaction_hash: formData.transactionHash,
             }
           : undefined,
-        crypto: formData.cryptoWallet
+        paypal: formData.paypalAccount
           ? {
-              wallet_address: formData.cryptoWallet,
+              account: formData.paypalAccount,
             }
           : undefined,
         company:
-          formData.perpetratorType === 'COMPANY' && formData.companyName
+          (formData.perpetratorType === 'COMPANY' && formData.companyName) ||
+          formData.vatTaxId
             ? {
                 name: formData.companyName,
-                vat_tax_id: formData.companyId,
+                vat_tax_id: formData.vatTaxId || formData.companyId,
+                address: formData.companyStreet
+                  ? {
+                      street: formData.companyStreet,
+                      city: formData.companyCity,
+                      postal_code: formData.companyPostalCode,
+                      country: formData.companyCountry,
+                    }
+                  : undefined,
               }
             : undefined,
+        vehicle: formData.vehicleMake
+          ? {
+              make: formData.vehicleMake,
+              model: formData.vehicleModel,
+              color: formData.vehicleColor,
+              license_plate: formData.vehicleLicensePlate,
+              vin: formData.vehicleVin,
+              registered_owner: formData.registeredOwner,
+            }
+          : undefined,
         evidence: uploadedEvidence.length > 0 ? uploadedEvidence : undefined,
         reporter: {
           name: formData.reporterName,
@@ -712,13 +825,40 @@ export default function NewReportPage() {
 
       case 4:
         return (
+          <DigitalFootprintsStep
+            data={formData as Partial<DigitalFootprintsForm>}
+            errors={errors}
+            onChange={updateField}
+          />
+        );
+
+      case 5:
+        return (
+          <FinancialDetailsStep
+            data={formData as Partial<FinancialDetailsForm>}
+            errors={errors}
+            onChange={updateField}
+          />
+        );
+
+      case 6:
+        return (
+          <CompanyVehicleStep
+            data={formData as Partial<CompanyVehicleForm>}
+            errors={errors}
+            onChange={updateField}
+          />
+        );
+
+      case 7:
+        return (
           <EvidenceStep
             files={files}
             onFilesChange={setFiles}
           />
         );
 
-      case 5:
+      case 8:
         return (
           <ContactStep
             data={formData}
@@ -727,7 +867,7 @@ export default function NewReportPage() {
           />
         );
 
-      case 6:
+      case 9:
         return (
           <ReviewStep
             data={{ ...formData, files }}
