@@ -127,3 +127,134 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function generateId(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
+
+// ============================================
+// Secure localStorage encryption utilities
+// Uses Web Crypto API (AES-GCM) for browser-side encryption
+// ============================================
+
+const ENCRYPTION_KEY_NAME = 'secure_storage_key';
+
+/**
+ * Get or create encryption key for secure localStorage
+ * Key is stored in sessionStorage (not localStorage) so it's cleared when browser closes
+ */
+async function getEncryptionKey(): Promise<CryptoKey> {
+  // Check if we have a key in session storage
+  const storedKeyData = sessionStorage.getItem(ENCRYPTION_KEY_NAME);
+
+  if (storedKeyData) {
+    try {
+      const keyData = JSON.parse(storedKeyData);
+      return await crypto.subtle.importKey(
+        'jwk',
+        keyData,
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      );
+    } catch {
+      // Key is invalid, generate new one
+    }
+  }
+
+  // Generate new key
+  const key = await crypto.subtle.generateKey(
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt']
+  );
+
+  // Export and store in session storage
+  const exportedKey = await crypto.subtle.exportKey('jwk', key);
+  sessionStorage.setItem(ENCRYPTION_KEY_NAME, JSON.stringify(exportedKey));
+
+  return key;
+}
+
+/**
+ * Encrypt data and store in localStorage
+ * Data is encrypted with AES-GCM using a session-specific key
+ */
+export async function secureStorageSet(key: string, data: unknown): Promise<void> {
+  try {
+    const cryptoKey = await getEncryptionKey();
+    const dataString = JSON.stringify(data);
+    const encoder = new TextEncoder();
+    const dataBuffer = encoder.encode(dataString);
+
+    // Generate random IV
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    // Encrypt
+    const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      cryptoKey,
+      dataBuffer
+    );
+
+    // Combine IV and encrypted data
+    const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
+    combined.set(iv);
+    combined.set(new Uint8Array(encryptedBuffer), iv.length);
+
+    // Store as base64
+    const base64 = btoa(String.fromCharCode(...combined));
+    localStorage.setItem(key, base64);
+  } catch (error) {
+    console.error('Failed to encrypt data for localStorage:', error);
+    // Fall back to unencrypted storage if crypto fails
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+}
+
+/**
+ * Retrieve and decrypt data from localStorage
+ */
+export async function secureStorageGet<T>(key: string): Promise<T | null> {
+  try {
+    const stored = localStorage.getItem(key);
+    if (!stored) return null;
+
+    // Try to decrypt
+    const cryptoKey = await getEncryptionKey();
+
+    // Decode base64
+    const combined = new Uint8Array(
+      atob(stored)
+        .split('')
+        .map((c) => c.charCodeAt(0))
+    );
+
+    // Extract IV and encrypted data
+    const iv = combined.slice(0, 12);
+    const encryptedData = combined.slice(12);
+
+    // Decrypt
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      cryptoKey,
+      encryptedData
+    );
+
+    const decoder = new TextDecoder();
+    const decryptedString = decoder.decode(decryptedBuffer);
+    return JSON.parse(decryptedString) as T;
+  } catch {
+    // If decryption fails, try to read as plain JSON (legacy data)
+    try {
+      const stored = localStorage.getItem(key);
+      if (!stored) return null;
+      return JSON.parse(stored) as T;
+    } catch {
+      return null;
+    }
+  }
+}
+
+/**
+ * Remove item from secure localStorage
+ */
+export function secureStorageRemove(key: string): void {
+  localStorage.removeItem(key);
+}

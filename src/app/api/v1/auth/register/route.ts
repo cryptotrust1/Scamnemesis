@@ -32,17 +32,18 @@ const REGISTER_RATE_LIMIT = 5;
 const REGISTER_RATE_WINDOW = 3600000; // 1 hour in milliseconds
 
 // Password validation regex
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+// Requires: 9+ chars, uppercase, lowercase, number, and special character
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
 
 // Request schema
 const registerSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(9, 'Password must be at least 9 characters')
     .regex(
       PASSWORD_REGEX,
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
     ),
   name: z.string().optional(),
 });

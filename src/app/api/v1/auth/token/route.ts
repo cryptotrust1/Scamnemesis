@@ -2,6 +2,7 @@
  * POST /api/v1/auth/token
  *
  * Authenticate and get JWT token
+ * Sets HttpOnly cookies for secure token storage
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,6 +17,39 @@ import {
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
+
+// Cookie configuration
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: 'lax' as const,
+  path: '/',
+};
+
+/**
+ * Set auth tokens as HttpOnly cookies on the response
+ */
+function setAuthCookies(
+  response: NextResponse,
+  accessToken: string,
+  refreshToken?: string
+): void {
+  // Access token cookie - 1 hour
+  response.cookies.set('access_token', accessToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 60 * 60, // 1 hour
+  });
+
+  // Refresh token cookie - 7 days (only for password auth)
+  if (refreshToken) {
+    response.cookies.set('refresh_token', refreshToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/api/v1/auth', // Restrict to auth endpoints only
+    });
+  }
+}
 
 // Stricter rate limit for auth endpoints to prevent brute force
 const AUTH_RATE_LIMIT = 10; // 10 attempts per window
@@ -129,11 +163,10 @@ export async function POST(request: NextRequest) {
         data: { lastLoginAt: new Date() },
       });
 
-      return NextResponse.json({
-        access_token: accessToken,
+      // Create response with user info
+      const response = NextResponse.json({
         token_type: 'Bearer',
         expires_in: 3600,
-        refresh_token: refreshToken,
         scopes,
         // Include user info so clients don't need to parse JWT
         user: {
@@ -141,7 +174,16 @@ export async function POST(request: NextRequest) {
           email: user.email,
           role: user.role,
         },
+        // Note: Tokens are now set as HttpOnly cookies for security
+        // Legacy: Still include tokens in response body for API clients
+        access_token: accessToken,
+        refresh_token: refreshToken,
       });
+
+      // Set HttpOnly cookies for browser clients
+      setAuthCookies(response, accessToken, refreshToken);
+
+      return response;
     } else {
       // API key authentication
       const apiKey = await prisma.apiKey.findUnique({
@@ -198,8 +240,8 @@ export async function POST(request: NextRequest) {
         data: { lastUsedAt: new Date() },
       });
 
-      return NextResponse.json({
-        access_token: accessToken,
+      // Create response with user info
+      const response = NextResponse.json({
         token_type: 'Bearer',
         expires_in: 3600,
         scopes,
@@ -209,7 +251,14 @@ export async function POST(request: NextRequest) {
           email: apiKey.user.email,
           role: apiKey.user.role,
         },
+        // Legacy: Still include token in response body for API clients
+        access_token: accessToken,
       });
+
+      // Set HttpOnly cookie for browser clients (no refresh token for API key auth)
+      setAuthCookies(response, accessToken);
+
+      return response;
     }
   } catch (error) {
     console.error('Auth error:', error);

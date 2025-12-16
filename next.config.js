@@ -48,6 +48,23 @@ const nextConfig = {
 
   // Security headers
   async headers() {
+    // Content Security Policy
+    // Note: 'unsafe-inline' is needed for Next.js inline styles
+    // In production, consider using nonces for stricter security
+    const cspHeader = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for development
+      "style-src 'self' 'unsafe-inline'", // Next.js uses inline styles
+      "img-src 'self' data: https: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://api.resend.com", // API endpoints
+      "frame-ancestors 'self'",
+      "form-action 'self'",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
+    ].join('; ');
+
     return [
       {
         source: '/:path*',
@@ -79,6 +96,10 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader,
           },
         ],
       },
