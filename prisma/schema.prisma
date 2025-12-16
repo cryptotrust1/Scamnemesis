@@ -160,6 +160,8 @@ model ApiKey {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])              // Added: for user API key queries
+  @@index([isActive, expiresAt]) // Added: for active key lookups
   @@map("api_keys")
 }
 
@@ -249,6 +251,9 @@ model Report {
   @@index([locationCountry])
   @@index([createdAt])
   @@index([mergedIntoId])
+  @@index([reporterId])           // Added: for "my reports" queries
+  @@index([moderatedById])        // Added: for admin moderation queries
+  @@index([status, createdAt])    // Added: composite for filtered listings
   @@map("reports")
 }
 
@@ -460,6 +465,8 @@ model Comment {
 
   @@index([reportId])
   @@index([status])
+  @@index([userId])              // Added: for user comment history
+  @@index([reportId, status])   // Added: composite for report comments
   @@map("comments")
 }
 
