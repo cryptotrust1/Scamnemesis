@@ -129,8 +129,20 @@ export async function requireAuth(
   }
 
   // Extract userId from either user token or API key
-  // We know at least one of user or apiKey exists due to the check above
-  const userId = (auth.user?.sub || auth.apiKey?.userId) as string;
+  // We validated above that at least one exists, but verify the userId is present
+  const userId = auth.user?.sub || auth.apiKey?.userId;
+
+  if (!userId) {
+    // This shouldn't happen if token/apiKey validation is correct,
+    // but provides a safety net against malformed auth data
+    return NextResponse.json(
+      {
+        error: 'unauthorized',
+        message: 'Invalid authentication: missing user identifier',
+      },
+      { status: 401 }
+    );
+  }
 
   return { auth, userId };
 }

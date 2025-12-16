@@ -16,10 +16,10 @@ const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Warn if using development defaults
+// Validate S3 credentials - fail fast in production
 if (!S3_ACCESS_KEY || !S3_SECRET_KEY) {
   if (process.env.NODE_ENV === 'production') {
-    console.error('[Media] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
+    throw new Error('[Media] CRITICAL: S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
   } else {
     console.warn('[Media] S3 credentials not set. Using MinIO development defaults.');
   }
@@ -49,13 +49,15 @@ const MAGIC_BYTES: Record<string, number[]> = {
   'application/pdf': [0x25, 0x50, 0x44, 0x46], // %PDF
 };
 
-// Initialize S3 Client (with fallback for development)
+// Initialize S3 Client
+// In production, credentials are required (validated above)
+// In development, fall back to MinIO defaults
 const s3Client = new S3Client({
   endpoint: S3_ENDPOINT,
   region: S3_REGION,
   credentials: {
-    accessKeyId: S3_ACCESS_KEY || 'minioadmin',
-    secretAccessKey: S3_SECRET_KEY || 'minioadmin',
+    accessKeyId: S3_ACCESS_KEY || (process.env.NODE_ENV !== 'production' ? 'minioadmin' : ''),
+    secretAccessKey: S3_SECRET_KEY || (process.env.NODE_ENV !== 'production' ? 'minioadmin' : ''),
   },
   forcePathStyle: true, // Required for MinIO
 });

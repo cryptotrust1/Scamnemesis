@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { parsePagination } from '@/lib/utils/pagination';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,14 +17,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('page_size') || '10');
+    // Safe pagination parsing with bounds checking to prevent DoS
+    const { page, pageSize, skip } = parsePagination(searchParams);
     const status = searchParams.get('status');
     const search = searchParams.get('q');
 
-    // Build where clause
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {};
+    // Build where clause with proper typing
+    const where: Prisma.CommentWhereInput = {};
 
     if (status) {
       // Map frontend status to Prisma enum
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
     const [comments, total] = await Promise.all([
       prisma.comment.findMany({
         where,
-        skip: (page - 1) * pageSize,
+        skip,
         take: pageSize,
         orderBy: { createdAt: 'desc' },
         select: {
