@@ -12,9 +12,14 @@ import {
   generateRefreshToken,
   getScopesForRole,
 } from '@/lib/auth/jwt';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { jwtVerify } from 'jose';
 
 export const dynamic = 'force-dynamic';
+
+// Rate limit for refresh endpoint
+const REFRESH_RATE_LIMIT = 20; // 20 attempts per window
+const REFRESH_RATE_WINDOW = 900000; // 15 minutes
 
 // Lazy initialization of JWT secret to avoid build-time errors
 let _jwtSecret: Uint8Array | null = null;
@@ -41,6 +46,26 @@ const refreshSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting to prevent abuse
+    const ip = getClientIp(request);
+    const rateLimitKey = `auth:refresh:${ip}`;
+    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, REFRESH_RATE_LIMIT, REFRESH_RATE_WINDOW);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'rate_limited',
+          message: 'Too many refresh attempts. Please try again later.',
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((resetAt.getTime() - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const parsed = refreshSchema.safeParse(body);
 

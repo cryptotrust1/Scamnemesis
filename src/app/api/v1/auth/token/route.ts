@@ -13,8 +13,13 @@ import {
   generateRefreshToken,
   getScopesForRole,
 } from '@/lib/auth/jwt';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
+
+// Stricter rate limit for auth endpoints to prevent brute force
+const AUTH_RATE_LIMIT = 10; // 10 attempts per window
+const AUTH_RATE_WINDOW = 900000; // 15 minutes
 
 // Request schemas
 const passwordLoginSchema = z.object({
@@ -32,6 +37,26 @@ const loginSchema = z.union([passwordLoginSchema, apiKeyLoginSchema]);
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting to prevent brute force attacks
+    const ip = getClientIp(request);
+    const rateLimitKey = `auth:token:${ip}`;
+    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, AUTH_RATE_LIMIT, AUTH_RATE_WINDOW);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'rate_limited',
+          message: 'Too many authentication attempts. Please try again later.',
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((resetAt.getTime() - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
 
