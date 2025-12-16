@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { jwtVerify } from 'jose';
-import { randomBytes, pbkdf2Sync } from 'crypto';
 import { prisma } from '@/lib/db';
+import { hashPassword } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
@@ -12,26 +12,21 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
 }
-const PBKDF2_ITERATIONS = 100000;
+
+// Password validation - MUST match register endpoint exactly
+// Requires: 9+ chars, uppercase, lowercase, number, and special character
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
 
 const ResetPasswordSchema = z.object({
   token: z.string().min(1, 'Reset token is required'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
+    .min(9, 'Password must be at least 9 characters')
+    .regex(
+      PASSWORD_REGEX,
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
+    ),
 });
-
-/**
- * Hash password using PBKDF2 (consistent with register endpoint)
- */
-function hashPassword(password: string): string {
-  const salt = randomBytes(32).toString('hex');
-  const hash = pbkdf2Sync(password, salt, PBKDF2_ITERATIONS, 64, 'sha512').toString('hex');
-  return `${salt}:${hash}`;
-}
 
 /**
  * POST /api/v1/auth/reset-password
@@ -130,8 +125,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash the new password
-    const passwordHash = hashPassword(password);
+    // Hash the new password using the same function as register endpoint
+    const passwordHash = await hashPassword(password);
 
     // Update user's password and invalidate all refresh tokens
     await prisma.$transaction([
