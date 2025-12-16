@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { mediaService } from '@/lib/services/media';
 import { MediaType, MediaStatus } from '@prisma/client';
 
@@ -36,6 +36,10 @@ const ListQuerySchema = z.object({
  * GET /api/v1/media - List media with pagination
  */
 export async function GET(request: NextRequest) {
+  // Rate limiting
+  const rateLimitError = await requireRateLimit(request, 60);
+  if (rateLimitError) return rateLimitError;
+
   const auth = await requireAuth(request, ['media:read']);
   if (auth instanceof NextResponse) return auth;
 
@@ -80,6 +84,10 @@ export async function GET(request: NextRequest) {
  * POST /api/v1/media - Create presigned upload URL
  */
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const rateLimitError = await requireRateLimit(request, 30);
+  if (rateLimitError) return rateLimitError;
+
   const auth = await requireAuth(request, ['media:create']);
   if (auth instanceof NextResponse) return auth;
 
