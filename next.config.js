@@ -50,10 +50,16 @@ const nextConfig = {
   async headers() {
     // Content Security Policy
     // Note: 'unsafe-inline' is needed for Next.js inline styles
-    // In production, consider using nonces for stricter security
+    // Production removes 'unsafe-eval' for security (only needed for dev hot reload)
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    const scriptSrc = isProduction
+      ? "script-src 'self' 'unsafe-inline'" // Production: no unsafe-eval
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"; // Development: needs eval for hot reload
+
     const cspHeader = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for development
+      scriptSrc,
       "style-src 'self' 'unsafe-inline'", // Next.js uses inline styles
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
