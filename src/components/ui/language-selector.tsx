@@ -15,11 +15,15 @@ import { i18n, type Locale } from '@/i18n/config';
 const localeNames: Record<Locale, string> = {
   sk: 'Slovensky',
   en: 'English',
+  cs: 'Čeština',
+  de: 'Deutsch',
 };
 
 const localeFlags: Record<Locale, string> = {
   sk: '🇸🇰',
   en: '🇬🇧',
+  cs: '🇨🇿',
+  de: '🇩🇪',
 };
 
 interface LanguageSelectorProps {
