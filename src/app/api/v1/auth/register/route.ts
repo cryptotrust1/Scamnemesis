@@ -20,7 +20,12 @@ import { emailService } from '@/lib/services/email';
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
-const JWT_SECRET = process.env.JWT_SECRET || 'scamnemesis-secret-key';
+
+// JWT_SECRET is required - no fallback allowed for security
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
+}
 
 // Rate limit: 5 registrations per hour per IP
 const REGISTER_RATE_LIMIT = 5;

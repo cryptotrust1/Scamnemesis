@@ -7,7 +7,11 @@ import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'scamnemesis-secret-key';
+// JWT_SECRET is required - no fallback allowed for security
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
+}
 const PBKDF2_ITERATIONS = 100000;
 
 const ResetPasswordSchema = z.object({
