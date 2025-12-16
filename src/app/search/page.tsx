@@ -421,7 +421,7 @@ export default function SearchPage() {
   const [totalResults, setTotalResults] = useState(0);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [showFieldMap, setShowFieldMap] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
+  const [_searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     handleSearch();

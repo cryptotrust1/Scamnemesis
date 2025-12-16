@@ -98,10 +98,12 @@ export function getEmbeddingDimensions(): number {
   return EMBEDDING_DIMENSIONS;
 }
 
-export default {
+const embeddingService = {
   generateEmbedding,
   generateNameEmbedding,
   generateSearchEmbedding,
   isEmbeddingServiceAvailable,
   getEmbeddingDimensions,
 };
+
+export default embeddingService;

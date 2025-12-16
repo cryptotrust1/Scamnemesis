@@ -25,7 +25,7 @@ async function trackReportView(reportId: string, request: NextRequest): Promise<
     const userAgent = request.headers.get('user-agent')?.substring(0, 255);
 
     // Try to create a new view record (unique per reportId + ipHash)
-    const result = await prisma.reportView.upsert({
+    const _result = await prisma.reportView.upsert({
       where: {
         reportId_ipHash: {
           reportId,
