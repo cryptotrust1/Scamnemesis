@@ -188,14 +188,43 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate body
     const body = await request.json();
+
+    // Log incoming request for debugging (sanitized - no sensitive data in logs)
+    console.log('[Reports API] Incoming report:', JSON.stringify({
+      incident: { fraud_type: body.incident?.fraud_type, date: body.incident?.date },
+      has_perpetrator: !!body.perpetrator,
+      has_digital_footprints: !!body.digital_footprints,
+      has_financial: !!body.financial,
+      has_crypto: !!body.crypto,
+      has_company: !!body.company,
+      has_vehicle: !!body.vehicle,
+      evidence_count: body.evidence?.length || 0,
+      reporter_email: body.reporter?.email ? '***@***' : 'none',
+    }));
+
     const parsed = createReportSchema.safeParse(body);
 
     if (!parsed.success) {
+      const flattenedErrors = parsed.error.flatten();
+      console.error('[Reports API] Validation failed:', JSON.stringify({
+        fieldErrors: flattenedErrors.fieldErrors,
+        formErrors: flattenedErrors.formErrors,
+        issues: parsed.error.issues.map(i => ({
+          path: i.path.join('.'),
+          code: i.code,
+          message: i.message,
+          received: 'received' in i ? i.received : undefined,
+        })),
+      }, null, 2));
       return NextResponse.json(
         {
           error: 'validation_error',
           message: 'Invalid request body',
-          details: parsed.error.flatten().fieldErrors,
+          details: flattenedErrors.fieldErrors,
+          issues: parsed.error.issues.map(i => ({
+            field: i.path.join('.'),
+            message: i.message,
+          })),
         },
         { status: 400 }
       );
@@ -435,11 +464,41 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Create report error:', error);
+    // Enhanced error logging for debugging
+    const errorDetails = {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    console.error('[Reports API] Create report error:', JSON.stringify(errorDetails, null, 2));
+
+    // Prisma-specific error handling
+    if (error && typeof error === 'object' && 'code' in error) {
+      const prismaError = error as { code: string; meta?: unknown };
+      console.error('[Reports API] Prisma error code:', prismaError.code, 'meta:', prismaError.meta);
+
+      // Handle specific Prisma errors
+      if (prismaError.code === 'P2002') {
+        return NextResponse.json(
+          { error: 'duplicate_error', message: 'A report with this data already exists' },
+          { status: 409 }
+        );
+      }
+      if (prismaError.code === 'P2003') {
+        return NextResponse.json(
+          { error: 'reference_error', message: 'Invalid reference in report data' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Return detailed error in development, generic in production
+    const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json(
       {
         error: 'internal_error',
-        message: 'An unexpected error occurred',
+        message: isDev ? errorDetails.message : 'An unexpected error occurred',
+        ...(isDev && { details: errorDetails }),
       },
       { status: 500 }
     );
