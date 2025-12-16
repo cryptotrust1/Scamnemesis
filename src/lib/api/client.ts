@@ -1,6 +1,7 @@
 /**
  * API Client for ScamNemesis frontend
  * Handles all HTTP requests to the backend API
+ * Uses HttpOnly cookies for authentication (no localStorage)
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
@@ -21,64 +22,53 @@ export interface ApiResponse<T> {
   };
 }
 
+export interface RequestOptions extends Omit<RequestInit, 'body'> {
+  body?: unknown;
+}
+
 class ApiClient {
   private baseUrl: string;
-  private accessToken: string | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
-  setAccessToken(token: string | null) {
-    this.accessToken = token;
-  }
-
-  getAccessToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return this.accessToken || localStorage.getItem('accessToken');
-    }
-    return this.accessToken;
-  }
-
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestOptions = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-    const token = this.getAccessToken();
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
-    if (token) {
-      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-    }
-
     try {
       const response = await fetch(url, {
         ...options,
         headers,
+        credentials: 'include', // Always include cookies for HttpOnly auth
+        body: options.body ? JSON.stringify(options.body) : undefined,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw {
-          message: errorData.error?.message || `HTTP ${response.status}`,
-          code: errorData.error?.code || 'HTTP_ERROR',
-          details: errorData.error?.details,
+          message: errorData.error?.message || errorData.message || `HTTP ${response.status}`,
+          code: errorData.error?.code || errorData.error || 'HTTP_ERROR',
+          details: errorData.error?.details || errorData.details,
         } as ApiError;
       }
 
       const data = await response.json();
-      return data;
+      return { data };
     } catch (error) {
       if ((error as ApiError).code) {
         throw error;
       }
       throw {
-        message: 'Network error',
+        message: error instanceof Error ? error.message : 'Network error',
         code: 'NETWORK_ERROR',
       } as ApiError;
     }
@@ -91,10 +81,11 @@ class ApiClient {
   }
 
   // POST request
-  async post<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, body?: unknown, options?: RequestOptions): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
+      ...options,
       method: 'POST',
-      body: body ? JSON.stringify(body) : undefined,
+      body,
     });
   }
 
@@ -102,7 +93,7 @@ class ApiClient {
   async put<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
-      body: body ? JSON.stringify(body) : undefined,
+      body,
     });
   }
 
@@ -110,7 +101,7 @@ class ApiClient {
   async patch<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PATCH',
-      body: body ? JSON.stringify(body) : undefined,
+      body,
     });
   }
 

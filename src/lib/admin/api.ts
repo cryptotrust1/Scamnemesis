@@ -1,28 +1,26 @@
 /**
  * Admin API Service
  * Centralized API calls for admin operations
+ * Uses HttpOnly cookies for authentication (no localStorage)
  */
 
 const API_BASE = '/api/v1';
 
-function getAuthHeaders(): HeadersInit {
-  const token = typeof window !== 'undefined'
-    ? localStorage.getItem('admin_token')
-    : null;
+// Default fetch options with credentials for HttpOnly cookies
+const fetchOptions: RequestInit = {
+  credentials: 'include', // Important: Include cookies in all requests
+};
 
+function getHeaders(): HeadersInit {
   return {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
   };
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 401) {
-    // Token expired - redirect to login
+    // Token expired or not authenticated - redirect to login
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_refresh_token');
-      localStorage.removeItem('admin_user');
       window.location.href = '/admin/login';
     }
     throw new Error('Relácia vypršala. Prihláste sa znova.');
@@ -87,7 +85,8 @@ export async function fetchReports(filters: ReportFilters = {}): Promise<Reports
   params.append('page_size', String(filters.pageSize || 10));
 
   const response = await fetch(`${API_BASE}/reports?${params}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<ReportsResponse>(response);
@@ -95,7 +94,8 @@ export async function fetchReports(filters: ReportFilters = {}): Promise<Reports
 
 export async function fetchReport(id: string): Promise<Report> {
   const response = await fetch(`${API_BASE}/reports/${id}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<Report>(response);
@@ -103,8 +103,9 @@ export async function fetchReport(id: string): Promise<Report> {
 
 export async function approveReport(id: string, notes?: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/reports/${id}/approve`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ admin_notes: notes }),
   });
 
@@ -113,8 +114,9 @@ export async function approveReport(id: string, notes?: string): Promise<{ statu
 
 export async function rejectReport(id: string, reason: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/reports/${id}/reject`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ rejection_reason: reason }),
   });
 
@@ -163,7 +165,8 @@ export async function fetchUsers(filters: UserFilters = {}): Promise<UsersRespon
   params.append('page_size', String(filters.pageSize || 10));
 
   const response = await fetch(`${API_BASE}/admin/users?${params}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<UsersResponse>(response);
@@ -171,8 +174,9 @@ export async function fetchUsers(filters: UserFilters = {}): Promise<UsersRespon
 
 export async function updateUserRole(userId: string, role: string): Promise<User> {
   const response = await fetch(`${API_BASE}/admin/users/${userId}/role`, {
+    ...fetchOptions,
     method: 'PATCH',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ role }),
   });
 
@@ -181,8 +185,9 @@ export async function updateUserRole(userId: string, role: string): Promise<User
 
 export async function banUser(userId: string, reason?: string): Promise<User> {
   const response = await fetch(`${API_BASE}/admin/users/${userId}/ban`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ reason }),
   });
 
@@ -191,8 +196,9 @@ export async function banUser(userId: string, reason?: string): Promise<User> {
 
 export async function unbanUser(userId: string): Promise<User> {
   const response = await fetch(`${API_BASE}/admin/users/${userId}/unban`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
   });
 
   return handleResponse<User>(response);
@@ -243,7 +249,8 @@ export async function fetchComments(filters: CommentFilters = {}): Promise<Comme
   params.append('page_size', String(filters.pageSize || 10));
 
   const response = await fetch(`${API_BASE}/admin/comments?${params}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<CommentsResponse>(response);
@@ -251,8 +258,9 @@ export async function fetchComments(filters: CommentFilters = {}): Promise<Comme
 
 export async function approveComment(id: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/comments/${id}/approve`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
   });
 
   return handleResponse(response);
@@ -260,8 +268,9 @@ export async function approveComment(id: string): Promise<{ status: string }> {
 
 export async function rejectComment(id: string, reason?: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/comments/${id}/reject`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ reason }),
   });
 
@@ -306,7 +315,8 @@ export async function fetchDuplicates(status?: string): Promise<DuplicatesRespon
   if (status && status !== 'all') params.append('status', status);
 
   const response = await fetch(`${API_BASE}/admin/duplicates?${params}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<DuplicatesResponse>(response);
@@ -314,8 +324,9 @@ export async function fetchDuplicates(status?: string): Promise<DuplicatesRespon
 
 export async function mergeDuplicates(clusterId: string, primaryReportId: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/duplicates/${clusterId}/merge`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({ primary_report_id: primaryReportId }),
   });
 
@@ -324,8 +335,9 @@ export async function mergeDuplicates(clusterId: string, primaryReportId: string
 
 export async function dismissDuplicates(clusterId: string): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/admin/duplicates/${clusterId}/dismiss`, {
+    ...fetchOptions,
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
   });
 
   return handleResponse(response);
@@ -351,7 +363,8 @@ export interface DashboardStats {
 
 export async function fetchDashboardStats(): Promise<DashboardStats> {
   const response = await fetch(`${API_BASE}/admin/stats`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<DashboardStats>(response);
@@ -394,7 +407,8 @@ export async function fetchAuditLog(filters: AuditLogFilters = {}): Promise<Audi
   params.append('page_size', String(filters.pageSize || 20));
 
   const response = await fetch(`${API_BASE}/admin/audit?${params}`, {
-    headers: getAuthHeaders(),
+    ...fetchOptions,
+    headers: getHeaders(),
   });
 
   return handleResponse<AuditLogResponse>(response);
