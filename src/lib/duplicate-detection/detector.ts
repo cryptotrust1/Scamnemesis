@@ -52,6 +52,7 @@ export async function detectDuplicates(
   const excludeReportIds = [input.reportId];
 
   // Step 1: Exact matches on phone/email
+  // Optimized: Include report status in query to avoid N+1 problem
   if (normalizedPhone || normalizedEmail) {
     const orConditions = [];
     if (normalizedPhone) {
@@ -65,26 +66,24 @@ export async function detectDuplicates(
       where: {
         OR: orConditions,
         reportId: { notIn: excludeReportIds },
+        // Filter by report status in query (eliminates N+1)
+        report: {
+          status: { in: ['PENDING', 'APPROVED'] },
+        },
       },
       select: {
         reportId: true,
         phoneNormalized: true,
         emailNormalized: true,
+        report: {
+          select: { id: true, status: true },
+        },
       },
       take: 50,
     });
 
-    // Check report status for each match
+    // Process matches - report status already filtered in query
     for (const perp of perpetratorMatches) {
-      const report = await prisma.report.findUnique({
-        where: { id: perp.reportId },
-        select: { id: true, status: true },
-      });
-
-      if (!report || !['PENDING', 'APPROVED'].includes(report.status)) {
-        continue;
-      }
-
       let matchType: DuplicateMatch['matchType'] = 'exact_phone';
       const matchDetails: Record<string, string> = {};
 
@@ -106,11 +105,15 @@ export async function detectDuplicates(
   }
 
   // Step 2: Exact match on IBAN
+  // Optimized: Include report status in query to avoid N+1 problem
   if (normalizedIBAN) {
     const ibanMatches = await prisma.financialInfo.findMany({
       where: {
         ibanNormalized: normalizedIBAN,
         reportId: { notIn: excludeReportIds },
+        report: {
+          status: { in: ['PENDING', 'APPROVED'] },
+        },
       },
       select: {
         reportId: true,
@@ -120,15 +123,6 @@ export async function detectDuplicates(
     });
 
     for (const fi of ibanMatches) {
-      const report = await prisma.report.findUnique({
-        where: { id: fi.reportId },
-        select: { id: true, status: true },
-      });
-
-      if (!report || !['PENDING', 'APPROVED'].includes(report.status)) {
-        continue;
-      }
-
       matches.push({
         reportId: fi.reportId,
         similarity: 1.0,
@@ -139,11 +133,15 @@ export async function detectDuplicates(
   }
 
   // Step 3: Exact match on crypto wallet
+  // Optimized: Include report status in query to avoid N+1 problem
   if (normalizedCrypto) {
     const cryptoMatches = await prisma.cryptoInfo.findMany({
       where: {
         walletNormalized: normalizedCrypto,
         reportId: { notIn: excludeReportIds },
+        report: {
+          status: { in: ['PENDING', 'APPROVED'] },
+        },
       },
       select: {
         reportId: true,
@@ -153,15 +151,6 @@ export async function detectDuplicates(
     });
 
     for (const ci of cryptoMatches) {
-      const report = await prisma.report.findUnique({
-        where: { id: ci.reportId },
-        select: { id: true, status: true },
-      });
-
-      if (!report || !['PENDING', 'APPROVED'].includes(report.status)) {
-        continue;
-      }
-
       matches.push({
         reportId: ci.reportId,
         similarity: 1.0,
@@ -206,6 +195,7 @@ export async function detectDuplicates(
 
 /**
  * Find fuzzy name matches
+ * Optimized: Include report status in query to avoid N+1 problem
  */
 async function findFuzzyNameMatches(input: {
   reportId: string;
@@ -216,11 +206,15 @@ async function findFuzzyNameMatches(input: {
   const matches: DuplicateMatch[] = [];
   const normalizedInputName = input.name.toLowerCase().trim();
 
-  // Get perpetrators with names
+  // Get perpetrators with names - filter by report status in single query
   const candidates = await prisma.perpetrator.findMany({
     where: {
       fullName: { not: null },
       reportId: { notIn: input.excludeReportIds },
+      // Filter by report status in query (eliminates N+1)
+      report: {
+        status: { in: ['PENDING', 'APPROVED'] },
+      },
     },
     select: {
       fullName: true,
@@ -231,16 +225,6 @@ async function findFuzzyNameMatches(input: {
 
   for (const candidate of candidates) {
     if (!candidate.fullName) continue;
-
-    // Check report status
-    const report = await prisma.report.findUnique({
-      where: { id: candidate.reportId },
-      select: { id: true, status: true },
-    });
-
-    if (!report || !['PENDING', 'APPROVED'].includes(report.status)) {
-      continue;
-    }
 
     const matchResult = matchNames(
       normalizedInputName,

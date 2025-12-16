@@ -12,6 +12,10 @@ const VIEW_TRACKING_SALT = process.env.VIEW_TRACKING_SALT;
 /**
  * Track a report view - increments view count for unique visitors
  * Uses IP hash for privacy (no raw IPs stored)
+ *
+ * Uses atomic create operation to prevent race conditions:
+ * - If create succeeds (new unique visitor), increment counter
+ * - If unique constraint fails (returning visitor), do nothing
  */
 async function trackReportView(reportId: string, request: NextRequest): Promise<void> {
   try {
@@ -35,47 +39,58 @@ async function trackReportView(reportId: string, request: NextRequest): Promise<
 
     const userAgent = request.headers.get('user-agent')?.substring(0, 255);
 
-    // Try to create a new view record (unique per reportId + ipHash)
-    const _result = await prisma.reportView.upsert({
-      where: {
-        reportId_ipHash: {
+    // Atomic operation: Try to create a new view record
+    // If it already exists (unique constraint violation), this is a returning visitor
+    // Use transaction to ensure atomicity of create + increment
+    await prisma.$transaction(async (tx) => {
+      // Check if view already exists
+      const existingView = await tx.reportView.findUnique({
+        where: {
+          reportId_ipHash: {
+            reportId,
+            ipHash,
+          },
+        },
+      });
+
+      if (existingView) {
+        // Returning visitor - just update the timestamp for analytics
+        await tx.reportView.update({
+          where: {
+            reportId_ipHash: {
+              reportId,
+              ipHash,
+            },
+          },
+          data: {
+            createdAt: new Date(),
+            userAgent,
+          },
+        });
+        // Don't increment view count for returning visitors
+        return;
+      }
+
+      // New unique visitor - create record and increment counter atomically
+      await tx.reportView.create({
+        data: {
           reportId,
           ipHash,
+          userAgent,
         },
-      },
-      create: {
-        reportId,
-        ipHash,
-        userAgent,
-      },
-      update: {
-        // Update timestamp on revisit (optional analytics)
-        createdAt: new Date(),
-      },
-    });
+      });
 
-    // Only increment view count for new unique visitors
-    // Check if this was a new record (created vs updated)
-    const existingView = await prisma.reportView.findFirst({
-      where: {
-        reportId,
-        ipHash,
-        createdAt: {
-          lt: new Date(Date.now() - 1000), // Created more than 1 second ago
-        },
-      },
-    });
-
-    if (!existingView) {
-      // New unique view - increment counter
-      await prisma.report.update({
+      await tx.report.update({
         where: { id: reportId },
         data: { viewCount: { increment: 1 } },
       });
-    }
+    });
   } catch (error) {
     // Don't fail the request if view tracking fails
-    console.error('[ViewTracking] Error:', error);
+    // Log only if it's not a unique constraint error (which we handle above)
+    if (!(error instanceof Error && error.message.includes('Unique constraint'))) {
+      console.error('[ViewTracking] Error:', error);
+    }
   }
 }
 

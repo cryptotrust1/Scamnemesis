@@ -5,9 +5,10 @@ import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
+// Prisma uses CUID by default, not UUID - accept any non-empty string ID
 const MergeBodySchema = z.object({
-  primary_report_id: z.string().uuid('Invalid primary report ID'),
-  merge_report_ids: z.array(z.string().uuid('Invalid report ID')).max(100).optional(),
+  primary_report_id: z.string().min(1, 'Invalid primary report ID').max(100),
+  merge_report_ids: z.array(z.string().min(1, 'Invalid report ID').max(100)).max(100).optional(),
 });
 
 export async function POST(
