@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { jwtVerify, SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { emailService } from '@/lib/services/email';
-import { checkRateLimit, getRateLimitKey, RATE_LIMITS } from '@/lib/middleware/rate-limit';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,23 +24,19 @@ const ResendVerificationSchema = z.object({
  * Verifies user's email address using the verification token.
  */
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
+  const ip = getClientIp(request);
 
   // Rate limiting: 20 attempts per hour
-  const rateLimitKey = getRateLimitKey('verify-email', ip);
-  const rateLimit = await checkRateLimit(rateLimitKey, {
-    windowMs: RATE_LIMITS.DEFAULT.windowMs,
-    maxRequests: 20,
-  });
+  const rateLimitKey = `verify-email:${ip}`;
+  const rateLimit = await checkRateLimit(rateLimitKey, 20, 3600000); // 20 per hour
 
   if (!rateLimit.allowed) {
+    const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
     return NextResponse.json(
       {
         error: 'rate_limit_exceeded',
         message: 'Too many verification attempts. Please try again later.',
-        retry_after: rateLimit.retryAfter,
+        retry_after: retryAfter,
       },
       { status: 429 }
     );
@@ -160,23 +156,19 @@ export async function POST(request: NextRequest) {
  * Resends verification email to user.
  */
 export async function PUT(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
+  const ip = getClientIp(request);
 
   // Strict rate limiting: 3 resends per hour
-  const rateLimitKey = getRateLimitKey('resend-verification', ip);
-  const rateLimit = await checkRateLimit(rateLimitKey, {
-    windowMs: RATE_LIMITS.STRICT.windowMs,
-    maxRequests: 3,
-  });
+  const rateLimitKey = `resend-verification:${ip}`;
+  const rateLimit = await checkRateLimit(rateLimitKey, 3, 3600000); // 3 per hour
 
   if (!rateLimit.allowed) {
+    const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
     return NextResponse.json(
       {
         error: 'rate_limit_exceeded',
         message: 'Too many verification emails requested. Please try again later.',
-        retry_after: rateLimit.retryAfter,
+        retry_after: retryAfter,
       },
       { status: 429 }
     );
