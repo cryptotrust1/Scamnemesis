@@ -161,27 +161,6 @@ export const perpetratorSchema = z.object({
 
   address: z.string()
     .optional(),
-
-  // Vehicle info (optional - for cases involving vehicles)
-  vehicleMake: z.string()
-    .max(100, 'Značka môže mať maximálne 100 znakov')
-    .optional(),
-
-  vehicleModel: z.string()
-    .max(100, 'Model môže mať maximálne 100 znakov')
-    .optional(),
-
-  vehicleColor: z.string()
-    .max(50, 'Farba môže mať maximálne 50 znakov')
-    .optional(),
-
-  vehicleLicensePlate: z.string()
-    .max(20, 'EČV môže mať maximálne 20 znakov')
-    .optional(),
-
-  vehicleVin: z.string()
-    .max(17, 'VIN môže mať maximálne 17 znakov')
-    .optional(),
 });
 
 // Company & Vehicle Schema (for dedicated company/vehicle fraud cases)
@@ -507,6 +486,12 @@ export const completeReportSchema = z.object({
   companyCity: z.string().optional(),
   companyPostalCode: z.string().optional(),
   companyCountry: z.string().optional(),
+  // Vehicle fields
+  vehicleMake: z.string().optional(),
+  vehicleModel: z.string().optional(),
+  vehicleColor: z.string().optional(),
+  vehicleLicensePlate: z.string().optional(),
+  vehicleVin: z.string().optional(),
   registeredOwner: z.string().optional(),
   ...evidenceSchema.shape,
   ...contactInfoSchema.shape,

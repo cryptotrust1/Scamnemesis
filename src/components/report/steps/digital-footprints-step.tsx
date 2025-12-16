@@ -93,7 +93,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
         </p>
       </div>
 
-      <div className="space-y-6 max-w-3xl mx-auto">
+      <div className="space-y-6 max-w-2xl mx-auto">
         {/* Social Media Accounts Section */}
         <CollapsibleSection
           title="Účty na sociálnych sieťach"
