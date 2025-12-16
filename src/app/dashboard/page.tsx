@@ -57,23 +57,14 @@ export default function DashboardPage() {
       setIsLoading(true);
       setError(null);
 
-      // Check if user is logged in
-      const token = localStorage.getItem('token');
-      if (!token) {
-        router.push('/auth/login');
-        return;
-      }
-
-      // Fetch user data
+      // Fetch user data - auth is handled via HttpOnly cookies
       const userResponse = await fetch('/api/v1/auth/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include', // Important: Include cookies in request
       });
 
       if (!userResponse.ok) {
         if (userResponse.status === 401) {
-          localStorage.removeItem('token');
+          // Not authenticated - redirect to login
           router.push('/auth/login');
           return;
         }
@@ -85,9 +76,7 @@ export default function DashboardPage() {
 
       // Fetch user's reports
       const reportsResponse = await fetch('/api/v1/reports?reporter=me&limit=10', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include', // Include cookies for auth
       });
 
       if (reportsResponse.ok) {
@@ -104,17 +93,14 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Logout - server will clear HttpOnly cookies
       await fetch('/api/v1/auth/logout', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include', // Include cookies so server can clear them
       });
     } catch {
       // Ignore errors during logout
     } finally {
-      localStorage.removeItem('token');
       toast.success('Úspešne odhlásený');
       router.push('/');
     }
