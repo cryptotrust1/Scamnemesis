@@ -84,6 +84,8 @@ const searchParamsSchema = z.object({
   fraud_type: z.string().optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
+  amount_min: z.coerce.number().min(0).optional(),
+  amount_max: z.coerce.number().min(0).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   offset: z.coerce.number().int().min(0).default(0),
   sort: z.enum(['created_at', 'financial_loss', 'relevance']).default('created_at'),
@@ -441,6 +443,17 @@ async function semanticSearch(
       filterConditions.push(`r.fraud_type = '${sanitizedFraudType}'`);
     }
 
+    // Handle financialLossAmount filter
+    if (filters.financialLossAmount && typeof filters.financialLossAmount === 'object') {
+      const amountFilter = filters.financialLossAmount as Record<string, number>;
+      if (amountFilter.gte !== undefined) {
+        filterConditions.push(`r.financial_loss_amount >= ${Number(amountFilter.gte)}`);
+      }
+      if (amountFilter.lte !== undefined) {
+        filterConditions.push(`r.financial_loss_amount <= ${Number(amountFilter.lte)}`);
+      }
+    }
+
     const whereClause = filterConditions.join(' AND ');
 
     // Use pgvector cosine similarity search
@@ -527,6 +540,8 @@ export async function GET(request: NextRequest) {
       fraud_type: searchParams.get('fraud_type') ?? undefined,
       date_from: searchParams.get('date_from') ?? undefined,
       date_to: searchParams.get('date_to') ?? undefined,
+      amount_min: searchParams.get('amount_min') ?? undefined,
+      amount_max: searchParams.get('amount_max') ?? undefined,
       limit: searchParams.get('limit') ?? undefined,
       offset: searchParams.get('offset') ?? undefined,
     };
@@ -544,7 +559,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { q, mode, fields, country, fraud_type, date_from, date_to, limit, offset, sort, order } = parsed.data;
+    const { q, mode, fields, country, fraud_type, date_from, date_to, amount_min, amount_max, limit, offset, sort, order } = parsed.data;
 
     // Build filters
     const filters: Record<string, unknown> = {};
@@ -564,6 +579,16 @@ export async function GET(request: NextRequest) {
       }
       if (date_to) {
         (filters.createdAt as Record<string, Date>).lte = new Date(date_to);
+      }
+    }
+
+    if (amount_min !== undefined || amount_max !== undefined) {
+      filters.financialLossAmount = {};
+      if (amount_min !== undefined) {
+        (filters.financialLossAmount as Record<string, number>).gte = amount_min;
+      }
+      if (amount_max !== undefined) {
+        (filters.financialLossAmount as Record<string, number>).lte = amount_max;
       }
     }
 
