@@ -23,6 +23,7 @@ export interface AuthContext {
 
 /**
  * Extract and validate authentication from request
+ * Supports: Bearer token (header), HttpOnly cookie, API key
  */
 export async function getAuthContext(request: NextRequest): Promise<AuthContext> {
   const authHeader = request.headers.get('authorization');
@@ -32,12 +33,23 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
   let apiKey: { id: string; userId: string; scopes: string[] } | null = null;
   let scopes: string[] = [];
 
-  // Try Bearer token first
+  // Try Bearer token from header first
   if (authHeader?.startsWith('Bearer ')) {
     const token = authHeader.substring(7);
     user = await verifyToken(token);
     if (user) {
       scopes = user.scopes || [];
+    }
+  }
+
+  // Try access_token from HttpOnly cookie (for browser clients)
+  if (!user) {
+    const cookieToken = request.cookies.get('access_token')?.value;
+    if (cookieToken) {
+      user = await verifyToken(cookieToken);
+      if (user) {
+        scopes = user.scopes || [];
+      }
     }
   }
 

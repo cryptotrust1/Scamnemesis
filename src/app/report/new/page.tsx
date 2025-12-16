@@ -52,6 +52,7 @@ import { EvidenceStep } from '@/components/report/steps/evidence-step';
 import { ContactStep } from '@/components/report/steps/contact-step';
 import { ReviewStep } from '@/components/report/steps/review-step';
 import { toast } from 'sonner';
+import { secureStorageSet, secureStorageGet } from '@/lib/utils';
 import {
   fraudTypeSchema,
   basicInfoSchema,
@@ -381,18 +382,20 @@ export default function NewReportPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load draft from localStorage on mount
+  // Load draft from encrypted localStorage on mount
   useEffect(() => {
-    const draft = localStorage.getItem('report-draft');
-    if (draft) {
+    const loadDraft = async () => {
       try {
-        const parsed = JSON.parse(draft);
-        setFormData((prev) => ({ ...prev, ...parsed }));
-        toast.info('Načítaný uložený koncept');
+        const draft = await secureStorageGet<Partial<CompleteReportForm>>('report-draft');
+        if (draft) {
+          setFormData((prev) => ({ ...prev, ...draft }));
+          toast.info('Načítaný uložený koncept');
+        }
       } catch {
         // Ignore invalid draft
       }
-    }
+    };
+    loadDraft();
   }, []);
 
   const updateField = (field: string, value: unknown) => {
@@ -505,9 +508,14 @@ export default function NewReportPage() {
     }
   };
 
-  const handleSaveDraft = () => {
-    localStorage.setItem('report-draft', JSON.stringify(formData));
-    toast.success('Koncept bol uložený');
+  const handleSaveDraft = async () => {
+    try {
+      await secureStorageSet('report-draft', formData);
+      toast.success('Koncept bol uložený (šifrovaný)');
+    } catch (error) {
+      console.error('Failed to save draft:', error);
+      toast.error('Nepodarilo sa uložiť koncept');
+    }
   };
 
   const handleGoToStep = (step: number) => {

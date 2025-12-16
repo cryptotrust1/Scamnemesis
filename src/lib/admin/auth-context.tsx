@@ -12,7 +12,6 @@ interface AdminUser {
 
 interface AuthContextType {
   user: AdminUser | null;
-  token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
@@ -22,41 +21,43 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const TOKEN_KEY = 'admin_token';
-const REFRESH_TOKEN_KEY = 'admin_refresh_token';
+// Only store non-sensitive user info in localStorage (not tokens!)
+// Tokens are now stored in HttpOnly cookies for security
 const USER_KEY = 'admin_user';
 
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   // Check for existing session on mount
+  // Note: Tokens are now in HttpOnly cookies, so we verify by making an API call
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    const storedUser = localStorage.getItem(USER_KEY);
+    const checkAuth = async () => {
+      // First check cached user in localStorage
+      const storedUser = localStorage.getItem(USER_KEY);
 
-    if (storedToken && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        // Verify user has admin privileges
-        if (parsedUser.scopes?.some((s: string) => s === '*' || s.startsWith('admin:'))) {
-          setToken(storedToken);
-          setUser(parsedUser);
-        } else {
-          // Clear non-admin session
-          localStorage.removeItem(TOKEN_KEY);
-          localStorage.removeItem(REFRESH_TOKEN_KEY);
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          // Verify user has admin privileges from cached data
+          if (parsedUser.scopes?.some((s: string) => s === '*' || s.startsWith('admin:'))) {
+            setUser(parsedUser);
+          } else {
+            localStorage.removeItem(USER_KEY);
+          }
+        } catch {
           localStorage.removeItem(USER_KEY);
         }
-      } catch {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
       }
-    }
-    setIsLoading(false);
+
+      // Optionally verify with server that session is still valid
+      // by making a test request (cookies are sent automatically)
+      // This is optional - the API will return 401 if session expired
+      setIsLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
@@ -66,6 +67,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: Include cookies in request/response
         body: JSON.stringify({
           grant_type: 'password',
           email,
@@ -85,6 +87,8 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (!hasAdminAccess) {
+        // Logout to clear the cookies since this user doesn't have admin access
+        await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
         return { success: false, error: 'Nemáte oprávnenia pre admin prístup' };
       }
 
@@ -103,14 +107,8 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         scopes: data.scopes,
       };
 
-      // Store in state and localStorage
-      setToken(data.access_token);
+      // Store user info in state and localStorage (NOT tokens - those are in HttpOnly cookies)
       setUser(adminUser);
-
-      localStorage.setItem(TOKEN_KEY, data.access_token);
-      if (data.refresh_token) {
-        localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
-      }
       localStorage.setItem(USER_KEY, JSON.stringify(adminUser));
 
       return { success: true };
@@ -120,12 +118,22 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    setToken(null);
+  const logout = useCallback(async () => {
+    // Clear local state
     setUser(null);
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+
+    // Call logout API to clear HttpOnly cookies and invalidate refresh token
+    try {
+      await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout API error:', error);
+      // Continue with logout even if API call fails
+    }
+
     router.push('/admin/login');
   }, [router]);
 
@@ -137,9 +145,9 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     user,
-    token,
     isLoading,
-    isAuthenticated: !!token && !!user,
+    // User is authenticated if we have user info (tokens are in HttpOnly cookies)
+    isAuthenticated: !!user,
     login,
     logout,
     hasScope,

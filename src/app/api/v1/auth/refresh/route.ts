@@ -2,6 +2,7 @@
  * POST /api/v1/auth/refresh
  *
  * Refresh JWT token using refresh token
+ * Supports both HttpOnly cookie and request body for refresh token
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,6 +17,35 @@ import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { jwtVerify } from 'jose';
 
 export const dynamic = 'force-dynamic';
+
+// Cookie configuration
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: 'lax' as const,
+  path: '/',
+};
+
+/**
+ * Set auth tokens as HttpOnly cookies on the response
+ */
+function setAuthCookies(
+  response: NextResponse,
+  accessToken: string,
+  refreshToken: string
+): void {
+  response.cookies.set('access_token', accessToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 60 * 60, // 1 hour
+  });
+
+  response.cookies.set('refresh_token', refreshToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    path: '/api/v1/auth',
+  });
+}
 
 // Rate limit for refresh endpoint
 const REFRESH_RATE_LIMIT = 20; // 20 attempts per window
@@ -66,20 +96,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const parsed = refreshSchema.safeParse(body);
+    // Try to get refresh token from cookie first, then from request body
+    let refresh_token: string | undefined;
 
-    if (!parsed.success) {
+    // Check cookie first (preferred for browser clients)
+    const cookieToken = request.cookies.get('refresh_token')?.value;
+    if (cookieToken) {
+      refresh_token = cookieToken;
+    } else {
+      // Fall back to request body (for API clients)
+      try {
+        const body = await request.json();
+        const parsed = refreshSchema.safeParse(body);
+        if (parsed.success) {
+          refresh_token = parsed.data.refresh_token;
+        }
+      } catch {
+        // No body or invalid JSON - that's ok if we have a cookie
+      }
+    }
+
+    if (!refresh_token) {
       return NextResponse.json(
         {
           error: 'validation_error',
-          message: 'refresh_token is required',
+          message: 'refresh_token is required (via cookie or request body)',
         },
         { status: 400 }
       );
     }
-
-    const { refresh_token } = parsed.data;
 
     // Verify the refresh token
     let payload;
@@ -167,13 +212,25 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      access_token: accessToken,
+    // Create response
+    const response = NextResponse.json({
       token_type: 'Bearer',
       expires_in: 3600,
-      refresh_token: newRefreshToken,
       scopes,
+      user: {
+        id: storedToken.user.id,
+        email: storedToken.user.email,
+        role: storedToken.user.role,
+      },
+      // Legacy: Still include tokens in response body for API clients
+      access_token: accessToken,
+      refresh_token: newRefreshToken,
     });
+
+    // Set HttpOnly cookies for browser clients
+    setAuthCookies(response, accessToken, newRefreshToken);
+
+    return response;
   } catch (error) {
     console.error('Refresh error:', error);
     return NextResponse.json(
