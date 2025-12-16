@@ -34,17 +34,55 @@ const nextConfig = {
     return config;
   },
 
-  // ESLint configuration
+  // ESLint configuration - strict mode for production quality
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // Run ESLint during builds to catch errors
+    ignoreDuringBuilds: false,
   },
 
-  // TypeScript configuration
+  // TypeScript configuration - strict mode for type safety
   typescript: {
-    // Temporarily ignore build errors for CI
-    ignoreBuildErrors: true,
+    // Do not ignore TypeScript errors for production quality
+    ignoreBuildErrors: false,
+  },
+
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+    ];
   },
 
   // Image optimization
