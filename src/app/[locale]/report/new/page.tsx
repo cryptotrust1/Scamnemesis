@@ -721,34 +721,30 @@ export default function NewReportPage() {
           domain_creation_date: formData.domainCreationDate,
           ip_address: formData.ipAddress,
           ip_country: formData.ipCountry,
-          isp_provider: formData.ispProvider,
+          isp: formData.ispProvider,
           ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
         },
         financial: {
           iban: formData.iban,
-          account_holder_name: formData.accountHolderName,
+          account_holder: formData.accountHolderName,
           account_number: formData.accountNumber || formData.bankAccount,
           bank_name: formData.bankName,
           bank_country: formData.bankCountry,
           swift_bic: formData.swiftBic,
           routing_number: formData.routingNumber,
-          bsb_code: formData.bsbCode,
+          bsb: formData.bsbCode,
           sort_code: formData.sortCode,
-          ifsc_code: formData.ifscCode,
-          cnaps_code: formData.cnapsCode,
-          other_details: formData.otherBankingDetails,
+          ifsc: formData.ifscCode,
+          cnaps: formData.cnapsCode,
+          other_banking_details: formData.otherBankingDetails,
         },
-        crypto: formData.walletAddress || formData.cryptoWallet
+        crypto: formData.walletAddress || formData.cryptoWallet || formData.paypalAccount
           ? {
               wallet_address: formData.walletAddress || formData.cryptoWallet,
               blockchain: formData.blockchain,
-              exchange_name: formData.exchangeName,
+              exchange_wallet_name: formData.exchangeName,
               transaction_hash: formData.transactionHash,
-            }
-          : undefined,
-        paypal: formData.paypalAccount
-          ? {
-              account: formData.paypalAccount,
+              paypal_account: formData.paypalAccount,
             }
           : undefined,
         company:
@@ -801,9 +797,11 @@ export default function NewReportPage() {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.removeItem('report-draft');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('report-draft');
+        }
         toast.success('Hlásenie bolo úspešne odoslané!');
-        router.push(`/report/success?id=${data.id || data.publicId}`);
+        router.push(`/${locale}/report/success?id=${data.id || data.publicId}`);
       } else {
         const errorData = await response.json().catch(() => null);
         toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
