@@ -726,6 +726,16 @@ export default function NewReportPage() {
                 vat_tax_id: formData.companyId,
               }
             : undefined,
+        vehicle:
+          formData.vehicleMake || formData.vehicleModel || formData.vehicleLicensePlate
+            ? {
+                make: formData.vehicleMake,
+                model: formData.vehicleModel,
+                color: formData.vehicleColor,
+                license_plate: formData.vehicleLicensePlate,
+                vin: formData.vehicleVin,
+              }
+            : undefined,
         evidence: uploadedEvidence.length > 0 ? uploadedEvidence : undefined,
         reporter: {
           name: formData.reporterName,
