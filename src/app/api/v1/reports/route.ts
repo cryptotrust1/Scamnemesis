@@ -158,6 +158,8 @@ const reporterSchema = z.object({
   phone: z.string().optional(),
   preferred_language: z.string().default('en'),
   consent: z.boolean(),
+  want_updates: z.boolean().optional().default(false),
+  agree_to_terms: z.boolean().optional().default(false),
 });
 
 const createReportSchema = z.object({
@@ -253,6 +255,9 @@ export async function POST(request: NextRequest) {
           reporterPhone: data.reporter.phone,
           reporterConsent: data.reporter.consent,
           reporterLang: data.reporter.preferred_language,
+          wantUpdates: data.reporter.want_updates || false,
+          agreeToTerms: data.reporter.agree_to_terms || false,
+          agreeToGDPR: data.reporter.consent || false,
         },
       });
 

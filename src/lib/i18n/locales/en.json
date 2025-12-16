@@ -64,13 +64,24 @@
   "report": {
     "title": "Report Fraud",
     "subtitle": "Help protect others from scammers",
+    "backToHome": "Back to home page",
     "steps": {
-      "fraudType": "Fraud Type",
-      "basicInfo": "Basic Info",
-      "perpetrator": "Perpetrator",
-      "evidence": "Evidence",
-      "contact": "Contact",
-      "review": "Review"
+      "fraudType": { "title": "Fraud Type", "description": "Category" },
+      "basicInfo": { "title": "Basic Info", "description": "Incident" },
+      "perpetrator": { "title": "Perpetrator", "description": "Details" },
+      "digitalFootprints": { "title": "Digital Footprints", "description": "Online" },
+      "financialDetails": { "title": "Financial Details", "description": "Accounts" },
+      "companyVehicle": { "title": "Company/Vehicle", "description": "Business" },
+      "evidence": { "title": "Evidence", "description": "Files" },
+      "contact": { "title": "Contact", "description": "Details" },
+      "review": { "title": "Review", "description": "Submit" }
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "saveDraft": "Save Draft",
+      "submit": "Submit Report",
+      "submitting": "Submitting..."
     },
     "fraudTypes": {
       "investment": "Investment Fraud",
@@ -119,6 +130,43 @@
     "success": {
       "title": "Report submitted successfully!",
       "description": "Thank you for your contribution to protecting others."
+    },
+    "evidence": {
+      "title": "Evidence & Attachments",
+      "subtitle": "Upload screenshots, documents, or videos that prove the fraud",
+      "categories": {
+        "payment": "Payment Evidence",
+        "fraudsterPhotos": "Fraudster Photos",
+        "screenshots": "Screenshots",
+        "damageDocumentation": "Damage Documentation",
+        "crimeScene": "Crime Scene Photos",
+        "other": "Other Evidence"
+      },
+      "descriptions": {
+        "paymentDesc": "Bank statements, transfer receipts, payment confirmations",
+        "fraudsterPhotosDesc": "Photos or images of the scammer",
+        "screenshotsDesc": "Screenshots of conversations, messages, emails",
+        "damageDocumentationDesc": "Documents proving financial or other damage",
+        "crimeSceneDesc": "Photos of locations related to the fraud",
+        "otherDesc": "Any other relevant evidence"
+      },
+      "dragDrop": "Drag files here",
+      "orClickToSelect": "or click to select",
+      "selectFiles": "Select Files",
+      "addLink": "Add Link",
+      "add": "Add",
+      "urlPlaceholder": "https://...",
+      "descriptionPlaceholder": "Description (optional)",
+      "maxSize": "Max 20MB per file",
+      "fileDescription": "File description (optional)",
+      "tipsTitle": "Tips for quality evidence:",
+      "tips": [
+        "Screenshots of conversations with the scammer",
+        "Payment confirmations and transfers",
+        "Emails and messages from the scammer",
+        "Photos of fake documents",
+        "Website recordings"
+      ]
     }
   },
   "reportDetail": {

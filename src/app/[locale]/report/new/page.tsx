@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
+import { useTranslation } from '@/lib/i18n/context';
 import {
   ArrowLeft,
   ArrowRight,
@@ -76,19 +77,22 @@ interface EvidenceFile {
   url?: string;
   description?: string;
   file?: File;
+  category: 'PAYMENT' | 'FRAUDSTER_PHOTOS' | 'SCREENSHOTS' | 'DAMAGE_DOCUMENTATION' | 'CRIME_SCENE' | 'OTHER';
+  externalUrl?: string;
 }
 
-const steps = [
-  { id: 1, title: 'Typ podvodu', description: 'Výber kategórie' },
-  { id: 2, title: 'Základné info', description: 'Popis incidentu' },
-  { id: 3, title: 'Páchateľ', description: 'Údaje o páchateľovi' },
-  { id: 4, title: 'Digitálne stopy', description: 'Online profily' },
-  { id: 5, title: 'Finančné údaje', description: 'Bankové a krypto' },
-  { id: 6, title: 'Firma a vozidlo', description: 'Firemné údaje' },
-  { id: 7, title: 'Dôkazy', description: 'Nahratie súborov' },
-  { id: 8, title: 'Kontakt', description: 'Vaše údaje' },
-  { id: 9, title: 'Kontrola', description: 'Kontrola a odoslanie' },
-];
+// Step keys for translation lookup
+const stepKeys = [
+  'fraudType',
+  'basicInfo',
+  'perpetrator',
+  'digitalFootprints',
+  'financialDetails',
+  'companyVehicle',
+  'evidence',
+  'contact',
+  'review',
+] as const;
 
 // JSON-LD Schema Data
 const webPageSchema = {
@@ -398,6 +402,7 @@ const recoverySteps = [
 
 export default function NewReportPage() {
   const router = useRouter();
+  const { translations, locale } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<CompleteReportForm>>({
     currency: 'EUR',
@@ -409,6 +414,20 @@ export default function NewReportPage() {
   const [files, setFiles] = useState<EvidenceFile[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Build translated steps array
+  const steps = useMemo(() => {
+    const reportSteps = translations.report?.steps || {};
+    return stepKeys.map((key, index) => {
+      const step = reportSteps[key as keyof typeof reportSteps];
+      const stepData = typeof step === 'object' && step !== null ? step : { title: key, description: '' };
+      return {
+        id: index + 1,
+        title: (stepData as { title?: string; description?: string }).title || key,
+        description: (stepData as { title?: string; description?: string }).description || '',
+      };
+    });
+  }, [translations]);
 
   // Load draft from encrypted localStorage on mount
   useEffect(() => {
@@ -763,8 +782,10 @@ export default function NewReportPage() {
           name: formData.reporterName,
           email: formData.reporterEmail || 'anonymous@scamnemesis.com',
           phone: formData.reporterPhone,
-          preferred_language: 'sk',
+          preferred_language: locale || 'sk',
           consent: formData.agreeToGDPR || false,
+          want_updates: formData.wantUpdates || false,
+          agree_to_terms: formData.agreeToTerms || false,
         },
       };
 
@@ -1102,11 +1123,11 @@ export default function NewReportPage() {
               <div className="mb-8">
                 <Button variant="ghost" onClick={() => router.push('/')} className="mb-4">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Späť na domovskú stránku
+                  {translations.report?.backToHome || 'Back to home page'}
                 </Button>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Nahlásiť podvod</h2>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{translations.report?.title || 'Report Fraud'}</h2>
                 <p className="text-muted-foreground mt-2">
-                  Vyplňte formulár a pomôžte ochraňovať ostatných pred podvodníkmi
+                  {translations.report?.subtitle || 'Help protect others from scammers'}
                 </p>
               </div>
 
@@ -1133,7 +1154,7 @@ export default function NewReportPage() {
                   className="!border-gray-400 !text-gray-700 dark:!text-gray-200 dark:!border-gray-500 hover:!bg-gray-100 dark:hover:!bg-gray-700 px-4 py-2"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Späť
+                  {translations.report?.buttons?.back || translations.common?.back || 'Back'}
                 </Button>
 
                 <Button
@@ -1142,7 +1163,7 @@ export default function NewReportPage() {
                   className="!text-gray-700 dark:!text-gray-200 hover:!bg-gray-100 dark:hover:!bg-gray-700 px-4 py-2"
                 >
                   <Save className="h-4 w-4 mr-2" />
-                  Uložiť koncept
+                  {translations.report?.buttons?.saveDraft || translations.report?.saveDraft || 'Save Draft'}
                 </Button>
 
                 {currentStep < steps.length ? (
@@ -1150,7 +1171,7 @@ export default function NewReportPage() {
                     onClick={handleNext}
                     className="!bg-blue-600 hover:!bg-blue-700 !text-white font-semibold px-6 py-3 text-base"
                   >
-                    Ďalej
+                    {translations.report?.buttons?.next || translations.common?.next || 'Next'}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 ) : (
@@ -1162,11 +1183,11 @@ export default function NewReportPage() {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Odosielam...
+                        {translations.report?.buttons?.submitting || 'Submitting...'}
                       </>
                     ) : (
                       <>
-                        Odoslať hlásenie
+                        {translations.report?.buttons?.submit || translations.report?.submitReport || 'Submit Report'}
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </>
                     )}
