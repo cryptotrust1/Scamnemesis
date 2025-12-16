@@ -666,16 +666,27 @@ export default function NewReportPage() {
             uploadedEvidence = uploadResult.uploaded.map(
               (uploaded: { fileKey: string; mimeType: string }, index: number) => {
                 const originalFile = filesToUpload[index];
-                // Map MIME type to EvidenceType enum value
+                // Map MIME type and category to EvidenceType enum values (must match Prisma enum)
+                // Prisma enum: IMAGE, DOCUMENT, VIDEO, AUDIO, PAYMENT_EVIDENCE, FRAUDSTER_PHOTO,
+                //              SCREENSHOT, DAMAGE_DOCS, CRIME_SCENE, OTHER
                 let evidenceType = 'OTHER';
-                if (uploaded.mimeType.startsWith('image/')) {
-                  evidenceType = originalFile?.category === 'FRAUDSTER_PHOTOS' ? 'FRAUDSTER_PHOTO' : 'SCREENSHOT';
+                const category = originalFile?.category;
+
+                // First check category for specific types
+                if (category === 'CRIME_SCENE') {
+                  evidenceType = 'CRIME_SCENE';
+                } else if (category === 'FRAUDSTER_PHOTOS') {
+                  evidenceType = 'FRAUDSTER_PHOTO';
+                } else if (category === 'PAYMENT') {
+                  evidenceType = 'PAYMENT_EVIDENCE';
+                } else if (category === 'DAMAGE_DOCUMENTATION') {
+                  evidenceType = 'DAMAGE_DOCS';
+                } else if (uploaded.mimeType.startsWith('image/')) {
+                  evidenceType = 'SCREENSHOT';
                 } else if (uploaded.mimeType.startsWith('video/')) {
                   evidenceType = 'VIDEO';
                 } else if (uploaded.mimeType.includes('pdf') || uploaded.mimeType.includes('document')) {
-                  evidenceType = originalFile?.category === 'PAYMENT' ? 'PAYMENT_EVIDENCE'
-                    : originalFile?.category === 'DAMAGE_DOCUMENTATION' ? 'DAMAGE_DOCS'
-                    : 'DOCUMENT';
+                  evidenceType = 'DOCUMENT';
                 } else if (uploaded.mimeType.startsWith('audio/')) {
                   evidenceType = 'AUDIO';
                 }
@@ -767,17 +778,21 @@ export default function NewReportPage() {
           date: toISODateTime(formData.incidentDate),
           summary: formData.title || 'Report',
           description: formData.description,
-          financial_loss: formData.amount
+          // Only send financial_loss if amount is positive (API requires > 0)
+          financial_loss: formData.amount && parseFloat(String(formData.amount)) > 0
             ? {
                 amount: parseFloat(String(formData.amount)),
                 currency: formData.currency || 'EUR',
               }
             : undefined,
-          location: {
-            city: formData.city,
-            postal_code: formData.postalCode,
-            country: formData.country,
-          },
+          // Only send location if at least one field has value; truncate country to 2 chars
+          location: (formData.city || formData.postalCode || formData.country)
+            ? {
+                city: formData.city || undefined,
+                postal_code: formData.postalCode || undefined,
+                country: formData.country?.substring(0, 2).toUpperCase() || undefined,
+              }
+            : undefined,
         },
         // Only include if has any data (prevents Zod validation issues with empty objects)
         perpetrator: hasDefinedValues(perpetratorData) ? perpetratorData : undefined,
