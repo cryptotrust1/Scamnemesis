@@ -9,10 +9,13 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
 
-// JWT_SECRET is required - no fallback allowed for security
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
+// JWT_SECRET validation at runtime to avoid build-time failures
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required.');
+  }
+  return secret;
 }
 
 const ForgotPasswordSchema = z.object({
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
     // But only send email if user exists and is active
     if (user && user.isActive) {
       // Generate password reset token (valid for 1 hour)
-      const secret = new TextEncoder().encode(JWT_SECRET);
+      const secret = new TextEncoder().encode(getJwtSecret());
       const resetToken = await new SignJWT({
         sub: user.id,
         email: user.email,

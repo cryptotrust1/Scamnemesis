@@ -9,10 +9,13 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
 
-// JWT_SECRET is required - no fallback allowed for security
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
+// JWT_SECRET validation at runtime to avoid build-time failures
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required.');
+  }
+  return secret;
 }
 
 const VerifyEmailSchema = z.object({
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
     // Verify the token
     let payload;
     try {
-      const secret = new TextEncoder().encode(JWT_SECRET);
+      const secret = new TextEncoder().encode(getJwtSecret());
       const result = await jwtVerify(token, secret);
       payload = result.payload;
     } catch {
@@ -206,7 +209,7 @@ export async function PUT(request: NextRequest) {
     // Always return success to prevent email enumeration
     if (user && user.isActive && !user.emailVerified) {
       // Generate verification token (valid for 24 hours)
-      const secret = new TextEncoder().encode(JWT_SECRET);
+      const secret = new TextEncoder().encode(getJwtSecret());
       const verificationToken = await new SignJWT({
         sub: user.id,
         email: user.email,

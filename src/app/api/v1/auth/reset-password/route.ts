@@ -7,10 +7,13 @@ import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
-// JWT_SECRET is required - no fallback allowed for security
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required. Application cannot start without it.');
+// JWT_SECRET validation at runtime to avoid build-time failures
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required.');
+  }
+  return secret;
 }
 
 // Password validation - MUST match register endpoint exactly
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
     // Verify the reset token
     let payload;
     try {
-      const secret = new TextEncoder().encode(JWT_SECRET);
+      const secret = new TextEncoder().encode(getJwtSecret());
       const result = await jwtVerify(token, secret);
       payload = result.payload;
     } catch {
