@@ -17,6 +17,12 @@ import {
   FileImage,
   Pencil,
   CheckCircle,
+  MessageCircle,
+  Network,
+  Building2,
+  Car,
+  Bitcoin,
+  Send,
 } from 'lucide-react';
 
 interface EvidenceFile {
@@ -35,24 +41,34 @@ interface ReviewStepProps {
 
 // Labels must match Prisma FraudType enum values exactly
 const fraudTypeLabels: Record<string, string> = {
-  INVESTMENT_FRAUD: 'Investičný podvod',
   ROMANCE_SCAM: 'Romance scam',
+  INVESTMENT_FRAUD: 'Investičný podvod',
   PHISHING: 'Phishing',
   IDENTITY_THEFT: 'Krádež identity',
-  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',      // Prisma: ONLINE_SHOPPING_FRAUD
-  CRYPTOCURRENCY_SCAM: 'Crypto podvod',            // Prisma: CRYPTOCURRENCY_SCAM
-  EMPLOYMENT_SCAM: 'Pracovný podvod',              // Prisma: EMPLOYMENT_SCAM
-  RENTAL_SCAM: 'Podvod s prenájmom',               // Prisma: RENTAL_SCAM
-  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',          // Prisma: ADVANCE_FEE_FRAUD
-  FAKE_CHARITY: 'Falošná charita',
+  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',
   TECH_SUPPORT_SCAM: 'Tech support scam',
-  LOTTERY_PRIZE_SCAM: 'Loterný podvod',            // Prisma: LOTTERY_PRIZE_SCAM
-  GOVERNMENT_IMPERSONATION: 'Napodobenie úradu',   // Prisma: GOVERNMENT_IMPERSONATION
-  INSURANCE_FRAUD: 'Poistný podvod',               // Prisma: INSURANCE_FRAUD
-  TAX_SCAM: 'Daňový podvod',                       // Prisma: TAX_SCAM
-  BANKING_FRAUD: 'Bankový podvod',                 // Prisma: BANKING_FRAUD
-  PONZI_SCHEME: 'Ponziho schéma',                  // Prisma: PONZI_SCHEME
-  MLM_SCAM: 'MLM podvod',                          // Prisma: MLM_SCAM
+  LOTTERY_PRIZE_SCAM: 'Loterný podvod',
+  EMPLOYMENT_SCAM: 'Pracovný podvod',
+  RENTAL_SCAM: 'Podvod s prenájmom',
+  CRYPTOCURRENCY_SCAM: 'Crypto podvod',
+  PYRAMID_MLM_SCHEME: 'Pyramídová/MLM schéma',
+  INSURANCE_FRAUD: 'Poistný podvod',
+  CREDIT_CARD_FRAUD: 'Podvod s platobnou kartou',
+  WIRE_FRAUD: 'Telegrafický podvod',
+  MONEY_MULE: 'Peňažný mulica',
+  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',
+  BUSINESS_EMAIL_COMPROMISE: 'Kompromitácia firemného emailu',
+  SOCIAL_ENGINEERING: 'Sociálne inžinierstvo',
+  FAKE_CHARITY: 'Falošná charita',
+  GOVERNMENT_IMPERSONATION: 'Napodobenie úradu',
+  UTILITY_SCAM: 'Podvod s energiami',
+  GRANDPARENT_SCAM: 'Podvod na starých rodičov',
+  SEXTORTION: 'Sexuálne vydieranie',
+  RANSOMWARE: 'Ransomware',
+  ACCOUNT_TAKEOVER: 'Prevzatie účtu',
+  SIM_SWAPPING: 'SIM swapping',
+  CATFISHING: 'Catfishing',
+  PONZI_SCHEME: 'Ponziho schéma',
   OTHER: 'Iný typ',
 };
 
@@ -60,6 +76,20 @@ const perpetratorTypeLabels: Record<string, string> = {
   INDIVIDUAL: 'Fyzická osoba',
   COMPANY: 'Firma / Organizácia',
   UNKNOWN: 'Neznámy',
+};
+
+const blockchainLabels: Record<string, string> = {
+  BITCOIN: 'Bitcoin (BTC)',
+  ETHEREUM: 'Ethereum (ETH)',
+  TRON: 'Tron (TRX)',
+  SOLANA: 'Solana (SOL)',
+  BINANCE_SMART_CHAIN: 'Binance Smart Chain (BSC)',
+  POLYGON: 'Polygon (MATIC)',
+  CARDANO: 'Cardano (ADA)',
+  RIPPLE: 'Ripple (XRP)',
+  LITECOIN: 'Litecoin (LTC)',
+  POLKADOT: 'Polkadot (DOT)',
+  OTHER: 'Iný blockchain',
 };
 
 function formatFileSize(bytes: number): string {
@@ -168,27 +198,146 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
             {data.address && (
               <DataRow icon={MapPin} label="Adresa" value={data.address} />
             )}
-            <DataRow icon={CreditCard} label="IBAN / Účet" value={data.iban} />
-            {data.bankAccount && (
-              <DataRow label="Banka" value={data.bankAccount} />
+          </div>
+
+          {!data.name && !data.phone && !data.email && !data.website && (
+            <p className="text-muted-foreground italic">Žiadne údaje o páchateľovi neboli zadané</p>
+          )}
+        </div>
+
+        {/* Digital Footprints Section */}
+        <div className="bg-card border rounded-lg p-5">
+          <SectionHeader title="Digitálne stopy" step={4} onEdit={onEdit} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <DataRow icon={Send} label="Telegram" value={data.telegram} />
+            <DataRow icon={Phone} label="WhatsApp" value={data.whatsapp} />
+            <DataRow icon={Phone} label="Signal" value={data.signalNumber} />
+            <DataRow icon={MessageCircle} label="Instagram" value={data.instagram} />
+            <DataRow icon={MessageCircle} label="Facebook" value={data.facebook} />
+            <DataRow icon={MessageCircle} label="TikTok" value={data.tiktokHandle} />
+            <DataRow icon={MessageCircle} label="X / Twitter" value={data.twitterHandle} />
+            <DataRow icon={Globe} label="Webová stránka" value={data.websiteUrl} />
+            <DataRow icon={Globe} label="Doména" value={data.domainName} />
+            <DataRow icon={Network} label="IP adresa" value={data.ipAddress} />
+            <DataRow icon={MapPin} label="Krajina IP" value={data.ipCountry} />
+            <DataRow label="ISP" value={data.ispProvider} />
+          </div>
+
+          {!data.telegram && !data.whatsapp && !data.instagram && !data.facebook &&
+           !data.websiteUrl && !data.ipAddress && (
+            <p className="text-muted-foreground italic">Žiadne digitálne stopy neboli zadané</p>
+          )}
+        </div>
+
+        {/* Financial Details Section */}
+        <div className="bg-card border rounded-lg p-5">
+          <SectionHeader title="Finančné údaje" step={5} onEdit={onEdit} />
+
+          <div className="space-y-4">
+            {/* Banking */}
+            {(data.iban || data.accountHolderName || data.bankName) && (
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                  <CreditCard className="h-4 w-4" />
+                  Bankové údaje
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
+                  <DataRow label="IBAN" value={data.iban} />
+                  <DataRow label="Majiteľ účtu" value={data.accountHolderName} />
+                  <DataRow label="Číslo účtu" value={data.accountNumber} />
+                  <DataRow label="Banka" value={data.bankName} />
+                  <DataRow label="Krajina banky" value={data.bankCountry} />
+                  <DataRow label="SWIFT/BIC" value={data.swiftBic} />
+                </div>
+              </div>
             )}
-            <DataRow icon={Wallet} label="Krypto peňaženka" value={data.cryptoWallet} />
-            {data.companyName && (
-              <DataRow label="Obchodné meno" value={data.companyName} />
+
+            {/* Crypto */}
+            {(data.walletAddress || data.blockchain) && (
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                  <Bitcoin className="h-4 w-4" />
+                  Kryptomenové údaje
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
+                  <DataRow label="Blockchain" value={data.blockchain ? blockchainLabels[data.blockchain] : null} />
+                  <DataRow label="Adresa peňaženky" value={data.walletAddress} />
+                  <DataRow label="Burza" value={data.exchangeName} />
+                  <DataRow label="Hash transakcie" value={data.transactionHash} />
+                </div>
+              </div>
             )}
-            {data.companyId && (
-              <DataRow label="IČO" value={data.companyId} />
+
+            {/* PayPal */}
+            {data.paypalAccount && (
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                  <Wallet className="h-4 w-4" />
+                  PayPal
+                </h4>
+                <div className="pl-6">
+                  <DataRow label="PayPal účet" value={data.paypalAccount} />
+                </div>
+              </div>
             )}
           </div>
 
-          {!data.name && !data.phone && !data.email && !data.website && !data.iban && !data.cryptoWallet && (
-            <p className="text-muted-foreground italic">Žiadne údaje o páchateľovi neboli zadané</p>
+          {!data.iban && !data.walletAddress && !data.paypalAccount && (
+            <p className="text-muted-foreground italic">Žiadne finančné údaje neboli zadané</p>
+          )}
+        </div>
+
+        {/* Company & Vehicle Section */}
+        <div className="bg-card border rounded-lg p-5">
+          <SectionHeader title="Firma a vozidlo" step={6} onEdit={onEdit} />
+
+          <div className="space-y-4">
+            {/* Company */}
+            {(data.companyName || data.vatTaxId) && (
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                  <Building2 className="h-4 w-4" />
+                  Informácie o firme
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
+                  <DataRow label="Názov firmy" value={data.companyName} />
+                  <DataRow label="IČO / DIČ" value={data.vatTaxId} />
+                  <DataRow label="Ulica" value={data.companyStreet} />
+                  <DataRow label="Mesto" value={data.companyCity} />
+                  <DataRow label="PSČ" value={data.companyPostalCode} />
+                  <DataRow label="Krajina" value={data.companyCountry} />
+                </div>
+              </div>
+            )}
+
+            {/* Vehicle */}
+            {(data.vehicleMake || data.vehicleLicensePlate || data.vehicleVin) && (
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                  <Car className="h-4 w-4" />
+                  Informácie o vozidle
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
+                  <DataRow label="Značka" value={data.vehicleMake} />
+                  <DataRow label="Model" value={data.vehicleModel} />
+                  <DataRow label="Farba" value={data.vehicleColor} />
+                  <DataRow label="EČV" value={data.vehicleLicensePlate} />
+                  <DataRow label="VIN" value={data.vehicleVin} />
+                  <DataRow label="Registrovaný vlastník" value={data.registeredOwner} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {!data.companyName && !data.vatTaxId && !data.vehicleMake && !data.vehicleLicensePlate && (
+            <p className="text-muted-foreground italic">Žiadne údaje o firme alebo vozidle neboli zadané</p>
           )}
         </div>
 
         {/* Evidence Section */}
         <div className="bg-card border rounded-lg p-5">
-          <SectionHeader title="Dôkazy a prílohy" step={4} onEdit={onEdit} />
+          <SectionHeader title="Dôkazy a prílohy" step={7} onEdit={onEdit} />
 
           {data.files && data.files.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -221,7 +370,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
 
         {/* Contact Section */}
         <div className="bg-card border rounded-lg p-5">
-          <SectionHeader title="Kontaktné údaje" step={5} onEdit={onEdit} />
+          <SectionHeader title="Kontaktné údaje" step={8} onEdit={onEdit} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <DataRow icon={User} label="Vaše meno" value={data.reporterName} />

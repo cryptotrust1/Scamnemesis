@@ -86,10 +86,21 @@ enum EvidenceType {
 enum Blockchain {
   BITCOIN
   ETHEREUM
-  TETHER
-  BINANCE
+  TRON
   SOLANA
+  BINANCE_SMART_CHAIN
+  POLYGON
+  CARDANO
+  RIPPLE
+  LITECOIN
+  POLKADOT
   OTHER
+}
+
+enum PerpetratorType {
+  INDIVIDUAL
+  COMPANY
+  UNKNOWN
 }
 
 enum CommentStatus {
@@ -209,6 +220,11 @@ model Report {
   reporterConsent Boolean   @default(true) @map("reporter_consent")
   reporterLang    String    @default("en") @map("reporter_lang")
 
+  // Consent fields
+  wantUpdates     Boolean   @default(false) @map("want_updates")
+  agreeToTerms    Boolean   @default(false) @map("agree_to_terms")
+  agreeToGDPR     Boolean   @default(false) @map("agree_to_gdpr")
+
   // Admin / Moderation
   moderatedById    String?   @map("moderated_by_id")
   moderatedAt      DateTime? @map("moderated_at")
@@ -258,8 +274,9 @@ model Report {
 }
 
 model Perpetrator {
-  id                  String  @id @default(cuid())
-  reportId            String  @map("report_id")
+  id                  String          @id @default(cuid())
+  reportId            String          @map("report_id")
+  perpetratorType     PerpetratorType @default(INDIVIDUAL) @map("perpetrator_type")
 
   fullName            String? @map("full_name")
   fullNameNormalized  String? @map("full_name_normalized")
