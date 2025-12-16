@@ -21,20 +21,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-      if (!token) {
-        setUser(null);
-        return;
-      }
-
+      // Auth tokens are in HttpOnly cookies - just try to get user
       const response = await authApi.getCurrentUser();
       setUser(response.data);
     } catch {
+      // User is not authenticated (no valid session cookie)
       setUser(null);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      }
     }
   }, []);
 
