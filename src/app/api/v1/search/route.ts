@@ -423,57 +423,154 @@ async function semanticSearch(
   const embeddingStr = `[${embedding.join(',')}]`;
 
   try {
-    // Build filter conditions for raw SQL
-    const filterConditions: string[] = ["r.status = 'APPROVED'"];
+    // Sanitize filter values - only allow valid patterns
+    const sanitizedCountry = filters.locationCountry
+      ? String(filters.locationCountry).replace(/[^A-Z]/gi, '').toUpperCase().slice(0, 2)
+      : null;
+    const sanitizedFraudType = filters.fraudType
+      ? String(filters.fraudType).replace(/[^A-Z_]/gi, '').toUpperCase()
+      : null;
 
-    if (filters.locationCountry) {
-      filterConditions.push(`r.location_country = '${filters.locationCountry}'`);
+    // Use parameterized queries based on filter combinations
+    // This avoids SQL injection by using Prisma's safe parameter binding
+    type SemanticResult = {
+      id: string;
+      public_id: string;
+      fraud_type: string;
+      location_country: string | null;
+      incident_date: Date | null;
+      perpetrator_name: string | null;
+      similarity: number;
+    };
+
+    let results: SemanticResult[];
+    let countResult: [{ count: bigint }];
+
+    if (sanitizedCountry && sanitizedFraudType) {
+      // Both filters
+      results = await prisma.$queryRaw<SemanticResult[]>`
+        SELECT
+          r.id,
+          r.public_id,
+          r.fraud_type,
+          r.location_country,
+          r.incident_date,
+          p.full_name as perpetrator_name,
+          1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.location_country = ${sanitizedCountry}
+          AND r.fraud_type = ${sanitizedFraudType}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+        ORDER BY similarity DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+
+      countResult = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(DISTINCT r.id) as count
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.location_country = ${sanitizedCountry}
+          AND r.fraud_type = ${sanitizedFraudType}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+      `;
+    } else if (sanitizedCountry) {
+      // Country filter only
+      results = await prisma.$queryRaw<SemanticResult[]>`
+        SELECT
+          r.id,
+          r.public_id,
+          r.fraud_type,
+          r.location_country,
+          r.incident_date,
+          p.full_name as perpetrator_name,
+          1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.location_country = ${sanitizedCountry}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+        ORDER BY similarity DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+
+      countResult = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(DISTINCT r.id) as count
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.location_country = ${sanitizedCountry}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+      `;
+    } else if (sanitizedFraudType) {
+      // Fraud type filter only
+      results = await prisma.$queryRaw<SemanticResult[]>`
+        SELECT
+          r.id,
+          r.public_id,
+          r.fraud_type,
+          r.location_country,
+          r.incident_date,
+          p.full_name as perpetrator_name,
+          1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.fraud_type = ${sanitizedFraudType}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+        ORDER BY similarity DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+
+      countResult = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(DISTINCT r.id) as count
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND r.fraud_type = ${sanitizedFraudType}
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+      `;
+    } else {
+      // No filters
+      results = await prisma.$queryRaw<SemanticResult[]>`
+        SELECT
+          r.id,
+          r.public_id,
+          r.fraud_type,
+          r.location_country,
+          r.incident_date,
+          p.full_name as perpetrator_name,
+          1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+        ORDER BY similarity DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `;
+
+      countResult = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(DISTINCT r.id) as count
+        FROM reports r
+        LEFT JOIN perpetrators p ON p.report_id = r.id
+        WHERE r.status = 'APPROVED'
+          AND p.name_embedding IS NOT NULL
+          AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
+      `;
     }
-    if (filters.fraudType) {
-      filterConditions.push(`r.fraud_type = '${filters.fraudType}'`);
-    }
-
-    const whereClause = filterConditions.join(' AND ');
-
-    // Use pgvector cosine similarity search
-    const results = await prisma.$queryRaw<
-      Array<{
-        id: string;
-        public_id: string;
-        fraud_type: string;
-        location_country: string | null;
-        incident_date: Date | null;
-        perpetrator_name: string | null;
-        similarity: number;
-      }>
-    >`
-      SELECT
-        r.id,
-        r.public_id,
-        r.fraud_type,
-        r.location_country,
-        r.incident_date,
-        p.full_name as perpetrator_name,
-        1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
-      FROM reports r
-      LEFT JOIN perpetrators p ON p.report_id = r.id
-      WHERE ${Prisma.raw(whereClause)}
-        AND p.name_embedding IS NOT NULL
-        AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
-      ORDER BY similarity DESC
-      LIMIT ${limit}
-      OFFSET ${offset}
-    `;
-
-    // Get total count
-    const countResult = await prisma.$queryRaw<[{ count: bigint }]>`
-      SELECT COUNT(DISTINCT r.id) as count
-      FROM reports r
-      LEFT JOIN perpetrators p ON p.report_id = r.id
-      WHERE ${Prisma.raw(whereClause)}
-        AND p.name_embedding IS NOT NULL
-        AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
-    `;
 
     const total = Number(countResult[0]?.count || 0);
 

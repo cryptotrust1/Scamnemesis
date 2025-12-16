@@ -54,8 +54,12 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
     });
 
     if (key) {
-      // Check expiration
-      if (!key.expiresAt || key.expiresAt > new Date()) {
+      // Check expiration - keys without expiresAt default to 1 year max
+      const now = new Date();
+      const maxDefaultExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year from now
+      const effectiveExpiry = key.expiresAt || maxDefaultExpiry;
+
+      if (effectiveExpiry > now) {
         apiKey = {
           id: key.id,
           userId: key.userId,
@@ -66,8 +70,13 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
         // Update last used
         await prisma.apiKey.update({
           where: { id: key.id },
-          data: { lastUsedAt: new Date() },
+          data: { lastUsedAt: now },
         });
+
+        // Log warning for keys without explicit expiration
+        if (!key.expiresAt) {
+          console.warn(`[Auth] API key ${key.id} has no expiration set. Consider setting an expiration date.`);
+        }
       }
     }
   }

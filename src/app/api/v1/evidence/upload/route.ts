@@ -9,7 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { requireRateLimit } from '@/lib/middleware/auth';
+import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
@@ -21,37 +21,75 @@ const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Warn about missing S3 credentials
-if (!S3_ACCESS_KEY || !S3_SECRET_KEY) {
-  if (process.env.NODE_ENV === 'production') {
-    console.error('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
-  }
+// Check for S3 credentials
+const hasS3Credentials = !!(S3_ACCESS_KEY && S3_SECRET_KEY);
+
+if (!hasS3Credentials && process.env.NODE_ENV === 'production') {
+  console.error('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
 }
 
-// Initialize S3 Client (with fallback for development)
-const s3Client = new S3Client({
+// Initialize S3 Client - only use fallback in development
+const s3Client = hasS3Credentials ? new S3Client({
   endpoint: S3_ENDPOINT,
   region: S3_REGION,
   credentials: {
-    accessKeyId: S3_ACCESS_KEY || 'minioadmin',
-    secretAccessKey: S3_SECRET_KEY || 'minioadmin',
+    accessKeyId: S3_ACCESS_KEY!,
+    secretAccessKey: S3_SECRET_KEY!,
   },
   forcePathStyle: true, // Required for MinIO
-});
+}) : (process.env.NODE_ENV !== 'production' ? new S3Client({
+  endpoint: S3_ENDPOINT,
+  region: S3_REGION,
+  credentials: {
+    accessKeyId: 'minioadmin',
+    secretAccessKey: 'minioadmin',
+  },
+  forcePathStyle: true,
+}) : null);
 
-// Allowed file types for evidence
-const ALLOWED_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-  'application/pdf',
-  'video/mp4',
-  'video/webm',
-  'text/plain',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-];
+// Allowed file types for evidence with their magic bytes
+const ALLOWED_TYPES: Record<string, { magicBytes: number[][]; extensions: string[] }> = {
+  'image/jpeg': {
+    magicBytes: [[0xFF, 0xD8, 0xFF]],
+    extensions: ['jpg', 'jpeg'],
+  },
+  'image/png': {
+    magicBytes: [[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]],
+    extensions: ['png'],
+  },
+  'image/gif': {
+    magicBytes: [[0x47, 0x49, 0x46, 0x38, 0x37, 0x61], [0x47, 0x49, 0x46, 0x38, 0x39, 0x61]],
+    extensions: ['gif'],
+  },
+  'image/webp': {
+    magicBytes: [[0x52, 0x49, 0x46, 0x46]], // RIFF header
+    extensions: ['webp'],
+  },
+  'application/pdf': {
+    magicBytes: [[0x25, 0x50, 0x44, 0x46]], // %PDF
+    extensions: ['pdf'],
+  },
+  'video/mp4': {
+    magicBytes: [[0x00, 0x00, 0x00], [0x66, 0x74, 0x79, 0x70]], // ftyp signature
+    extensions: ['mp4'],
+  },
+  'video/webm': {
+    magicBytes: [[0x1A, 0x45, 0xDF, 0xA3]], // EBML header
+    extensions: ['webm'],
+  },
+  'text/plain': {
+    magicBytes: [], // Text files don't have magic bytes
+    extensions: ['txt'],
+  },
+  'application/msword': {
+    magicBytes: [[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]], // OLE header
+    extensions: ['doc'],
+  },
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+    magicBytes: [[0x50, 0x4B, 0x03, 0x04]], // ZIP header (DOCX is a ZIP)
+    extensions: ['docx'],
+  },
+};
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_FILES_PER_REQUEST = 10;
@@ -75,10 +113,57 @@ function generateFileKey(filename: string): string {
 }
 
 /**
- * Validate file type
+ * Validate file type by MIME type
  */
-function isValidFileType(mimeType: string): boolean {
-  return ALLOWED_TYPES.includes(mimeType);
+function isValidMimeType(mimeType: string): boolean {
+  return mimeType in ALLOWED_TYPES;
+}
+
+/**
+ * Validate file content using magic bytes
+ * Returns true if the file content matches the claimed MIME type
+ */
+function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
+  const typeInfo = ALLOWED_TYPES[mimeType];
+  if (!typeInfo) return false;
+
+  // Text files don't have magic bytes - do basic validation
+  if (typeInfo.magicBytes.length === 0) {
+    // Check for null bytes which would indicate binary file
+    for (let i = 0; i < Math.min(buffer.length, 512); i++) {
+      if (buffer[i] === 0) return false;
+    }
+    return true;
+  }
+
+  // Check if buffer starts with any of the valid magic byte sequences
+  for (const magic of typeInfo.magicBytes) {
+    if (buffer.length >= magic.length) {
+      let matches = true;
+      for (let i = 0; i < magic.length; i++) {
+        if (buffer[i] !== magic[i]) {
+          matches = false;
+          break;
+        }
+      }
+      if (matches) return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Validate file extension matches MIME type
+ */
+function validateExtension(filename: string, mimeType: string): boolean {
+  const typeInfo = ALLOWED_TYPES[mimeType];
+  if (!typeInfo) return false;
+
+  const ext = filename.split('.').pop()?.toLowerCase();
+  if (!ext) return false;
+
+  return typeInfo.extensions.includes(ext);
 }
 
 /**
@@ -86,9 +171,21 @@ function isValidFileType(mimeType: string): boolean {
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if S3 client is available
+    if (!s3Client) {
+      return NextResponse.json(
+        { error: 'service_unavailable', message: 'File upload service is not configured' },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting - 20 uploads per minute
     const rateLimitError = await requireRateLimit(request, 20);
     if (rateLimitError) return rateLimitError;
+
+    // Optional authentication - track who uploads
+    const auth = await optionalAuth(request);
+    const uploaderId = auth.user?.sub || auth.apiKey?.userId || null;
 
     // Parse multipart form data
     const formData = await request.formData();
@@ -112,11 +209,20 @@ export async function POST(request: NextRequest) {
     const errors: { filename: string; error: string }[] = [];
 
     for (const file of files) {
-      // Validate file type
-      if (!isValidFileType(file.type)) {
+      // Validate MIME type
+      if (!isValidMimeType(file.type)) {
         errors.push({
           filename: file.name,
           error: `File type not allowed: ${file.type}`,
+        });
+        continue;
+      }
+
+      // Validate file extension matches claimed MIME type
+      if (!validateExtension(file.name, file.type)) {
+        errors.push({
+          filename: file.name,
+          error: `File extension does not match content type`,
         });
         continue;
       }
@@ -138,6 +244,15 @@ export async function POST(request: NextRequest) {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
+        // Validate magic bytes to prevent file type spoofing
+        if (!validateMagicBytes(buffer, file.type)) {
+          errors.push({
+            filename: file.name,
+            error: 'File content does not match claimed type (possible file spoofing detected)',
+          });
+          continue;
+        }
+
         // Upload to S3
         const command = new PutObjectCommand({
           Bucket: S3_BUCKET,
@@ -147,6 +262,8 @@ export async function POST(request: NextRequest) {
           ContentLength: file.size,
           Metadata: {
             'original-name': encodeURIComponent(file.name),
+            'uploaded-at': new Date().toISOString(),
+            ...(uploaderId ? { 'uploader-id': uploaderId } : {}),
           },
         });
 
