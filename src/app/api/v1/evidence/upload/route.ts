@@ -16,33 +16,42 @@ export const dynamic = 'force-dynamic';
 
 // S3/MinIO Configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
-const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY;
-const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Check for S3 credentials - required in all environments
-const hasS3Credentials = !!(S3_ACCESS_KEY && S3_SECRET_KEY);
+// S3 credentials validation at runtime to avoid build-time failures
+function getS3Client(): S3Client | null {
+  const accessKey = process.env.S3_ACCESS_KEY;
+  const secretKey = process.env.S3_SECRET_KEY;
 
-if (!hasS3Credentials) {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('S3_ACCESS_KEY and S3_SECRET_KEY environment variables are required in production.');
-  } else {
-    console.warn('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY not set. File uploads will be disabled.');
-    console.warn('[Evidence] Set these environment variables to enable file uploads in development.');
+  if (!accessKey || !secretKey) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Evidence] S3_ACCESS_KEY and S3_SECRET_KEY are required in production.');
+    } else {
+      console.warn('[Evidence] S3 credentials not set. File uploads will be disabled.');
+    }
+    return null;
   }
+
+  return new S3Client({
+    endpoint: S3_ENDPOINT,
+    region: S3_REGION,
+    credentials: {
+      accessKeyId: accessKey,
+      secretAccessKey: secretKey,
+    },
+    forcePathStyle: true, // Required for MinIO
+  });
 }
 
-// Initialize S3 Client only if credentials are provided
-const s3Client = hasS3Credentials ? new S3Client({
-  endpoint: S3_ENDPOINT,
-  region: S3_REGION,
-  credentials: {
-    accessKeyId: S3_ACCESS_KEY,
-    secretAccessKey: S3_SECRET_KEY,
-  },
-  forcePathStyle: true, // Required for MinIO
-}) : null;
+// Lazy initialization of S3 client
+let _s3Client: S3Client | null | undefined = undefined;
+function getS3ClientInstance(): S3Client | null {
+  if (_s3Client === undefined) {
+    _s3Client = getS3Client();
+  }
+  return _s3Client;
+}
 
 // Allowed file types for evidence with their magic bytes
 const ALLOWED_TYPES: Record<string, { magicBytes: number[][]; extensions: string[] }> = {
@@ -169,6 +178,7 @@ function validateExtension(filename: string, mimeType: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     // Check if S3 client is available
+    const s3Client = getS3ClientInstance();
     if (!s3Client) {
       return NextResponse.json(
         { error: 'service_unavailable', message: 'File upload service is not configured' },
