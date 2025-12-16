@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 import logging
+import os
 
 from embeddings import get_embedding_service
 from image_hashing import get_image_detector
@@ -26,13 +27,21 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Configure CORS
+# Configure CORS - use environment variable for allowed origins
+# Default to localhost for development, require explicit config for production
+ALLOWED_ORIGINS = os.environ.get(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://localhost:8000"
+).split(",")
+
+# In production, ALLOWED_ORIGINS should be set to specific domains
+# e.g., ALLOWED_ORIGINS=https://scamnemesis.com,https://api.scamnemesis.com
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify allowed origins
+    allow_origins=[origin.strip() for origin in ALLOWED_ORIGINS],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],  # Only needed methods
+    allow_headers=["Content-Type", "Authorization", "X-API-Key"],
 )
 
 # Initialize services on startup
