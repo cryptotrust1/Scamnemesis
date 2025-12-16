@@ -10,6 +10,12 @@ RUN apt-get update && apt-get install -y \
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
+
+# Install CPU-only PyTorch first to avoid downloading CUDA libraries (~6GB saved)
+# This significantly reduces Docker image size and build time
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Pre-download the sentence-transformers model

@@ -1,8 +1,8 @@
 # ML Service Dependencies
 
 # Core ML libraries
+# Note: PyTorch CPU-only version is installed in Dockerfile to reduce image size
 sentence-transformers>=2.6.0
-torch>=2.0.0
 transformers>=4.30.0
 huggingface-hub>=0.20.0
 
