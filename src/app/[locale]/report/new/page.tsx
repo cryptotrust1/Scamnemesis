@@ -621,12 +621,20 @@ export default function NewReportPage() {
     setIsSubmitting(true);
 
     try {
-      // Step 1: Upload evidence files to S3
-      let uploadedEvidence: Array<{ type: string; file_key: string; description?: string }> = [];
+      // Step 1: Upload evidence files to S3 and collect external URLs
+      let uploadedEvidence: Array<{
+        type: string;
+        file_key?: string;
+        external_url?: string;
+        description?: string;
+        category?: string;
+      }> = [];
 
       if (files.length > 0) {
         const filesToUpload = files.filter((f) => f.file);
+        const externalLinks = files.filter((f) => f.externalUrl && !f.file);
 
+        // Upload actual files to S3
         if (filesToUpload.length > 0) {
           toast.info('Nahrávanie súborov...');
 
@@ -648,7 +656,6 @@ export default function NewReportPage() {
             // If S3 is unavailable (503), allow submission without files
             if (uploadResponse.status === 503) {
               toast.warning('Nahrávanie súborov nie je dostupné. Hlásenie bude odoslané bez príloh.');
-              uploadedEvidence = [];
             } else {
               throw new Error(uploadError.message || 'Chyba pri nahrávaní súborov');
             }
@@ -659,14 +666,21 @@ export default function NewReportPage() {
             uploadedEvidence = uploadResult.uploaded.map(
               (uploaded: { fileKey: string; mimeType: string }, index: number) => {
                 const originalFile = filesToUpload[index];
+                // Map MIME type to EvidenceType enum value
+                let evidenceType = 'OTHER';
+                if (uploaded.mimeType.startsWith('image/')) {
+                  evidenceType = originalFile?.category === 'FRAUDSTER_PHOTOS' ? 'FRAUDSTER_PHOTO' : 'SCREENSHOT';
+                } else if (uploaded.mimeType.startsWith('video/')) {
+                  evidenceType = 'VIDEO';
+                } else if (uploaded.mimeType.includes('pdf') || uploaded.mimeType.includes('document')) {
+                  evidenceType = originalFile?.category === 'PAYMENT' ? 'PAYMENT_EVIDENCE'
+                    : originalFile?.category === 'DAMAGE_DOCUMENTATION' ? 'DAMAGE_DOCS'
+                    : 'DOCUMENT';
+                } else if (uploaded.mimeType.startsWith('audio/')) {
+                  evidenceType = 'AUDIO';
+                }
                 return {
-                  type: uploaded.mimeType.startsWith('image/')
-                    ? 'SCREENSHOT'
-                    : uploaded.mimeType.startsWith('video/')
-                    ? 'VIDEO'
-                    : uploaded.mimeType.includes('pdf')
-                    ? 'DOCUMENT'
-                    : 'OTHER',
+                  type: evidenceType,
                   file_key: uploaded.fileKey,
                   description: originalFile?.description,
                 };
@@ -674,13 +688,83 @@ export default function NewReportPage() {
             );
           }
         }
+
+        // Add external URLs as evidence (no file upload needed)
+        externalLinks.forEach((link) => {
+          uploadedEvidence.push({
+            type: 'OTHER', // External links use OTHER type since EXTERNAL_LINK isn't in the enum
+            external_url: link.externalUrl,
+            description: link.description || `External link: ${link.externalUrl}`,
+          });
+        });
       }
 
       // Step 2: Prepare report data as JSON
+      // Helper: Convert date string to ISO 8601 format (API expects datetime with time component)
+      const toISODateTime = (dateStr: string | undefined): string | undefined => {
+        if (!dateStr) return undefined;
+        // If already in ISO format with time, return as-is
+        if (dateStr.includes('T')) return dateStr;
+        // Convert "YYYY-MM-DD" to "YYYY-MM-DDT00:00:00.000Z"
+        return `${dateStr}T00:00:00.000Z`;
+      };
+
+      // Helper: Check if object has any defined values
+      const hasDefinedValues = (obj: Record<string, unknown>): boolean => {
+        return Object.values(obj).some(v => v !== undefined && v !== null && v !== '');
+      };
+
+      // Build perpetrator object only if it has data
+      const perpetratorData = {
+        full_name: formData.name,
+        nickname: formData.nickname,
+        username: formData.username,
+        approx_age: formData.approxAge ? parseInt(String(formData.approxAge)) : undefined,
+        nationality: formData.nationality,
+        physical_description: formData.physicalDescription,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address ? { street: formData.address } : undefined,
+      };
+
+      // Build digital footprints object only if it has data
+      const digitalFootprintsData = {
+        telegram: formData.telegram,
+        whatsapp: formData.whatsapp,
+        signal: formData.signalNumber || formData.signal,
+        instagram: formData.instagram,
+        facebook: formData.facebook,
+        tiktok: formData.tiktokHandle || formData.tiktok,
+        twitter: formData.twitterHandle || formData.twitter,
+        website_url: formData.websiteUrl || formData.website,
+        domain_name: formData.domainName,
+        domain_creation_date: toISODateTime(formData.domainCreationDate),
+        ip_address: formData.ipAddress,
+        ip_country: formData.ipCountry,
+        isp: formData.ispProvider,
+        ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
+      };
+
+      // Build financial object only if it has data
+      const financialData = {
+        iban: formData.iban,
+        account_holder: formData.accountHolderName,
+        account_number: formData.accountNumber || formData.bankAccount,
+        bank_name: formData.bankName,
+        bank_country: formData.bankCountry,
+        swift_bic: formData.swiftBic,
+        routing_number: formData.routingNumber,
+        bsb: formData.bsbCode,
+        sort_code: formData.sortCode,
+        ifsc: formData.ifscCode,
+        cnaps: formData.cnapsCode,
+        other_banking_details: formData.otherBankingDetails,
+      };
+
       const reportData = {
         incident: {
           fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
-          date: formData.incidentDate,
+          date: toISODateTime(formData.incidentDate),
           summary: formData.title || 'Report',
           description: formData.description,
           financial_loss: formData.amount
@@ -695,49 +779,10 @@ export default function NewReportPage() {
             country: formData.country,
           },
         },
-        perpetrator: {
-          full_name: formData.name,
-          nickname: formData.nickname,
-          username: formData.username,
-          approx_age: formData.approxAge ? parseInt(String(formData.approxAge)) : undefined,
-          nationality: formData.nationality,
-          physical_description: formData.physicalDescription,
-          phone: formData.phone,
-          email: formData.email,
-          address: formData.address
-            ? { street: formData.address }
-            : undefined,
-        },
-        digital_footprints: {
-          telegram: formData.telegram,
-          whatsapp: formData.whatsapp,
-          signal: formData.signalNumber || formData.signal,
-          instagram: formData.instagram,
-          facebook: formData.facebook,
-          tiktok: formData.tiktokHandle || formData.tiktok,
-          twitter: formData.twitterHandle || formData.twitter,
-          website_url: formData.websiteUrl || formData.website,
-          domain_name: formData.domainName,
-          domain_creation_date: formData.domainCreationDate,
-          ip_address: formData.ipAddress,
-          ip_country: formData.ipCountry,
-          isp: formData.ispProvider,
-          ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
-        },
-        financial: {
-          iban: formData.iban,
-          account_holder: formData.accountHolderName,
-          account_number: formData.accountNumber || formData.bankAccount,
-          bank_name: formData.bankName,
-          bank_country: formData.bankCountry,
-          swift_bic: formData.swiftBic,
-          routing_number: formData.routingNumber,
-          bsb: formData.bsbCode,
-          sort_code: formData.sortCode,
-          ifsc: formData.ifscCode,
-          cnaps: formData.cnapsCode,
-          other_banking_details: formData.otherBankingDetails,
-        },
+        // Only include if has any data (prevents Zod validation issues with empty objects)
+        perpetrator: hasDefinedValues(perpetratorData) ? perpetratorData : undefined,
+        digital_footprints: hasDefinedValues(digitalFootprintsData) ? digitalFootprintsData : undefined,
+        financial: hasDefinedValues(financialData) ? financialData : undefined,
         crypto: formData.walletAddress || formData.cryptoWallet || formData.paypalAccount
           ? {
               wallet_address: formData.walletAddress || formData.cryptoWallet,
