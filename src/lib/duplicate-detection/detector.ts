@@ -407,7 +407,9 @@ export async function runDuplicateDetection(reportId: string): Promise<Duplicate
   });
 }
 
-export default {
+const duplicateDetector = {
   detectDuplicates,
   runDuplicateDetection,
 };
+
+export default duplicateDetector;

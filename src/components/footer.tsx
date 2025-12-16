@@ -8,42 +8,46 @@ import { i18n, type Locale } from '@/i18n/config';
 
 const footerLinks = {
   services: [
-    { name: { en: 'Scam Checker', sk: 'Kontrola podvodov' }, href: '/search' },
-    { name: { en: 'Report Scam', sk: 'Nahlásiť podvod' }, href: '/report/new' },
-    { name: { en: 'Money Recovery', sk: 'Vymáhanie peňazí' }, href: '/money-recovery' },
-    { name: { en: 'Verify Service/Product', sk: 'Overiť službu/produkt' }, href: '/verify-serviceproduct' },
+    { name: { en: 'Scam Checker', sk: 'Kontrola podvodov', cs: 'Kontrola podvodů', de: 'Betrugscheck' }, href: '/search' },
+    { name: { en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }, href: '/report/new' },
+    { name: { en: 'Money Recovery', sk: 'Vymáhanie peňazí', cs: 'Vymáhání peněz', de: 'Geldrückgewinnung' }, href: '/money-recovery' },
+    { name: { en: 'Verify Service/Product', sk: 'Overiť službu/produkt', cs: 'Ověřit službu/produkt', de: 'Service/Produkt prüfen' }, href: '/verify-serviceproduct' },
   ],
   resources: [
-    { name: { en: 'I Was Scammed', sk: 'Bol som podvedený' }, href: '/i-was-scammed-need-help' },
-    { name: { en: 'Scam Prevention', sk: 'Prevencia podvodov' }, href: '/scam-prevention' },
-    { name: { en: 'Training Courses', sk: 'Školenia a kurzy' }, href: '/training-courses' },
-    { name: { en: 'Scammer Removal', sk: 'Odstránenie podvodníkov' }, href: '/scammer-removal' },
+    { name: { en: 'I Was Scammed', sk: 'Bol som podvedený', cs: 'Byl jsem podveden', de: 'Ich wurde betrogen' }, href: '/i-was-scammed-need-help' },
+    { name: { en: 'Scam Prevention', sk: 'Prevencia podvodov', cs: 'Prevence podvodů', de: 'Betrugsprävention' }, href: '/scam-prevention' },
+    { name: { en: 'Training Courses', sk: 'Školenia a kurzy', cs: 'Školení a kurzy', de: 'Schulungen' }, href: '/training-courses' },
+    { name: { en: 'Scammer Removal', sk: 'Odstránenie podvodníkov', cs: 'Odstranění podvodníků', de: 'Betrügerentfernung' }, href: '/scammer-removal' },
   ],
   company: [
-    { name: { en: 'About Us', sk: 'O nás' }, href: '/about' },
-    { name: { en: 'Contact Us', sk: 'Kontaktujte nás' }, href: '/contact-us' },
-    { name: { en: 'Support Us', sk: 'Podporte nás' }, href: '/support-us' },
+    { name: { en: 'About Us', sk: 'O nás', cs: 'O nás', de: 'Über uns' }, href: '/about' },
+    { name: { en: 'Contact Us', sk: 'Kontaktujte nás', cs: 'Kontaktujte nás', de: 'Kontaktieren Sie uns' }, href: '/contact-us' },
+    { name: { en: 'Support Us', sk: 'Podporte nás', cs: 'Podpořte nás', de: 'Unterstützen Sie uns' }, href: '/support-us' },
   ],
   legal: [
-    { name: { en: 'Privacy Policy', sk: 'Ochrana súkromia' }, href: '/privacy' },
-    { name: { en: 'Terms of Service', sk: 'Podmienky používania' }, href: '/terms' },
+    { name: { en: 'Privacy Policy', sk: 'Ochrana súkromia', cs: 'Ochrana soukromí', de: 'Datenschutz' }, href: '/privacy' },
+    { name: { en: 'Terms of Service', sk: 'Podmienky používania', cs: 'Podmínky použití', de: 'Nutzungsbedingungen' }, href: '/terms' },
   ],
 };
 
 const sectionTitles = {
-  services: { en: 'Services', sk: 'Služby' },
-  resources: { en: 'Resources', sk: 'Zdroje' },
-  company: { en: 'Company', sk: 'Spoločnosť' },
+  services: { en: 'Services', sk: 'Služby', cs: 'Služby', de: 'Dienste' },
+  resources: { en: 'Resources', sk: 'Zdroje', cs: 'Zdroje', de: 'Ressourcen' },
+  company: { en: 'Company', sk: 'Spoločnosť', cs: 'Společnost', de: 'Unternehmen' },
 };
 
-const descriptions = {
+const descriptions: Record<string, string> = {
   en: 'We help victims of crypto scams and investment frauds. Our team of lawyers, forensic analysts, and ethical hackers provides rapid fraud assistance, scammer investigations, and money recovery support.',
   sk: 'Pomáhame obetiam crypto podvodov a investičných podvodov. Náš tím právnikov, forenzných analytikov a etických hackerov poskytuje rýchlu pomoc pri podvodoch, vyšetrovanie podvodníkov a podporu pri vymáhaní peňazí.',
+  cs: 'Pomáháme obětem krypto podvodů a investičních podvodů. Náš tým právníků, forenzních analytiků a etických hackerů poskytuje rychlou pomoc při podvodech, vyšetřování podvodníků a podporu při vymáhání peněz.',
+  de: 'Wir helfen Opfern von Krypto-Betrug und Investitionsbetrug. Unser Team aus Anwälten, forensischen Analysten und ethischen Hackern bietet schnelle Betrugshilfe, Betrügerermittlungen und Unterstützung bei der Geldrückgewinnung.',
 };
 
-const copyright = {
+const copyright: Record<string, string> = {
   en: 'All rights reserved.',
   sk: 'Všetky práva vyhradené.',
+  cs: 'Všechna práva vyhrazena.',
+  de: 'Alle Rechte vorbehalten.',
 };
 
 export function Footer() {

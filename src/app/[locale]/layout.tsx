@@ -18,14 +18,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
 
-  const titles = {
+  const titles: Record<string, string> = {
     en: 'Is It a Scam? Check Any Website, Person, Company, Phone or Email Instantly | ScamNemesis',
     sk: 'Je to podvod? Overte akúkoľvek webstránku, osobu, firmu, telefón alebo e-mail okamžite | ScamNemesis',
+    cs: 'Je to podvod? Zkontrolujte jakoukoliv webovou stránku, osobu, firmu, telefon nebo e-mail okamžitě | ScamNemesis',
+    de: 'Ist es Betrug? Überprüfen Sie jede Website, Person, Firma, Telefon oder E-Mail sofort | ScamNemesis',
   };
 
-  const descriptions = {
+  const descriptions: Record<string, string> = {
     en: 'Check scams instantly - verify people, websites, companies, job offers, emails, phone numbers, dating profiles. Free real-time protection with 640M+ records from 130+ trusted sources.',
     sk: 'Overte podvody okamžite - skontrolujte osoby, webstránky, firmy, pracovné ponuky, e-maily, telefónne čísla, zoznamovacie profily. Bezplatná ochrana v reálnom čase s 640M+ záznamami.',
+    cs: 'Zkontrolujte podvody okamžitě - ověřte lidi, webové stránky, firmy, pracovní nabídky, e-maily, telefonní čísla, seznamovací profily. Bezplatná ochrana v reálném čase s 640M+ záznamy.',
+    de: 'Überprüfen Sie Betrug sofort - verifizieren Sie Personen, Websites, Unternehmen, Stellenangebote, E-Mails, Telefonnummern, Dating-Profile. Kostenloser Echtzeitschutz mit 640M+ Datensätzen.',
   };
 
   return {
