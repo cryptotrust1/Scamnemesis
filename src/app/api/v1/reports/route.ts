@@ -282,7 +282,7 @@ export async function POST(request: NextRequest) {
           reporterEmail: data.reporter.email,
           reporterName: data.reporter.name,
           reporterPhone: data.reporter.phone,
-          reporterConsent: data.reporter.consent,
+          reporterConsent: data.reporter.consent || false,
           reporterLang: data.reporter.preferred_language,
           wantUpdates: data.reporter.want_updates || false,
           agreeToTerms: data.reporter.agree_to_terms || false,
