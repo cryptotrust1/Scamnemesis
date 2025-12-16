@@ -64,13 +64,24 @@
   "report": {
     "title": "Betrug melden",
     "subtitle": "Helfen Sie andere vor Betrugern zu schutzen",
+    "backToHome": "Zuruck zur Startseite",
     "steps": {
-      "fraudType": "Betrugsart",
-      "basicInfo": "Grundinfo",
-      "perpetrator": "Tater",
-      "evidence": "Beweise",
-      "contact": "Kontakt",
-      "review": "Uberprufung"
+      "fraudType": { "title": "Betrugsart", "description": "Kategorie" },
+      "basicInfo": { "title": "Grundinfo", "description": "Vorfall" },
+      "perpetrator": { "title": "Tater", "description": "Daten" },
+      "digitalFootprints": { "title": "Digitale Spuren", "description": "Online" },
+      "financialDetails": { "title": "Finanzdaten", "description": "Konten" },
+      "companyVehicle": { "title": "Firma/Fahrzeug", "description": "Geschaft" },
+      "evidence": { "title": "Beweise", "description": "Anhange" },
+      "contact": { "title": "Kontakt", "description": "Daten" },
+      "review": { "title": "Uberprufung", "description": "Absenden" }
+    },
+    "buttons": {
+      "back": "Zuruck",
+      "next": "Weiter",
+      "saveDraft": "Entwurf speichern",
+      "submit": "Meldung absenden",
+      "submitting": "Wird gesendet..."
     },
     "fraudTypes": {
       "investment": "Anlagebetrug",

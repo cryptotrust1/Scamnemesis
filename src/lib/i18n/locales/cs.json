@@ -64,13 +64,24 @@
   "report": {
     "title": "Nahlasit podvod",
     "subtitle": "Pomozte chranit ostatni pred podvodniky",
+    "backToHome": "Zpet na domovskou stranku",
     "steps": {
-      "fraudType": "Typ podvodu",
-      "basicInfo": "Zakladni info",
-      "perpetrator": "Pachatel",
-      "evidence": "Dukazy",
-      "contact": "Kontakt",
-      "review": "Kontrola"
+      "fraudType": { "title": "Typ podvodu", "description": "Kategorie" },
+      "basicInfo": { "title": "Zakladni info", "description": "Incident" },
+      "perpetrator": { "title": "Pachatel", "description": "Udaje" },
+      "digitalFootprints": { "title": "Digitalni stopy", "description": "Online" },
+      "financialDetails": { "title": "Financni udaje", "description": "Ucty" },
+      "companyVehicle": { "title": "Firma/Vozidlo", "description": "Firemni" },
+      "evidence": { "title": "Dukazy", "description": "Prilohy" },
+      "contact": { "title": "Kontakt", "description": "Udaje" },
+      "review": { "title": "Kontrola", "description": "Odeslani" }
+    },
+    "buttons": {
+      "back": "Zpet",
+      "next": "Dalsi",
+      "saveDraft": "Ulozit koncept",
+      "submit": "Odeslat hlaseni",
+      "submitting": "Odesilam..."
     },
     "fraudTypes": {
       "investment": "Investicni podvod",

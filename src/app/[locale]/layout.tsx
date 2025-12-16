@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import '../globals.css';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { I18nProvider } from '@/lib/i18n/context';
 
 const inter = Inter({ subsets: ['latin', 'latin-ext'] });
 
@@ -111,9 +112,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <I18nProvider initialLocale={locale as 'sk' | 'en' | 'cs' | 'de'}>
+          <Header />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </I18nProvider>
       </body>
     </html>
   );

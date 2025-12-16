@@ -26,107 +26,26 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/context';
 
-// Fraud types matching Prisma FraudType enum
-const fraudTypes: Array<{
-  value: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-  color: string;
-}> = [
-  {
-    value: 'INVESTMENT_FRAUD',
-    label: 'Investicny podvod',
-    description: 'Falosne investicne ponuky, pyramidove schemy, podvody s akciami',
-    icon: TrendingUp,
-    color: 'text-red-500',
-  },
-  {
-    value: 'ROMANCE_SCAM',
-    label: 'Romance scam',
-    description: 'Podvody na zoznamkach, falosne vztahy, vylakanie penazi',
-    icon: Heart,
-    color: 'text-pink-500',
-  },
-  {
-    value: 'PHISHING',
-    label: 'Phishing',
-    description: 'Podvodne emaily, SMS, falosne webove stranky',
-    icon: Mail,
-    color: 'text-orange-500',
-  },
-  {
-    value: 'IDENTITY_THEFT',
-    label: 'Kradez identity',
-    description: 'Zneuzitie osobnych udajov, dokumentov, identit',
-    icon: User,
-    color: 'text-purple-500',
-  },
-  {
-    value: 'ONLINE_SHOPPING_FRAUD',
-    label: 'E-commerce podvod',
-    description: 'Falosne e-shopy, nedodanie tovaru, podvodne platby',
-    icon: ShoppingCart,
-    color: 'text-cyan-500',
-  },
-  {
-    value: 'CRYPTOCURRENCY_SCAM',
-    label: 'Crypto podvod',
-    description: 'Podvody s kryptomenami, falosne burzy, rug pulls',
-    icon: Coins,
-    color: 'text-amber-500',
-  },
-  {
-    value: 'EMPLOYMENT_SCAM',
-    label: 'Pracovny podvod',
-    description: 'Falosne pracovne ponuky, podvody pri hladani prace',
-    icon: Briefcase,
-    color: 'text-blue-500',
-  },
-  {
-    value: 'RENTAL_SCAM',
-    label: 'Podvod s prenajmom',
-    description: 'Falosne inzeraty na byvanie, podvodne zalohy',
-    icon: Home,
-    color: 'text-green-500',
-  },
-  {
-    value: 'ADVANCE_FEE_FRAUD',
-    label: 'Podvod s pozickou',
-    description: 'Falosne pozicky, predrazene uvery, poplatky vopred',
-    icon: CreditCard,
-    color: 'text-yellow-500',
-  },
-  {
-    value: 'FAKE_CHARITY',
-    label: 'Falosna charita',
-    description: 'Podvodne zbierky, falosne charity, scam fundraising',
-    icon: HeartHandshake,
-    color: 'text-rose-500',
-  },
-  {
-    value: 'TECH_SUPPORT_SCAM',
-    label: 'Tech support scam',
-    description: 'Falosna technicka podpora, podvodne hovory',
-    icon: Phone,
-    color: 'text-indigo-500',
-  },
-  {
-    value: 'LOTTERY_PRIZE_SCAM',
-    label: 'Loterny podvod',
-    description: 'Falosne vyhry, podvodne loterie a sutaze',
-    icon: Gift,
-    color: 'text-emerald-500',
-  },
-  {
-    value: 'OTHER',
-    label: 'Iny typ',
-    description: 'Iny druh podvodu nezahrnuty vo vyssie uvedenych kategoriach',
-    icon: HelpCircle,
-    color: 'text-gray-500',
-  },
-];
+// Fraud type icons and colors - labels come from translations
+const fraudTypeConfig: Record<string, { icon: LucideIcon; color: string; translationKey: string }> = {
+  INVESTMENT_FRAUD: { icon: TrendingUp, color: 'text-red-500', translationKey: 'investment' },
+  ROMANCE_SCAM: { icon: Heart, color: 'text-pink-500', translationKey: 'romance' },
+  PHISHING: { icon: Mail, color: 'text-orange-500', translationKey: 'phishing' },
+  IDENTITY_THEFT: { icon: User, color: 'text-purple-500', translationKey: 'identity' },
+  ONLINE_SHOPPING_FRAUD: { icon: ShoppingCart, color: 'text-cyan-500', translationKey: 'ecommerce' },
+  CRYPTOCURRENCY_SCAM: { icon: Coins, color: 'text-amber-500', translationKey: 'crypto' },
+  EMPLOYMENT_SCAM: { icon: Briefcase, color: 'text-blue-500', translationKey: 'job' },
+  RENTAL_SCAM: { icon: Home, color: 'text-green-500', translationKey: 'rental' },
+  ADVANCE_FEE_FRAUD: { icon: CreditCard, color: 'text-yellow-500', translationKey: 'loan' },
+  FAKE_CHARITY: { icon: HeartHandshake, color: 'text-rose-500', translationKey: 'charity' },
+  TECH_SUPPORT_SCAM: { icon: Phone, color: 'text-indigo-500', translationKey: 'techSupport' },
+  LOTTERY_PRIZE_SCAM: { icon: Gift, color: 'text-emerald-500', translationKey: 'lottery' },
+  OTHER: { icon: HelpCircle, color: 'text-gray-500', translationKey: 'other' },
+};
+
+const fraudTypeKeys = Object.keys(fraudTypeConfig);
 
 interface FraudTypeStepProps {
   selectedType?: string;
@@ -134,8 +53,26 @@ interface FraudTypeStepProps {
 }
 
 export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
-  const selectedFraudType = fraudTypes.find((t) => t.value === selectedType);
-  const SelectedIcon = selectedFraudType?.icon;
+  const { translations } = useTranslation();
+  const fraudTypeTranslations = translations.report?.fraudTypes || {};
+
+  // Get translated label for a fraud type
+  const getLabel = (typeKey: string) => {
+    const config = fraudTypeConfig[typeKey];
+    if (!config) return typeKey;
+    return fraudTypeTranslations[config.translationKey as keyof typeof fraudTypeTranslations] || config.translationKey;
+  };
+
+  const selectedConfig = selectedType ? fraudTypeConfig[selectedType] : null;
+  const SelectedIcon = selectedConfig?.icon;
+  const selectedLabel = selectedType ? getLabel(selectedType) : '';
+
+  // UI text translations
+  const selectFraudType = translations.report?.steps?.fraudType?.title || 'Select Fraud Type';
+  const selectDescription = translations.report?.fields?.description || 'Select the category that best describes your incident';
+  const fraudTypeLabel = translations.search?.filters?.fraudType || 'Fraud Type';
+  const selectPlaceholder = translations.common?.search || 'Click to select fraud type';
+  const nextButtonHint = translations.common?.next || 'Next';
 
   return (
     <div className="space-y-8 py-4">
@@ -145,10 +82,10 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
           <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
         <h2 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">
-          Vyberte typ podvodu
+          {selectFraudType}
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
-          Vyberte kategoriu, ktora najlepsie opisuje incident, ktory chcete nahlasit
+          {selectDescription}
         </p>
       </div>
 
@@ -158,7 +95,7 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
           htmlFor="fraud-type"
           className="block text-base font-semibold mb-3 text-gray-900 dark:text-white"
         >
-          Typ podvodu <span className="text-red-500">*</span>
+          {fraudTypeLabel} <span className="text-red-500">*</span>
         </label>
 
         <Select value={selectedType || ''} onValueChange={onSelect}>
@@ -173,15 +110,17 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
                 : "border-gray-300 dark:border-gray-600"
             )}
           >
-            <SelectValue placeholder="-- Kliknite a vyberte typ podvodu --" />
+            <SelectValue placeholder={`-- ${selectPlaceholder} --`} />
           </SelectTrigger>
           <SelectContent className="max-h-[400px] bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
-            {fraudTypes.map((type) => {
-              const Icon = type.icon;
+            {fraudTypeKeys.map((typeKey) => {
+              const config = fraudTypeConfig[typeKey];
+              const Icon = config.icon;
+              const label = getLabel(typeKey);
               return (
                 <SelectItem
-                  key={type.value}
-                  value={type.value}
+                  key={typeKey}
+                  value={typeKey}
                   className="py-4 px-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-blue-50 dark:focus:bg-blue-900/30"
                 >
                   <div className="flex items-center gap-4">
@@ -189,14 +128,11 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
                       "w-10 h-10 rounded-lg flex items-center justify-center",
                       "bg-gray-100 dark:bg-gray-700"
                     )}>
-                      <Icon className={cn('h-5 w-5', type.color)} />
+                      <Icon className={cn('h-5 w-5', config.color)} />
                     </div>
                     <div>
                       <span className="font-semibold text-gray-900 dark:text-white block">
-                        {type.label}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {type.description}
+                        {label}
                       </span>
                     </div>
                   </div>
@@ -207,24 +143,21 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
         </Select>
 
         {/* Selected Type Details */}
-        {selectedFraudType && (
+        {selectedConfig && (
           <div className="mt-6 p-6 rounded-xl border-2 border-green-500 bg-green-50 dark:bg-green-900/20">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm">
                 {SelectedIcon && (
-                  <SelectedIcon className={cn('h-8 w-8', selectedFraudType.color)} />
+                  <SelectedIcon className={cn('h-8 w-8', selectedConfig.color)} />
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
                   <span className="font-bold text-lg text-gray-900 dark:text-white">
-                    {selectedFraudType.label}
+                    {selectedLabel}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {selectedFraudType.description}
-                </p>
               </div>
             </div>
           </div>
@@ -233,7 +166,7 @@ export function FraudTypeStep({ selectedType, onSelect }: FraudTypeStepProps) {
         {/* Helper Text when nothing selected */}
         {!selectedType && (
           <p className="text-base text-gray-500 dark:text-gray-400 text-center mt-6">
-            Po vybere typu podvodu kliknite na tlacidlo <strong>&quot;Dalej&quot;</strong> pre pokracovanie
+            {translations.common?.next ? `${nextButtonHint}` : 'Select a fraud type to continue'}
           </p>
         )}
       </div>

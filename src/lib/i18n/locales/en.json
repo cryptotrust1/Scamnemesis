@@ -64,13 +64,24 @@
   "report": {
     "title": "Report Fraud",
     "subtitle": "Help protect others from scammers",
+    "backToHome": "Back to home page",
     "steps": {
-      "fraudType": "Fraud Type",
-      "basicInfo": "Basic Info",
-      "perpetrator": "Perpetrator",
-      "evidence": "Evidence",
-      "contact": "Contact",
-      "review": "Review"
+      "fraudType": { "title": "Fraud Type", "description": "Category" },
+      "basicInfo": { "title": "Basic Info", "description": "Incident" },
+      "perpetrator": { "title": "Perpetrator", "description": "Details" },
+      "digitalFootprints": { "title": "Digital Footprints", "description": "Online" },
+      "financialDetails": { "title": "Financial Details", "description": "Accounts" },
+      "companyVehicle": { "title": "Company/Vehicle", "description": "Business" },
+      "evidence": { "title": "Evidence", "description": "Files" },
+      "contact": { "title": "Contact", "description": "Details" },
+      "review": { "title": "Review", "description": "Submit" }
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "saveDraft": "Save Draft",
+      "submit": "Submit Report",
+      "submitting": "Submitting..."
     },
     "fraudTypes": {
       "investment": "Investment Fraud",

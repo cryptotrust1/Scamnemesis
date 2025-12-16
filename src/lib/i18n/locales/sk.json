@@ -64,13 +64,24 @@
   "report": {
     "title": "Nahlásiť podvod",
     "subtitle": "Pomôžte ochrániť ostatných pred podvodníkmi",
+    "backToHome": "Späť na domovskú stránku",
     "steps": {
-      "fraudType": "Typ podvodu",
-      "basicInfo": "Základné info",
-      "perpetrator": "Páchateľ",
-      "evidence": "Dôkazy",
-      "contact": "Kontakt",
-      "review": "Kontrola"
+      "fraudType": { "title": "Typ podvodu", "description": "Kategória" },
+      "basicInfo": { "title": "Základné info", "description": "Incident" },
+      "perpetrator": { "title": "Páchateľ", "description": "Údaje" },
+      "digitalFootprints": { "title": "Digitálne stopy", "description": "Online" },
+      "financialDetails": { "title": "Finančné údaje", "description": "Účty" },
+      "companyVehicle": { "title": "Firma/Vozidlo", "description": "Firemné" },
+      "evidence": { "title": "Dôkazy", "description": "Prílohy" },
+      "contact": { "title": "Kontakt", "description": "Údaje" },
+      "review": { "title": "Kontrola", "description": "Odoslanie" }
+    },
+    "buttons": {
+      "back": "Späť",
+      "next": "Ďalej",
+      "saveDraft": "Uložiť koncept",
+      "submit": "Odoslať hlásenie",
+      "submitting": "Odosielam..."
     },
     "fraudTypes": {
       "investment": "Investičný podvod",
