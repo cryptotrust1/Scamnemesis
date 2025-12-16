@@ -16,18 +16,15 @@ function getJwtSecret(): Uint8Array {
 
   const jwtSecretString = process.env.JWT_SECRET;
 
-  // Only throw in production at runtime (not during build)
-  if (!jwtSecretString && process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET environment variable is required in production');
-  }
-
+  // JWT_SECRET is required in all environments for security
   if (!jwtSecretString) {
-    console.warn('[JWT] WARNING: JWT_SECRET not set. Using development fallback. Set JWT_SECRET for production!');
+    throw new Error(
+      'JWT_SECRET environment variable is required. ' +
+      'Please set JWT_SECRET in your .env file with a secure random string (min 32 characters).'
+    );
   }
 
-  _jwtSecret = new TextEncoder().encode(
-    jwtSecretString || 'dev-jwt-secret-not-for-production'
-  );
+  _jwtSecret = new TextEncoder().encode(jwtSecretString);
 
   return _jwtSecret;
 }
@@ -114,7 +111,8 @@ export function getScopesForRole(role: UserRole): string[] {
 
   switch (role) {
     case 'BASIC':
-      return baseScopes;
+      // BASIC users can submit fraud reports (they are typically victims)
+      return [...baseScopes, 'reports:write'];
 
     case 'STANDARD':
       return [...baseScopes, 'reports:write', 'search:face'];
