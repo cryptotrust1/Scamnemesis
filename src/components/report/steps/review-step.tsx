@@ -33,19 +33,26 @@ interface ReviewStepProps {
   onEdit: (step: number) => void;
 }
 
+// Labels must match Prisma FraudType enum values exactly
 const fraudTypeLabels: Record<string, string> = {
   INVESTMENT_FRAUD: 'Investičný podvod',
   ROMANCE_SCAM: 'Romance scam',
   PHISHING: 'Phishing',
   IDENTITY_THEFT: 'Krádež identity',
-  ECOMMERCE_FRAUD: 'E-commerce podvod',
-  CRYPTO_SCAM: 'Crypto podvod',
-  JOB_SCAM: 'Pracovný podvod',
-  RENTAL_FRAUD: 'Podvod s prenájmom',
-  LOAN_SCAM: 'Podvod s pôžičkou',
+  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',      // Prisma: ONLINE_SHOPPING_FRAUD
+  CRYPTOCURRENCY_SCAM: 'Crypto podvod',            // Prisma: CRYPTOCURRENCY_SCAM
+  EMPLOYMENT_SCAM: 'Pracovný podvod',              // Prisma: EMPLOYMENT_SCAM
+  RENTAL_SCAM: 'Podvod s prenájmom',               // Prisma: RENTAL_SCAM
+  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',          // Prisma: ADVANCE_FEE_FRAUD
   FAKE_CHARITY: 'Falošná charita',
   TECH_SUPPORT_SCAM: 'Tech support scam',
-  LOTTERY_SCAM: 'Loterný podvod',
+  LOTTERY_PRIZE_SCAM: 'Loterný podvod',            // Prisma: LOTTERY_PRIZE_SCAM
+  GOVERNMENT_IMPERSONATION: 'Napodobenie úradu',   // Prisma: GOVERNMENT_IMPERSONATION
+  INSURANCE_FRAUD: 'Poistný podvod',               // Prisma: INSURANCE_FRAUD
+  TAX_SCAM: 'Daňový podvod',                       // Prisma: TAX_SCAM
+  BANKING_FRAUD: 'Bankový podvod',                 // Prisma: BANKING_FRAUD
+  PONZI_SCHEME: 'Ponziho schéma',                  // Prisma: PONZI_SCHEME
+  MLM_SCAM: 'MLM podvod',                          // Prisma: MLM_SCAM
   OTHER: 'Iný typ',
 };
 

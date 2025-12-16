@@ -462,11 +462,20 @@ export default function SearchPage() {
       if (filters.country && filters.country !== 'all') {
         params.set('country', filters.country);
       }
+      if (filters.status && filters.status !== 'all') {
+        params.set('status', filters.status);
+      }
       if (filters.dateFrom) {
         params.set('date_from', filters.dateFrom);
       }
       if (filters.dateTo) {
         params.set('date_to', filters.dateTo);
+      }
+      if (filters.amountMin) {
+        params.set('amount_min', filters.amountMin);
+      }
+      if (filters.amountMax) {
+        params.set('amount_max', filters.amountMax);
       }
 
       // Sorting
@@ -517,7 +526,9 @@ export default function SearchPage() {
 
       setReports(transformedReports);
       setTotalResults(data.pagination.total);
-      setTotalPages(data.pagination.total_pages);
+      // Handle both 'total_pages' and 'pages' from API response
+      const pages = data.pagination.total_pages || (data.pagination as { pages?: number }).pages || Math.ceil(data.pagination.total / pageSize);
+      setTotalPages(pages);
 
     } catch (error) {
       console.error('[Search] Error:', error);

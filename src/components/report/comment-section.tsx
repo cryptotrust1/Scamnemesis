@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { MessageSquare, ThumbsUp, Flag, Send } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { MessageSquare, ThumbsUp, Flag, Send, Loader2 } from 'lucide-react';
 import { Button, Card, Badge } from '@/components/ui';
 import { formatRelativeTime, getInitials } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -22,50 +22,66 @@ interface CommentSectionProps {
   reportId: string;
 }
 
-// Mock comments
-const mockComments: Comment[] = [
-  {
-    id: '1',
-    author: {
-      name: 'Ján Kováč',
-      role: 'USER',
-    },
-    content:
-      'Podobná vec sa stala aj mne! Tiež ma kontaktovali cez Facebook s rovnakou ponukou. Našťastie som neposielal žiadne peniaze.',
-    createdAt: '2025-12-09T12:00:00Z',
-    upvotes: 15,
-    isApproved: true,
-  },
-  {
-    id: '2',
-    author: {
-      name: 'Moderátor',
-      role: 'MODERATOR',
-    },
-    content:
-      'Ďakujeme za podrobný popis. Tento typ podvodu je v poslednom čase veľmi častý. Odporúčame všetkým, aby nikdy neposielali peniaze na základe ponúk z neoverených zdrojov.',
-    createdAt: '2025-12-09T13:30:00Z',
-    upvotes: 42,
-    isApproved: true,
-  },
-  {
-    id: '3',
-    author: {
-      name: 'Mária Nová',
-      role: 'USER',
-    },
-    content:
-      'Kontaktoval som políciu s podobným prípadom. Odporučili mi nahlásiť to aj na finančnú políciu a národnú banku.',
-    createdAt: '2025-12-09T15:45:00Z',
-    upvotes: 8,
-    isApproved: true,
-  },
-];
+interface ApiComment {
+  id: string;
+  content: string;
+  created_at: string;
+  author?: string;
+  author_display_name?: string;
+  author_role?: string;
+  upvotes?: number;
+  status?: string;
+}
 
-export function CommentSection({ reportId: _reportId }: CommentSectionProps) {
-  const [comments, setComments] = useState<Comment[]>(mockComments);
+export function CommentSection({ reportId }: CommentSectionProps) {
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch comments from API
+  const loadComments = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/v1/reports/${reportId}/comments?limit=50`, {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        // If 404, report might not exist or no comments yet - not an error
+        if (response.status === 404) {
+          setComments([]);
+          return;
+        }
+        throw new Error('Failed to load comments');
+      }
+
+      const data = await response.json();
+
+      const formattedComments: Comment[] = (data.comments || []).map((c: ApiComment) => ({
+        id: c.id,
+        author: {
+          name: c.author_display_name || c.author || 'Anonymous',
+          role: (c.author_role?.toUpperCase() || 'USER') as 'USER' | 'ADMIN' | 'MODERATOR',
+        },
+        content: c.content,
+        createdAt: c.created_at,
+        upvotes: c.upvotes || 0,
+        isApproved: c.status === 'APPROVED',
+      }));
+
+      setComments(formattedComments);
+    } catch (error) {
+      console.error('Failed to load comments:', error);
+      // Don't show error toast on load - gracefully handle by showing empty state
+      setComments([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [reportId]);
+
+  useEffect(() => {
+    loadComments();
+  }, [loadComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,30 +91,42 @@ export function CommentSection({ reportId: _reportId }: CommentSectionProps) {
       return;
     }
 
+    if (newComment.trim().length < 10) {
+      toast.error('Komentár musí mať aspoň 10 znakov');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      const comment: Comment = {
-        id: String(comments.length + 1),
-        author: {
-          name: 'Vy',
-          role: 'USER',
-        },
-        content: newComment,
-        createdAt: new Date().toISOString(),
-        upvotes: 0,
-        isApproved: false,
-      };
+    try {
+      const response = await fetch(`/api/v1/reports/${reportId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ content: newComment }),
+      });
 
-      setComments([...comments, comment]);
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to post comment');
+      }
+
+      const data = await response.json();
+      toast.success(data.message || 'Komentár bol odoslaný a čaká na schválenie');
       setNewComment('');
+
+      // Reload comments to show the new one (if it's auto-approved)
+      await loadComments();
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa odoslať komentár');
+    } finally {
       setIsSubmitting(false);
-      toast.success('Komentár bol odoslaný a čaká na schválenie moderátorom');
-    }, 500);
+    }
   };
 
   const handleUpvote = (commentId: string) => {
+    // Optimistic update
     setComments(
       comments.map((c) =>
         c.id === commentId
@@ -107,11 +135,21 @@ export function CommentSection({ reportId: _reportId }: CommentSectionProps) {
       )
     );
     toast.success('Hlas bol zaznamenaný');
+    // Note: Upvote API endpoint would need to be implemented for persistence
   };
 
   const handleReport = (_commentId: string) => {
     toast.info('Komentár bol nahlásený moderátorovi');
+    // Note: Report comment API endpoint would need to be implemented
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -131,7 +169,11 @@ export function CommentSection({ reportId: _reportId }: CommentSectionProps) {
             Váš komentár bude po odoslaní overený moderátorom pred zverejnením
           </p>
           <Button type="submit" disabled={isSubmitting || !newComment.trim()}>
-            <Send className="h-4 w-4 mr-2" />
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 mr-2" />
+            )}
             {isSubmitting ? 'Odosiela sa...' : 'Pridať komentár'}
           </Button>
         </div>

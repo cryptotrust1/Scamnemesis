@@ -81,6 +81,7 @@ const searchParamsSchema = z.object({
   fields: z.string().optional(), // comma-separated
   country: z.string().max(2).optional(),
   fraud_type: z.string().optional(),
+  status: z.string().optional(), // Ignored - always searches APPROVED reports
   date_from: z.string().optional(),
   date_to: z.string().optional(),
   amount_min: z.coerce.number().min(0).optional(),
@@ -536,12 +537,15 @@ export async function GET(request: NextRequest) {
       fields: searchParams.get('fields') ?? undefined,
       country: searchParams.get('country') ?? undefined,
       fraud_type: searchParams.get('fraud_type') ?? undefined,
+      status: searchParams.get('status') ?? undefined,
       date_from: searchParams.get('date_from') ?? undefined,
       date_to: searchParams.get('date_to') ?? undefined,
       amount_min: searchParams.get('amount_min') ?? undefined,
       amount_max: searchParams.get('amount_max') ?? undefined,
       limit: searchParams.get('limit') ?? undefined,
       offset: searchParams.get('offset') ?? undefined,
+      sort: searchParams.get('sort') ?? undefined,
+      order: searchParams.get('order') ?? undefined,
     };
 
     const parsed = searchParamsSchema.safeParse(params);
@@ -682,6 +686,7 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         pages,
+        total_pages: pages, // Added for frontend compatibility
         total,
         limit,
         offset,

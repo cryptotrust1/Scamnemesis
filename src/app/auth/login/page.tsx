@@ -28,13 +28,12 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: Include cookies in request/response
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // Store token (you'd use a proper auth context/provider in production)
-        localStorage.setItem('token', data.token);
+        // Tokens are stored in HttpOnly cookies by the server - no localStorage needed
         toast.success('Prihlásenie úspešné!');
         router.push('/dashboard');
       } else {

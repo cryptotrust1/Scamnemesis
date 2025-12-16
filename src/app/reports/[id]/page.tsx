@@ -413,6 +413,16 @@ export default function ReportDetailPage() {
               </div>
             )}
 
+            {report.perpetrator.cryptoWallet && (
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <div className="text-sm font-medium">Kryptopeňaženka</div>
+                  <div className="font-mono text-sm break-all">{report.perpetrator.cryptoWallet}</div>
+                </div>
+              </div>
+            )}
+
             {report.perpetrator.socialMedia && report.perpetrator.socialMedia.length > 0 && (
               <div className="flex items-start gap-3 md:col-span-2">
                 <Globe className="h-5 w-5 text-muted-foreground mt-0.5" />
@@ -438,11 +448,25 @@ export default function ReportDetailPage() {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {report.evidence.map((item) => (
-                  <div key={item.id} className="border rounded-lg p-3 hover:bg-muted/50 transition-colors">
-                    <div className="aspect-video bg-muted rounded mb-2 flex items-center justify-center">
-                      {item.type === 'IMAGE' ? '🖼️' : item.type === 'DOCUMENT' ? '📄' : '🎥'}
+                  <div key={item.id} className="border rounded-lg p-3 hover:bg-muted/50 transition-colors cursor-pointer">
+                    <div className="aspect-video bg-muted rounded mb-2 flex items-center justify-center overflow-hidden">
+                      {item.type === 'IMAGE' && item.url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={item.url}
+                          alt={item.description || 'Evidence'}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="text-4xl">
+                          {item.type === 'IMAGE' ? '🖼️' : item.type === 'DOCUMENT' ? '📄' : '🎥'}
+                        </span>
+                      )}
                     </div>
-                    <div className="text-xs text-muted-foreground">{item.description}</div>
+                    {item.description && (
+                      <div className="text-xs text-muted-foreground line-clamp-2">{item.description}</div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -37,66 +37,34 @@ export interface TokenRefreshResponse {
 }
 
 export const authApi = {
-  // Login
+  // Login - tokens are stored in HttpOnly cookies by the server
   async login(data: LoginInput): Promise<ApiResponse<AuthResponse>> {
-    const response = await apiClient.post<AuthResponse>('/auth/login', data);
-    if (response.data.accessToken) {
-      apiClient.setAccessToken(response.data.accessToken);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-      }
-    }
-    return response;
-  },
-
-  // Register
-  async register(data: RegisterInput): Promise<ApiResponse<AuthResponse>> {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
-    if (response.data.accessToken) {
-      apiClient.setAccessToken(response.data.accessToken);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-      }
-    }
-    return response;
-  },
-
-  // Logout
-  async logout(): Promise<void> {
-    try {
-      await apiClient.post('/auth/logout');
-    } finally {
-      apiClient.setAccessToken(null);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      }
-    }
-  },
-
-  // Refresh token
-  async refreshToken(): Promise<ApiResponse<TokenRefreshResponse>> {
-    const refreshToken = typeof window !== 'undefined'
-      ? localStorage.getItem('refreshToken')
-      : null;
-
-    if (!refreshToken) {
-      throw { message: 'No refresh token', code: 'NO_REFRESH_TOKEN' };
-    }
-
-    const response = await apiClient.post<TokenRefreshResponse>('/auth/refresh', {
-      refreshToken,
+    const response = await apiClient.post<AuthResponse>('/auth/token', data, {
+      credentials: 'include',
     });
+    return response;
+  },
 
-    if (response.data.accessToken) {
-      apiClient.setAccessToken(response.data.accessToken);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.data.accessToken);
-      }
-    }
+  // Register - tokens are stored in HttpOnly cookies by the server
+  async register(data: RegisterInput): Promise<ApiResponse<AuthResponse>> {
+    const response = await apiClient.post<AuthResponse>('/auth/register', data, {
+      credentials: 'include',
+    });
+    return response;
+  },
 
+  // Logout - clears HttpOnly cookies on server
+  async logout(): Promise<void> {
+    await apiClient.post('/auth/logout', {}, {
+      credentials: 'include',
+    });
+  },
+
+  // Refresh token - uses HttpOnly cookie, no localStorage needed
+  async refreshToken(): Promise<ApiResponse<TokenRefreshResponse>> {
+    const response = await apiClient.post<TokenRefreshResponse>('/auth/refresh', {}, {
+      credentials: 'include',
+    });
     return response;
   },
 
