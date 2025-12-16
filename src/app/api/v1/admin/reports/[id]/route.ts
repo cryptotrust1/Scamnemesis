@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +35,10 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting - 30 requests per minute for admin write operations
+  const rateLimitError = await requireRateLimit(request, 30);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:edit scope
   const auth = await requireAuth(request, ['admin:edit']);
   if (auth instanceof NextResponse) return auth;
@@ -144,6 +148,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting - 60 requests per minute for admin endpoints
+  const rateLimitError = await requireRateLimit(request, 60);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:read scope
   const auth = await requireAuth(request, ['admin:read']);
   if (auth instanceof NextResponse) return auth;
