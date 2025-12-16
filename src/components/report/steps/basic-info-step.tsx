@@ -3,6 +3,8 @@
 import { Input } from '@/components/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BasicInfoForm } from '@/lib/validations/report';
+import { getCountriesWithPriority } from '@/lib/constants/countries';
+import { getCurrenciesWithPriority } from '@/lib/constants/currencies';
 
 interface BasicInfoStepProps {
   data: Partial<BasicInfoForm>;
@@ -10,27 +12,9 @@ interface BasicInfoStepProps {
   onChange: (field: keyof BasicInfoForm, value: string) => void;
 }
 
-const countries = [
-  'Slovensko',
-  'Česká republika',
-  'Poľsko',
-  'Maďarsko',
-  'Rakúsko',
-  'Nemecko',
-  'Veľká Británia',
-  'Francúzsko',
-  'Taliansko',
-  'Španielsko',
-  'Iné',
-];
-
-const currencies = [
-  { value: 'EUR', label: 'EUR (€)' },
-  { value: 'USD', label: 'USD ($)' },
-  { value: 'GBP', label: 'GBP (£)' },
-  { value: 'CZK', label: 'CZK (Kč)' },
-  { value: 'PLN', label: 'PLN (zł)' },
-];
+// Get countries and currencies with priority items at top
+const countries = getCountriesWithPriority();
+const currencies = getCurrenciesWithPriority();
 
 export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
   return (
@@ -107,14 +91,20 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
               Krajina <span className="text-destructive">*</span>
             </label>
             <Select value={data.country || ''} onValueChange={(value) => onChange('country', value)}>
-              <SelectTrigger className={errors.country ? 'border-destructive' : ''}>
+              <SelectTrigger className={`h-12 ${errors.country ? 'border-destructive' : ''}`}>
                 <SelectValue placeholder="Vyberte krajinu" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-[300px]">
                 {countries.map((country) => (
-                  <SelectItem key={country} value={country}>
-                    {country}
-                  </SelectItem>
+                  country.value === 'SEPARATOR' ? (
+                    <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
+                      Všetky krajiny
+                    </div>
+                  ) : (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  )
                 ))}
               </SelectContent>
             </Select>
@@ -178,14 +168,20 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
               Mena
             </label>
             <Select value={data.currency || 'EUR'} onValueChange={(value) => onChange('currency', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-12">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-[300px]">
                 {currencies.map((currency) => (
-                  <SelectItem key={currency.value} value={currency.value}>
-                    {currency.label}
-                  </SelectItem>
+                  currency.value === 'SEPARATOR' ? (
+                    <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
+                      Všetky meny
+                    </div>
+                  ) : (
+                    <SelectItem key={currency.value} value={currency.value}>
+                      {currency.label}
+                    </SelectItem>
+                  )
                 ))}
               </SelectContent>
             </Select>

@@ -497,14 +497,20 @@ export default function NewReportPage() {
 
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll to form section instead of page top for better UX
+      setTimeout(() => {
+        document.getElementById('report-form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll to form section instead of page top for better UX
+      setTimeout(() => {
+        document.getElementById('report-form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   };
 
@@ -520,7 +526,10 @@ export default function NewReportPage() {
 
   const handleGoToStep = (step: number) => {
     setCurrentStep(step);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to form section instead of page top for better UX
+    setTimeout(() => {
+      document.getElementById('report-form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleSubmit = async () => {
@@ -553,28 +562,34 @@ export default function NewReportPage() {
 
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json().catch(() => ({}));
-            throw new Error(uploadError.message || 'Chyba pri nahrávaní súborov');
-          }
-
-          const uploadResult = await uploadResponse.json();
-
-          // Map uploaded files to evidence format
-          uploadedEvidence = uploadResult.uploaded.map(
-            (uploaded: { fileKey: string; mimeType: string }, index: number) => {
-              const originalFile = filesToUpload[index];
-              return {
-                type: uploaded.mimeType.startsWith('image/')
-                  ? 'SCREENSHOT'
-                  : uploaded.mimeType.startsWith('video/')
-                  ? 'VIDEO'
-                  : uploaded.mimeType.includes('pdf')
-                  ? 'DOCUMENT'
-                  : 'OTHER',
-                file_key: uploaded.fileKey,
-                description: originalFile?.description,
-              };
+            // If S3 is unavailable (503), allow submission without files
+            if (uploadResponse.status === 503) {
+              toast.warning('Nahrávanie súborov nie je dostupné. Hlásenie bude odoslané bez príloh.');
+              uploadedEvidence = [];
+            } else {
+              throw new Error(uploadError.message || 'Chyba pri nahrávaní súborov');
             }
-          );
+          } else {
+            const uploadResult = await uploadResponse.json();
+
+            // Map uploaded files to evidence format
+            uploadedEvidence = uploadResult.uploaded.map(
+              (uploaded: { fileKey: string; mimeType: string }, index: number) => {
+                const originalFile = filesToUpload[index];
+                return {
+                  type: uploaded.mimeType.startsWith('image/')
+                    ? 'SCREENSHOT'
+                    : uploaded.mimeType.startsWith('video/')
+                    ? 'VIDEO'
+                    : uploaded.mimeType.includes('pdf')
+                    ? 'DOCUMENT'
+                    : 'OTHER',
+                  file_key: uploaded.fileKey,
+                  description: originalFile?.description,
+                };
+              }
+            );
+          }
         }
       }
 
@@ -963,8 +978,8 @@ export default function NewReportPage() {
               </Card>
 
               {/* Step Content */}
-              <Card className="mb-8">
-                <CardContent className="pt-8 pb-8">
+              <Card id="report-form-card" className="mb-8">
+                <CardContent className="pt-10 pb-10 px-6 md:px-10">
                   {renderStep()}
                 </CardContent>
               </Card>
