@@ -642,6 +642,7 @@ export default function NewReportPage() {
           const uploadResponse = await fetch('/api/v1/evidence/upload', {
             method: 'POST',
             body: uploadFormData,
+            credentials: 'include',
           });
 
           if (!uploadResponse.ok) {
@@ -761,6 +762,7 @@ export default function NewReportPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(reportData),
+        credentials: 'include',
       });
 
       if (response.ok) {

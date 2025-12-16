@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/db';
-import { requireAuth, requireRateLimit, getClientIp } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
 import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
 
@@ -180,10 +180,8 @@ export async function POST(request: NextRequest) {
     const rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
     if (rateLimitError) return rateLimitError;
 
-    // Authentication (required)
-    const authResult = await requireAuth(request, ['reports:write']);
-    if (authResult instanceof NextResponse) return authResult;
-    const { auth } = authResult;
+    // Authentication (optional - allows anonymous submissions)
+    const auth = await optionalAuth(request);
 
     // Parse and validate body
     const body = await request.json();
@@ -201,13 +199,31 @@ export async function POST(request: NextRequest) {
     }
 
     const data = parsed.data;
-    const userId = auth.user?.sub || auth.apiKey?.userId;
+    let userId = auth.user?.sub || auth.apiKey?.userId;
 
+    // Handle anonymous submissions - create or get anonymous user
     if (!userId) {
-      return NextResponse.json(
-        { error: 'unauthorized', message: 'User ID not found' },
-        { status: 401 }
-      );
+      // Find or create anonymous user for this session based on email
+      const reporterEmail = data.reporter.email || 'anonymous@scamnemesis.com';
+
+      let anonymousUser = await prisma.user.findUnique({
+        where: { email: reporterEmail },
+      });
+
+      if (!anonymousUser) {
+        // Create anonymous user
+        anonymousUser = await prisma.user.create({
+          data: {
+            email: reporterEmail,
+            displayName: data.reporter.name || 'Anonymous Reporter',
+            role: 'BASIC',
+            emailVerified: false,
+            isActive: true,
+          },
+        });
+      }
+
+      userId = anonymousUser.id;
     }
 
     // Create report with relations
