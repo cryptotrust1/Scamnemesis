@@ -41,10 +41,7 @@ export const basicInfoSchema = z.object({
     .min(1, 'Dátum incidentu je povinný'),
 
   country: z.string()
-    .min(2, 'Krajina je povinná')
-    .max(2, 'Zadajte 2-znakový kód krajiny (napr. SK, CZ, DE)')
-    .regex(/^[A-Z]{2}$/i, 'Neplatný kód krajiny')
-    .transform(val => val.toUpperCase()),
+    .min(1, 'Krajina je povinná'),
 
   city: z.string()
     .min(1, 'Mesto je povinné'),
