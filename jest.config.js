@@ -41,16 +41,6 @@ const customJestConfig = {
     '!src/**/*.spec.{js,jsx,ts,tsx}',
   ],
 
-  // Coverage thresholds (set to 0 for initial setup, increase later)
-  coverageThreshold: {
-    global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
-    },
-  },
-
   // Coverage directory
   coverageDirectory: 'coverage',
 
