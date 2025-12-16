@@ -18,15 +18,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { fetchDashboardStats, type DashboardStats } from '@/lib/admin/api';
 
-// Fraud type labels in Slovak
+// Fraud type labels in Slovak - matching Prisma FraudType enum
 const FRAUD_TYPE_LABELS: Record<string, string> = {
   'INVESTMENT_FRAUD': 'Investičné podvody',
   'ROMANCE_SCAM': 'Romance scam',
   'PHISHING': 'Phishing',
-  'CRYPTO_SCAM': 'Crypto podvody',
-  'TECH_SUPPORT': 'Tech support',
-  'RENTAL_FRAUD': 'Prenájom',
-  'SMS_SCAM': 'SMS podvody',
+  'IDENTITY_THEFT': 'Krádež identity',
+  'ONLINE_SHOPPING_FRAUD': 'E-commerce podvody',
+  'CRYPTOCURRENCY_SCAM': 'Crypto podvody',
+  'TECH_SUPPORT_SCAM': 'Tech support',
+  'RENTAL_SCAM': 'Prenájom',
+  'EMPLOYMENT_SCAM': 'Pracovné podvody',
+  'ADVANCE_FEE_FRAUD': 'Podvody s pôžičkou',
+  'LOTTERY_PRIZE_SCAM': 'Loterné podvody',
+  'FAKE_CHARITY': 'Falošná charita',
   'OTHER': 'Ostatné',
 };
 

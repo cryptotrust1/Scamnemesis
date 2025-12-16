@@ -99,7 +99,7 @@ type SortOrder = 'asc' | 'desc';
 function buildOrderBy(sort: SortField, order: SortOrder): Record<string, 'asc' | 'desc'> {
   switch (sort) {
     case 'financial_loss':
-      return { financialLoss: order };
+      return { financialLossAmount: order };
     case 'created_at':
     default:
       return { createdAt: order };
@@ -648,10 +648,21 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Calculate pagination info
+    const page = Math.floor(offset / limit) + 1;
+    const pages = Math.ceil(total / limit);
+
     return NextResponse.json({
       total,
       results,
       facets,
+      pagination: {
+        page,
+        pages,
+        total,
+        limit,
+        offset,
+      },
     });
   } catch (error) {
     console.error('Search error:', error);

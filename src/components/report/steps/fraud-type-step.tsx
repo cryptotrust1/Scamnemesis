@@ -18,6 +18,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
+// Fraud types matching Prisma FraudType enum
 const fraudTypes = [
   {
     value: 'INVESTMENT_FRAUD',
@@ -29,7 +30,7 @@ const fraudTypes = [
   {
     value: 'ROMANCE_SCAM',
     label: 'Romance scam',
-    description: 'Podvody na zoznamkách, falošné vzťahy, vylákaníepeniaze',
+    description: 'Podvody na zoznamkách, falošné vzťahy, vylákanie peňazí',
     icon: Heart,
     color: 'text-pink-500',
   },
@@ -48,37 +49,37 @@ const fraudTypes = [
     color: 'text-purple-500',
   },
   {
-    value: 'ECOMMERCE_FRAUD',
+    value: 'ONLINE_SHOPPING_FRAUD',
     label: 'E-commerce podvod',
     description: 'Falošné e-shopy, nedodanie tovaru, podvodné platby',
     icon: ShoppingCart,
     color: 'text-cyan-500',
   },
   {
-    value: 'CRYPTO_SCAM',
+    value: 'CRYPTOCURRENCY_SCAM',
     label: 'Crypto podvod',
     description: 'Podvody s kryptomenami, falošné burzy, rug pulls',
     icon: Coins,
     color: 'text-amber-500',
   },
   {
-    value: 'JOB_SCAM',
+    value: 'EMPLOYMENT_SCAM',
     label: 'Pracovný podvod',
     description: 'Falošné pracovné ponuky, podvody pri hľadaní práce',
     icon: Briefcase,
     color: 'text-blue-500',
   },
   {
-    value: 'RENTAL_FRAUD',
+    value: 'RENTAL_SCAM',
     label: 'Podvod s prenájmom',
     description: 'Falošné inzeráty na bývanie, podvodné zálohy',
     icon: Home,
     color: 'text-green-500',
   },
   {
-    value: 'LOAN_SCAM',
+    value: 'ADVANCE_FEE_FRAUD',
     label: 'Podvod s pôžičkou',
-    description: 'Falošné pôžičky, predražené úvery, lichva',
+    description: 'Falošné pôžičky, predražené úvery, poplatky vopred',
     icon: CreditCard,
     color: 'text-yellow-500',
   },
@@ -97,7 +98,7 @@ const fraudTypes = [
     color: 'text-indigo-500',
   },
   {
-    value: 'LOTTERY_SCAM',
+    value: 'LOTTERY_PRIZE_SCAM',
     label: 'Loterný podvod',
     description: 'Falošné výhry, podvodné lotérie a súťaže',
     icon: Gift,

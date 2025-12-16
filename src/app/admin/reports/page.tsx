@@ -39,15 +39,22 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { fetchReports, approveReport, rejectReport, type Report } from '@/lib/admin/api';
 
+// Fraud types matching Prisma FraudType enum
 const FRAUD_TYPES = [
   { value: 'all', label: 'Všetky typy' },
   { value: 'INVESTMENT_FRAUD', label: 'Investičný podvod' },
   { value: 'ROMANCE_SCAM', label: 'Romance scam' },
   { value: 'PHISHING', label: 'Phishing' },
-  { value: 'RENTAL_FRAUD', label: 'Prenájom' },
-  { value: 'SMS_SCAM', label: 'SMS podvod' },
-  { value: 'TECH_SUPPORT', label: 'Tech support' },
-  { value: 'CRYPTO_SCAM', label: 'Crypto podvod' },
+  { value: 'IDENTITY_THEFT', label: 'Krádež identity' },
+  { value: 'ONLINE_SHOPPING_FRAUD', label: 'E-commerce podvod' },
+  { value: 'CRYPTOCURRENCY_SCAM', label: 'Crypto podvod' },
+  { value: 'EMPLOYMENT_SCAM', label: 'Pracovný podvod' },
+  { value: 'RENTAL_SCAM', label: 'Prenájom' },
+  { value: 'ADVANCE_FEE_FRAUD', label: 'Podvod s pôžičkou' },
+  { value: 'TECH_SUPPORT_SCAM', label: 'Tech support' },
+  { value: 'LOTTERY_PRIZE_SCAM', label: 'Loterný podvod' },
+  { value: 'FAKE_CHARITY', label: 'Falošná charita' },
+  { value: 'OTHER', label: 'Ostatné' },
 ];
 
 const STATUSES = [

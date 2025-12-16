@@ -26,30 +26,41 @@ interface ReportListProps {
   isLoading?: boolean;
 }
 
+// Fraud type labels matching Prisma FraudType enum
 const fraudTypeLabels: Record<string, string> = {
   INVESTMENT_FRAUD: 'Investičný podvod',
   ROMANCE_SCAM: 'Romance scam',
   PHISHING: 'Phishing',
   IDENTITY_THEFT: 'Krádež identity',
-  ECOMMERCE_FRAUD: 'E-commerce podvod',
-  CRYPTO_SCAM: 'Crypto podvod',
-  JOB_SCAM: 'Pracovný podvod',
-  RENTAL_FRAUD: 'Podvod s prenájmom',
-  LOAN_SCAM: 'Podvod s pôžičkou',
+  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',
+  CRYPTOCURRENCY_SCAM: 'Crypto podvod',
+  EMPLOYMENT_SCAM: 'Pracovný podvod',
+  RENTAL_SCAM: 'Podvod s prenájmom',
+  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',
   FAKE_CHARITY: 'Falošná charita',
+  TECH_SUPPORT_SCAM: 'Tech support scam',
+  LOTTERY_PRIZE_SCAM: 'Loterný podvod',
+  PYRAMID_MLM_SCHEME: 'Pyramídová schéma',
+  PONZI_SCHEME: 'Ponziho schéma',
+  WIRE_FRAUD: 'Podvod s prevodom',
+  OTHER: 'Iný typ',
 };
 
+// Fraud type colors matching Prisma FraudType enum
 const fraudTypeColors: Record<string, string> = {
   INVESTMENT_FRAUD: 'bg-red-500',
   ROMANCE_SCAM: 'bg-pink-500',
   PHISHING: 'bg-orange-500',
   IDENTITY_THEFT: 'bg-purple-500',
-  ECOMMERCE_FRAUD: 'bg-cyan-500',
-  CRYPTO_SCAM: 'bg-amber-500',
-  JOB_SCAM: 'bg-blue-500',
-  RENTAL_FRAUD: 'bg-green-500',
-  LOAN_SCAM: 'bg-yellow-500',
+  ONLINE_SHOPPING_FRAUD: 'bg-cyan-500',
+  CRYPTOCURRENCY_SCAM: 'bg-amber-500',
+  EMPLOYMENT_SCAM: 'bg-blue-500',
+  RENTAL_SCAM: 'bg-green-500',
+  ADVANCE_FEE_FRAUD: 'bg-yellow-500',
   FAKE_CHARITY: 'bg-rose-500',
+  TECH_SUPPORT_SCAM: 'bg-indigo-500',
+  LOTTERY_PRIZE_SCAM: 'bg-emerald-500',
+  OTHER: 'bg-gray-500',
 };
 
 export function ReportList({ reports, isLoading }: ReportListProps) {

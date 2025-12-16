@@ -71,84 +71,146 @@ interface ReportDetail {
   commentCount: number;
 }
 
+// Fraud type labels matching Prisma FraudType enum
 const fraudTypeLabels: Record<string, string> = {
   INVESTMENT_FRAUD: 'Investičný podvod',
   ROMANCE_SCAM: 'Romance scam',
   PHISHING: 'Phishing',
   IDENTITY_THEFT: 'Krádež identity',
-  ECOMMERCE_FRAUD: 'E-commerce podvod',
-  CRYPTO_SCAM: 'Crypto podvod',
+  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',
+  CRYPTOCURRENCY_SCAM: 'Crypto podvod',
+  EMPLOYMENT_SCAM: 'Pracovný podvod',
+  RENTAL_SCAM: 'Podvod s prenájmom',
+  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',
+  FAKE_CHARITY: 'Falošná charita',
+  TECH_SUPPORT_SCAM: 'Tech support scam',
+  LOTTERY_PRIZE_SCAM: 'Loterný podvod',
+  OTHER: 'Iný typ',
 };
 
-// Mock data
-const mockReport: ReportDetail = {
-  id: '1',
-  title: 'Investičný podvod s kryptomenami - ponuka vysokých výnosov',
-  description: `Bol som kontaktovaný prostredníctvom Facebooku osobou, ktorá sa predstavila ako investičný poradca.
+// API Response interface
+interface ApiReportResponse {
+  id: string;
+  public_id: string;
+  status: string;
+  fraud_type: string;
+  summary: string;
+  description?: string;
+  location?: {
+    country?: string;
+    city?: string;
+  };
+  financial_loss?: {
+    amount: number;
+    currency: string;
+  };
+  perpetrator?: {
+    full_name?: string;
+    email?: string;
+    phone?: string;
+  };
+  digital_footprint?: {
+    website_url?: string;
+    telegram?: string;
+    whatsapp?: string;
+    instagram?: string;
+    facebook?: string;
+  };
+  financial?: {
+    iban?: string;
+  };
+  crypto?: {
+    wallet_address?: string;
+  };
+  evidence: {
+    id: string;
+    type: string;
+    thumbnail_url?: string;
+    description?: string;
+  }[];
+  view_count: number;
+  comment_count: number;
+  created_at: string;
+}
 
-Sľúbili mi 300% výnos z investície do Bitcoinu za 3 mesiace. Ukázali mi údajne reálne výsledky iných investorov a profesionálne vyzerajúcu webovú stránku s grafmi a štatistikami.
+// Transform API response to component format
+function transformApiResponse(data: ApiReportResponse): ReportDetail {
+  const socialMedia: string[] = [];
+  if (data.digital_footprint?.facebook) socialMedia.push(data.digital_footprint.facebook);
+  if (data.digital_footprint?.instagram) socialMedia.push(data.digital_footprint.instagram);
+  if (data.digital_footprint?.telegram) socialMedia.push(data.digital_footprint.telegram);
+  if (data.digital_footprint?.whatsapp) socialMedia.push(data.digital_footprint.whatsapp);
 
-Po vložení 15,000 EUR cez bankovýprevod na účet v zahraničí som dostával prvé dva týždne pravidel né reporty o "raste" mojej investície. Dokonca ma požiadali o ďalšie investície s tvrdením, že môžem získať ešte vyššie výnosy.
-
-Keď som chcel vybrať peniaze, prestali odpovedať na správy a emaily. Webová stránka bola odstránená a telefónne číslo prestalo fungovať. Zistil som, že viacerí ľudia boli podvedení rovnakým spôsobom.`,
-  fraudType: 'INVESTMENT_FRAUD',
-  country: 'Slovensko',
-  city: 'Bratislava',
-  postalCode: '821**',
-  amount: 15000,
-  currency: 'EUR',
-  status: 'APPROVED',
-  createdAt: '2025-12-09T10:30:00Z',
-  updatedAt: '2025-12-09T14:22:00Z',
-  perpetrator: {
-    name: 'Mic***l Nov**',
-    phone: '+421 9** *** 456',
-    email: 'm*****@email.com',
-    website: 'crypto-invest-pro.com (nefunkčná)',
-    socialMedia: ['facebook.com/cryptoinve** (zmazaný)'],
-    iban: 'SK89 **** **** **** **** **26',
-  },
-  evidence: [
-    {
-      id: '1',
-      type: 'IMAGE',
-      url: '/evidence/screenshot1.jpg',
-      description: 'Screenshot konverzácie na Facebooku',
+  return {
+    id: data.public_id || data.id,
+    title: data.summary,
+    description: data.description || '',
+    fraudType: data.fraud_type?.toUpperCase() || 'OTHER',
+    country: data.location?.country || '',
+    city: data.location?.city,
+    amount: data.financial_loss?.amount,
+    currency: data.financial_loss?.currency || 'EUR',
+    status: (data.status?.toUpperCase() || 'PENDING') as 'PENDING' | 'APPROVED' | 'REJECTED',
+    createdAt: data.created_at,
+    updatedAt: data.created_at,
+    perpetrator: {
+      name: data.perpetrator?.full_name,
+      phone: data.perpetrator?.phone,
+      email: data.perpetrator?.email,
+      website: data.digital_footprint?.website_url,
+      socialMedia: socialMedia.length > 0 ? socialMedia : undefined,
+      iban: data.financial?.iban,
+      cryptoWallet: data.crypto?.wallet_address,
     },
-    {
-      id: '2',
-      type: 'IMAGE',
-      url: '/evidence/screenshot2.jpg',
-      description: 'Webová stránka s investičnými grafmi',
-    },
-    {
-      id: '3',
-      type: 'DOCUMENT',
-      url: '/evidence/transfer.pdf',
-      description: 'Potvrdenie o bankovom prevode',
-    },
-  ],
-  similarReports: [
-    { id: '12', title: 'Podobný investičný podvod s Bitcoinom', similarity: 94 },
-    { id: '23', title: 'Podvod cez Facebook - crypto investície', similarity: 87 },
-    { id: '45', title: 'Falošný investičný poradca', similarity: 82 },
-  ],
-  viewCount: 1247,
-  commentCount: 8,
-};
+    evidence: data.evidence?.map(e => ({
+      id: e.id,
+      type: (e.type?.toUpperCase() || 'IMAGE') as 'IMAGE' | 'DOCUMENT' | 'VIDEO',
+      url: e.thumbnail_url || '',
+      description: e.description,
+    })) || [],
+    viewCount: data.view_count || 0,
+    commentCount: data.comment_count || 0,
+  };
+}
 
 export default function ReportDetailPage() {
   const params = useParams();
   const reportId = params?.id as string;
   const [report, setReport] = useState<ReportDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setReport(mockReport);
-      setIsLoading(false);
-    }, 500);
+    async function fetchReport() {
+      if (!reportId) return;
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`/api/v1/reports/${reportId}`);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            setReport(null);
+          } else {
+            throw new Error('Failed to fetch report');
+          }
+          setIsLoading(false);
+          return;
+        }
+
+        const data: ApiReportResponse = await response.json();
+        setReport(transformApiResponse(data));
+      } catch (err) {
+        console.error('Error fetching report:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchReport();
   }, [reportId]);
 
   const handleShare = () => {
@@ -173,6 +235,23 @@ export default function ReportDetailPage() {
             <div className="h-64 bg-muted rounded"></div>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container py-8">
+        <Card className="max-w-2xl mx-auto">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Nastala chyba</h3>
+            <p className="text-sm text-muted-foreground mb-4">{error}</p>
+            <Button asChild>
+              <Link href="/search">Späť na vyhľadávanie</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

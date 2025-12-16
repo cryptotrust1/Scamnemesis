@@ -32,18 +32,21 @@ interface SearchFiltersProps {
   onReset: () => void;
 }
 
+// Fraud types matching Prisma FraudType enum
 const fraudTypes = [
   { value: 'all', label: 'Všetky typy' },
   { value: 'INVESTMENT_FRAUD', label: 'Investičný podvod' },
   { value: 'ROMANCE_SCAM', label: 'Romance scam' },
   { value: 'PHISHING', label: 'Phishing' },
   { value: 'IDENTITY_THEFT', label: 'Krádež identity' },
-  { value: 'ECOMMERCE_FRAUD', label: 'E-commerce podvod' },
-  { value: 'CRYPTO_SCAM', label: 'Crypto podvod' },
-  { value: 'JOB_SCAM', label: 'Pracovný podvod' },
-  { value: 'RENTAL_FRAUD', label: 'Podvod s prenájmom' },
-  { value: 'LOAN_SCAM', label: 'Podvod s pôžičkou' },
+  { value: 'ONLINE_SHOPPING_FRAUD', label: 'E-commerce podvod' },
+  { value: 'CRYPTOCURRENCY_SCAM', label: 'Crypto podvod' },
+  { value: 'EMPLOYMENT_SCAM', label: 'Pracovný podvod' },
+  { value: 'RENTAL_SCAM', label: 'Podvod s prenájmom' },
+  { value: 'ADVANCE_FEE_FRAUD', label: 'Podvod s pôžičkou' },
   { value: 'FAKE_CHARITY', label: 'Falošná charita' },
+  { value: 'TECH_SUPPORT_SCAM', label: 'Tech support scam' },
+  { value: 'LOTTERY_PRIZE_SCAM', label: 'Loterný podvod' },
 ];
 
 const countries = [
