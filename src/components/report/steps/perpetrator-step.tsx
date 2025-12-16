@@ -1,6 +1,7 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { PerpetratorForm } from '@/lib/validations/report';
 import { User, Building2, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -100,6 +101,82 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                 </div>
               </>
             )}
+
+            {/* Additional Individual Info */}
+            {data.perpetratorType === 'INDIVIDUAL' && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="nickname" className="text-sm font-medium">
+                      Prezývka / Alias
+                    </label>
+                    <Input
+                      id="nickname"
+                      placeholder="Prezývka alebo falošné meno"
+                      value={data.nickname || ''}
+                      onChange={(e) => onChange('nickname', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="username" className="text-sm font-medium">
+                      Užívateľské meno
+                    </label>
+                    <Input
+                      id="username"
+                      placeholder="Používané na weboch/aplikáciách"
+                      value={data.username || ''}
+                      onChange={(e) => onChange('username', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="approxAge" className="text-sm font-medium">
+                      Približný vek
+                    </label>
+                    <Input
+                      id="approxAge"
+                      type="number"
+                      min="0"
+                      max="120"
+                      placeholder="Napríklad: 35"
+                      value={data.approxAge || ''}
+                      onChange={(e) => onChange('approxAge', e.target.value)}
+                      className={errors.approxAge ? 'border-destructive' : ''}
+                    />
+                    {errors.approxAge && <p className="text-sm text-destructive">{errors.approxAge}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="nationality" className="text-sm font-medium">
+                      Národnosť
+                    </label>
+                    <Input
+                      id="nationality"
+                      placeholder="Napríklad: Slovenská, Ukrajinská..."
+                      value={data.nationality || ''}
+                      onChange={(e) => onChange('nationality', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="physicalDescription" className="text-sm font-medium">
+                    Fyzický popis
+                  </label>
+                  <Textarea
+                    id="physicalDescription"
+                    placeholder="Popíšte vzhľad páchateľa - výšku, postavu, farbu vlasov/očí, zvláštne znaky..."
+                    value={data.physicalDescription || ''}
+                    onChange={(e) => onChange('physicalDescription', e.target.value)}
+                    rows={3}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ak ste páchateľa videli osobne alebo na videu, opíšte jeho vzhľad
+                  </p>
+                </div>
+              </>
+            )}
           </>
         )}
 
@@ -156,17 +233,54 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
           <div className="space-y-2 mt-4">
             <label htmlFor="socialMedia" className="text-sm font-medium">
-              Sociálne siete
+              Sociálne siete (Facebook, Instagram, WhatsApp)
             </label>
             <Input
               id="socialMedia"
-              placeholder="Odkazy na Facebook, Instagram, Telegram..."
+              placeholder="Facebook: xyz, Instagram: @handle, WhatsApp: +421..."
               value={data.socialMedia || ''}
               onChange={(e) => onChange('socialMedia', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Zadajte odkazy na profily na sociálnych sieťach oddelené čiarkou
+              Zadajte odkazy na profily oddelené čiarkou (formát: Platforma: handle)
             </p>
+          </div>
+
+          {/* Additional Social Platforms */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div className="space-y-2">
+              <label htmlFor="signal" className="text-sm font-medium">
+                Signal
+              </label>
+              <Input
+                id="signal"
+                placeholder="+421 900 123 456"
+                value={data.signal || ''}
+                onChange={(e) => onChange('signal', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="tiktok" className="text-sm font-medium">
+                TikTok
+              </label>
+              <Input
+                id="tiktok"
+                placeholder="@username alebo URL"
+                value={data.tiktok || ''}
+                onChange={(e) => onChange('tiktok', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="twitter" className="text-sm font-medium">
+                Twitter / X
+              </label>
+              <Input
+                id="twitter"
+                placeholder="@username alebo URL"
+                value={data.twitter || ''}
+                onChange={(e) => onChange('twitter', e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="space-y-2 mt-4">
