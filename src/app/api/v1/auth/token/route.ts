@@ -65,7 +65,6 @@ export async function POST(request: NextRequest) {
         {
           error: 'validation_error',
           message: 'Invalid request body',
-          details: parsed.error.flatten().fieldErrors,
         },
         { status: 400 }
       );

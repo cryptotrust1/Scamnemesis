@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
 
 export const dynamic = 'force-dynamic';
 
 const ApproveBodySchema = z.object({
-  masking_overrides: z.record(z.any()).optional(),
-  admin_notes: z.string().optional(),
+  masking_overrides: z.record(z.boolean()).optional(),
+  admin_notes: z.string().max(2000).optional(),
   notify_reporter: z.boolean().default(true),
 });
 
@@ -16,6 +16,10 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting for admin operations
+  const rateLimitError = await requireRateLimit(request, 30);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:approve scope
   const auth = await requireAuth(request, ['admin:approve']);
   if (auth instanceof NextResponse) return auth;
@@ -114,9 +118,7 @@ export async function POST(
         );
 
         if (!result.success) {
-          console.error(`[Approve] Failed to send email to ${report.reporter.email}:`, result.error);
-        } else {
-          console.log(`[Approve] Notification sent to ${report.reporter.email}`);
+          console.error(`[Approve] Failed to send notification for report ${report.publicId}:`, result.error);
         }
       } catch (emailError) {
         console.error('[Approve] Email notification error:', emailError);

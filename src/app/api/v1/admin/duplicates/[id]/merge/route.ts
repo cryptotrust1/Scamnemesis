@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
 const MergeBodySchema = z.object({
   primary_report_id: z.string().uuid('Invalid primary report ID'),
-  merge_report_ids: z.array(z.string().uuid('Invalid report ID')).optional(),
+  merge_report_ids: z.array(z.string().uuid('Invalid report ID')).max(100).optional(),
 });
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting for admin operations
+  const rateLimitError = await requireRateLimit(request, 30);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:edit scope
   const auth = await requireAuth(request, ['admin:edit']);
   if (auth instanceof NextResponse) return auth;

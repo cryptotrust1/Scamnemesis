@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
 const RejectBodySchema = z.object({
-  reason: z.string().optional(),
+  reason: z.string().min(1).max(500).optional(),
 });
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting for admin operations
+  const rateLimitError = await requireRateLimit(request, 30);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:moderate scope
   const auth = await requireAuth(request, ['admin:moderate']);
   if (auth instanceof NextResponse) return auth;
