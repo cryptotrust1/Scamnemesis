@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Globe } from 'lucide-react';
 import { Button } from './button';
@@ -41,6 +42,12 @@ export function LanguageSelector({
 }: LanguageSelectorProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side hydration to complete
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Get current locale from pathname
   const getCurrentLocale = (): Locale => {
@@ -54,6 +61,9 @@ export function LanguageSelector({
   };
 
   const currentLocale = getCurrentLocale();
+
+  // Prevent hydration mismatch by showing default until mounted
+  const displayLocale = mounted ? currentLocale : i18n.defaultLocale;
 
   // Navigate to new locale
   const changeLocale = (newLocale: Locale) => {
@@ -86,7 +96,7 @@ export function LanguageSelector({
         {i18n.locales.map((loc) => (
           <Button
             key={loc}
-            variant={currentLocale === loc ? 'default' : 'ghost'}
+            variant={displayLocale === loc ? 'default' : 'ghost'}
             size="sm"
             onClick={() => changeLocale(loc)}
             className="min-w-[40px]"
@@ -100,12 +110,12 @@ export function LanguageSelector({
   }
 
   return (
-    <Select value={currentLocale} onValueChange={(value) => changeLocale(value as Locale)}>
+    <Select value={displayLocale} onValueChange={(value) => changeLocale(value as Locale)}>
       <SelectTrigger className={`w-auto min-w-[120px] ${className || ''}`}>
         <Globe className="h-4 w-4 mr-2" />
         <SelectValue>
-          {showFlags && <span className="mr-1">{localeFlags[currentLocale]}</span>}
-          {showLabel ? localeNames[currentLocale] : currentLocale.toUpperCase()}
+          {showFlags && <span className="mr-1">{localeFlags[displayLocale]}</span>}
+          {showLabel ? localeNames[displayLocale] : displayLocale.toUpperCase()}
         </SelectValue>
       </SelectTrigger>
       <SelectContent>

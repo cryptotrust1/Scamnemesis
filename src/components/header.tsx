@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -38,6 +38,12 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [othersOpen, setOthersOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side hydration to complete
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Get current locale from pathname
   const getCurrentLocale = (): Locale => {
@@ -51,6 +57,9 @@ export function Header() {
   };
 
   const currentLocale = getCurrentLocale();
+
+  // Prevent hydration mismatch by showing default locale until mounted
+  const displayLocale = mounted ? currentLocale : i18n.defaultLocale;
 
   // Get path without locale prefix
   const getPathWithoutLocale = (): string => {
@@ -85,7 +94,7 @@ export function Header() {
 
   // Build localized href
   const getLocalizedHref = (href: string): string => {
-    return `/${currentLocale}${href}`;
+    return `/${displayLocale}${href}`;
   };
 
   // Check if current path matches href
@@ -98,7 +107,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href={`/${currentLocale}`} className="flex items-center space-x-2">
+        <Link href={`/${displayLocale}`} className="flex items-center space-x-2">
           <Image
             src="/images/logo-scam-blue.png"
             alt="ScamNemesis"
@@ -123,7 +132,7 @@ export function Header() {
                   : 'text-foreground hover:bg-muted'
               )}
             >
-              {item.name[currentLocale]}
+              {item.name[displayLocale]}
             </Link>
           ))}
 
@@ -137,7 +146,7 @@ export function Header() {
                 'text-foreground hover:bg-muted'
               )}
             >
-              {{ en: 'Others', sk: 'Ďalšie', cs: 'Další', de: 'Weitere' }[currentLocale]}
+              {{ en: 'Others', sk: 'Ďalšie', cs: 'Další', de: 'Weitere' }[displayLocale]}
               <ChevronDown className={cn('ml-1 h-4 w-4 transition-transform', othersOpen && 'rotate-180')} />
             </button>
             {othersOpen && (
@@ -153,7 +162,7 @@ export function Header() {
                         : 'text-foreground hover:bg-muted'
                     )}
                   >
-                    {item.name[currentLocale]}
+                    {item.name[displayLocale]}
                   </Link>
                 ))}
               </div>
@@ -174,8 +183,8 @@ export function Header() {
               className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-muted transition-colors"
             >
               <Globe className="h-4 w-4 mr-2" />
-              <span className="mr-1">{languages.find(l => l.code === currentLocale)?.flag}</span>
-              {languages.find(l => l.code === currentLocale)?.name}
+              <span className="mr-1">{languages.find(l => l.code === displayLocale)?.flag}</span>
+              {languages.find(l => l.code === displayLocale)?.name}
               <ChevronDown className={cn('ml-1 h-4 w-4 transition-transform', langOpen && 'rotate-180')} />
             </button>
             {langOpen && (
@@ -189,7 +198,7 @@ export function Header() {
                     }}
                     className={cn(
                       'block w-full text-left px-4 py-2 text-sm transition-colors',
-                      currentLocale === lang.code
+                      displayLocale === lang.code
                         ? 'bg-[#0E74FF] text-white'
                         : 'text-foreground hover:bg-muted'
                     )}
@@ -205,7 +214,7 @@ export function Header() {
           {/* Report Button */}
           <Button asChild className="hidden md:inline-flex bg-[#0E74FF] hover:bg-[#0E74FF]/90">
             <Link href={getLocalizedHref('/report/new')}>
-              {{ en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }[currentLocale]}
+              {{ en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }[displayLocale]}
             </Link>
           </Button>
 
@@ -239,7 +248,7 @@ export function Header() {
                     : 'text-foreground hover:bg-muted'
                 )}
               >
-                {item.name[currentLocale]}
+                {item.name[displayLocale]}
               </Link>
             ))}
             <div className="border-t my-2" />
@@ -255,14 +264,14 @@ export function Header() {
                     : 'text-foreground hover:bg-muted'
                 )}
               >
-                {item.name[currentLocale]}
+                {item.name[displayLocale]}
               </Link>
             ))}
             <div className="border-t my-2" />
             {/* Mobile Language Selector - FIXED */}
             <div className="px-4 py-2">
               <p className="text-sm text-muted-foreground mb-2">
-                {{ en: 'Language', sk: 'Jazyk', cs: 'Jazyk', de: 'Sprache' }[currentLocale]}
+                {{ en: 'Language', sk: 'Jazyk', cs: 'Jazyk', de: 'Sprache' }[displayLocale]}
               </p>
               <div className="flex gap-2">
                 {languages.map((lang) => (
@@ -275,7 +284,7 @@ export function Header() {
                     }}
                     className={cn(
                       'px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2',
-                      currentLocale === lang.code
+                      displayLocale === lang.code
                         ? 'bg-[#0E74FF] text-white'
                         : 'bg-muted text-foreground'
                     )}
