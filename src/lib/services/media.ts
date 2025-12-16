@@ -11,18 +11,39 @@ import crypto from 'crypto';
 
 // S3/MinIO Configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
-const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY;
-const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 
-// Validate S3 credentials - fail fast in production
-if (!S3_ACCESS_KEY || !S3_SECRET_KEY) {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('[Media] CRITICAL: S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
-  } else {
+// S3 credentials validation at runtime to avoid build-time failures
+function getS3Credentials(): { accessKeyId: string; secretAccessKey: string } {
+  const accessKey = process.env.S3_ACCESS_KEY;
+  const secretKey = process.env.S3_SECRET_KEY;
+
+  if (!accessKey || !secretKey) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('[Media] CRITICAL: S3_ACCESS_KEY and S3_SECRET_KEY must be set in production!');
+    }
+    // Development defaults
     console.warn('[Media] S3 credentials not set. Using MinIO development defaults.');
+    return { accessKeyId: 'minioadmin', secretAccessKey: 'minioadmin' };
   }
+
+  return { accessKeyId: accessKey, secretAccessKey: secretKey };
+}
+
+// Lazy initialization of S3 client
+let _s3Client: S3Client | null = null;
+function getS3Client(): S3Client {
+  if (!_s3Client) {
+    const credentials = getS3Credentials();
+    _s3Client = new S3Client({
+      endpoint: S3_ENDPOINT,
+      region: S3_REGION,
+      credentials,
+      forcePathStyle: true, // Required for MinIO
+    });
+  }
+  return _s3Client;
 }
 
 // ClamAV configuration (reserved for future virus scanning feature)
@@ -48,19 +69,6 @@ const MAGIC_BYTES: Record<string, number[]> = {
   'image/webp': [0x52, 0x49, 0x46, 0x46], // RIFF
   'application/pdf': [0x25, 0x50, 0x44, 0x46], // %PDF
 };
-
-// Initialize S3 Client
-// In production, credentials are required (validated above)
-// In development, fall back to MinIO defaults
-const s3Client = new S3Client({
-  endpoint: S3_ENDPOINT,
-  region: S3_REGION,
-  credentials: {
-    accessKeyId: S3_ACCESS_KEY || (process.env.NODE_ENV !== 'production' ? 'minioadmin' : ''),
-    secretAccessKey: S3_SECRET_KEY || (process.env.NODE_ENV !== 'production' ? 'minioadmin' : ''),
-  },
-  forcePathStyle: true, // Required for MinIO
-});
 
 export interface UploadOptions {
   userId: string;
@@ -224,7 +232,7 @@ export async function createPresignedUpload(options: UploadOptions): Promise<Pre
     },
   });
 
-  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+  const uploadUrl = await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
 
   return {
     uploadUrl,
@@ -455,13 +463,13 @@ export async function permanentlyDeleteMedia(mediaId: string): Promise<void> {
 
   // Delete from S3
   try {
-    await s3Client.send(new DeleteObjectCommand({
+    await getS3Client().send(new DeleteObjectCommand({
       Bucket: S3_BUCKET,
       Key: media.fileKey,
     }));
 
     if (media.thumbnailKey) {
-      await s3Client.send(new DeleteObjectCommand({
+      await getS3Client().send(new DeleteObjectCommand({
         Bucket: S3_BUCKET,
         Key: media.thumbnailKey,
       }));
@@ -494,7 +502,7 @@ export async function getDownloadUrl(mediaId: string): Promise<string> {
     ResponseContentDisposition: `attachment; filename="${encodeURIComponent(media.originalName)}"`,
   });
 
-  return getSignedUrl(s3Client, command, { expiresIn: 3600 });
+  return getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
 }
 
 /**
