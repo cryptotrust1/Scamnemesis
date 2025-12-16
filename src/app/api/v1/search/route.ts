@@ -7,7 +7,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/db';
-import { Prisma } from '@prisma/client';
 import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 import { generateSearchEmbedding, isEmbeddingServiceAvailable } from '@/lib/services/embeddings';
 
@@ -425,38 +424,29 @@ async function semanticSearch(
   const embeddingStr = `[${embedding.join(',')}]`;
 
   try {
-    // Sanitize and validate filter values
-    const sanitizedCountry = filters.locationCountry
+    // Safely extract and validate filter values (whitelist approach)
+    const countryFilter = filters.locationCountry
       ? String(filters.locationCountry).replace(/[^A-Z]/gi, '').toUpperCase().slice(0, 2)
       : null;
-    const sanitizedFraudType = filters.fraudType
+    const fraudTypeFilter = filters.fraudType
       ? String(filters.fraudType).replace(/[^A-Z_]/gi, '').toUpperCase()
       : null;
 
-    // Build filter conditions with validated inputs
-    const filterConditions: string[] = ["r.status = 'APPROVED'"];
+    // Validate country format (must be exactly 2 uppercase letters)
+    const validCountry = countryFilter && /^[A-Z]{2}$/.test(countryFilter) ? countryFilter : null;
+    // Validate fraud type format (must be uppercase letters and underscores only)
+    const validFraudType = fraudTypeFilter && /^[A-Z_]+$/.test(fraudTypeFilter) ? fraudTypeFilter : null;
 
-    if (sanitizedCountry && /^[A-Z]{2}$/.test(sanitizedCountry)) {
-      filterConditions.push(`r.location_country = '${sanitizedCountry}'`);
-    }
-    if (sanitizedFraudType && /^[A-Z_]+$/.test(sanitizedFraudType)) {
-      filterConditions.push(`r.fraud_type = '${sanitizedFraudType}'`);
-    }
+    // Extract amount filters with type safety
+    const amountGte = filters.financialLossAmount && typeof filters.financialLossAmount === 'object'
+      ? Number((filters.financialLossAmount as Record<string, number>).gte) || null
+      : null;
+    const amountLte = filters.financialLossAmount && typeof filters.financialLossAmount === 'object'
+      ? Number((filters.financialLossAmount as Record<string, number>).lte) || null
+      : null;
 
-    // Handle financialLossAmount filter
-    if (filters.financialLossAmount && typeof filters.financialLossAmount === 'object') {
-      const amountFilter = filters.financialLossAmount as Record<string, number>;
-      if (amountFilter.gte !== undefined) {
-        filterConditions.push(`r.financial_loss_amount >= ${Number(amountFilter.gte)}`);
-      }
-      if (amountFilter.lte !== undefined) {
-        filterConditions.push(`r.financial_loss_amount <= ${Number(amountFilter.lte)}`);
-      }
-    }
-
-    const whereClause = filterConditions.join(' AND ');
-
-    // Use pgvector cosine similarity search
+    // Use pgvector cosine similarity search with parameterized queries
+    // SECURITY: All user inputs are passed as parameters, not interpolated into SQL
     type SemanticResult = {
       id: string;
       public_id: string;
@@ -478,7 +468,11 @@ async function semanticSearch(
         1 - (p.name_embedding <=> ${embeddingStr}::vector) as similarity
       FROM reports r
       LEFT JOIN perpetrators p ON p.report_id = r.id
-      WHERE ${Prisma.raw(whereClause)}
+      WHERE r.status = 'APPROVED'
+        AND (${validCountry}::text IS NULL OR r.location_country = ${validCountry})
+        AND (${validFraudType}::text IS NULL OR r.fraud_type = ${validFraudType})
+        AND (${amountGte}::numeric IS NULL OR r.financial_loss_amount >= ${amountGte})
+        AND (${amountLte}::numeric IS NULL OR r.financial_loss_amount <= ${amountLte})
         AND p.name_embedding IS NOT NULL
         AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
       ORDER BY similarity DESC
@@ -486,12 +480,16 @@ async function semanticSearch(
       OFFSET ${offset}
     `;
 
-    // Get total count
+    // Get total count with the same parameterized approach
     const countResult = await prisma.$queryRaw<[{ count: bigint }]>`
       SELECT COUNT(DISTINCT r.id) as count
       FROM reports r
       LEFT JOIN perpetrators p ON p.report_id = r.id
-      WHERE ${Prisma.raw(whereClause)}
+      WHERE r.status = 'APPROVED'
+        AND (${validCountry}::text IS NULL OR r.location_country = ${validCountry})
+        AND (${validFraudType}::text IS NULL OR r.fraud_type = ${validFraudType})
+        AND (${amountGte}::numeric IS NULL OR r.financial_loss_amount >= ${amountGte})
+        AND (${amountLte}::numeric IS NULL OR r.financial_loss_amount <= ${amountLte})
         AND p.name_embedding IS NOT NULL
         AND 1 - (p.name_embedding <=> ${embeddingStr}::vector) > 0.3
     `;

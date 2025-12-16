@@ -88,14 +88,18 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: 'Nemáte oprávnenia pre admin prístup' };
       }
 
-      // Decode JWT to get user info
-      const tokenParts = data.access_token.split('.');
-      const payload = JSON.parse(atob(tokenParts[1]));
+      // Validate that user info is present in response
+      // SECURITY: Use server-provided user info instead of decoding JWT on client
+      // This prevents potential tampering with JWT payload on client side
+      if (!data.user || !data.user.id || !data.user.email) {
+        console.error('Server response missing user info');
+        return { success: false, error: 'Neplatná odpoveď servera' };
+      }
 
       const adminUser: AdminUser = {
-        id: payload.sub,
-        email: payload.email,
-        role: payload.role,
+        id: data.user.id,
+        email: data.user.email,
+        role: data.user.role || 'BASIC',
         scopes: data.scopes,
       };
 

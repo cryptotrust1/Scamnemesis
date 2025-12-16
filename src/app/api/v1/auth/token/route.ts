@@ -135,6 +135,12 @@ export async function POST(request: NextRequest) {
         expires_in: 3600,
         refresh_token: refreshToken,
         scopes,
+        // Include user info so clients don't need to parse JWT
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
       });
     } else {
       // API key authentication
@@ -197,6 +203,12 @@ export async function POST(request: NextRequest) {
         token_type: 'Bearer',
         expires_in: 3600,
         scopes,
+        // Include user info so clients don't need to parse JWT
+        user: {
+          id: apiKey.user.id,
+          email: apiKey.user.email,
+          role: apiKey.user.role,
+        },
       });
     }
   } catch (error) {

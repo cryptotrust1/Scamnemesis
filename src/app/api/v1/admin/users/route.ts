@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/middleware/auth';
+import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Rate limiting - 60 requests per minute for admin endpoints
+  const rateLimitError = await requireRateLimit(request, 60);
+  if (rateLimitError) return rateLimitError;
+
   // Require admin:read scope
   const auth = await requireAuth(request, ['admin:read']);
   if (auth instanceof NextResponse) return auth;
