@@ -180,22 +180,44 @@ export async function POST(request: NextRequest) {
     // Check if S3 client is available
     const s3Client = getS3ClientInstance();
     if (!s3Client) {
+      console.warn('[Evidence] S3 client not available - file uploads disabled');
       return NextResponse.json(
-        { error: 'service_unavailable', message: 'File upload service is not configured' },
+        { error: 'service_unavailable', message: 'File upload service is not configured. You can submit your report without file attachments.' },
         { status: 503 }
       );
     }
 
     // Rate limiting - 20 uploads per minute
-    const rateLimitError = await requireRateLimit(request, 20);
+    let rateLimitError = null;
+    try {
+      rateLimitError = await requireRateLimit(request, 20);
+    } catch (rateLimitErr) {
+      console.error('[Evidence] Rate limit check failed:', rateLimitErr);
+      // Continue without rate limiting if database is unavailable
+    }
     if (rateLimitError) return rateLimitError;
 
     // Optional authentication - track who uploads
-    const auth = await optionalAuth(request);
-    const uploaderId = auth.user?.sub || auth.apiKey?.userId || null;
+    let uploaderId: string | null = null;
+    try {
+      const auth = await optionalAuth(request);
+      uploaderId = auth.user?.sub || auth.apiKey?.userId || null;
+    } catch (authErr) {
+      console.error('[Evidence] Auth check failed:', authErr);
+      // Continue without authentication tracking
+    }
 
     // Parse multipart form data
-    const formData = await request.formData();
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch (parseErr) {
+      console.error('[Evidence] Failed to parse form data:', parseErr);
+      return NextResponse.json(
+        { error: 'invalid_request', message: 'Failed to parse upload request. Please ensure files are properly formatted.' },
+        { status: 400 }
+      );
+    }
     const files = formData.getAll('files') as File[];
 
     if (!files || files.length === 0) {
@@ -290,10 +312,24 @@ export async function POST(request: NextRequest) {
           url,
         });
       } catch (uploadError) {
-        console.error(`Error uploading file ${file.name}:`, uploadError);
+        const errorMessage = uploadError instanceof Error ? uploadError.message : String(uploadError);
+        console.error(`[Evidence] Error uploading file ${file.name}:`, errorMessage);
+
+        // Provide more specific error messages based on error type
+        let userMessage = 'Failed to upload file';
+        if (errorMessage.includes('NoSuchBucket')) {
+          userMessage = 'Storage bucket not configured properly';
+        } else if (errorMessage.includes('AccessDenied') || errorMessage.includes('InvalidAccessKeyId')) {
+          userMessage = 'Storage authentication failed';
+        } else if (errorMessage.includes('NetworkingError') || errorMessage.includes('ECONNREFUSED')) {
+          userMessage = 'Storage service unreachable';
+        } else if (errorMessage.includes('EntityTooLarge')) {
+          userMessage = 'File too large for storage service';
+        }
+
         errors.push({
           filename: file.name,
-          error: 'Failed to upload file',
+          error: userMessage,
         });
       }
     }
@@ -316,11 +352,22 @@ export async function POST(request: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
-    console.error('Evidence upload error:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : 'No stack trace';
+
+    console.error('[Evidence] Upload error:', {
+      message: errorMessage,
+      stack: errorStack,
+      nodeEnv: process.env.NODE_ENV,
+      s3Endpoint: process.env.S3_ENDPOINT || 'default (localhost:9000)',
+      hasS3Credentials: !!(process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY),
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
-        message: 'Failed to process upload',
+        message: 'Failed to process upload. Please try again or submit your report without attachments.',
+        debugInfo: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
       },
       { status: 500 }
     );

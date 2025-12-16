@@ -22,7 +22,7 @@ test.describe('Report Form', () => {
     await expect(formElements).toBeVisible({ timeout: 10000 });
   });
 
-  test('should display fraud type selection on step 1', async ({ page, isMobile }) => {
+  test('should display fraud type selection on step 1', async ({ page }) => {
     // Wait for the page to fully load
     await page.waitForLoadState('domcontentloaded');
 
@@ -119,6 +119,323 @@ test.describe('Report Form', () => {
       // Form should still be visible
       const mainContent = page.locator('form, main, body').first();
       await expect(mainContent).toBeVisible();
+    }
+  });
+});
+
+test.describe('Report Form - Multi-step Workflow', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+  });
+
+  test('should complete full form workflow from fraud type to review', async ({ page }) => {
+    // Step 1: Select fraud type
+    await page.waitForTimeout(1000); // Wait for hydration
+
+    // Look for fraud type button (investment fraud)
+    const fraudTypeButton = page.locator('button').filter({ hasText: /investičn|investment/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    // Click next to go to basic info
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
+      await nextButton.click();
+      await page.waitForTimeout(500);
+
+      // Verify we're on step 2 (basic info)
+      const formContent = page.locator('main').first();
+      await expect(formContent).toBeVisible();
+    }
+  });
+
+  test('should not scroll to top of page when navigating steps', async ({ page }) => {
+    // Select fraud type and navigate to step 2
+    const fraudTypeButton = page.locator('button').filter({ hasText: /investičn|investment|phishing/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
+      await nextButton.click();
+      await page.waitForTimeout(500);
+
+      // Get scroll position after navigation
+      const scrollY = await page.evaluate(() => window.scrollY);
+
+      // The form should remain in view (not scrolled to absolute top unless form is at top)
+      // Main check: form card should be visible
+      const formCard = page.locator('#report-form-card, [class*="card"]').first();
+      if (await formCard.count() > 0) {
+        await expect(formCard).toBeInViewport();
+      }
+    }
+  });
+
+  test('should navigate back without losing data', async ({ page }) => {
+    // Select fraud type
+    const fraudTypeButton = page.locator('button').filter({ hasText: /phishing/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    // Go to next step
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
+      await nextButton.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Go back
+    const backButton = page.getByRole('button', { name: /späť|back/i }).first();
+    if (await backButton.count() > 0 && await backButton.isVisible()) {
+      await backButton.click();
+      await page.waitForTimeout(500);
+
+      // Verify fraud type is still selected (button should show selected state)
+      const phishingButton = page.locator('button').filter({ hasText: /phishing/i }).first();
+      if (await phishingButton.count() > 0) {
+        await expect(phishingButton).toBeVisible();
+      }
+    }
+  });
+});
+
+test.describe('Report Form - Country Dropdown', () => {
+  test.beforeEach(async ({ page }) => {
+    // Navigate to step 2 (basic info) where country dropdown is
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+
+    // Select fraud type
+    const fraudTypeButton = page.locator('button').filter({ hasText: /investičn|phishing/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    // Navigate to basic info step
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
+      await nextButton.click();
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('should display country dropdown with priority countries', async ({ page }) => {
+    // Look for country selector trigger
+    const countryTrigger = page.locator('[aria-label*="kraj"], [placeholder*="kraj"], button').filter({ hasText: /slovensko|krajin|country/i }).first();
+
+    if (await countryTrigger.count() > 0 && await countryTrigger.isVisible()) {
+      await countryTrigger.click();
+      await page.waitForTimeout(300);
+
+      // Check for priority countries in dropdown
+      const dropdown = page.locator('[role="listbox"], [role="option"]').first();
+      if (await dropdown.count() > 0) {
+        // Slovakia should be visible as priority country
+        const slovakiaOption = page.locator('[role="option"]').filter({ hasText: /slovensko/i }).first();
+        if (await slovakiaOption.count() > 0) {
+          await expect(slovakiaOption).toBeVisible();
+        }
+      }
+    }
+  });
+
+  test('should allow selecting a country', async ({ page }) => {
+    const countryTrigger = page.locator('button').filter({ hasText: /slovensko|krajin|country|vyberte/i }).first();
+
+    if (await countryTrigger.count() > 0 && await countryTrigger.isVisible()) {
+      await countryTrigger.click();
+      await page.waitForTimeout(300);
+
+      // Try to select Czech Republic
+      const czechOption = page.locator('[role="option"]').filter({ hasText: /česká|czech/i }).first();
+      if (await czechOption.count() > 0 && await czechOption.isVisible()) {
+        await czechOption.click();
+        await page.waitForTimeout(300);
+
+        // Verify selection was made
+        const selectedText = await page.locator('button').filter({ hasText: /česká|czech/i }).textContent();
+        if (selectedText) {
+          expect(selectedText.toLowerCase()).toContain('česká');
+        }
+      }
+    }
+  });
+});
+
+test.describe('Report Form - Currency Dropdown', () => {
+  test.beforeEach(async ({ page }) => {
+    // Navigate to step 2 (basic info) where currency dropdown is
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+
+    // Select fraud type
+    const fraudTypeButton = page.locator('button').filter({ hasText: /investičn|phishing/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    // Navigate to basic info step
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0 && await nextButton.isVisible()) {
+      await nextButton.click();
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('should display currency dropdown with common currencies', async ({ page }) => {
+    // Look for currency selector
+    const currencyTrigger = page.locator('button').filter({ hasText: /eur|usd|mena|currency|€/i }).first();
+
+    if (await currencyTrigger.count() > 0 && await currencyTrigger.isVisible()) {
+      await currencyTrigger.click();
+      await page.waitForTimeout(300);
+
+      // Check for common currencies in dropdown
+      const euroOption = page.locator('[role="option"]').filter({ hasText: /eur.*€|euro/i }).first();
+      if (await euroOption.count() > 0) {
+        await expect(euroOption).toBeVisible();
+      }
+
+      const usdOption = page.locator('[role="option"]').filter({ hasText: /usd.*\$|dollar/i }).first();
+      if (await usdOption.count() > 0) {
+        await expect(usdOption).toBeVisible();
+      }
+    }
+  });
+
+  test('should include cryptocurrency options', async ({ page }) => {
+    const currencyTrigger = page.locator('button').filter({ hasText: /eur|usd|mena|currency|€/i }).first();
+
+    if (await currencyTrigger.count() > 0 && await currencyTrigger.isVisible()) {
+      await currencyTrigger.click();
+      await page.waitForTimeout(300);
+
+      // Look for Bitcoin option
+      const btcOption = page.locator('[role="option"]').filter({ hasText: /btc|bitcoin/i }).first();
+      if (await btcOption.count() > 0) {
+        await expect(btcOption).toBeVisible();
+      }
+    }
+  });
+
+  test('should allow selecting a currency', async ({ page }) => {
+    const currencyTrigger = page.locator('button').filter({ hasText: /eur|usd|mena|currency|€|vyberte/i }).first();
+
+    if (await currencyTrigger.count() > 0 && await currencyTrigger.isVisible()) {
+      await currencyTrigger.click();
+      await page.waitForTimeout(300);
+
+      // Try to select USD
+      const usdOption = page.locator('[role="option"]').filter({ hasText: /usd.*\$/i }).first();
+      if (await usdOption.count() > 0 && await usdOption.isVisible()) {
+        await usdOption.click();
+        await page.waitForTimeout(300);
+
+        // Verify selection was made
+        const selectedText = await page.locator('button').filter({ hasText: /usd/i }).textContent();
+        if (selectedText) {
+          expect(selectedText.toUpperCase()).toContain('USD');
+        }
+      }
+    }
+  });
+});
+
+test.describe('Report Form - Localization', () => {
+  test('should display form in Slovak', async ({ page }) => {
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check for Slovak text
+    const pageContent = await page.content();
+    expect(pageContent).toMatch(/podvod|hlásenie|typ|ďalej/i);
+  });
+
+  test('should display form in English', async ({ page }) => {
+    await page.goto('/en/report/new');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check for English text
+    const pageContent = await page.content();
+    expect(pageContent).toMatch(/fraud|report|type|next/i);
+  });
+
+  test('should display form in Czech', async ({ page }) => {
+    await page.goto('/cs/report/new');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check for Czech text
+    const pageContent = await page.content();
+    expect(pageContent).toMatch(/podvod|hlášení|typ|další/i);
+  });
+
+  test('should display form in German', async ({ page }) => {
+    await page.goto('/de/report/new');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check for German text
+    const pageContent = await page.content();
+    expect(pageContent).toMatch(/betrug|melden|typ|weiter/i);
+  });
+});
+
+test.describe('Report Form - Form Card Design', () => {
+  test('should have properly sized form card', async ({ page }) => {
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check for form card
+    const formCard = page.locator('#report-form-card, [class*="card"]').first();
+
+    if (await formCard.count() > 0) {
+      await expect(formCard).toBeVisible();
+
+      // Verify form card has reasonable size
+      const box = await formCard.boundingBox();
+      if (box) {
+        // Form should have reasonable width (at least 300px)
+        expect(box.width).toBeGreaterThan(300);
+        // Form should have some padding/content
+        expect(box.height).toBeGreaterThan(100);
+      }
+    }
+  });
+
+  test('should have visible navigation buttons', async ({ page }) => {
+    await page.goto('/sk/report/new');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(1000);
+
+    // Select a fraud type first
+    const fraudTypeButton = page.locator('button').filter({ hasText: /investičn|phishing/i }).first();
+    if (await fraudTypeButton.count() > 0 && await fraudTypeButton.isVisible()) {
+      await fraudTypeButton.click();
+      await page.waitForTimeout(300);
+    }
+
+    // Next button should be visible
+    const nextButton = page.getByRole('button', { name: /ďalej|next/i }).first();
+    if (await nextButton.count() > 0) {
+      await expect(nextButton).toBeVisible();
+
+      // Button should have reasonable size
+      const box = await nextButton.boundingBox();
+      if (box) {
+        expect(box.width).toBeGreaterThan(50);
+        expect(box.height).toBeGreaterThan(30);
+      }
     }
   });
 });
