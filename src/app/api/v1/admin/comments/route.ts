@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
+import { Prisma, CommentStatus } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { parsePagination } from '@/lib/utils/pagination';
@@ -28,9 +28,9 @@ export async function GET(request: NextRequest) {
     if (status) {
       // Map frontend status to Prisma enum
       if (status === 'PENDING') {
-        where.status = 'PENDING_MODERATION';
-      } else {
-        where.status = status;
+        where.status = CommentStatus.PENDING_MODERATION;
+      } else if (Object.values(CommentStatus).includes(status as CommentStatus)) {
+        where.status = status as CommentStatus;
       }
     }
 
