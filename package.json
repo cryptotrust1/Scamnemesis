@@ -93,7 +93,7 @@
     "@typescript-eslint/parser": "^6.15.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^14.0.4",
+    "eslint-config-next": "^14.2.35",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-extended": "^3.0.5",
@@ -117,7 +117,7 @@
   "pnpm": {
     "overrides": {
       "test-exclude": "^7.0.1",
-      "glob": "^10.5.0"
+      "glob@<10.4.0": "^10.4.5"
     }
   }
 }

@@ -6,7 +6,7 @@ settings:
 
 overrides:
   test-exclude: ^7.0.1
-  glob: ^10.5.0
+  glob@<10.4.0: ^10.4.5
 
 importers:
 
@@ -194,7 +194,7 @@ importers:
         specifier: ^8.56.0
         version: 8.57.1
       eslint-config-next:
-        specifier: ^14.0.4
+        specifier: ^14.2.35
         version: 14.2.35(eslint@8.57.1)(typescript@5.9.3)
       jest:
         specifier: ^29.7.0
