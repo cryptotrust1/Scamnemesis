@@ -241,6 +241,10 @@ model Report {
   // View tracking
   viewCount    Int      @default(0) @map("view_count")
 
+  // Case tracking for reporters
+  trackingToken String?  @unique @map("tracking_token")
+  caseNumber    String?  @unique @map("case_number")
+
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

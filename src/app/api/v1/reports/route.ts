@@ -12,6 +12,26 @@ import prisma from '@/lib/db';
 import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
 import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
+import { emailService } from '@/lib/services/email';
+
+/**
+ * Generate a unique case number in format: SN-YYYYMMDD-XXXX
+ */
+function generateCaseNumber(): string {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const random = randomBytes(2).toString('hex').toUpperCase();
+  return `SN-${year}${month}${day}-${random}`;
+}
+
+/**
+ * Generate a secure tracking token
+ */
+function generateTrackingToken(): string {
+  return randomBytes(32).toString('hex');
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -273,6 +293,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Generate tracking token and case number
+    const trackingToken = generateTrackingToken();
+    const caseNumber = generateCaseNumber();
+
     // Create report with relations
     const report = await prisma.$transaction(async (tx) => {
       // Create main report
@@ -300,6 +324,8 @@ export async function POST(request: NextRequest) {
           wantUpdates: data.reporter.want_updates || false,
           agreeToTerms: data.reporter.agree_to_terms || false,
           agreeToGDPR: data.reporter.consent || false,
+          trackingToken,
+          caseNumber,
         },
       });
 
@@ -464,10 +490,43 @@ export async function POST(request: NextRequest) {
       console.error('[Reports] Duplicate detection error:', duplicateError);
     }
 
+    // Send confirmation email if reporter provided a valid email (not anonymous)
+    const reporterEmail = data.reporter.email;
+    if (reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com' && reporterEmail.includes('@')) {
+      try {
+        const emailResult = await emailService.sendReportConfirmation({
+          reporterName: data.reporter.name || 'Reporter',
+          reporterEmail: reporterEmail,
+          caseNumber: caseNumber,
+          trackingToken: trackingToken,
+          fraudType: data.incident.fraud_type,
+          summary: data.incident.summary,
+          financialLoss: data.incident.financial_loss?.amount
+            ? {
+                amount: data.incident.financial_loss.amount,
+                currency: data.incident.financial_loss.currency || 'EUR',
+              }
+            : undefined,
+          reportDate: new Date(),
+          locale: data.reporter.preferred_language || 'sk',
+        });
+
+        if (emailResult.success) {
+          console.log(`[Reports] Confirmation email sent to ${reporterEmail} for case ${caseNumber}`);
+        } else {
+          console.warn(`[Reports] Failed to send confirmation email: ${emailResult.error}`);
+        }
+      } catch (emailError) {
+        // Log but don't fail the request - email is not critical
+        console.error('[Reports] Email sending error:', emailError);
+      }
+    }
+
     return NextResponse.json(
       {
         id: report.id,
         publicId: report.publicId,
+        case_number: caseNumber,
         status: (report.status || 'PENDING').toLowerCase(),
         created_at: report.createdAt.toISOString(),
         duplicate_check: {
@@ -475,6 +534,7 @@ export async function POST(request: NextRequest) {
           cluster_id: duplicateResult.clusterId,
           match_count: duplicateResult.totalMatches,
         },
+        email_sent: !!(reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com'),
       },
       { status: 201 }
     );
