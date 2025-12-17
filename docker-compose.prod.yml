@@ -84,7 +84,12 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
+      # Database credentials passed separately for URL encoding in entrypoint
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-scamnemesis}
       - REDIS_URL=redis://:${REDIS_PASSWORD:-scamnemesis_redis_2024}@redis:6379
       - S3_ENDPOINT=http://minio:9000
       - S3_ACCESS_KEY=${S3_ACCESS_KEY:-minioadmin}
@@ -242,7 +247,9 @@ services:
     container_name: scamnemesis-ml
     restart: unless-stopped
     environment:
-      - POSTGRES_URL=${DATABASE_URL}
+      # Note: ML service needs URL-encoded password if it contains special chars
+      # Using internal docker hostname 'postgres' instead of localhost
+      - POSTGRES_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
       - REDIS_URL=redis://:${REDIS_PASSWORD:-scamnemesis_redis_2024}@redis:6379
       - MODEL_CACHE_DIR=/models
       - LOG_LEVEL=INFO

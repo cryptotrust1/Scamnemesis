@@ -103,6 +103,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 # Copy prisma schema for potential migrations
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
+# Copy entrypoint script
+COPY --chown=nextjs:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
 # Switch to non-root user
 USER nextjs
 
@@ -118,6 +122,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Health check - uses dedicated lightweight health endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
     CMD curl -f http://localhost:3000/api/v1/health || exit 1
+
+# Use entrypoint to handle DATABASE_URL construction with proper URL encoding
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # Start standalone server (NOT pnpm start - standalone uses node directly)
 CMD ["node", "server.js"]
