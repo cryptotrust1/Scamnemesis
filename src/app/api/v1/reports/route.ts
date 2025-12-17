@@ -85,10 +85,22 @@ const locationSchema = z.object({
   country: z.string().max(2).optional(),
 }).optional();
 
+// Helper to validate datetime strings more leniently
+// Accepts ISO 8601 format with or without timezone, or just date
+const dateTimeString = z.string()
+  .refine((val) => {
+    if (!val) return true;
+    // Accept ISO 8601 datetime or just date format
+    const isoPattern = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|[+-]\d{2}:?\d{2})?)?$/;
+    return isoPattern.test(val);
+  }, { message: 'Invalid date format. Expected ISO 8601 format.' })
+  .optional()
+  .or(z.literal(''));
+
 const incidentSchema = z.object({
   fraud_type: z.nativeEnum(FraudType),
-  date: z.string().datetime().optional(),
-  transaction_date: z.string().datetime().optional(),
+  date: dateTimeString,
+  transaction_date: dateTimeString,
   summary: z.string().max(500),
   description: z.string().max(10000).optional(),
   financial_loss: z.object({
@@ -111,6 +123,35 @@ const perpetratorSchema = z.object({
   address: locationSchema,
 }).optional();
 
+// Helper to validate URL more leniently - accepts http/https URLs or empty
+const laxUrl = z.string()
+  .refine((val) => {
+    if (!val || val === '') return true;
+    try {
+      // Must start with http:// or https://
+      if (!val.startsWith('http://') && !val.startsWith('https://')) return false;
+      new URL(val);
+      return true;
+    } catch {
+      return false;
+    }
+  }, { message: 'Invalid URL format. Must start with http:// or https://' })
+  .optional()
+  .or(z.literal(''));
+
+// Helper to validate IP address more leniently
+const laxIp = z.string()
+  .refine((val) => {
+    if (!val || val === '') return true;
+    // IPv4 pattern
+    const ipv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    // IPv6 pattern (simplified)
+    const ipv6 = /^[a-fA-F0-9:]+$/;
+    return ipv4.test(val) || ipv6.test(val);
+  }, { message: 'Invalid IP address format' })
+  .optional()
+  .or(z.literal(''));
+
 const digitalFootprintsSchema = z.object({
   telegram: z.string().optional(),
   whatsapp: z.string().optional(),
@@ -119,10 +160,10 @@ const digitalFootprintsSchema = z.object({
   facebook: z.string().optional(),
   tiktok: z.string().optional(),
   twitter: z.string().optional(),
-  website_url: z.string().url().optional().or(z.literal('')),
+  website_url: laxUrl,
   domain_name: z.string().optional(),
-  domain_creation_date: z.string().datetime().optional().or(z.literal('')),
-  ip_address: z.string().ip().optional().or(z.literal('')),
+  domain_creation_date: dateTimeString,
+  ip_address: laxIp,
   ip_country: z.string().max(2).optional(),
   isp: z.string().optional(),
   ip_abuse_score: z.number().int().min(0).max(100).optional(),
@@ -169,7 +210,7 @@ const vehicleSchema = z.object({
 const evidenceItemSchema = z.object({
   type: z.nativeEnum(EvidenceType),
   file_key: z.string().optional(),
-  external_url: z.string().url().optional().or(z.literal('')),
+  external_url: laxUrl,
   description: z.string().max(500).optional(),
 });
 
