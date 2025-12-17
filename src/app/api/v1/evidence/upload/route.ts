@@ -18,6 +18,9 @@ export const dynamic = 'force-dynamic';
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
 const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
+// Public URL for accessing files - defaults to internal endpoint if not set
+// In production, this should be set to the public-facing MinIO URL or CDN
+const S3_PUBLIC_URL = process.env.S3_PUBLIC_URL || process.env.NEXT_PUBLIC_SITE_URL || S3_ENDPOINT;
 
 // S3 credentials validation at runtime to avoid build-time failures
 function getS3Client(): S3Client | null {
@@ -298,8 +301,12 @@ export async function POST(request: NextRequest) {
 
         await s3Client.send(command);
 
-        // Generate URL
-        const url = `${S3_ENDPOINT}/${S3_BUCKET}/${fileKey}`;
+        // Generate URL - use API proxy endpoint for serving files
+        // This avoids exposing MinIO directly and handles authentication
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+        const publicUrl = siteUrl
+          ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(fileKey)}`
+          : `/api/v1/evidence/files/${encodeURIComponent(fileKey)}`;
 
         // Note: We don't create a Media record here since Evidence records
         // in the Report will reference the fileKey directly
@@ -309,7 +316,7 @@ export async function POST(request: NextRequest) {
           originalName: file.name,
           mimeType: file.type,
           size: file.size,
-          url,
+          url: publicUrl,
         });
       } catch (uploadError) {
         const errorMessage = uploadError instanceof Error ? uploadError.message : String(uploadError);
