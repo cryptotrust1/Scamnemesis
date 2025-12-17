@@ -48,8 +48,10 @@ const translations = {
   },
 };
 
+// Static year to prevent hydration mismatch
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
-  const currentYear = new Date().getFullYear();
   const pathname = usePathname();
   const currentLocale = pathname?.startsWith('/sk') ? 'sk' : pathname?.startsWith('/en') ? 'en' : locale;
   const t = translations[currentLocale] || translations.en;
@@ -105,7 +107,7 @@ export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
         {/* Bottom bar */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {currentYear} ScamNemesis. {t.copyright}
+            © {CURRENT_YEAR} ScamNemesis. {t.copyright}
           </p>
           <div className={styles.social}>
             <a

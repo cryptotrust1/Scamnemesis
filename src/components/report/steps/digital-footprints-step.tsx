@@ -29,6 +29,9 @@ interface DigitalFootprintsStepProps {
 // Get countries with priority items at top
 const countries = getCountriesWithPriority();
 
+// Static max date to prevent hydration mismatch
+const TODAY_DATE = new Date().toISOString().split('T')[0];
+
 interface CollapsibleSectionProps {
   title: string;
   description: string;
@@ -313,7 +316,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   type="date"
                   value={data.domainCreationDate || ''}
                   onChange={(e) => onChange('domainCreationDate', e.target.value)}
-                  max={new Date().toISOString().split('T')[0]}
+                  max={TODAY_DATE}
                   className={errors.domainCreationDate ? 'border-destructive' : ''}
                 />
                 {errors.domainCreationDate && (
