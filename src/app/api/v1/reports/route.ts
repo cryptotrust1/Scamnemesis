@@ -87,7 +87,7 @@ const perpetratorSchema = z.object({
   nationality: z.string().max(2).optional(),
   physical_description: z.string().max(2000).optional(),
   phone: z.string().max(50).optional(),
-  email: z.string().email().optional(),
+  email: z.string().email().optional().or(z.literal('')),
   address: locationSchema,
 }).optional();
 
@@ -99,10 +99,10 @@ const digitalFootprintsSchema = z.object({
   facebook: z.string().optional(),
   tiktok: z.string().optional(),
   twitter: z.string().optional(),
-  website_url: z.string().url().optional(),
+  website_url: z.string().url().optional().or(z.literal('')),
   domain_name: z.string().optional(),
-  domain_creation_date: z.string().datetime().optional(),
-  ip_address: z.string().ip().optional(),
+  domain_creation_date: z.string().datetime().optional().or(z.literal('')),
+  ip_address: z.string().ip().optional().or(z.literal('')),
   ip_country: z.string().max(2).optional(),
   isp: z.string().optional(),
   ip_abuse_score: z.number().int().min(0).max(100).optional(),
@@ -149,7 +149,7 @@ const vehicleSchema = z.object({
 const evidenceItemSchema = z.object({
   type: z.nativeEnum(EvidenceType),
   file_key: z.string().optional(),
-  external_url: z.string().url().optional(),
+  external_url: z.string().url().optional().or(z.literal('')),
   description: z.string().max(500).optional(),
 });
 

@@ -945,7 +945,7 @@ export default function NewReportPage() {
           setFiles([]);
           setErrors({});
           toast.success('Hlásenie bolo úspešne odoslané!');
-          router.push(`/${locale}/report/success?id=${data.id || data.publicId}`);
+          router.push(`/${locale}/report/success?id=${data.publicId || data.id}`);
         } else {
           const errorData = await response.json().catch(() => null);
           toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
