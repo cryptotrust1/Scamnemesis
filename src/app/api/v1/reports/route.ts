@@ -187,7 +187,16 @@ export async function POST(request: NextRequest) {
     const auth = await optionalAuth(request);
 
     // Parse and validate body
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      console.error('[Reports API] JSON parse error:', parseError);
+      return NextResponse.json(
+        { error: 'parse_error', message: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
 
     // Log incoming request for debugging (sanitized - no sensitive data in logs)
     console.log('[Reports API] Incoming report:', JSON.stringify({
@@ -238,15 +247,13 @@ export async function POST(request: NextRequest) {
       // Find or create anonymous user for this session based on email
       const reporterEmail = data.reporter.email || 'anonymous@scamnemesis.com';
 
-      let anonymousUser = await prisma.user.findUnique({
-        where: { email: reporterEmail },
-      });
-
-      if (!anonymousUser) {
-        // Create anonymous user with a random password hash (not usable for login)
+      try {
+        // Use upsert to prevent race condition (P2002 unique constraint error)
         const randomPasswordHash = randomBytes(32).toString('hex');
-        anonymousUser = await prisma.user.create({
-          data: {
+        const anonymousUser = await prisma.user.upsert({
+          where: { email: reporterEmail },
+          update: {}, // Don't update anything if exists
+          create: {
             email: reporterEmail,
             passwordHash: randomPasswordHash,
             displayName: data.reporter.name || 'Anonymous Reporter',
@@ -255,9 +262,14 @@ export async function POST(request: NextRequest) {
             isActive: true,
           },
         });
+        userId = anonymousUser.id;
+      } catch (userError) {
+        console.error('[Reports API] Failed to create/find anonymous user:', userError);
+        return NextResponse.json(
+          { error: 'user_error', message: 'Failed to process reporter information' },
+          { status: 500 }
+        );
       }
-
-      userId = anonymousUser.id;
     }
 
     // Create report with relations
