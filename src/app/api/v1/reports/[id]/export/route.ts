@@ -34,6 +34,19 @@ async function getReportForExport(id: string) {
 }
 
 /**
+ * Escape HTML special characters to prevent XSS attacks
+ */
+function escapeHtml(unsafe: string | null | undefined): string {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Generate HTML template for PDF export
  */
 function generateReportHTML(report: ReportForExport): string {
@@ -88,7 +101,7 @@ function generateReportHTML(report: ReportForExport): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hlasenie podvodu - ${report.publicId}</title>
+  <title>Hlasenie podvodu - ${escapeHtml(report.publicId)}</title>
   <style>
     * {
       margin: 0;
@@ -244,12 +257,12 @@ function generateReportHTML(report: ReportForExport): string {
   <div class="header">
     <div class="logo">Scam<span>nemesis</span></div>
     <div class="report-id">
-      <div class="id">${report.publicId}</div>
+      <div class="id">${escapeHtml(report.publicId)}</div>
       <div class="date">Vygenerovane: ${formatDate(new Date())}</div>
     </div>
   </div>
 
-  <h1>${report.summary || 'Bez nazvu'}</h1>
+  <h1>${escapeHtml(report.summary) || 'Bez nazvu'}</h1>
 
   <div style="margin-top: 10px;">
     <span class="badge badge-status">${statusLabels[report.status] || report.status}</span>
@@ -269,7 +282,7 @@ function generateReportHTML(report: ReportForExport): string {
     </div>
     <div class="info-item">
       <label>Lokalita</label>
-      <div class="value">${[report.locationCity, report.locationCountry].filter(Boolean).join(', ') || 'N/A'}</div>
+      <div class="value">${[report.locationCity, report.locationCountry].filter(Boolean).map(escapeHtml).join(', ') || 'N/A'}</div>
     </div>
     <div class="info-item">
       <label>Vyska skody</label>
@@ -278,7 +291,7 @@ function generateReportHTML(report: ReportForExport): string {
   </div>
 
   <h2>Popis incidentu</h2>
-  <div class="description">${report.description || 'Bez popisu'}</div>
+  <div class="description">${escapeHtml(report.description) || 'Bez popisu'}</div>
 
   ${report.perpetrators[0] ? `
   <h2>Informacie o pachatelovi</h2>
@@ -288,25 +301,25 @@ function generateReportHTML(report: ReportForExport): string {
       ${report.perpetrators[0].fullName ? `
       <div class="perpetrator-item">
         <label>Meno</label>
-        <div class="value">${report.perpetrators[0].fullName}</div>
+        <div class="value">${escapeHtml(report.perpetrators[0].fullName)}</div>
       </div>
       ` : ''}
       ${report.perpetrators[0].phone ? `
       <div class="perpetrator-item">
         <label>Telefon</label>
-        <div class="value">${report.perpetrators[0].phone}</div>
+        <div class="value">${escapeHtml(report.perpetrators[0].phone)}</div>
       </div>
       ` : ''}
       ${report.perpetrators[0].email ? `
       <div class="perpetrator-item">
         <label>Email</label>
-        <div class="value">${report.perpetrators[0].email}</div>
+        <div class="value">${escapeHtml(report.perpetrators[0].email)}</div>
       </div>
       ` : ''}
       ${report.digitalFootprint?.websiteUrl ? `
       <div class="perpetrator-item">
         <label>Webova stranka</label>
-        <div class="value">${report.digitalFootprint.websiteUrl}</div>
+        <div class="value">${escapeHtml(report.digitalFootprint.websiteUrl)}</div>
       </div>
       ` : ''}
     </div>
@@ -319,13 +332,13 @@ function generateReportHTML(report: ReportForExport): string {
     ${report.financialInfo.iban ? `
     <div class="info-item">
       <label>IBAN</label>
-      <div class="value" style="font-family: monospace;">${report.financialInfo.iban}</div>
+      <div class="value" style="font-family: monospace;">${escapeHtml(report.financialInfo.iban)}</div>
     </div>
     ` : ''}
     ${report.financialInfo.bankName ? `
     <div class="info-item">
       <label>Banka</label>
-      <div class="value">${report.financialInfo.bankName}</div>
+      <div class="value">${escapeHtml(report.financialInfo.bankName)}</div>
     </div>
     ` : ''}
   </div>
@@ -337,13 +350,13 @@ function generateReportHTML(report: ReportForExport): string {
     ${report.cryptoInfo.walletAddress ? `
     <div class="info-item">
       <label>Adresa penazenky</label>
-      <div class="value" style="font-family: monospace; font-size: 10px; word-break: break-all;">${report.cryptoInfo.walletAddress}</div>
+      <div class="value" style="font-family: monospace; font-size: 10px; word-break: break-all;">${escapeHtml(report.cryptoInfo.walletAddress)}</div>
     </div>
     ` : ''}
     ${report.cryptoInfo.blockchain ? `
     <div class="info-item">
       <label>Blockchain</label>
-      <div class="value">${report.cryptoInfo.blockchain}</div>
+      <div class="value">${escapeHtml(report.cryptoInfo.blockchain)}</div>
     </div>
     ` : ''}
   </div>
@@ -352,7 +365,7 @@ function generateReportHTML(report: ReportForExport): string {
   <div class="footer">
     <p>Tento dokument bol vygenerovany systemom Scamnemesis.</p>
     <p>Informacie v tomto dokumente su urcene len na informacne ucely a nemali by byt povazovane za pravne rady.</p>
-    <p>Pre overenie aktualnosti udajov navstivte: scamnemesis.com/reports/${report.publicId}</p>
+    <p>Pre overenie aktualnosti udajov navstivte: scamnemesis.com/reports/${escapeHtml(report.publicId)}</p>
   </div>
 
   <div class="watermark">

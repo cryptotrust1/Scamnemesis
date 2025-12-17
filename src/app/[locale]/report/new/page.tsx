@@ -445,6 +445,30 @@ export default function NewReportPage() {
     loadDraft();
   }, []);
 
+  // Check if form has unsaved changes (beyond initial default values)
+  const hasUnsavedChanges = useMemo(() => {
+    const defaultKeys = ['currency', 'perpetratorType', 'wantUpdates', 'agreeToTerms', 'agreeToGDPR'];
+    return Object.entries(formData).some(([key, value]) => {
+      if (defaultKeys.includes(key)) return false;
+      return value !== undefined && value !== null && value !== '';
+    }) || files.length > 0;
+  }, [formData, files]);
+
+  // Warn user before leaving page with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges && !isSubmitting) {
+        e.preventDefault();
+        // Modern browsers ignore custom messages, but this is required
+        e.returnValue = 'Máte neuložené zmeny. Naozaj chcete opustiť stránku?';
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges, isSubmitting]);
+
   const updateField = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field
@@ -720,9 +744,32 @@ export default function NewReportPage() {
         return `${dateStr}T00:00:00.000Z`;
       };
 
-      // Helper: Check if object has any defined values
+      // Helper: Check if value is empty (undefined, null, empty string, or whitespace-only string)
+      const isEmpty = (v: unknown): boolean =>
+        v === undefined || v === null || (typeof v === 'string' && v.trim() === '');
+
+      // Helper: Remove empty values from object (deep clean)
+      const cleanObject = <T extends Record<string, unknown>>(obj: T): Partial<T> | undefined => {
+        const cleaned: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(obj)) {
+          if (!isEmpty(value)) {
+            // Recursively clean nested objects
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
+              const nestedCleaned = cleanObject(value as Record<string, unknown>);
+              if (nestedCleaned && Object.keys(nestedCleaned).length > 0) {
+                cleaned[key] = nestedCleaned;
+              }
+            } else {
+              cleaned[key] = value;
+            }
+          }
+        }
+        return Object.keys(cleaned).length > 0 ? (cleaned as Partial<T>) : undefined;
+      };
+
+      // Helper: Check if object has any defined values (after cleaning)
       const hasDefinedValues = (obj: Record<string, unknown>): boolean => {
-        return Object.values(obj).some(v => v !== undefined && v !== null && v !== '');
+        return Object.values(obj).some(v => !isEmpty(v));
       };
 
       // Build perpetrator object only if it has data
@@ -772,6 +819,46 @@ export default function NewReportPage() {
         other_banking_details: formData.otherBankingDetails,
       };
 
+      // Build crypto object only if it has relevant data
+      const cryptoData = {
+        wallet_address: formData.walletAddress || formData.cryptoWallet,
+        blockchain: formData.blockchain,
+        exchange_wallet_name: formData.exchangeName,
+        transaction_hash: formData.transactionHash,
+        paypal_account: formData.paypalAccount,
+      };
+
+      // Build company object only if it has relevant data
+      const companyData = {
+        name: formData.companyName,
+        vat_tax_id: formData.vatTaxId || formData.companyId,
+        address: formData.companyStreet
+          ? cleanObject({
+              street: formData.companyStreet,
+              city: formData.companyCity,
+              postal_code: formData.companyPostalCode,
+              country: formData.companyCountry,
+            })
+          : undefined,
+      };
+
+      // Build vehicle object only if it has relevant data
+      const vehicleData = {
+        make: formData.vehicleMake,
+        model: formData.vehicleModel,
+        color: formData.vehicleColor,
+        license_plate: formData.vehicleLicensePlate,
+        vin: formData.vehicleVin,
+        registered_owner: formData.registeredOwner,
+      };
+
+      // Build location object only if it has value
+      const locationData = cleanObject({
+        city: formData.city,
+        postal_code: formData.postalCode,
+        country: formData.country?.substring(0, 2).toUpperCase(),
+      });
+
       const reportData = {
         incident: {
           fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
@@ -785,59 +872,22 @@ export default function NewReportPage() {
                 currency: formData.currency || 'EUR',
               }
             : undefined,
-          // Only send location if at least one field has value; truncate country to 2 chars
-          location: (formData.city || formData.postalCode || formData.country)
-            ? {
-                city: formData.city || undefined,
-                postal_code: formData.postalCode || undefined,
-                country: formData.country?.substring(0, 2).toUpperCase() || undefined,
-              }
-            : undefined,
+          // Only send location if at least one field has value
+          location: locationData,
         },
         // Only include if has any data (prevents Zod validation issues with empty objects)
-        perpetrator: hasDefinedValues(perpetratorData) ? perpetratorData : undefined,
-        digital_footprints: hasDefinedValues(digitalFootprintsData) ? digitalFootprintsData : undefined,
-        financial: hasDefinedValues(financialData) ? financialData : undefined,
-        crypto: formData.walletAddress || formData.cryptoWallet || formData.paypalAccount
-          ? {
-              wallet_address: formData.walletAddress || formData.cryptoWallet,
-              blockchain: formData.blockchain,
-              exchange_wallet_name: formData.exchangeName,
-              transaction_hash: formData.transactionHash,
-              paypal_account: formData.paypalAccount,
-            }
-          : undefined,
-        company:
-          (formData.perpetratorType === 'COMPANY' && formData.companyName) ||
-          formData.vatTaxId
-            ? {
-                name: formData.companyName,
-                vat_tax_id: formData.vatTaxId || formData.companyId,
-                address: formData.companyStreet
-                  ? {
-                      street: formData.companyStreet,
-                      city: formData.companyCity,
-                      postal_code: formData.companyPostalCode,
-                      country: formData.companyCountry,
-                    }
-                  : undefined,
-              }
-            : undefined,
-        vehicle: formData.vehicleMake
-          ? {
-              make: formData.vehicleMake,
-              model: formData.vehicleModel,
-              color: formData.vehicleColor,
-              license_plate: formData.vehicleLicensePlate,
-              vin: formData.vehicleVin,
-              registered_owner: formData.registeredOwner,
-            }
-          : undefined,
+        // Use cleanObject to remove empty strings and undefined values
+        perpetrator: hasDefinedValues(perpetratorData) ? cleanObject(perpetratorData) : undefined,
+        digital_footprints: hasDefinedValues(digitalFootprintsData) ? cleanObject(digitalFootprintsData) : undefined,
+        financial: hasDefinedValues(financialData) ? cleanObject(financialData) : undefined,
+        crypto: hasDefinedValues(cryptoData) ? cleanObject(cryptoData) : undefined,
+        company: hasDefinedValues(companyData) ? cleanObject(companyData) : undefined,
+        vehicle: hasDefinedValues(vehicleData) ? cleanObject(vehicleData) : undefined,
         evidence: uploadedEvidence.length > 0 ? uploadedEvidence : undefined,
         reporter: {
-          name: formData.reporterName,
+          name: formData.reporterName || undefined,
           email: formData.reporterEmail || 'anonymous@scamnemesis.com',
-          phone: formData.reporterPhone,
+          phone: formData.reporterPhone || undefined,
           preferred_language: locale || 'sk',
           consent: formData.agreeToGDPR || false,
           want_updates: formData.wantUpdates || false,
@@ -845,26 +895,41 @@ export default function NewReportPage() {
         },
       };
 
-      // Step 3: Submit report
-      const response = await fetch('/api/v1/reports', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(reportData),
-        credentials: 'include',
-      });
+      // Step 3: Submit report with timeout and AbortController
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      if (response.ok) {
-        const data = await response.json();
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('report-draft');
+      try {
+        const response = await fetch('/api/v1/reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reportData),
+          credentials: 'include',
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('report-draft');
+          }
+          toast.success('Hlásenie bolo úspešne odoslané!');
+          router.push(`/${locale}/report/success?id=${data.id || data.publicId}`);
+        } else {
+          const errorData = await response.json().catch(() => null);
+          toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
         }
-        toast.success('Hlásenie bolo úspešne odoslané!');
-        router.push(`/${locale}/report/success?id=${data.id || data.publicId}`);
-      } else {
-        const errorData = await response.json().catch(() => null);
-        toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          toast.error('Požiadavka vypršala. Skúste to prosím znova.');
+        } else {
+          throw fetchError;
+        }
       }
     } catch (error) {
       console.error('Submit error:', error);
