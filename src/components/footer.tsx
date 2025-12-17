@@ -6,6 +6,9 @@ import { Mail } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { i18n, type Locale } from '@/i18n/config';
 
+// Static year to prevent hydration mismatch
+const CURRENT_YEAR = new Date().getFullYear();
+
 const footerLinks = {
   services: [
     { name: { en: 'Scam Checker', sk: 'Kontrola podvodov', cs: 'Kontrola podvodů', de: 'Betrugscheck' }, href: '/search' },
@@ -156,7 +159,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ScamNemesis. {copyright[currentLocale]}
+            © {CURRENT_YEAR} ScamNemesis. {copyright[currentLocale]}
           </p>
           <div className="flex space-x-6">
             {footerLinks.legal.map((link) => (

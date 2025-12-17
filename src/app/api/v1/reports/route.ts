@@ -308,7 +308,7 @@ export async function POST(request: NextRequest) {
           data: {
             reportId: newReport.id,
             fullName: data.perpetrator.full_name,
-            fullNameNormalized: data.perpetrator.full_name?.toLowerCase().trim(),
+            fullNameNormalized: data.perpetrator.full_name?.toLowerCase()?.trim(),
             nickname: data.perpetrator.nickname,
             username: data.perpetrator.username,
             approxAge: data.perpetrator.approx_age,
@@ -317,7 +317,7 @@ export async function POST(request: NextRequest) {
             phone: data.perpetrator.phone,
             phoneNormalized: data.perpetrator.phone?.replace(/\D/g, ''),
             email: data.perpetrator.email,
-            emailNormalized: data.perpetrator.email?.toLowerCase().trim(),
+            emailNormalized: data.perpetrator.email?.toLowerCase()?.trim(),
             addressStreet: data.perpetrator.address?.street,
             addressCity: data.perpetrator.address?.city,
             addressPostalCode: data.perpetrator.address?.postal_code,
@@ -357,7 +357,7 @@ export async function POST(request: NextRequest) {
           data: {
             reportId: newReport.id,
             iban: data.financial.iban,
-            ibanNormalized: data.financial.iban?.replace(/\s/g, '').toUpperCase(),
+            ibanNormalized: data.financial.iban?.replace(/\s/g, '')?.toUpperCase(),
             accountHolder: data.financial.account_holder,
             accountNumber: data.financial.account_number,
             bankName: data.financial.bank_name,

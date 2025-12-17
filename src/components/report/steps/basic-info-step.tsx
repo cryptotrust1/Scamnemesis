@@ -16,6 +16,9 @@ interface BasicInfoStepProps {
 const countries = getCountriesWithPriority();
 const currencies = getCurrenciesWithPriority();
 
+// Static max date to prevent hydration mismatch (recalculated on page refresh)
+const TODAY_DATE = new Date().toISOString().split('T')[0];
+
 export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
   return (
     <div className="space-y-6">
@@ -76,7 +79,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
             type="date"
             value={data.incidentDate || ''}
             onChange={(e) => onChange('incidentDate', e.target.value)}
-            max={new Date().toISOString().split('T')[0]}
+            max={TODAY_DATE}
             className={errors.incidentDate ? 'border-destructive' : ''}
           />
           {errors.incidentDate && (
