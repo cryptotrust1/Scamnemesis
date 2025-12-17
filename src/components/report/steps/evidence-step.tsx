@@ -33,7 +33,7 @@ interface EvidenceStepProps {
   onFilesChange: (files: EvidenceFile[]) => void;
 }
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB - must match backend limit
 const MAX_FILES_PER_CATEGORY = 5;
 const MAX_TOTAL_FILES = 30;
 const ALLOWED_TYPES = [
