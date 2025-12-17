@@ -334,6 +334,261 @@ ${SITE_NAME}
   },
 
   /**
+   * Report confirmation email (sent to reporter after submission)
+   */
+  reportConfirmation: (options: {
+    reporterName: string;
+    reporterEmail: string;
+    caseNumber: string;
+    trackingToken: string;
+    fraudType: string;
+    summary: string;
+    financialLoss?: { amount: number; currency: string };
+    reportDate: Date;
+    locale?: string;
+  }) => {
+    const safeReporterName = escapeHtml(options.reporterName || 'Reporter');
+    const safeCaseNumber = escapeHtml(options.caseNumber);
+    const safeFraudType = escapeHtml(options.fraudType.replace(/_/g, ' ').toLowerCase());
+    const safeSummary = escapeHtml(options.summary.substring(0, 100) + (options.summary.length > 100 ? '...' : ''));
+    const trackingUrl = `${SITE_URL}/${options.locale || 'en'}/case-update/${encodeURIComponent(options.trackingToken)}`;
+    const formattedDate = options.reportDate.toLocaleDateString('sk-SK', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const formattedLoss = options.financialLoss
+      ? `${options.financialLoss.amount.toLocaleString('sk-SK')} ${options.financialLoss.currency}`
+      : 'Neuvedené';
+
+    return {
+      subject: `Potvrdenie hlásenia - ${safeCaseNumber} | ${SITE_NAME}`,
+      html: `
+        <!DOCTYPE html>
+        <html lang="sk">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Potvrdenie hlásenia</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7fa; line-height: 1.6;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f7fa; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                  <!-- Header -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 40px 30px; text-align: center;">
+                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                        🛡️ ${SITE_NAME}
+                      </h1>
+                      <p style="margin: 10px 0 0; color: #bfdbfe; font-size: 14px;">
+                        Spoločne proti podvodom
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Main Content -->
+                  <tr>
+                    <td style="padding: 40px 30px;">
+                      <p style="margin: 0 0 20px; color: #374151; font-size: 16px;">
+                        Vážený/á <strong>${safeReporterName}</strong>,
+                      </p>
+                      <p style="margin: 0 0 30px; color: #374151; font-size: 16px;">
+                        Ďakujeme za odoslanie hlásenia o podvode do ${SITE_NAME}. Vaše hlásenie sme úspešne prijali a bolo mu pridelené jedinečné číslo prípadu pre sledovanie a vyšetrovanie.
+                      </p>
+
+                      <!-- Case ID Box -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 8px; margin-bottom: 30px;">
+                        <tr>
+                          <td style="padding: 20px; text-align: center;">
+                            <p style="margin: 0 0 5px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                              Číslo prípadu
+                            </p>
+                            <p style="margin: 0; color: #1e40af; font-size: 24px; font-weight: 700; font-family: monospace;">
+                              ${safeCaseNumber}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Report Summary -->
+                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
+                        📋 Zhrnutie hlásenia
+                      </h3>
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+                        <tr>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                            <span style="color: #6b7280; font-size: 14px;">Dátum hlásenia:</span>
+                          </td>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
+                            <strong style="color: #374151; font-size: 14px;">${formattedDate}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                            <span style="color: #6b7280; font-size: 14px;">Typ podvodu:</span>
+                          </td>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
+                            <strong style="color: #374151; font-size: 14px; text-transform: capitalize;">${safeFraudType}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                            <span style="color: #6b7280; font-size: 14px;">Nahlásená strata:</span>
+                          </td>
+                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
+                            <strong style="color: #374151; font-size: 14px;">${formattedLoss}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px 0;">
+                            <span style="color: #6b7280; font-size: 14px;">Stav:</span>
+                          </td>
+                          <td style="padding: 10px 0; text-align: right;">
+                            <span style="display: inline-block; background-color: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                              Prijaté - Čaká na kontrolu
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Track Button -->
+                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px;">
+                        🔍 Sledovať a aktualizovať prípad
+                      </h3>
+                      <p style="margin: 0 0 20px; color: #6b7280; font-size: 14px;">
+                        Stav vášho hlásenia môžete kedykoľvek skontrolovať a pridať ďalšie informácie pomocou odkazu nižšie:
+                      </p>
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center" style="padding: 10px 0 30px;">
+                            <a href="${trackingUrl}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
+                              Zobraziť stav prípadu
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Save Link Warning -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b; margin-bottom: 30px;">
+                        <tr>
+                          <td style="padding: 15px 20px;">
+                            <p style="margin: 0 0 5px; color: #92400e; font-size: 14px; font-weight: 600;">
+                              ⚠️ Dôležité: Uložte si tento email
+                            </p>
+                            <p style="margin: 0; color: #92400e; font-size: 13px;">
+                              Odkaz na sledovanie prípadu je váš jedinečný prístupový kľúč. Z bezpečnostných dôvodov nie je prístupný nikomu inému.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- What's Next -->
+                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px;">
+                        📌 Čo sa stane ďalej?
+                      </h3>
+                      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+                        <tr>
+                          <td style="padding: 10px 0; vertical-align: top; width: 30px;">
+                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">1</span>
+                          </td>
+                          <td style="padding: 10px 0 10px 10px;">
+                            <strong style="color: #374151; font-size: 14px;">Proces kontroly:</strong>
+                            <span style="color: #6b7280; font-size: 14px;"> Náš tím skontroluje vaše hlásenie do 24-48 hodín</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px 0; vertical-align: top;">
+                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">2</span>
+                          </td>
+                          <td style="padding: 10px 0 10px 10px;">
+                            <strong style="color: #374151; font-size: 14px;">Vyšetrovanie:</strong>
+                            <span style="color: #6b7280; font-size: 14px;"> Platné hlásenia budú vyšetrené a pridané do verejnej databázy</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px 0; vertical-align: top;">
+                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">3</span>
+                          </td>
+                          <td style="padding: 10px 0 10px 10px;">
+                            <strong style="color: #374151; font-size: 14px;">Aktualizácie:</strong>
+                            <span style="color: #6b7280; font-size: 14px;"> Stav prípadu môžete kedykoľvek skontrolovať pomocou odkazu vyššie</span>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p style="margin: 0 0 20px; color: #374151; font-size: 14px; background-color: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                        💚 Vaše hlásenie pomáha chrániť ostatných pred podobnými podvodmi. Zdieľaním svojej skúsenosti prispievate k bezpečnejšej online komunite pre všetkých.
+                      </p>
+
+                      <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                        Ak máte ďalšie dôkazy alebo informácie, použite odkaz na sledovanie prípadu vyššie. Pre všeobecné otázky nás kontaktujte na <a href="mailto:support@scamnemesis.com" style="color: #2563eb;">support@scamnemesis.com</a>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #1f2937; padding: 30px; text-align: center;">
+                      <p style="margin: 0 0 10px; color: #ffffff; font-size: 18px; font-weight: 600;">
+                        🛡️ ${SITE_NAME}
+                      </p>
+                      <p style="margin: 0 0 20px; color: #9ca3af; font-size: 12px;">
+                        Bojujeme proti podvodom, chránime komunity
+                      </p>
+                      <p style="margin: 0; color: #6b7280; font-size: 11px;">
+                        Toto je automatická správa. Prosím neodpovedajte priamo na tento email.<br>
+                        Pre podporu nás kontaktujte na <a href="mailto:support@scamnemesis.com" style="color: #60a5fa;">support@scamnemesis.com</a>
+                      </p>
+                      <p style="margin: 20px 0 0; color: #6b7280; font-size: 11px;">
+                        © ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `,
+      text: `
+${SITE_NAME} - Potvrdenie hlásenia
+================================
+
+Vážený/á ${options.reporterName || 'Reporter'},
+
+Ďakujeme za odoslanie hlásenia o podvode do ${SITE_NAME}. Vaše hlásenie sme úspešne prijali.
+
+ČÍSLO PRÍPADU: ${options.caseNumber}
+
+ZHRNUTIE HLÁSENIA:
+- Dátum hlásenia: ${formattedDate}
+- Typ podvodu: ${safeFraudType}
+- Nahlásená strata: ${formattedLoss}
+- Stav: Prijaté - Čaká na kontrolu
+
+SLEDOVAŤ PRÍPAD:
+${trackingUrl}
+
+⚠️ DÔLEŽITÉ: Uložte si tento email. Odkaz na sledovanie je váš jedinečný prístupový kľúč.
+
+ČO SA STANE ĎALEJ:
+1. Náš tím skontroluje vaše hlásenie do 24-48 hodín
+2. Platné hlásenia budú vyšetrené a pridané do verejnej databázy
+3. Stav prípadu môžete kedykoľvek skontrolovať pomocou odkazu vyššie
+
+Vaše hlásenie pomáha chrániť ostatných pred podobnými podvodmi.
+
+Pre podporu: support@scamnemesis.com
+
+© ${new Date().getFullYear()} ${SITE_NAME}
+      `.trim(),
+    };
+  },
+
+  /**
    * Report status update (for reporter)
    */
   reportStatusUpdate: (userName: string, reportTitle: string, status: 'approved' | 'rejected', reason?: string) => {
@@ -426,6 +681,21 @@ export const emailService = {
   async sendReportStatusUpdate(email: string, userName: string, reportTitle: string, status: 'approved' | 'rejected', reason?: string): Promise<SendResult> {
     const template = emailTemplates.reportStatusUpdate(userName, reportTitle, status, reason);
     return sendEmail({ to: email, ...template });
+  },
+
+  async sendReportConfirmation(options: {
+    reporterName: string;
+    reporterEmail: string;
+    caseNumber: string;
+    trackingToken: string;
+    fraudType: string;
+    summary: string;
+    financialLoss?: { amount: number; currency: string };
+    reportDate: Date;
+    locale?: string;
+  }): Promise<SendResult> {
+    const template = emailTemplates.reportConfirmation(options);
+    return sendEmail({ to: options.reporterEmail, ...template });
   },
 };
 
