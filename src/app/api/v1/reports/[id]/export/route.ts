@@ -410,7 +410,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           { publicId: id },
         ],
         // Only allow export of approved reports for non-admins
-        ...(!(auth && 'auth' in auth && auth.auth.scopes.some(s => s.startsWith('admin:'))) ? { status: 'APPROVED' } : {}),
+        ...(!(auth && 'auth' in auth && auth.auth?.scopes?.some(s => s.startsWith('admin:'))) ? { status: 'APPROVED' } : {}),
       },
       include: {
         perpetrators: true,
@@ -461,7 +461,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     // JSON format for programmatic access
     if (format === 'json') {
-      const perpetrator = report.perpetrators[0];
+      const perpetrator = report.perpetrators?.[0] ?? null;
       return NextResponse.json({
         id: report.publicId,
         summary: report.summary,

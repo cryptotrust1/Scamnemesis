@@ -55,7 +55,7 @@ export async function POST(
     }
 
     // Prevent banning admins unless super admin
-    if ((user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && !auth.auth.scopes.includes('*')) {
+    if ((user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && !auth.auth?.scopes?.includes('*')) {
       return NextResponse.json(
         { error: 'forbidden', message: 'Cannot ban admin users' },
         { status: 403 }

@@ -271,7 +271,7 @@ async function exactSearch(
       phone: report.perpetrators[0]?.phone,
       email: report.perpetrators[0]?.email,
     },
-    fraud_type: report.fraudType.toLowerCase(),
+    fraud_type: report.fraudType?.toLowerCase() ?? 'unknown',
     country: report.locationCountry || undefined,
     incident_date: report.incidentDate?.toISOString().split('T')[0],
   }));
@@ -381,11 +381,11 @@ async function fuzzySearch(
       perpetrator: {
         name: report.perpetrators[0]?.fullName,
       },
-      fraud_type: report.fraudType.toLowerCase(),
+      fraud_type: report.fraudType?.toLowerCase() ?? 'unknown',
       country: report.locationCountry || undefined,
       incident_date: report.incidentDate?.toISOString().split('T')[0],
       highlights: {
-        name: report.perpetrators[0]?.fullName ? [report.perpetrators[0].fullName] : [],
+        name: report.perpetrators[0]?.fullName ? [report.perpetrators[0]?.fullName] : [],
       },
     };
   });
@@ -671,7 +671,9 @@ export async function GET(request: NextRequest) {
 
       facets.fraud_type = {};
       fraudTypeFacets.forEach((f) => {
-        facets.fraud_type[f.fraudType.toLowerCase()] = f._count;
+        if (f.fraudType) {
+          facets.fraud_type[f.fraudType.toLowerCase()] = f._count;
+        }
       });
     }
 

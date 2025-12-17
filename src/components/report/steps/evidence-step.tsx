@@ -152,7 +152,7 @@ function CategoryUpload({ category, files, onFilesChange, allFiles, translations
   const cancelText = (translations.common as Record<string, string>)?.cancel || 'Cancel';
   const urlPlaceholder = (evidenceTranslations?.urlPlaceholder as string) || 'https://...';
   const descriptionPlaceholder = (evidenceTranslations?.descriptionPlaceholder as string) || 'Description (optional)';
-  const maxSizeText = (evidenceTranslations?.maxSize as string) || 'Max 20MB per file';
+  const maxSizeText = (evidenceTranslations?.maxSize as string) || 'Max 10MB per file';
   const fileDescPlaceholder = (evidenceTranslations?.fileDescription as string) || 'File description (optional)';
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -170,7 +170,7 @@ function CategoryUpload({ category, files, onFilesChange, allFiles, translations
       return `Unsupported file type: ${file.type}`;
     }
     if (file.size > MAX_FILE_SIZE) {
-      return `File ${file.name} is too large (max 20MB)`;
+      return `File ${file.name} is too large (max 10MB)`;
     }
     return null;
   };

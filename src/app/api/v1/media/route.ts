@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       type: query.type,
       status: query.status,
       search: query.search,
-      uploadedById: auth.auth.scopes.some(s => s.startsWith('admin:')) ? undefined : auth.userId,
+      uploadedById: auth.auth?.scopes?.some(s => s.startsWith('admin:')) ? undefined : auth.userId,
     });
 
     return NextResponse.json({
