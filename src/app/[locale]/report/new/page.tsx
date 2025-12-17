@@ -798,7 +798,7 @@ export default function NewReportPage() {
         domain_name: formData.domainName,
         domain_creation_date: toISODateTime(formData.domainCreationDate),
         ip_address: formData.ipAddress,
-        ip_country: formData.ipCountry,
+        ip_country: formData.ipCountry?.substring(0, 2).toUpperCase(),
         isp: formData.ispProvider,
         ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
       };
@@ -809,7 +809,7 @@ export default function NewReportPage() {
         account_holder: formData.accountHolderName,
         account_number: formData.accountNumber || formData.bankAccount,
         bank_name: formData.bankName,
-        bank_country: formData.bankCountry,
+        bank_country: formData.bankCountry?.substring(0, 2).toUpperCase(),
         swift_bic: formData.swiftBic,
         routing_number: formData.routingNumber,
         bsb: formData.bsbCode,
@@ -822,7 +822,7 @@ export default function NewReportPage() {
       // Build crypto object only if it has relevant data
       const cryptoData = {
         wallet_address: formData.walletAddress || formData.cryptoWallet,
-        blockchain: formData.blockchain,
+        blockchain: formData.blockchain?.toUpperCase() as typeof formData.blockchain,
         exchange_wallet_name: formData.exchangeName,
         transaction_hash: formData.transactionHash,
         paypal_account: formData.paypalAccount,

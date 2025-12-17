@@ -465,7 +465,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         id: report.publicId,
-        status: report.status.toLowerCase(),
+        status: (report.status || 'PENDING').toLowerCase(),
         created_at: report.createdAt.toISOString(),
         duplicate_check: {
           has_duplicates: duplicateResult.hasDuplicates,
@@ -587,8 +587,8 @@ export async function GET(request: NextRequest) {
     // Format response with masking based on user role
     const formattedReports = reports.map((report) => ({
       id: report.publicId,
-      status: report.status.toLowerCase(),
-      fraud_type: report.fraudType.toLowerCase(),
+      status: (report.status || 'PENDING').toLowerCase(),
+      fraud_type: (report.fraudType || 'OTHER').toLowerCase(),
       incident_date: report.incidentDate?.toISOString().split('T')[0],
       country: report.locationCountry,
       perpetrator: report.perpetrators[0]
