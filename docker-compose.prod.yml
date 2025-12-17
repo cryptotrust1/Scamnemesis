@@ -56,17 +56,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      password-sync:
+        condition: service_completed_successfully
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        echo "Running database migrations..."
+        echo "=== Running database migrations ==="
         for file in /migrations/*.sql; do
           if [ -f "$$file" ]; then
             echo "Executing: $$file"
             psql -f "$$file" || echo "Warning: $$file may have already been applied"
           fi
         done
-        echo "Migrations completed!"
+        echo "=== Migrations completed! ==="
     networks:
       - scamnemesis
     restart: "no"
@@ -173,6 +175,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - postgres_socket:/var/run/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
@@ -185,6 +188,38 @@ services:
         limits:
           cpus: '2'
           memory: 2G
+
+  # ===========================================================================
+  # PASSWORD SYNC (ensures DB password matches .env on every deploy)
+  # ===========================================================================
+  # This service runs before migrations and updates the PostgreSQL password
+  # to match the current .env file. This is necessary because the postgres
+  # docker image only uses POSTGRES_PASSWORD during initial database creation.
+  password-sync:
+    image: postgres:16-alpine
+    container_name: scamnemesis-password-sync
+    user: "70:70"  # postgres user UID:GID in alpine image
+    environment:
+      - PGUSER=${POSTGRES_USER:-postgres}
+      - PGDATABASE=${POSTGRES_DB:-scamnemesis}
+      - NEW_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_socket:/var/run/postgresql
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "[password-sync] Syncing PostgreSQL password with .env..."
+        # Connect via unix socket (local trust authentication)
+        # This works even if the current password is different from .env
+        psql -h /var/run/postgresql -U "$${PGUSER}" -d "$${PGDATABASE}" -c "ALTER USER $${PGUSER} PASSWORD '$${NEW_PASSWORD}';" && \
+        echo "[password-sync] Password synchronized successfully!" || \
+        echo "[password-sync] Warning: Password sync failed (check logs)"
+    networks:
+      - scamnemesis
+    restart: "no"
 
   # ===========================================================================
   # CACHE & MESSAGE QUEUE (Redis)
@@ -387,6 +422,8 @@ volumes:
     name: scamnemesis_traefik_certs_prod
   postgres_data:
     name: scamnemesis_postgres_data_prod
+  postgres_socket:
+    name: scamnemesis_postgres_socket_prod
   redis_data:
     name: scamnemesis_redis_data_prod
   ml_models:
