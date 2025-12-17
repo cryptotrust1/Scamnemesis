@@ -150,19 +150,24 @@ CREATE TABLE users (
     -- Authentication
     email VARCHAR(255) UNIQUE NOT NULL,
     email_verified BOOLEAN DEFAULT FALSE,
+    email_verified_at TIMESTAMPTZ,
     password_hash VARCHAR(255),
     oauth_provider VARCHAR(50),
     oauth_id VARCHAR(255),
 
     -- Profile
+    name VARCHAR(255),
+    display_name VARCHAR(255),
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     phone VARCHAR(50),
     country_code VARCHAR(2),
 
-    -- Role & Permissions
+    -- Role & Permissions (Prisma uses role enum, keeping tier for backwards compat)
+    role VARCHAR(50) DEFAULT 'BASIC',
     tier user_tier DEFAULT 'basic',
     status user_status DEFAULT 'pending_verification',
+    is_active BOOLEAN DEFAULT TRUE,
 
     -- Security
     login_count INTEGER DEFAULT 0,
