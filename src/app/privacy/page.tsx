@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       <article className="prose prose-slate dark:prose-invert max-w-none">
         <h1>Ochrana osobnych udajov</h1>
         <p className="lead">
-          Posledna aktualizacia: {new Date().toLocaleDateString('sk-SK')}
+          Posledna aktualizacia: 1.1.2025
         </p>
 
         <h2>1. Uvod</h2>

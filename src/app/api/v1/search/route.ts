@@ -273,7 +273,7 @@ async function exactSearch(
     },
     fraud_type: report.fraudType?.toLowerCase() ?? 'unknown',
     country: report.locationCountry || undefined,
-    incident_date: report.incidentDate?.toISOString().split('T')[0],
+    incident_date: report.incidentDate?.toISOString()?.split('T')[0],
   }));
 
   return { results, total };
@@ -383,7 +383,7 @@ async function fuzzySearch(
       },
       fraud_type: report.fraudType?.toLowerCase() ?? 'unknown',
       country: report.locationCountry || undefined,
-      incident_date: report.incidentDate?.toISOString().split('T')[0],
+      incident_date: report.incidentDate?.toISOString()?.split('T')[0],
       highlights: {
         name: report.perpetrators[0]?.fullName ? [report.perpetrators[0]?.fullName] : [],
       },
@@ -504,9 +504,9 @@ async function semanticSearch(
       perpetrator: {
         name: row.perpetrator_name,
       },
-      fraud_type: row.fraud_type.toLowerCase(),
+      fraud_type: row.fraud_type?.toLowerCase() ?? 'unknown',
       country: row.location_country || undefined,
-      incident_date: row.incident_date?.toISOString().split('T')[0],
+      incident_date: row.incident_date?.toISOString()?.split('T')[0],
     }));
 
     return { results: searchResults, total };
