@@ -669,9 +669,9 @@ export default function NewReportPage() {
             }
           });
 
-          // Add AbortController with 60s timeout for file uploads (longer than report submit)
+          // Add AbortController with 240s timeout for file uploads (4 minutes for large files)
           const uploadController = new AbortController();
-          const uploadTimeoutId = setTimeout(() => uploadController.abort(), 60000);
+          const uploadTimeoutId = setTimeout(() => uploadController.abort(), 240000);
 
           let uploadResponse: Response;
           try {
@@ -920,7 +920,7 @@ export default function NewReportPage() {
 
       // Step 3: Submit report with timeout and AbortController
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 second (4 min) timeout
 
       try {
         const response = await fetch('/api/v1/reports', {
