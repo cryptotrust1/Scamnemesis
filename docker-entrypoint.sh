@@ -8,30 +8,10 @@
 
 set -e
 
-# Function to URL-encode a string
-urlencode() {
-    local string="$1"
-    local encoded=""
-    local i c o
-
-    for i in $(seq 0 $((${#string} - 1))); do
-        c="${string:$i:1}"
-        case "$c" in
-            [a-zA-Z0-9.~_-]) encoded="${encoded}$c" ;;
-            *)
-                # Get hex value of character
-                o=$(printf '%%%02X' "'$c")
-                encoded="${encoded}$o"
-                ;;
-        esac
-    done
-
-    echo "$encoded"
-}
-
 # If individual DB components are provided, construct DATABASE_URL with proper encoding
 if [ -n "$POSTGRES_PASSWORD" ] && [ -n "$POSTGRES_USER" ] && [ -n "$POSTGRES_HOST" ]; then
-    ENCODED_PASSWORD=$(urlencode "$POSTGRES_PASSWORD")
+    # Use Node.js to URL-encode the password (handles all special chars safely)
+    ENCODED_PASSWORD=$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$POSTGRES_PASSWORD")
 
     # Set defaults
     POSTGRES_PORT="${POSTGRES_PORT:-5432}"
