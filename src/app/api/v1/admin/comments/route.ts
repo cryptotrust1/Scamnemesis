@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       author: {
         id: comment.user.id,
         displayName: comment.user.displayName || comment.user.name || 'Anonym',
-        email: comment.user.email
+        email: comment.user.email && comment.user.email.includes('@')
           ? `${comment.user.email.substring(0, 5)}***@${comment.user.email.split('@')[1]}`
           : 'skrytý',
       },

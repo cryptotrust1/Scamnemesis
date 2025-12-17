@@ -375,7 +375,7 @@ export async function runDuplicateDetection(reportId: string): Promise<Duplicate
     };
   }
 
-  const perpetrator = report.perpetrators[0];
+  const perpetrator = report.perpetrators?.[0] ?? null;
   const financial = report.financialInfo;
   const crypto = report.cryptoInfo;
 

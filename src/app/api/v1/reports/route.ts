@@ -154,10 +154,10 @@ const evidenceItemSchema = z.object({
 
 const reporterSchema = z.object({
   name: z.string().optional(),
-  email: z.string().email(),
+  email: z.string().email().optional().or(z.literal('')),
   phone: z.string().optional(),
   preferred_language: z.string().default('en'),
-  consent: z.boolean(),
+  consent: z.boolean().optional().default(true),
   want_updates: z.boolean().optional().default(false),
   agree_to_terms: z.boolean().optional().default(false),
 });
@@ -291,7 +291,7 @@ export async function POST(request: NextRequest) {
           locationPostalCode: data.incident.location?.postal_code,
           locationCountry: data.incident.location?.country,
           reporterId: userId,
-          reporterEmail: data.reporter.email,
+          reporterEmail: data.reporter.email || 'anonymous@scamnemesis.com',
           reporterName: data.reporter.name,
           reporterPhone: data.reporter.phone,
           reporterConsent: data.reporter.consent || false,

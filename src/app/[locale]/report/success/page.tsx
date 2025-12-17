@@ -15,6 +15,7 @@ export default function ReportSuccessPage() {
   const searchParams = useSearchParams();
   const reportId = searchParams?.get('id');
   const [copied, setCopied] = useState(false);
+  const [reportUrl, setReportUrl] = useState('');
 
   // Redirect if no report ID
   useEffect(() => {
@@ -23,9 +24,12 @@ export default function ReportSuccessPage() {
     }
   }, [reportId, router]);
 
-  const reportUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/reports/${reportId}`
-    : '';
+  // Set report URL on client side to prevent hydration mismatch
+  useEffect(() => {
+    if (reportId) {
+      setReportUrl(`${window.location.origin}/reports/${reportId}`);
+    }
+  }, [reportId]);
 
   const handleCopyLink = async () => {
     try {

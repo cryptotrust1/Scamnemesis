@@ -105,10 +105,12 @@ export async function GET(request: NextRequest) {
       total_amount_lost: Number(totalAmountResult._sum.financialLossAmount || 0),
       users_protected: uniqueReporters.length * 10, // Estimate: each report protects ~10 potential victims
       reports_this_month: reportsThisMonth,
-      top_fraud_types: fraudTypeCounts.map((f) => ({
-        type: f.fraudType.toLowerCase(),
-        count: f._count,
-      })),
+      top_fraud_types: fraudTypeCounts
+        .filter((f) => f.fraudType)
+        .map((f) => ({
+          type: f.fraudType.toLowerCase(),
+          count: f._count,
+        })),
       top_countries: countryCounts
         .filter((c) => c.locationCountry)
         .map((c) => ({

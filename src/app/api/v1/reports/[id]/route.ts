@@ -236,8 +236,8 @@ export async function GET(
       );
     }
 
-    // Get first perpetrator for main perpetrator data
-    const perpetrator = report.perpetrators[0];
+    // Get first perpetrator for main perpetrator data (safely)
+    const perpetrator = report.perpetrators?.[0] ?? null;
 
     // Build response with masked data based on user role
     const response = {
