@@ -466,7 +466,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        id: report.publicId,
+        id: report.id,
+        publicId: report.publicId,
         status: (report.status || 'PENDING').toLowerCase(),
         created_at: report.createdAt.toISOString(),
         duplicate_check: {
