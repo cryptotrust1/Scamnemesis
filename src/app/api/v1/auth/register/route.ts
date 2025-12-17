@@ -142,14 +142,30 @@ export async function POST(request: NextRequest) {
     const accessToken = await generateAccessToken(user.id, user.email, user.role, scopes);
     const refreshToken = await generateRefreshToken(user.id);
 
-    // Store refresh token
-    await prisma.refreshToken.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      },
-    });
+    // Store refresh token and create audit log
+    await prisma.$transaction([
+      prisma.refreshToken.create({
+        data: {
+          userId: user.id,
+          token: refreshToken,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+        },
+      }),
+      prisma.auditLog.create({
+        data: {
+          action: 'USER_REGISTERED',
+          entityType: 'User',
+          entityId: user.id,
+          userId: user.id,
+          changes: {
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+          ipAddress: ip,
+        },
+      }),
+    ]);
 
     // Generate email verification token (valid for 24 hours)
     const secret = new TextEncoder().encode(getJwtSecret());

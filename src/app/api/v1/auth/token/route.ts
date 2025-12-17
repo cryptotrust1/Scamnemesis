@@ -120,6 +120,21 @@ export async function POST(request: NextRequest) {
       });
 
       if (!user || !user.isActive) {
+        // Log failed login attempt
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: data.email,
+            userId: user?.id || null,
+            changes: {
+              reason: !user ? 'user_not_found' : 'user_inactive',
+              email: data.email,
+            },
+            ipAddress: ip,
+          },
+        });
+
         return NextResponse.json(
           {
             error: 'unauthorized',
@@ -132,6 +147,21 @@ export async function POST(request: NextRequest) {
       const validPassword = await verifyPassword(data.password, user.passwordHash);
 
       if (!validPassword) {
+        // Log failed login attempt
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              reason: 'invalid_password',
+              email: data.email,
+            },
+            ipAddress: ip,
+          },
+        });
+
         return NextResponse.json(
           {
             error: 'unauthorized',
@@ -157,11 +187,27 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Update last login
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { lastLoginAt: new Date() },
-      });
+      // Update last login and create audit log
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        }),
+        prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_SUCCESS',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              method: 'password',
+              email: user.email,
+              role: user.role,
+            },
+            ipAddress: ip,
+          },
+        }),
+      ]);
 
       // Create response with user info
       const response = NextResponse.json({
@@ -234,11 +280,29 @@ export async function POST(request: NextRequest) {
         scopes
       );
 
-      // Update last used
-      await prisma.apiKey.update({
-        where: { id: apiKey.id },
-        data: { lastUsedAt: new Date() },
-      });
+      // Update last used and create audit log
+      await prisma.$transaction([
+        prisma.apiKey.update({
+          where: { id: apiKey.id },
+          data: { lastUsedAt: new Date() },
+        }),
+        prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_SUCCESS',
+            entityType: 'Auth',
+            entityId: apiKey.user.id,
+            userId: apiKey.user.id,
+            changes: {
+              method: 'api_key',
+              apiKeyId: apiKey.id,
+              apiKeyName: apiKey.name,
+              email: apiKey.user.email,
+              role: apiKey.user.role,
+            },
+            ipAddress: ip,
+          },
+        }),
+      ]);
 
       // Create response with user info
       const response = NextResponse.json({
