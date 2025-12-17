@@ -302,8 +302,8 @@ model Perpetrator {
   // Embeddings for similarity search
   nameEmbedding     Unsupported("vector(384)")? @map("name_embedding")
 
-  // Many-to-many relation (a perpetrator can be linked to multiple reports)
-  reports Report[]
+  // One-to-many relation: one perpetrator belongs to one report
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@index([reportId])
   @@index([phoneNormalized])

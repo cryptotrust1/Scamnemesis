@@ -123,13 +123,11 @@ export async function POST(
           );
 
           if (!existingPerp) {
-            // Link perpetrator to primary report as well
+            // Link perpetrator to primary report
             await tx.perpetrator.update({
               where: { id: perpetrator.id },
               data: {
-                reports: {
-                  connect: { id: primary_report_id },
-                },
+                reportId: primary_report_id,
               },
             });
           }

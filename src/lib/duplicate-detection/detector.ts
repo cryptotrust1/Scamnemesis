@@ -66,10 +66,9 @@ export async function detectDuplicates(
       where: {
         OR: orConditions,
         reportId: { notIn: excludeReportIds },
-        // Filter by report status in query (eliminates N+1)
-        // Note: Perpetrator has many-to-many relation 'reports', use 'some' filter
-        reports: {
-          some: { status: { in: ['PENDING', 'APPROVED'] } },
+        // Filter by report status in query
+        report: {
+          status: { in: ['PENDING', 'APPROVED'] },
         },
       },
       select: {
@@ -209,10 +208,9 @@ async function findFuzzyNameMatches(input: {
     where: {
       fullName: { not: null },
       reportId: { notIn: input.excludeReportIds },
-      // Filter by report status in query (eliminates N+1)
-      // Note: Perpetrator has many-to-many relation 'reports', use 'some' filter
-      reports: {
-        some: { status: { in: ['PENDING', 'APPROVED'] } },
+      // Filter by report status in query
+      report: {
+        status: { in: ['PENDING', 'APPROVED'] },
       },
     },
     select: {
