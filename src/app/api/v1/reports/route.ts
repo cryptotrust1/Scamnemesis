@@ -79,6 +79,7 @@ const incidentSchema = z.object({
 });
 
 const perpetratorSchema = z.object({
+  perpetrator_type: z.enum(['INDIVIDUAL', 'COMPANY', 'UNKNOWN']).optional(),
   full_name: z.string().max(255).optional(),
   nickname: z.string().max(100).optional(),
   username: z.string().max(100).optional(),
@@ -307,6 +308,7 @@ export async function POST(request: NextRequest) {
         await tx.perpetrator.create({
           data: {
             reportId: newReport.id,
+            perpetratorType: data.perpetrator.perpetrator_type || 'INDIVIDUAL',
             fullName: data.perpetrator.full_name,
             fullNameNormalized: data.perpetrator.full_name?.toLowerCase()?.trim(),
             nickname: data.perpetrator.nickname,
@@ -589,11 +591,11 @@ export async function GET(request: NextRequest) {
       id: report.publicId,
       status: (report.status || 'PENDING').toLowerCase(),
       fraud_type: (report.fraudType || 'OTHER').toLowerCase(),
-      incident_date: report.incidentDate?.toISOString().split('T')[0],
+      incident_date: report.incidentDate?.toISOString()?.split('T')[0],
       country: report.locationCountry,
-      perpetrator: report.perpetrators[0]
+      perpetrator: report.perpetrators?.[0]
         ? {
-            name: maskName(report.perpetrators[0].fullName, userRole),
+            name: maskName(report.perpetrators[0]?.fullName, userRole),
           }
         : null,
       created_at: report.createdAt.toISOString(),

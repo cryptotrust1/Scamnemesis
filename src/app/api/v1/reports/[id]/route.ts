@@ -163,11 +163,15 @@ function maskField(value: string | null, fieldType: 'email' | 'phone' | 'iban' |
   }
 }
 
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     // Get authentication context (optional - public endpoint)
@@ -367,9 +371,9 @@ export async function GET(
 // POST /reports/:id/comments - Add a comment
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   // Check if it's a comment submission
   const url = new URL(request.url);

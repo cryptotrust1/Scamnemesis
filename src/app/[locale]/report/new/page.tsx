@@ -789,10 +789,11 @@ export default function NewReportPage() {
 
       // Build perpetrator object only if it has data
       const perpetratorData = {
+        perpetrator_type: formData.perpetratorType?.toUpperCase() || 'INDIVIDUAL',
         full_name: formData.name,
         nickname: formData.nickname,
         username: formData.username,
-        approx_age: formData.approxAge ? parseInt(String(formData.approxAge)) : undefined,
+        approx_age: formData.approxAge ? parseInt(String(formData.approxAge), 10) : undefined,
         nationality: formData.nationality,
         physical_description: formData.physicalDescription,
         phone: formData.phone,
@@ -815,7 +816,7 @@ export default function NewReportPage() {
         ip_address: formData.ipAddress,
         ip_country: formData.ipCountry?.substring(0, 2).toUpperCase(),
         isp: formData.ispProvider,
-        ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
+        ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore), 10) : undefined,
       };
 
       // Build financial object only if it has data
