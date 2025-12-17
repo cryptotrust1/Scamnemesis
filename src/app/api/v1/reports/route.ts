@@ -606,7 +606,12 @@ export async function GET(request: NextRequest) {
       reports: formattedReports,
     });
   } catch (error) {
-    console.error('List reports error:', error);
+    const errorDetails = {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    console.error('[Reports API] List reports error:', JSON.stringify(errorDetails, null, 2));
     return NextResponse.json(
       {
         error: 'internal_error',

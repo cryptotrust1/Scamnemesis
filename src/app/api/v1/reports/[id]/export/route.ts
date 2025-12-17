@@ -47,6 +47,14 @@ function escapeHtml(unsafe: string | null | undefined): string {
 }
 
 /**
+ * Sanitize filename for Content-Disposition header to prevent header injection
+ */
+function sanitizeFilename(filename: string): string {
+  // Remove any characters that could be used for header injection
+  return String(filename).replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+
+/**
  * Generate HTML template for PDF export
  */
 function generateReportHTML(report: ReportForExport): string {
@@ -265,9 +273,9 @@ function generateReportHTML(report: ReportForExport): string {
   <h1>${escapeHtml(report.summary) || 'Bez nazvu'}</h1>
 
   <div style="margin-top: 10px;">
-    <span class="badge badge-status">${statusLabels[report.status] || report.status}</span>
-    <span class="badge badge-type">${fraudTypeLabels[report.fraudType] || report.fraudType}</span>
-    ${report.severity ? `<span class="badge badge-severity-${report.severity.toLowerCase()}">${severityLabels[report.severity]}</span>` : ''}
+    <span class="badge badge-status">${statusLabels[report.status] || escapeHtml(report.status)}</span>
+    <span class="badge badge-type">${fraudTypeLabels[report.fraudType] || escapeHtml(report.fraudType)}</span>
+    ${report.severity && severityLabels[report.severity] ? `<span class="badge badge-severity-${escapeHtml(report.severity.toLowerCase())}">${severityLabels[report.severity]}</span>` : ''}
   </div>
 
   <h2>Zakladne informacie</h2>
@@ -427,7 +435,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return new NextResponse(html, {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Content-Disposition': `inline; filename="report-${report.publicId}.html"`,
+          'Content-Disposition': `inline; filename="report-${sanitizeFilename(report.publicId)}.html"`,
         },
       });
     }
@@ -446,7 +454,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return new NextResponse(pdfHtml, {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Content-Disposition': `inline; filename="report-${report.publicId}.pdf"`,
+          'Content-Disposition': `inline; filename="report-${sanitizeFilename(report.publicId)}.pdf"`,
         },
       });
     }
@@ -483,7 +491,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Export error:', error);
+    const errorDetails = {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    console.error('[Export API] Error:', JSON.stringify(errorDetails, null, 2));
     return NextResponse.json(
       { error: 'internal_error', message: 'An unexpected error occurred' },
       { status: 500 }
