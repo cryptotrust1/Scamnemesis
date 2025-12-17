@@ -56,7 +56,7 @@ import { EvidenceStep } from '@/components/report/steps/evidence-step';
 import { ContactStep } from '@/components/report/steps/contact-step';
 import { ReviewStep } from '@/components/report/steps/review-step';
 import { toast } from 'sonner';
-import { secureStorageSet, secureStorageGet } from '@/lib/utils';
+import { secureStorageSet, secureStorageGet, secureStorageRemove } from '@/lib/utils';
 import {
   fraudTypeSchema,
   basicInfoSchema,
@@ -669,17 +669,32 @@ export default function NewReportPage() {
             }
           });
 
-          const uploadResponse = await fetch('/api/v1/evidence/upload', {
-            method: 'POST',
-            body: uploadFormData,
-            credentials: 'include',
-          });
+          // Add AbortController with 60s timeout for file uploads (longer than report submit)
+          const uploadController = new AbortController();
+          const uploadTimeoutId = setTimeout(() => uploadController.abort(), 60000);
+
+          let uploadResponse: Response;
+          try {
+            uploadResponse = await fetch('/api/v1/evidence/upload', {
+              method: 'POST',
+              body: uploadFormData,
+              credentials: 'include',
+              signal: uploadController.signal,
+            });
+          } catch (uploadFetchError) {
+            clearTimeout(uploadTimeoutId);
+            if (uploadFetchError instanceof Error && uploadFetchError.name === 'AbortError') {
+              throw new Error('Nahrávanie súborov trvalo príliš dlho. Skúste nahrať menšie súbory.');
+            }
+            throw uploadFetchError;
+          }
+          clearTimeout(uploadTimeoutId);
 
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json().catch(() => ({}));
-            // If S3 is unavailable (503), allow submission without files
+            // S3 503 is critical - user selected files to upload, we cannot silently drop them
             if (uploadResponse.status === 503) {
-              toast.warning('Nahrávanie súborov nie je dostupné. Hlásenie bude odoslané bez príloh.');
+              throw new Error('Služba nahrávania súborov je dočasne nedostupná. Skúste to prosím neskôr.');
             } else {
               throw new Error(uploadError.message || 'Chyba pri nahrávaní súborov');
             }
@@ -922,9 +937,12 @@ export default function NewReportPage() {
 
         if (response.ok) {
           const data = await response.json();
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('report-draft');
-          }
+          // Clear saved draft using secure storage
+          secureStorageRemove('report-draft');
+          // Reset all form state to prevent stale data if user navigates back
+          setFormData({});
+          setFiles([]);
+          setErrors({});
           toast.success('Hlásenie bolo úspešne odoslané!');
           router.push(`/${locale}/report/success?id=${data.id || data.publicId}`);
         } else {

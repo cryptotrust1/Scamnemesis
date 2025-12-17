@@ -56,7 +56,9 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
   // Try API key
   if (!user && apiKeyHeader) {
     try {
-      const key = await prisma.apiKey.findUnique({
+      // Use findFirst instead of findUnique because we're filtering by isActive
+      // which is not part of the unique constraint (only 'key' is unique)
+      const key = await prisma.apiKey.findFirst({
         where: { key: apiKeyHeader, isActive: true },
         select: {
           id: true,
