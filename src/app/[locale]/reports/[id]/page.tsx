@@ -18,6 +18,10 @@ import {
   Flag,
   Users,
   MessageSquare,
+  Building2,
+  Car,
+  Wallet,
+  Landmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,7 +52,33 @@ interface ReportDetail {
     socialMedia?: string[];
     iban?: string;
     bankAccount?: string;
+    bankName?: string;
+    bankCountry?: string;
     cryptoWallet?: string;
+    cryptoBlockchain?: string;
+    cryptoExchange?: string;
+  };
+
+  // Company info
+  company?: {
+    name?: string;
+    vatTaxId?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      postalCode?: string;
+      country?: string;
+    };
+  };
+
+  // Vehicle info
+  vehicle?: {
+    make?: string;
+    model?: string;
+    color?: string;
+    licensePlate?: string;
+    vin?: string;
+    registeredOwner?: string;
   };
 
   // Evidence
@@ -115,12 +145,37 @@ interface ApiReportResponse {
     whatsapp?: string;
     instagram?: string;
     facebook?: string;
+    tiktok?: string;
+    twitter?: string;
   };
   financial?: {
     iban?: string;
+    account_holder?: string;
+    bank_name?: string;
+    bank_country?: string;
   };
   crypto?: {
     wallet_address?: string;
+    blockchain?: string;
+    exchange?: string;
+  };
+  company?: {
+    name?: string;
+    vat_tax_id?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      postal_code?: string;
+      country?: string;
+    };
+  };
+  vehicle?: {
+    make?: string;
+    model?: string;
+    color?: string;
+    license_plate?: string;
+    vin?: string;
+    registered_owner?: string;
   };
   evidence: {
     id: string;
@@ -140,6 +195,8 @@ function transformApiResponse(data: ApiReportResponse): ReportDetail {
   if (data.digital_footprint?.instagram) socialMedia.push(data.digital_footprint.instagram);
   if (data.digital_footprint?.telegram) socialMedia.push(data.digital_footprint.telegram);
   if (data.digital_footprint?.whatsapp) socialMedia.push(data.digital_footprint.whatsapp);
+  if (data.digital_footprint?.tiktok) socialMedia.push(data.digital_footprint.tiktok);
+  if (data.digital_footprint?.twitter) socialMedia.push(data.digital_footprint.twitter);
 
   return {
     id: data.public_id || data.id,
@@ -160,8 +217,31 @@ function transformApiResponse(data: ApiReportResponse): ReportDetail {
       website: data.digital_footprint?.website_url,
       socialMedia: socialMedia.length > 0 ? socialMedia : undefined,
       iban: data.financial?.iban,
+      bankAccount: data.financial?.account_holder,
+      bankName: data.financial?.bank_name,
+      bankCountry: data.financial?.bank_country,
       cryptoWallet: data.crypto?.wallet_address,
+      cryptoBlockchain: data.crypto?.blockchain,
+      cryptoExchange: data.crypto?.exchange,
     },
+    company: data.company ? {
+      name: data.company.name,
+      vatTaxId: data.company.vat_tax_id,
+      address: data.company.address ? {
+        street: data.company.address.street,
+        city: data.company.address.city,
+        postalCode: data.company.address.postal_code,
+        country: data.company.address.country,
+      } : undefined,
+    } : undefined,
+    vehicle: data.vehicle ? {
+      make: data.vehicle.make,
+      model: data.vehicle.model,
+      color: data.vehicle.color,
+      licensePlate: data.vehicle.license_plate,
+      vin: data.vehicle.vin,
+      registeredOwner: data.vehicle.registered_owner,
+    } : undefined,
     evidence: data.evidence?.map(e => ({
       id: e.id,
       type: (e.type?.toUpperCase() || 'IMAGE') as 'IMAGE' | 'DOCUMENT' | 'VIDEO',
@@ -428,6 +508,221 @@ export default function ReportDetailPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Financial Info - Bank Account */}
+        {(report.perpetrator.iban || report.perpetrator.bankName || report.perpetrator.bankAccount) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Landmark className="h-5 w-5" />
+                Bankové údaje
+              </CardTitle>
+              <CardDescription>Bankové účty spojené s podvodom</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              {report.perpetrator.iban && (
+                <div className="flex items-center gap-3">
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">IBAN</div>
+                    <div className="font-mono">{report.perpetrator.iban}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.perpetrator.bankAccount && (
+                <div className="flex items-center gap-3">
+                  <User className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Majiteľ účtu</div>
+                    <div className="font-mono">{report.perpetrator.bankAccount}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.perpetrator.bankName && (
+                <div className="flex items-center gap-3">
+                  <Landmark className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Banka</div>
+                    <div className="font-mono">{report.perpetrator.bankName}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.perpetrator.bankCountry && (
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Krajina banky</div>
+                    <div className="font-mono">{report.perpetrator.bankCountry}</div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Crypto Info */}
+        {(report.perpetrator.cryptoWallet || report.perpetrator.cryptoBlockchain || report.perpetrator.cryptoExchange) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wallet className="h-5 w-5" />
+                Kryptomenové údaje
+              </CardTitle>
+              <CardDescription>Krypto peňaženky a burzy spojené s podvodom</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              {report.perpetrator.cryptoWallet && (
+                <div className="flex items-center gap-3 md:col-span-2">
+                  <Wallet className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Adresa peňaženky</div>
+                    <div className="font-mono text-sm break-all">{report.perpetrator.cryptoWallet}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.perpetrator.cryptoBlockchain && (
+                <div className="flex items-center gap-3">
+                  <Globe className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Blockchain</div>
+                    <div className="font-mono">{report.perpetrator.cryptoBlockchain}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.perpetrator.cryptoExchange && (
+                <div className="flex items-center gap-3">
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Krypto burza</div>
+                    <div className="font-mono">{report.perpetrator.cryptoExchange}</div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Company Info */}
+        {report.company && (report.company.name || report.company.vatTaxId) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5" />
+                Firemné údaje
+              </CardTitle>
+              <CardDescription>Informácie o firme spojenej s podvodom</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              {report.company.name && (
+                <div className="flex items-center gap-3">
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Názov firmy</div>
+                    <div className="font-mono">{report.company.name}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.company.vatTaxId && (
+                <div className="flex items-center gap-3">
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">IČO / DIČ</div>
+                    <div className="font-mono">{report.company.vatTaxId}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.company.address && (report.company.address.street || report.company.address.city) && (
+                <div className="flex items-start gap-3 md:col-span-2">
+                  <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <div className="text-sm font-medium">Adresa</div>
+                    <div className="font-mono">
+                      {[
+                        report.company.address.street,
+                        report.company.address.postalCode,
+                        report.company.address.city,
+                        report.company.address.country,
+                      ].filter(Boolean).join(', ')}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Vehicle Info */}
+        {report.vehicle && (report.vehicle.make || report.vehicle.licensePlate || report.vehicle.vin) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Car className="h-5 w-5" />
+                Údaje o vozidle
+              </CardTitle>
+              <CardDescription>Informácie o vozidle spojenom s podvodom</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              {(report.vehicle.make || report.vehicle.model) && (
+                <div className="flex items-center gap-3">
+                  <Car className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Značka / Model</div>
+                    <div className="font-mono">
+                      {[report.vehicle.make, report.vehicle.model].filter(Boolean).join(' ')}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {report.vehicle.color && (
+                <div className="flex items-center gap-3">
+                  <div className="h-5 w-5 rounded-full border" style={{ backgroundColor: report.vehicle.color }} />
+                  <div>
+                    <div className="text-sm font-medium">Farba</div>
+                    <div className="font-mono">{report.vehicle.color}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.vehicle.licensePlate && (
+                <div className="flex items-center gap-3">
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">ŠPZ</div>
+                    <div className="font-mono">{report.vehicle.licensePlate}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.vehicle.vin && (
+                <div className="flex items-center gap-3">
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">VIN</div>
+                    <div className="font-mono text-sm">{report.vehicle.vin}</div>
+                  </div>
+                </div>
+              )}
+
+              {report.vehicle.registeredOwner && (
+                <div className="flex items-center gap-3 md:col-span-2">
+                  <User className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm font-medium">Registrovaný majiteľ</div>
+                    <div className="font-mono">{report.vehicle.registeredOwner}</div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Evidence */}
         {report.evidence.length > 0 && (
