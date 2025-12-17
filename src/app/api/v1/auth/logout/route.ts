@@ -109,11 +109,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If authenticated, invalidate all refresh tokens for the user
+    // If authenticated, invalidate all refresh tokens for the user and log the logout
     if (userId) {
-      await prisma.refreshToken.deleteMany({
-        where: { userId },
-      });
+      await prisma.$transaction([
+        prisma.refreshToken.deleteMany({
+          where: { userId },
+        }),
+        prisma.auditLog.create({
+          data: {
+            action: 'LOGOUT',
+            entityType: 'Auth',
+            entityId: userId,
+            userId: userId,
+            changes: {
+              method: auth.apiKey ? 'api_key' : 'password',
+            },
+            ipAddress: ip,
+          },
+        }),
+      ]);
     }
 
     // Create response and clear cookies

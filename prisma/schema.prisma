@@ -148,6 +148,9 @@ model User {
   auditLogs        AuditLog[]
   refreshTokens    RefreshToken[]
 
+  // Admin Relations
+  resolvedClusters DuplicateCluster[]
+
   // CMS Relations
   media            Media[]
   pages            Page[]
@@ -185,6 +188,8 @@ model RefreshToken {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])              // Added: for ban operations (deleteMany by userId)
+  @@index([expiresAt])           // Added: for expired token cleanup
   @@map("refresh_tokens")
 }
 
@@ -463,6 +468,7 @@ model FaceData {
 
   evidence Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
 
+  @@index([evidenceId])         // Added: for face retrieval by evidence
   @@map("face_data")
 }
 
@@ -480,6 +486,14 @@ model Comment {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
+  // Reporting system
+  isReported      Boolean       @default(false) @map("is_reported")
+  reportReason    String?       @map("report_reason")
+  reportedAt      DateTime?     @map("reported_at")
+
+  // Voting system
+  upvotes         Int           @default(0)
+
   report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id])
@@ -488,6 +502,7 @@ model Comment {
   @@index([status])
   @@index([userId])              // Added: for user comment history
   @@index([reportId, status])   // Added: composite for report comments
+  @@index([isReported])         // Added: for reported comment filtering
   @@map("comments")
 }
 
@@ -504,10 +519,12 @@ model DuplicateCluster {
   resolvedById     String?                @map("resolved_by_id")
   createdAt        DateTime               @default(now()) @map("created_at")
 
-  reports DuplicateClusterReport[]
+  reports    DuplicateClusterReport[]
+  resolvedBy User?                        @relation(fields: [resolvedById], references: [id])
 
   @@index([status])
   @@index([confidence])
+  @@index([resolvedById])        // Added: for admin resolution queries
   @@map("duplicate_clusters")
 }
 
@@ -803,6 +820,8 @@ model Page {
   @@index([status])
   @@index([parentId])
   @@index([deletedAt])
+  @@index([authorId])            // Added: for author page queries
+  @@index([status, publishedAt]) // Added: for published pages listing
   @@map("pages")
 }
 

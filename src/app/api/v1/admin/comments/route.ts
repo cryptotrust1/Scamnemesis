@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     const { page, pageSize, skip } = parsePagination(searchParams);
     const status = searchParams.get('status');
     const search = searchParams.get('q');
+    const reported = searchParams.get('reported');
 
     // Build where clause with proper typing
     const where: Prisma.CommentWhereInput = {};
@@ -32,6 +33,11 @@ export async function GET(request: NextRequest) {
       } else if (Object.values(CommentStatus).includes(status as CommentStatus)) {
         where.status = status as CommentStatus;
       }
+    }
+
+    // Filter by reported status
+    if (reported === 'true') {
+      where.isReported = true;
     }
 
     if (search) {
@@ -55,6 +61,10 @@ export async function GET(request: NextRequest) {
           status: true,
           rejectionReason: true,
           createdAt: true,
+          isReported: true,
+          reportReason: true,
+          reportedAt: true,
+          upvotes: true,
           user: {
             select: {
               id: true,
@@ -80,8 +90,10 @@ export async function GET(request: NextRequest) {
       id: comment.id,
       content: comment.content,
       status: comment.status === 'PENDING_MODERATION' ? 'PENDING' : comment.status,
-      reported: false, // No isReported field in schema
-      reportReason: comment.rejectionReason,
+      reported: comment.isReported,
+      reportReason: comment.reportReason || comment.rejectionReason,
+      reportedAt: comment.reportedAt?.toISOString() || null,
+      upvotes: comment.upvotes,
       createdAt: comment.createdAt.toISOString(),
       author: {
         id: comment.user.id,
