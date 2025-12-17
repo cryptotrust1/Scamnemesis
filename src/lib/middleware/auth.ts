@@ -55,41 +55,46 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext>
 
   // Try API key
   if (!user && apiKeyHeader) {
-    const key = await prisma.apiKey.findUnique({
-      where: { key: apiKeyHeader, isActive: true },
-      select: {
-        id: true,
-        userId: true,
-        scopes: true,
-        expiresAt: true,
-      },
-    });
+    try {
+      const key = await prisma.apiKey.findUnique({
+        where: { key: apiKeyHeader, isActive: true },
+        select: {
+          id: true,
+          userId: true,
+          scopes: true,
+          expiresAt: true,
+        },
+      });
 
-    if (key) {
-      // Check expiration - keys without expiresAt default to 1 year max
-      const now = new Date();
-      const maxDefaultExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year from now
-      const effectiveExpiry = key.expiresAt || maxDefaultExpiry;
+      if (key) {
+        // Check expiration - keys without expiresAt default to 1 year max
+        const now = new Date();
+        const maxDefaultExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year from now
+        const effectiveExpiry = key.expiresAt || maxDefaultExpiry;
 
-      if (effectiveExpiry > now) {
-        apiKey = {
-          id: key.id,
-          userId: key.userId,
-          scopes: key.scopes,
-        };
-        scopes = key.scopes;
+        if (effectiveExpiry > now) {
+          apiKey = {
+            id: key.id,
+            userId: key.userId,
+            scopes: key.scopes,
+          };
+          scopes = key.scopes;
 
-        // Update last used
-        await prisma.apiKey.update({
-          where: { id: key.id },
-          data: { lastUsedAt: now },
-        });
+          // Update last used (fire and forget - don't block on this)
+          prisma.apiKey.update({
+            where: { id: key.id },
+            data: { lastUsedAt: now },
+          }).catch((err) => console.error('[Auth] Failed to update API key lastUsedAt:', err));
 
-        // Log warning for keys without explicit expiration
-        if (!key.expiresAt) {
-          console.warn(`[Auth] API key ${key.id} has no expiration set. Consider setting an expiration date.`);
+          // Log warning for keys without explicit expiration
+          if (!key.expiresAt) {
+            console.warn(`[Auth] API key ${key.id} has no expiration set. Consider setting an expiration date.`);
+          }
         }
       }
+    } catch (dbError) {
+      console.error('[Auth] Database error checking API key:', dbError);
+      // Continue without API key auth - don't break the request
     }
   }
 
@@ -165,48 +170,59 @@ export async function checkRateLimit(
   const now = new Date();
   const windowStart = new Date(now.getTime() - windowMs);
 
-  // Clean up expired entries
-  await prisma.rateLimit.deleteMany({
-    where: { expiresAt: { lt: now } },
-  });
+  try {
+    // Clean up expired entries (fire and forget - don't block on this)
+    prisma.rateLimit.deleteMany({
+      where: { expiresAt: { lt: now } },
+    }).catch((err) => console.error('[RateLimit] Failed to clean up expired entries:', err));
 
-  // Get or create rate limit entry
-  let rateLimit = await prisma.rateLimit.findUnique({
-    where: { identifier },
-  });
+    // Get or create rate limit entry
+    let rateLimit = await prisma.rateLimit.findUnique({
+      where: { identifier },
+    });
 
-  if (!rateLimit || rateLimit.windowStart < windowStart) {
-    // Create new window
-    rateLimit = await prisma.rateLimit.upsert({
-      where: { identifier },
-      update: {
-        count: 1,
-        windowStart: now,
-        expiresAt: new Date(now.getTime() + windowMs),
-      },
-      create: {
-        identifier,
-        count: 1,
-        windowStart: now,
-        expiresAt: new Date(now.getTime() + windowMs),
-      },
-    });
-  } else {
-    // Increment count
-    rateLimit = await prisma.rateLimit.update({
-      where: { identifier },
-      data: { count: { increment: 1 } },
-    });
+    if (!rateLimit || rateLimit.windowStart < windowStart) {
+      // Create new window
+      rateLimit = await prisma.rateLimit.upsert({
+        where: { identifier },
+        update: {
+          count: 1,
+          windowStart: now,
+          expiresAt: new Date(now.getTime() + windowMs),
+        },
+        create: {
+          identifier,
+          count: 1,
+          windowStart: now,
+          expiresAt: new Date(now.getTime() + windowMs),
+        },
+      });
+    } else {
+      // Increment count
+      rateLimit = await prisma.rateLimit.update({
+        where: { identifier },
+        data: { count: { increment: 1 } },
+      });
+    }
+
+    const remaining = Math.max(0, limit - rateLimit.count);
+    const allowed = rateLimit.count <= limit;
+
+    return {
+      allowed,
+      remaining,
+      resetAt: rateLimit.expiresAt,
+    };
+  } catch (dbError) {
+    console.error('[RateLimit] Database error:', dbError);
+    // On database error, allow the request but log it
+    // This prevents rate limiting from blocking all requests when DB is down
+    return {
+      allowed: true,
+      remaining: limit,
+      resetAt: new Date(now.getTime() + windowMs),
+    };
   }
-
-  const remaining = Math.max(0, limit - rateLimit.count);
-  const allowed = rateLimit.count <= limit;
-
-  return {
-    allowed,
-    remaining,
-    resetAt: rateLimit.expiresAt,
-  };
 }
 
 /**
