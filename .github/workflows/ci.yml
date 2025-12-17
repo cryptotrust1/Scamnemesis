@@ -244,7 +244,8 @@ jobs:
     needs: build
     services:
       postgres:
-        image: pgvector/pgvector:pg16
+        # Use standard postgres for CI (pgvector not needed for E2E tests)
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
