@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
       reportsThisWeek,
       reportsLastWeek,
       pendingComments,
+      reportedComments,
       pendingDuplicates,
       fraudTypeStats,
       recentReports,
@@ -64,6 +65,8 @@ export async function GET(request: NextRequest) {
       }),
       // Pending comments (using correct enum value)
       prisma.comment.count({ where: { status: 'PENDING_MODERATION' } }),
+      // Reported comments (user-reported comments)
+      prisma.comment.count({ where: { isReported: true } }),
       // Pending duplicate clusters
       prisma.duplicateCluster.count({ where: { status: 'PENDING' } }),
       // Fraud type distribution
@@ -127,7 +130,7 @@ export async function GET(request: NextRequest) {
       reportsThisWeek,
       reportsChange,
       pendingComments,
-      reportedComments: 0, // No isReported field in schema
+      reportedComments,
       pendingDuplicates,
       fraudTypeDistribution,
       recentReports: formattedRecentReports,
