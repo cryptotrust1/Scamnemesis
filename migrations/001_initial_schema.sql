@@ -214,9 +214,11 @@ CREATE TABLE user_roles (
     updated_at TIMESTAMPTZ DEFAULT NOW(),
 
     -- Constraints
-    CONSTRAINT unique_active_user_role UNIQUE (user_id, role) WHERE revoked_at IS NULL,
     CONSTRAINT valid_expiration CHECK (expires_at IS NULL OR expires_at > granted_at)
 );
+
+-- Partial unique index for active user roles (replaces invalid inline constraint)
+CREATE UNIQUE INDEX idx_unique_active_user_role ON user_roles (user_id, role) WHERE revoked_at IS NULL;
 
 COMMENT ON TABLE user_roles IS 'Role-based access control (RBAC) for users';
 COMMENT ON COLUMN user_roles.role IS 'System role: user, moderator, analyst, admin, superadmin';
