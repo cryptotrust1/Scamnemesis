@@ -640,6 +640,8 @@ export default function NewReportPage() {
   };
 
   const handleSubmit = async () => {
+    // Prevent duplicate submissions from rapid clicks
+    if (isSubmitting) return;
     if (!validateStep()) return;
 
     setIsSubmitting(true);
@@ -793,7 +795,9 @@ export default function NewReportPage() {
         full_name: formData.name,
         nickname: formData.nickname,
         username: formData.username,
-        approx_age: formData.approxAge ? parseInt(String(formData.approxAge), 10) : undefined,
+        approx_age: formData.approxAge !== undefined && formData.approxAge !== null && formData.approxAge !== ''
+          ? parseInt(String(formData.approxAge), 10)
+          : undefined,
         nationality: formData.nationality,
         physical_description: formData.physicalDescription,
         phone: formData.phone,
@@ -814,9 +818,11 @@ export default function NewReportPage() {
         domain_name: formData.domainName,
         domain_creation_date: toISODateTime(formData.domainCreationDate),
         ip_address: formData.ipAddress,
-        ip_country: formData.ipCountry?.substring(0, 2).toUpperCase(),
+        ip_country: formData.ipCountry?.trim().substring(0, 2).toUpperCase(),
         isp: formData.ispProvider,
-        ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore), 10) : undefined,
+        ip_abuse_score: formData.ipAbuseScore !== undefined && formData.ipAbuseScore !== null && formData.ipAbuseScore !== ''
+          ? parseInt(String(formData.ipAbuseScore), 10)
+          : undefined,
       };
 
       // Build financial object only if it has data
@@ -825,7 +831,7 @@ export default function NewReportPage() {
         account_holder: formData.accountHolderName,
         account_number: formData.accountNumber || formData.bankAccount,
         bank_name: formData.bankName,
-        bank_country: formData.bankCountry?.substring(0, 2).toUpperCase(),
+        bank_country: formData.bankCountry?.trim().substring(0, 2).toUpperCase(),
         swift_bic: formData.swiftBic,
         routing_number: formData.routingNumber,
         bsb: formData.bsbCode,
@@ -872,7 +878,7 @@ export default function NewReportPage() {
       const locationData = cleanObject({
         city: formData.city,
         postal_code: formData.postalCode,
-        country: formData.country?.substring(0, 2).toUpperCase(),
+        country: formData.country?.trim().substring(0, 2).toUpperCase(),
       });
 
       // Build incident object with cleaned optional fields
@@ -937,7 +943,7 @@ export default function NewReportPage() {
         clearTimeout(timeoutId);
 
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json().catch(() => ({ id: 'unknown' }));
           // Clear saved draft using secure storage
           secureStorageRemove('report-draft');
           // Reset all form state to prevent stale data if user navigates back
