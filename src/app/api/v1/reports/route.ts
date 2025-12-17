@@ -465,7 +465,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         id: report.publicId,
-        status: report.status.toLowerCase(),
+        status: (report.status || 'PENDING').toLowerCase(),
         created_at: report.createdAt.toISOString(),
         duplicate_check: {
           has_duplicates: duplicateResult.hasDuplicates,
@@ -587,8 +587,8 @@ export async function GET(request: NextRequest) {
     // Format response with masking based on user role
     const formattedReports = reports.map((report) => ({
       id: report.publicId,
-      status: report.status.toLowerCase(),
-      fraud_type: report.fraudType.toLowerCase(),
+      status: (report.status || 'PENDING').toLowerCase(),
+      fraud_type: (report.fraudType || 'OTHER').toLowerCase(),
       incident_date: report.incidentDate?.toISOString().split('T')[0],
       country: report.locationCountry,
       perpetrator: report.perpetrators[0]
@@ -606,7 +606,12 @@ export async function GET(request: NextRequest) {
       reports: formattedReports,
     });
   } catch (error) {
-    console.error('List reports error:', error);
+    const errorDetails = {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    console.error('[Reports API] List reports error:', JSON.stringify(errorDetails, null, 2));
     return NextResponse.json(
       {
         error: 'internal_error',

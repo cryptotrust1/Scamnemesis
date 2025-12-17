@@ -798,7 +798,7 @@ export default function NewReportPage() {
         domain_name: formData.domainName,
         domain_creation_date: toISODateTime(formData.domainCreationDate),
         ip_address: formData.ipAddress,
-        ip_country: formData.ipCountry,
+        ip_country: formData.ipCountry?.substring(0, 2).toUpperCase(),
         isp: formData.ispProvider,
         ip_abuse_score: formData.ipAbuseScore ? parseInt(String(formData.ipAbuseScore)) : undefined,
       };
@@ -809,7 +809,7 @@ export default function NewReportPage() {
         account_holder: formData.accountHolderName,
         account_number: formData.accountNumber || formData.bankAccount,
         bank_name: formData.bankName,
-        bank_country: formData.bankCountry,
+        bank_country: formData.bankCountry?.substring(0, 2).toUpperCase(),
         swift_bic: formData.swiftBic,
         routing_number: formData.routingNumber,
         bsb: formData.bsbCode,
@@ -822,7 +822,7 @@ export default function NewReportPage() {
       // Build crypto object only if it has relevant data
       const cryptoData = {
         wallet_address: formData.walletAddress || formData.cryptoWallet,
-        blockchain: formData.blockchain,
+        blockchain: formData.blockchain?.toUpperCase() as typeof formData.blockchain,
         exchange_wallet_name: formData.exchangeName,
         transaction_hash: formData.transactionHash,
         paypal_account: formData.paypalAccount,
@@ -859,22 +859,37 @@ export default function NewReportPage() {
         country: formData.country?.substring(0, 2).toUpperCase(),
       });
 
+      // Build incident object with cleaned optional fields
+      const incidentData = {
+        fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
+        date: toISODateTime(formData.incidentDate),
+        summary: formData.title || 'Report',
+        description: formData.description,
+        // Only send financial_loss if amount is positive (API requires > 0)
+        financial_loss: formData.amount && parseFloat(String(formData.amount)) > 0
+          ? {
+              amount: parseFloat(String(formData.amount)),
+              currency: formData.currency || 'EUR',
+            }
+          : undefined,
+        // Only send location if at least one field has value
+        location: locationData,
+      };
+
+      // Build reporter object - email is required, others are optional
+      const reporterData = {
+        name: formData.reporterName,
+        email: formData.reporterEmail || 'anonymous@scamnemesis.com',
+        phone: formData.reporterPhone,
+        preferred_language: locale || 'sk',
+        consent: formData.agreeToGDPR || false,
+        want_updates: formData.wantUpdates || false,
+        agree_to_terms: formData.agreeToTerms || false,
+      };
+
       const reportData = {
-        incident: {
-          fraud_type: formData.fraudType?.toUpperCase() || 'OTHER',
-          date: toISODateTime(formData.incidentDate),
-          summary: formData.title || 'Report',
-          description: formData.description,
-          // Only send financial_loss if amount is positive (API requires > 0)
-          financial_loss: formData.amount && parseFloat(String(formData.amount)) > 0
-            ? {
-                amount: parseFloat(String(formData.amount)),
-                currency: formData.currency || 'EUR',
-              }
-            : undefined,
-          // Only send location if at least one field has value
-          location: locationData,
-        },
+        // Clean incident to remove undefined/empty values
+        incident: cleanObject(incidentData) as typeof incidentData,
         // Only include if has any data (prevents Zod validation issues with empty objects)
         // Use cleanObject to remove empty strings and undefined values
         perpetrator: hasDefinedValues(perpetratorData) ? cleanObject(perpetratorData) : undefined,
@@ -884,15 +899,8 @@ export default function NewReportPage() {
         company: hasDefinedValues(companyData) ? cleanObject(companyData) : undefined,
         vehicle: hasDefinedValues(vehicleData) ? cleanObject(vehicleData) : undefined,
         evidence: uploadedEvidence.length > 0 ? uploadedEvidence : undefined,
-        reporter: {
-          name: formData.reporterName || undefined,
-          email: formData.reporterEmail || 'anonymous@scamnemesis.com',
-          phone: formData.reporterPhone || undefined,
-          preferred_language: locale || 'sk',
-          consent: formData.agreeToGDPR || false,
-          want_updates: formData.wantUpdates || false,
-          agree_to_terms: formData.agreeToTerms || false,
-        },
+        // Clean reporter to remove empty optional fields (name, phone)
+        reporter: cleanObject(reporterData) as typeof reporterData,
       };
 
       // Step 3: Submit report with timeout and AbortController
