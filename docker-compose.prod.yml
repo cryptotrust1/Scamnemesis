@@ -89,6 +89,7 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: scamnemesis-migrations
+    user: root  # Required for apt-get install fallback
     logging: *default-logging
     environment:
       - NODE_ENV=production
