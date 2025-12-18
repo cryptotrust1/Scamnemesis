@@ -87,13 +87,34 @@ const locationSchema = z.object({
 
 // Helper to validate datetime strings more leniently
 // Accepts ISO 8601 format with or without timezone, or just date
+// Also validates semantic correctness (not just format)
 const dateTimeString = z.string()
   .refine((val) => {
     if (!val) return true;
     // Accept ISO 8601 datetime or just date format
     const isoPattern = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|[+-]\d{2}:?\d{2})?)?$/;
-    return isoPattern.test(val);
-  }, { message: 'Invalid date format. Expected ISO 8601 format.' })
+    if (!isoPattern.test(val)) return false;
+
+    // Semantic validation: check if the date is actually valid
+    const parsed = new Date(val);
+    if (isNaN(parsed.getTime())) {
+      console.log(`[DateValidation] Invalid date (NaN): ${val}`);
+      return false;
+    }
+
+    // Additional semantic check: verify the parsed date matches the input
+    // This catches cases like "2024-02-30" which JS auto-corrects to March 1
+    const [datePart] = val.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    if (parsed.getUTCFullYear() !== year ||
+        parsed.getUTCMonth() + 1 !== month ||
+        parsed.getUTCDate() !== day) {
+      console.log(`[DateValidation] Date mismatch: input=${val}, parsed=${parsed.toISOString()}`);
+      return false;
+    }
+
+    return true;
+  }, { message: 'Invalid date format or semantically invalid date. Expected ISO 8601 format with valid date.' })
   .optional()
   .or(z.literal(''));
 
@@ -244,9 +265,16 @@ export async function POST(request: NextRequest) {
   console.log(`[Reports API][${requestId}] ========== NEW REQUEST ==========`);
 
   try {
-    // Rate limiting
+    // Rate limiting - wrapped in try-catch to prevent unhandled errors
     console.log(`[Reports API][${requestId}] Step 1: Checking rate limit...`);
-    const rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
+    let rateLimitError: Response | null = null;
+    try {
+      rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
+    } catch (rateLimitException) {
+      console.error(`[Reports API][${requestId}] Rate limit check failed:`, rateLimitException);
+      // Continue without rate limiting if the check fails (fail-open for UX)
+      // This could happen if Redis is down or rate limit table doesn't exist
+    }
     if (rateLimitError) {
       console.log(`[Reports API][${requestId}] Rate limited - returning 429`);
       return rateLimitError;
@@ -646,12 +674,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return detailed error in development, generic in production
+    // Return detailed error - include debug info for troubleshooting
+    // In production we still include error type and code for debugging
     const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json(
       {
         error: 'internal_error',
         message: isDev ? errorDetails.message : 'An unexpected error occurred',
+        // Always include request_id for log correlation
+        request_id: requestId,
+        // Include error type for debugging (safe, doesn't expose internals)
+        error_type: errorDetails.name,
+        // Include timestamp for debugging
+        timestamp: new Date().toISOString(),
         ...(isDev ? { details: errorDetails } : {}),
       },
       { status: 500 }
