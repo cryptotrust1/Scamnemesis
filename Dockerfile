@@ -110,9 +110,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 
-# Create bin directory and prisma symlink for CLI access
+# Create bin directory and proper prisma wrapper script for CLI access
+# Note: symlink to .js file doesn't work - need wrapper script that uses node
 RUN mkdir -p /app/node_modules/.bin && \
-    ln -sf /app/node_modules/prisma/build/index.js /app/node_modules/.bin/prisma && \
+    printf '#!/bin/sh\nexec node /app/node_modules/prisma/build/index.js "$@"\n' > /app/node_modules/.bin/prisma && \
     chmod +x /app/node_modules/.bin/prisma
 
 # Copy entrypoint script
