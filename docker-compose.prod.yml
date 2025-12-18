@@ -333,9 +333,12 @@ services:
     restart: unless-stopped
     logging: *default-logging
     environment:
-      # Note: ML service needs URL-encoded password if it contains special chars
-      # Using internal docker hostname 'postgres' instead of localhost
-      - POSTGRES_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-scamnemesis}
+      # Pass credentials separately, construct URL in entrypoint with encoding
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-scamnemesis}
       - REDIS_URL=redis://:${REDIS_PASSWORD:-scamnemesis_redis_2024}@redis:6379
       - MODEL_CACHE_DIR=/models
       - LOG_LEVEL=INFO
@@ -374,7 +377,8 @@ services:
     networks:
       - scamnemesis
     healthcheck:
-      test: ["CMD", "/usr/local/bin/clamdcheck.sh"]
+      # Use echo + clamdscan to verify clamd is running and responsive
+      test: ["CMD-SHELL", "echo PING | clamdscan --stream - 2>&1 | grep -q 'Infected files: 0' || exit 1"]
       interval: 60s
       timeout: 30s
       retries: 3

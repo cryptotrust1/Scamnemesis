@@ -27,8 +27,8 @@ import { fetchDuplicates, mergeDuplicates, dismissDuplicates, type DuplicateClus
 const STATUSES = [
   { value: 'all', label: 'Všetky' },
   { value: 'PENDING', label: 'Čakajúce' },
-  { value: 'MERGED', label: 'Zlúčené' },
-  { value: 'DISMISSED', label: 'Zamietnuté' },
+  { value: 'RESOLVED', label: 'Zlúčené' },
+  { value: 'IGNORED', label: 'Zamietnuté' },
 ];
 
 export default function AdminDuplicatesPage() {
@@ -89,9 +89,9 @@ export default function AdminDuplicatesPage() {
     switch (status) {
       case 'PENDING':
         return <Badge variant="warning">Čaká na riešenie</Badge>;
-      case 'MERGED':
+      case 'RESOLVED':
         return <Badge variant="success">Zlúčené</Badge>;
-      case 'DISMISSED':
+      case 'IGNORED':
         return <Badge variant="secondary">Zamietnuté</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -134,7 +134,7 @@ export default function AdminDuplicatesPage() {
       setIsSubmitting(true);
       await mergeDuplicates(clusterId, primaryId);
       setDuplicates(duplicates.map(d =>
-        d.id === clusterId ? { ...d, status: 'MERGED' as const, mergedAt: new Date().toISOString() } : d
+        d.id === clusterId ? { ...d, status: 'RESOLVED' as const, mergedAt: new Date().toISOString() } : d
       ));
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Nepodarilo sa zlúčiť duplikáty');
@@ -148,7 +148,7 @@ export default function AdminDuplicatesPage() {
       setIsSubmitting(true);
       await dismissDuplicates(clusterId);
       setDuplicates(duplicates.map(d =>
-        d.id === clusterId ? { ...d, status: 'DISMISSED' as const } : d
+        d.id === clusterId ? { ...d, status: 'IGNORED' as const } : d
       ));
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Nepodarilo sa zamietnuť duplikáty');
@@ -356,7 +356,7 @@ export default function AdminDuplicatesPage() {
                       </div>
                     )}
 
-                    {cluster.status === 'MERGED' && cluster.mergedAt && (
+                    {cluster.status === 'RESOLVED' && cluster.mergedAt && (
                       <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
                         Zlúčené {formatDate(cluster.mergedAt)}
                       </div>

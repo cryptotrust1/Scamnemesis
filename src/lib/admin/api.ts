@@ -299,7 +299,7 @@ export interface DuplicateCluster {
   id: string;
   confidence: number;
   matchType: string;
-  status: 'PENDING' | 'MERGED' | 'DISMISSED';
+  status: 'PENDING' | 'RESOLVED' | 'IGNORED';
   createdAt: string;
   mergedAt?: string;
   reports: DuplicateReport[];
