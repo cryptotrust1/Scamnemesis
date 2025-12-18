@@ -359,22 +359,40 @@ export async function POST(request: NextRequest) {
       console.log(`[Reports API][${requestId}] Creating/finding anonymous user for email: ${reporterEmail ? '***@***' : 'anonymous'}`);
 
       try {
-        // Use upsert to prevent race condition (P2002 unique constraint error)
-        const randomPasswordHash = randomBytes(32).toString('hex');
-        const anonymousUser = await prisma.user.upsert({
+        // First, test database connection
+        console.log(`[Reports API][${requestId}] Testing database connection...`);
+        const dbTest = await prisma.$queryRaw`SELECT 1 as test`;
+        console.log(`[Reports API][${requestId}] Database connection OK:`, dbTest);
+
+        // Check if user already exists
+        console.log(`[Reports API][${requestId}] Checking if user exists...`);
+        const existingUser = await prisma.user.findUnique({
           where: { email: reporterEmail },
-          update: {}, // Don't update anything if exists
-          create: {
-            email: reporterEmail,
-            passwordHash: randomPasswordHash,
-            displayName: data.reporter.name || 'Anonymous Reporter',
-            role: 'BASIC',
-            emailVerified: null,
-            isActive: true,
-          },
+          select: { id: true, email: true },
         });
-        userId = anonymousUser.id;
-        console.log(`[Reports API][${requestId}] User created/found: ${userId}`);
+
+        if (existingUser) {
+          userId = existingUser.id;
+          console.log(`[Reports API][${requestId}] Found existing user: ${userId}`);
+        } else {
+          // Create new user
+          console.log(`[Reports API][${requestId}] Creating new user...`);
+          const randomPasswordHash = randomBytes(32).toString('hex');
+          const newUser = await prisma.user.create({
+            data: {
+              email: reporterEmail,
+              passwordHash: randomPasswordHash,
+              displayName: data.reporter.name || 'Anonymous Reporter',
+              role: 'BASIC',
+              emailVerified: null,
+              isActive: true,
+            },
+          });
+          userId = newUser.id;
+          console.log(`[Reports API][${requestId}] Created new user: ${userId}`);
+        }
+
+        console.log(`[Reports API][${requestId}] User processing complete: ${userId}`);
       } catch (userError) {
         // Enhanced error logging for debugging
         const userErrorDetails = {
