@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
       prisma.user.update({
         where: { id: userId },
         data: {
-          emailVerified: true,
+          emailVerified: new Date(),
           emailVerifiedAt: new Date(),
         },
       }),

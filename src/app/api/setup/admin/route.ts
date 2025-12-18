@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
         name: 'Super Admin',
         displayName: 'Super Admin',
         role: 'SUPER_ADMIN',
-        emailVerified: true,
+        emailVerified: new Date(),
         isActive: true,
       },
     });

@@ -150,6 +150,10 @@ const perpetratorsSchema = {
  */
 export async function initializeCollections(): Promise<void> {
   const typesense = getTypesenseClient();
+  if (!typesense) {
+    console.log('[Typesense] Skipping collection initialization - disabled');
+    return;
+  }
 
   // Create reports collection if not exists
   try {
@@ -175,6 +179,7 @@ export async function initializeCollections(): Promise<void> {
  */
 export async function indexReport(report: ReportDocument): Promise<void> {
   const typesense = getTypesenseClient();
+  if (!typesense) return;
   await typesense.collections(COLLECTIONS.REPORTS).documents().upsert(report);
 }
 
@@ -183,6 +188,7 @@ export async function indexReport(report: ReportDocument): Promise<void> {
  */
 export async function indexReports(reports: ReportDocument[]): Promise<void> {
   const typesense = getTypesenseClient();
+  if (!typesense) return;
   await typesense.collections(COLLECTIONS.REPORTS).documents().import(reports, { action: 'upsert' });
 }
 
@@ -191,6 +197,7 @@ export async function indexReports(reports: ReportDocument[]): Promise<void> {
  */
 export async function deleteReport(id: string): Promise<void> {
   const typesense = getTypesenseClient();
+  if (!typesense) return;
   await typesense.collections(COLLECTIONS.REPORTS).documents(id).delete();
 }
 
@@ -199,6 +206,7 @@ export async function deleteReport(id: string): Promise<void> {
  */
 export async function indexPerpetrator(perpetrator: PerpetratorDocument): Promise<void> {
   const typesense = getTypesenseClient();
+  if (!typesense) return;
   await typesense.collections(COLLECTIONS.PERPETRATORS).documents().upsert(perpetrator);
 }
 
@@ -232,6 +240,9 @@ export interface SearchResult<T> {
 
 export async function searchReports(options: SearchOptions): Promise<SearchResult<ReportDocument>> {
   const typesense = getTypesenseClient();
+  if (!typesense) {
+    return { hits: [], found: 0, page: 1, totalPages: 0 };
+  }
 
   const searchParams: Record<string, unknown> = {
     q: options.query || '*',
@@ -307,6 +318,9 @@ export async function searchReports(options: SearchOptions): Promise<SearchResul
  */
 export async function searchPerpetrators(options: SearchOptions): Promise<SearchResult<PerpetratorDocument>> {
   const typesense = getTypesenseClient();
+  if (!typesense) {
+    return { hits: [], found: 0, page: 1, totalPages: 0 };
+  }
 
   const searchParams: Record<string, unknown> = {
     q: options.query || '*',
@@ -341,6 +355,9 @@ export async function getCollectionStats(): Promise<{
   perpetrators: { count: number };
 }> {
   const typesense = getTypesenseClient();
+  if (!typesense) {
+    return { reports: { count: 0 }, perpetrators: { count: 0 } };
+  }
 
   const [reportsInfo, perpetratorsInfo] = await Promise.all([
     typesense.collections(COLLECTIONS.REPORTS).retrieve(),
@@ -361,6 +378,9 @@ export async function resyncFromDatabase(
   getPerpetrators: () => Promise<PerpetratorDocument[]>
 ): Promise<{ reports: number; perpetrators: number }> {
   const typesense = getTypesenseClient();
+  if (!typesense) {
+    return { reports: 0, perpetrators: 0 };
+  }
 
   // Delete and recreate collections
   try {

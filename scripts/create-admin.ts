@@ -46,14 +46,14 @@ async function createAdmin() {
     const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
 
     // Create admin user
-    const admin = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email: ADMIN_EMAIL,
         passwordHash,
         name: ADMIN_NAME,
         displayName: ADMIN_NAME,
         role: 'SUPER_ADMIN',
-        emailVerified: true,
+        emailVerified: new Date(),
         isActive: true,
       },
     });
