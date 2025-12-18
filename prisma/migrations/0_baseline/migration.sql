@@ -385,6 +385,7 @@ CREATE TABLE IF NOT EXISTS "evidence" (
     CONSTRAINT "evidence_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "evidence_report_id_fkey" FOREIGN KEY ("report_id") REFERENCES "reports"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE INDEX IF NOT EXISTS "evidence_report_id_idx" ON "evidence"("report_id");
 CREATE INDEX IF NOT EXISTS "evidence_p_hash_idx" ON "evidence"("p_hash");
 CREATE INDEX IF NOT EXISTS "evidence_hash_idx" ON "evidence"("hash");
 
@@ -431,6 +432,7 @@ CREATE TABLE IF NOT EXISTS "comments" (
 CREATE INDEX IF NOT EXISTS "comments_report_id_idx" ON "comments"("report_id");
 CREATE INDEX IF NOT EXISTS "comments_status_idx" ON "comments"("status");
 CREATE INDEX IF NOT EXISTS "comments_user_id_idx" ON "comments"("user_id");
+CREATE INDEX IF NOT EXISTS "comments_moderated_by_id_idx" ON "comments"("moderated_by_id");
 CREATE INDEX IF NOT EXISTS "comments_report_id_status_idx" ON "comments"("report_id", "status");
 CREATE INDEX IF NOT EXISTS "comments_is_reported_idx" ON "comments"("is_reported");
 
@@ -451,6 +453,7 @@ CREATE TABLE IF NOT EXISTS "duplicate_clusters" (
 CREATE INDEX IF NOT EXISTS "duplicate_clusters_status_idx" ON "duplicate_clusters"("status");
 CREATE INDEX IF NOT EXISTS "duplicate_clusters_confidence_idx" ON "duplicate_clusters"("confidence");
 CREATE INDEX IF NOT EXISTS "duplicate_clusters_resolved_by_id_idx" ON "duplicate_clusters"("resolved_by_id");
+CREATE INDEX IF NOT EXISTS "duplicate_clusters_primary_report_id_idx" ON "duplicate_clusters"("primary_report_id");
 
 -- Duplicate Cluster Reports (Join Table)
 CREATE TABLE IF NOT EXISTS "duplicate_cluster_reports" (
@@ -653,6 +656,7 @@ CREATE INDEX IF NOT EXISTS "pages_parent_id_idx" ON "pages"("parent_id");
 CREATE INDEX IF NOT EXISTS "pages_deleted_at_idx" ON "pages"("deleted_at");
 CREATE INDEX IF NOT EXISTS "pages_author_id_idx" ON "pages"("author_id");
 CREATE INDEX IF NOT EXISTS "pages_status_published_at_idx" ON "pages"("status", "published_at");
+CREATE INDEX IF NOT EXISTS "pages_featured_image_id_idx" ON "pages"("featured_image_id");
 
 -- Page Revisions
 CREATE TABLE IF NOT EXISTS "page_revisions" (
@@ -683,6 +687,7 @@ CREATE TABLE IF NOT EXISTS "page_media" (
     CONSTRAINT "page_media_media_id_fkey" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "page_media_page_id_media_id_key" ON "page_media"("page_id", "media_id");
+CREATE INDEX IF NOT EXISTS "page_media_media_id_idx" ON "page_media"("media_id");
 
 -- System Settings
 CREATE TABLE IF NOT EXISTS "system_settings" (
@@ -702,6 +707,7 @@ CREATE TABLE IF NOT EXISTS "system_settings" (
 CREATE UNIQUE INDEX IF NOT EXISTS "system_settings_key_key" ON "system_settings"("key");
 CREATE INDEX IF NOT EXISTS "system_settings_group_idx" ON "system_settings"("group");
 CREATE INDEX IF NOT EXISTS "system_settings_is_public_idx" ON "system_settings"("is_public");
+CREATE INDEX IF NOT EXISTS "system_settings_updated_by_id_idx" ON "system_settings"("updated_by_id");
 
 -- ==================== PRISMA MIGRATIONS TABLE ====================
 -- This tracks which migrations have been applied

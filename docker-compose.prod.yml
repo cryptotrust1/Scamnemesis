@@ -71,15 +71,18 @@ services:
         ENCODED_PASSWORD=$$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$$POSTGRES_PASSWORD")
         export DATABASE_URL="postgresql://$$POSTGRES_USER:$$ENCODED_PASSWORD@postgres:5432/$$POSTGRES_DB"
 
+        # Use direct path to Prisma CLI (npx not available in production image)
+        PRISMA_BIN="/app/node_modules/.bin/prisma"
+
         # Try migrate deploy first (production-safe)
-        if npx --yes prisma migrate deploy 2>&1; then
+        if $$PRISMA_BIN migrate deploy 2>&1; then
           echo "=== Prisma migrations applied successfully! ==="
           exit 0
         fi
 
         # Fallback to db push for fresh installs
         echo "migrate deploy failed, trying db push..."
-        if npx --yes prisma db push --skip-generate 2>&1; then
+        if $$PRISMA_BIN db push --skip-generate 2>&1; then
           echo "=== Database schema synchronized! ==="
           exit 0
         fi
@@ -215,7 +218,7 @@ services:
   password-sync:
     image: postgres:16-alpine
     container_name: scamnemesis-password-sync
-    user: "70:70"  # postgres user UID:GID in alpine image
+    user: "999:999"  # postgres user UID:GID in Debian-based pgvector image
     environment:
       - PGUSER=${POSTGRES_USER:-postgres}
       - PGDATABASE=${POSTGRES_DB:-scamnemesis}

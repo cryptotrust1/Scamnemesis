@@ -265,9 +265,9 @@ model Report {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  reporter          User               @relation("ReporterReports", fields: [reporterId], references: [id])
-  moderatedBy       User?              @relation("ModeratedByUser", fields: [moderatedById], references: [id])
-  mergedInto        Report?            @relation("MergedReports", fields: [mergedIntoId], references: [id])
+  reporter          User               @relation("ReporterReports", fields: [reporterId], references: [id], onDelete: Restrict)
+  moderatedBy       User?              @relation("ModeratedByUser", fields: [moderatedById], references: [id], onDelete: SetNull)
+  mergedInto        Report?            @relation("MergedReports", fields: [mergedIntoId], references: [id], onDelete: SetNull)
   mergedReports     Report[]           @relation("MergedReports")
   perpetrators      Perpetrator[]
   digitalFootprint  DigitalFootprint?
@@ -465,6 +465,7 @@ model Evidence {
   report    Report      @relation(fields: [reportId], references: [id], onDelete: Cascade)
   faces     FaceData[]
 
+  @@index([reportId])  // Added: critical FK index for evidence queries
   @@index([pHash])
   @@index([hash])
   @@map("evidence")
@@ -509,11 +510,12 @@ model Comment {
 
   report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id])
+  moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id], onDelete: SetNull)
 
   @@index([reportId])
   @@index([status])
   @@index([userId])              // Added: for user comment history
+  @@index([moderatedById])       // Added: for moderator queries
   @@index([reportId, status])   // Added: composite for report comments
   @@index([isReported])         // Added: for reported comment filtering
   @@map("comments")
@@ -533,11 +535,12 @@ model DuplicateCluster {
   createdAt        DateTime               @default(now()) @map("created_at")
 
   reports    DuplicateClusterReport[]
-  resolvedBy User?                        @relation(fields: [resolvedById], references: [id])
+  resolvedBy User?                        @relation(fields: [resolvedById], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([confidence])
   @@index([resolvedById])        // Added: for admin resolution queries
+  @@index([primaryReportId])     // Added: for primary report lookups
   @@map("duplicate_clusters")
 }
 
@@ -596,7 +599,7 @@ model AuditLog {
   userAgent  String?  @map("user_agent")
   createdAt  DateTime @default(now()) @map("created_at")
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([entityType, entityId])
   @@index([userId])
@@ -711,7 +714,7 @@ model Media {
   updatedAt      DateTime    @updatedAt @map("updated_at")
 
   // Relations
-  uploadedBy     User        @relation(fields: [uploadedById], references: [id])
+  uploadedBy     User        @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
   pageMedia      PageMedia[]
 
   @@index([type])
@@ -830,9 +833,9 @@ model Page {
   updatedAt   DateTime    @updatedAt @map("updated_at")
 
   // Relations
-  parent      Page?       @relation("PageHierarchy", fields: [parentId], references: [id])
+  parent      Page?       @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children    Page[]      @relation("PageHierarchy")
-  author      User        @relation(fields: [authorId], references: [id])
+  author      User        @relation(fields: [authorId], references: [id], onDelete: Restrict)
   revisions   PageRevision[]
   pageMedia   PageMedia[]
 
@@ -841,6 +844,7 @@ model Page {
   @@index([deletedAt])
   @@index([authorId])            // Added: for author page queries
   @@index([status, publishedAt]) // Added: for published pages listing
+  @@index([featuredImageId])     // Added: for featured image lookups
   @@map("pages")
 }
 
@@ -863,7 +867,7 @@ model PageRevision {
 
   // Relations
   page        Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  author      User      @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Restrict)
 
   @@index([pageId])
   @@index([version])
@@ -881,6 +885,7 @@ model PageMedia {
   media     Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
   @@unique([pageId, mediaId])
+  @@index([mediaId])  // Added: for reverse lookups (media usage)
   @@map("page_media")
 }
 
@@ -902,9 +907,10 @@ model SystemSetting {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   updatedById String?   @map("updated_by_id")
 
-  updatedBy   User?     @relation(fields: [updatedById], references: [id])
+  updatedBy   User?     @relation(fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@index([group])
   @@index([isPublic])
+  @@index([updatedById])  // Added: for tracking who updated settings
   @@map("system_settings")
 }
