@@ -351,29 +351,67 @@ export async function POST(request: NextRequest) {
     if (!userId) {
       // Find or create anonymous user for this session based on email
       const reporterEmail = data.reporter.email || 'anonymous@scamnemesis.com';
+      console.log(`[Reports API][${requestId}] Reporter data:`, JSON.stringify({
+        email: reporterEmail ? `${reporterEmail.substring(0, 3)}***` : 'none',
+        name: data.reporter.name ? `${data.reporter.name.substring(0, 3)}***` : 'none',
+        hasPhone: !!data.reporter.phone,
+      }));
       console.log(`[Reports API][${requestId}] Creating/finding anonymous user for email: ${reporterEmail ? '***@***' : 'anonymous'}`);
 
       try {
-        // Use upsert to prevent race condition (P2002 unique constraint error)
-        const randomPasswordHash = randomBytes(32).toString('hex');
-        const anonymousUser = await prisma.user.upsert({
+        // First, test database connection
+        console.log(`[Reports API][${requestId}] Testing database connection...`);
+        const dbTest = await prisma.$queryRaw`SELECT 1 as test`;
+        console.log(`[Reports API][${requestId}] Database connection OK:`, dbTest);
+
+        // Check if user already exists
+        console.log(`[Reports API][${requestId}] Checking if user exists...`);
+        const existingUser = await prisma.user.findUnique({
           where: { email: reporterEmail },
-          update: {}, // Don't update anything if exists
-          create: {
-            email: reporterEmail,
-            passwordHash: randomPasswordHash,
-            displayName: data.reporter.name || 'Anonymous Reporter',
-            role: 'BASIC',
-            emailVerified: null,
-            isActive: true,
-          },
+          select: { id: true, email: true },
         });
-        userId = anonymousUser.id;
-        console.log(`[Reports API][${requestId}] User created/found: ${userId}`);
+
+        if (existingUser) {
+          userId = existingUser.id;
+          console.log(`[Reports API][${requestId}] Found existing user: ${userId}`);
+        } else {
+          // Create new user
+          console.log(`[Reports API][${requestId}] Creating new user...`);
+          const randomPasswordHash = randomBytes(32).toString('hex');
+          const newUser = await prisma.user.create({
+            data: {
+              email: reporterEmail,
+              passwordHash: randomPasswordHash,
+              displayName: data.reporter.name || 'Anonymous Reporter',
+              role: 'BASIC',
+              emailVerified: null,
+              isActive: true,
+            },
+          });
+          userId = newUser.id;
+          console.log(`[Reports API][${requestId}] Created new user: ${userId}`);
+        }
+
+        console.log(`[Reports API][${requestId}] User processing complete: ${userId}`);
       } catch (userError) {
-        console.error(`[Reports API][${requestId}] Failed to create/find anonymous user:`, userError);
+        // Enhanced error logging for debugging
+        const userErrorDetails = {
+          name: userError instanceof Error ? userError.name : 'Unknown',
+          message: userError instanceof Error ? userError.message : String(userError),
+          code: userError && typeof userError === 'object' && 'code' in userError ? (userError as { code: string }).code : undefined,
+          meta: userError && typeof userError === 'object' && 'meta' in userError ? (userError as { meta: unknown }).meta : undefined,
+        };
+        console.error(`[Reports API][${requestId}] Failed to create/find anonymous user:`, JSON.stringify(userErrorDetails, null, 2));
         return NextResponse.json(
-          { error: 'user_error', message: 'Failed to process reporter information' },
+          {
+            error: 'user_error',
+            message: 'Failed to process reporter information',
+            request_id: requestId,
+            // Include error details for debugging
+            error_type: userErrorDetails.name,
+            error_code: userErrorDetails.code,
+            timestamp: new Date().toISOString(),
+          },
           { status: 500 }
         );
       }

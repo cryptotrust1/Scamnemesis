@@ -127,8 +127,22 @@ services:
           exit 0
         fi
 
-        echo "WARNING: Migrations may have failed, app will retry on startup"
-        exit 0
+        echo "=== Prisma failed, falling back to direct SQL execution ==="
+        # Install psql client temporarily and run raw SQL
+        apt-get update -qq && apt-get install -y -qq postgresql-client > /dev/null 2>&1
+
+        # Run the baseline migration SQL directly
+        if [ -f "/app/prisma/migrations/0_baseline/migration.sql" ]; then
+          echo "Running baseline migration SQL..."
+          PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f /app/prisma/migrations/0_baseline/migration.sql 2>&1
+          if [ $$? -eq 0 ]; then
+            echo "=== SQL migration applied successfully! ==="
+            exit 0
+          fi
+        fi
+
+        echo "ERROR: All migration methods failed!"
+        exit 1
     networks:
       - scamnemesis
     restart: "no"
