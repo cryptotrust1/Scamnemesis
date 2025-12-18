@@ -350,7 +350,8 @@ ${SITE_NAME}
     const safeReporterName = escapeHtml(options.reporterName || 'Reporter');
     const safeCaseNumber = escapeHtml(options.caseNumber);
     const safeFraudType = escapeHtml(options.fraudType.replace(/_/g, ' ').toLowerCase());
-    const safeSummary = escapeHtml(options.summary.substring(0, 100) + (options.summary.length > 100 ? '...' : ''));
+    // Note: Summary currently not used in template but prepared for future use
+    const _safeSummary = escapeHtml(options.summary.substring(0, 100) + (options.summary.length > 100 ? '...' : ''));
     const trackingUrl = `${SITE_URL}/${options.locale || 'en'}/case-update/${encodeURIComponent(options.trackingToken)}`;
     const formattedDate = options.reportDate.toLocaleDateString('sk-SK', {
       year: 'numeric',

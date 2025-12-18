@@ -20,7 +20,8 @@ const S3_BUCKET = process.env.S3_BUCKET || 'scamnemesis';
 const S3_REGION = process.env.S3_REGION || 'us-east-1';
 // Public URL for accessing files - defaults to internal endpoint if not set
 // In production, this should be set to the public-facing MinIO URL or CDN
-const S3_PUBLIC_URL = process.env.S3_PUBLIC_URL || process.env.NEXT_PUBLIC_SITE_URL || S3_ENDPOINT;
+// Note: Currently unused but kept for future CDN integration
+const _S3_PUBLIC_URL = process.env.S3_PUBLIC_URL || process.env.NEXT_PUBLIC_SITE_URL || S3_ENDPOINT;
 
 // S3 credentials validation at runtime to avoid build-time failures
 function getS3Client(): S3Client | null {
