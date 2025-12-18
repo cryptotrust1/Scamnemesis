@@ -22,7 +22,7 @@ services:
   # TRAEFIK - Reverse Proxy + Automaticke SSL certifikaty
   # ===========================================================================
   traefik:
-    image: traefik:v3.2.3
+    image: traefik:v2.11
     container_name: scamnemesis-traefik
     restart: always
     logging: *default-logging
