@@ -646,6 +646,12 @@ export default function NewReportPage() {
 
     setIsSubmitting(true);
 
+    // Debug: Log submission start
+    console.log('[ScamNemesis Debug] ========== REPORT SUBMISSION START ==========');
+    console.log('[ScamNemesis Debug] Timestamp:', new Date().toISOString());
+    console.log('[ScamNemesis Debug] Form data:', JSON.stringify(formData, null, 2));
+    console.log('[ScamNemesis Debug] Files count:', files.length);
+
     try {
       // Step 1: Upload evidence files to S3 and collect external URLs
       let uploadedEvidence: Array<{
@@ -662,6 +668,8 @@ export default function NewReportPage() {
 
         // Upload actual files to S3
         if (filesToUpload.length > 0) {
+          console.log('[ScamNemesis Debug] Step 1: Uploading files to S3');
+          console.log('[ScamNemesis Debug] Files to upload:', filesToUpload.map(f => ({ name: f.name, size: f.size, type: f.type })));
           toast.info('Nahrávanie súborov...');
 
           const uploadFormData = new FormData();
@@ -692,8 +700,11 @@ export default function NewReportPage() {
           }
           clearTimeout(uploadTimeoutId);
 
+          console.log('[ScamNemesis Debug] File upload response status:', uploadResponse.status);
+
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json().catch(() => ({}));
+            console.error('[ScamNemesis Debug] File upload error:', uploadResponse.status, uploadError);
             // S3 503 is critical - user selected files to upload, we cannot silently drop them
             if (uploadResponse.status === 503) {
               throw new Error('Služba nahrávania súborov je dočasne nedostupná. Skúste to prosím neskôr.');
@@ -702,6 +713,7 @@ export default function NewReportPage() {
             }
           } else {
             const uploadResult = await uploadResponse.json();
+            console.log('[ScamNemesis Debug] File upload success:', uploadResult);
 
             // Map uploaded files to evidence format
             uploadedEvidence = uploadResult.uploaded.map(
@@ -926,6 +938,9 @@ export default function NewReportPage() {
       };
 
       // Step 3: Submit report with timeout and AbortController
+      console.log('[ScamNemesis Debug] Step 3: Submitting report to API');
+      console.log('[ScamNemesis Debug] Report data being sent:', JSON.stringify(reportData, null, 2));
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 second (4 min) timeout
 
@@ -941,9 +956,11 @@ export default function NewReportPage() {
         });
 
         clearTimeout(timeoutId);
+        console.log('[ScamNemesis Debug] API response status:', response.status);
 
         if (response.ok) {
           const data = await response.json().catch(() => ({ id: 'unknown' }));
+          console.log('[ScamNemesis Debug] SUCCESS! Response data:', data);
           // Clear saved draft using secure storage
           secureStorageRemove('report-draft');
           // Reset all form state to prevent stale data if user navigates back
@@ -954,6 +971,11 @@ export default function NewReportPage() {
           router.push(`/${locale}/report/success?id=${data.publicId || data.id}`);
         } else {
           const errorData = await response.json().catch(() => null);
+          console.error('[ScamNemesis Debug] API ERROR!');
+          console.error('[ScamNemesis Debug] Status:', response.status);
+          console.error('[ScamNemesis Debug] Error data:', JSON.stringify(errorData, null, 2));
+          console.error('[ScamNemesis Debug] Request ID:', errorData?.request_id);
+          console.error('[ScamNemesis Debug] Error type:', errorData?.error_type);
           toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
         }
       } catch (fetchError) {
@@ -965,9 +987,16 @@ export default function NewReportPage() {
         }
       }
     } catch (error) {
-      console.error('Submit error:', error);
+      console.error('[ScamNemesis Debug] ========== SUBMIT EXCEPTION ==========');
+      console.error('[ScamNemesis Debug] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+      console.error('[ScamNemesis Debug] Error message:', error instanceof Error ? error.message : String(error));
+      console.error('[ScamNemesis Debug] Full error:', error);
+      if (error instanceof Error && error.stack) {
+        console.error('[ScamNemesis Debug] Stack trace:', error.stack);
+      }
       toast.error(error instanceof Error ? error.message : 'Chyba pri odosielaní hlásenia');
     } finally {
+      console.log('[ScamNemesis Debug] ========== REPORT SUBMISSION END ==========');
       setIsSubmitting(false);
     }
   };
