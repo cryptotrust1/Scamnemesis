@@ -176,6 +176,10 @@ services:
       # Admin setup (generate secure values!)
       - ADMIN_SETUP_TOKEN=${ADMIN_SETUP_TOKEN}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@scamnemesis.com}
+      # Auth.js (NextAuth v5) - CRITICAL for authentication
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
+      - NEXTAUTH_URL=https://${DOMAIN:-localhost}
     depends_on:
       postgres:
         condition: service_healthy
