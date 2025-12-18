@@ -439,7 +439,7 @@ services:
   # MINIO - S3 kompatibilne ulozisko
   # ===========================================================================
   minio:
-    image: minio/minio:RELEASE.2024-12-13T22-19-12Z
+    image: minio/minio:RELEASE.2024-11-17T01-53-34Z
     container_name: scamnemesis-minio
     restart: always
     logging: *default-logging
@@ -465,7 +465,7 @@ services:
           memory: 1G
 
   minio-init:
-    image: minio/mc:RELEASE.2024-12-13T10-18-41Z
+    image: minio/mc:RELEASE.2024-11-21T17-21-54Z
     container_name: scamnemesis-minio-init
     logging: *default-logging
     restart: "no"

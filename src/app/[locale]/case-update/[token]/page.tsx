@@ -92,25 +92,25 @@ export default function CaseUpdatePage() {
   const [submitting, setSubmitting] = useState(false);
   const [showUpdates, setShowUpdates] = useState(true);
 
-  const fetchCaseData = async () => {
-    try {
-      const response = await fetch(`/api/v1/case-update/${token}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Nepodarilo sa načítať stav prípadu');
-        return;
-      }
-
-      setCaseData(data);
-    } catch {
-      setError('Nepodarilo sa pripojiť k serveru');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchCaseData = async () => {
+      try {
+        const response = await fetch(`/api/v1/case-update/${token}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.message || 'Nepodarilo sa načítať stav prípadu');
+          return;
+        }
+
+        setCaseData(data);
+      } catch {
+        setError('Nepodarilo sa pripojiť k serveru');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (token) {
       fetchCaseData();
     }
