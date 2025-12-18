@@ -1,0 +1,46 @@
+# =============================================================================
+# DOCKER COMPOSE OVERRIDE - Use Prisma for migrations instead of raw SQL
+# =============================================================================
+# Usage: docker compose -f docker-compose.prod.yml -f docker-compose.prisma-migrations.yml up -d
+# =============================================================================
+
+services:
+  # Override the migrations service to use Prisma
+  migrations:
+    # Use the app image which has Prisma CLI
+    image: scamnemesis-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: scamnemesis-migrations
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-scamnemesis}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      password-sync:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "=== Constructing DATABASE_URL ==="
+        # URL encode the password
+        ENCODED_PASSWORD=$$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$$POSTGRES_PASSWORD")
+        export DATABASE_URL="postgresql://$$POSTGRES_USER:$$ENCODED_PASSWORD@$$POSTGRES_HOST:$$POSTGRES_PORT/$$POSTGRES_DB"
+        echo "DATABASE_URL constructed (password hidden)"
+
+        echo "=== Running Prisma DB Push ==="
+        npx prisma db push --accept-data-loss --skip-generate
+
+        echo "=== Verifying schema ==="
+        npx prisma db pull --print | head -50
+
+        echo "=== Prisma migrations completed! ==="
+    networks:
+      - scamnemesis
+    restart: "no"
