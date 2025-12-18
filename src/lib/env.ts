@@ -36,8 +36,8 @@ const envSchema = z.object({
   TYPESENSE_PROTOCOL: z.enum(['http', 'https']).default('http'),
   TYPESENSE_API_KEY: z.string().min(1, 'TYPESENSE_API_KEY is required'),
 
-  // ML Service
-  ML_SERVICE_URL: z.string().url().min(1, 'ML_SERVICE_URL is required'),
+  // ML Service (optional - uses internal embedding service)
+  ML_SERVICE_URL: z.string().url().optional(),
 
   // ClamAV
   CLAMAV_HOST: z.string().optional(),
