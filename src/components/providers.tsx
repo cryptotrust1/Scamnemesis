@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { SessionProvider } from 'next-auth/react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 interface ProvidersProps {
@@ -9,13 +10,15 @@ interface ProvidersProps {
 
 /**
  * Client-side providers wrapper.
- * Includes ErrorBoundary and can be extended with other providers
- * like ThemeProvider, AuthProvider, etc.
+ * Includes ErrorBoundary, SessionProvider (Auth.js), and can be extended
+ * with other providers like ThemeProvider, etc.
  */
 export function Providers({ children }: ProvidersProps) {
   return (
     <ErrorBoundary>
-      {children}
+      <SessionProvider>
+        {children}
+      </SessionProvider>
     </ErrorBoundary>
   );
 }
