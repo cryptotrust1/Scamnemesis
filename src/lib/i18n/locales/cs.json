@@ -1,246 +1,246 @@
 {
   "common": {
-    "loading": "Nacitam...",
+    "loading": "Načítám...",
     "error": "Chyba",
-    "success": "Uspech",
-    "save": "Ulozit",
-    "cancel": "Zrusit",
+    "success": "Úspěch",
+    "save": "Uložit",
+    "cancel": "Zrušit",
     "delete": "Smazat",
     "edit": "Upravit",
-    "back": "Zpet",
-    "next": "Dalsi",
+    "back": "Zpět",
+    "next": "Další",
     "submit": "Odeslat",
     "search": "Hledat",
     "filter": "Filtrovat",
     "reset": "Resetovat",
     "yes": "Ano",
     "no": "Ne",
-    "close": "Zavrit",
+    "close": "Zavřít",
     "confirm": "Potvrdit",
-    "optional": "volitelne"
+    "optional": "volitelné"
   },
   "nav": {
-    "home": "Domov",
-    "search": "Vyhledavani",
-    "report": "Nahlasit podvod",
-    "login": "Prihlasit se",
+    "home": "Domů",
+    "search": "Vyhledávání",
+    "report": "Nahlásit podvod",
+    "login": "Přihlásit se",
     "register": "Registrovat se",
-    "logout": "Odhlasit se",
+    "logout": "Odhlásit se",
     "profile": "Profil",
     "admin": "Administrace"
   },
   "home": {
-    "title": "Chranime vas pred podvodniky",
-    "subtitle": "Vyhledejte, nahlaste a varujte ostatni pred podvody",
-    "searchPlaceholder": "Zadejte jmeno, telefon, email nebo IBAN...",
+    "title": "Chráníme vás před podvodníky",
+    "subtitle": "Vyhledejte, nahlaste a varujte ostatní před podvody",
+    "searchPlaceholder": "Zadejte jméno, telefon, email nebo IBAN...",
     "searchButton": "Vyhledat",
-    "reportButton": "Nahlasit podvod",
-    "statsReports": "hlaseni",
-    "statsUsers": "uzivatelu",
-    "statsSearches": "vyhledavani"
+    "reportButton": "Nahlásit podvod",
+    "statsReports": "hlášení",
+    "statsUsers": "uživatelů",
+    "statsSearches": "vyhledávání"
   },
   "search": {
-    "title": "Vyhledavani",
-    "results": "vysledku",
-    "noResults": "Zadne vysledky",
-    "noResultsDescription": "Zkuste zmenit vyhledavaci kriteria",
+    "title": "Vyhledávání",
+    "results": "výsledků",
+    "noResults": "Žádné výsledky",
+    "noResultsDescription": "Zkuste změnit vyhledávací kritéria",
     "filters": {
       "fraudType": "Typ podvodu",
-      "country": "Zeme",
+      "country": "Země",
       "status": "Stav",
       "dateFrom": "Datum od",
       "dateTo": "Datum do",
-      "amountMin": "Min. castka",
-      "amountMax": "Max. castka"
+      "amountMin": "Min. částka",
+      "amountMax": "Max. částka"
     },
     "sort": {
-      "label": "Seradit",
-      "newest": "Nejnovejsi",
-      "oldest": "Nejstarsi",
-      "amountHigh": "Nejvyssi castka",
-      "amountLow": "Nejnizsi castka"
+      "label": "Seřadit",
+      "newest": "Nejnovější",
+      "oldest": "Nejstarší",
+      "amountHigh": "Nejvyšší částka",
+      "amountLow": "Nejnižší částka"
     }
   },
   "report": {
-    "title": "Nahlasit podvod",
-    "subtitle": "Pomozte chranit ostatni pred podvodniky",
-    "backToHome": "Zpet na domovskou stranku",
+    "title": "Nahlásit podvod",
+    "subtitle": "Pomozte chránit ostatní před podvodníky",
+    "backToHome": "Zpět na domovskou stránku",
     "steps": {
       "fraudType": { "title": "Typ podvodu", "description": "Kategorie" },
-      "basicInfo": { "title": "Zakladni info", "description": "Incident" },
-      "perpetrator": { "title": "Pachatel", "description": "Udaje" },
-      "digitalFootprints": { "title": "Digitalni stopy", "description": "Online" },
-      "financialDetails": { "title": "Financni udaje", "description": "Ucty" },
-      "companyVehicle": { "title": "Firma/Vozidlo", "description": "Firemni" },
-      "evidence": { "title": "Dukazy", "description": "Prilohy" },
-      "contact": { "title": "Kontakt", "description": "Udaje" },
-      "review": { "title": "Kontrola", "description": "Odeslani" }
+      "basicInfo": { "title": "Základní info", "description": "Incident" },
+      "perpetrator": { "title": "Pachatel", "description": "Údaje" },
+      "digitalFootprints": { "title": "Digitální stopy", "description": "Online" },
+      "financialDetails": { "title": "Finanční údaje", "description": "Účty" },
+      "companyVehicle": { "title": "Firma/Vozidlo", "description": "Firemní" },
+      "evidence": { "title": "Důkazy", "description": "Přílohy" },
+      "contact": { "title": "Kontakt", "description": "Údaje" },
+      "review": { "title": "Kontrola", "description": "Odeslání" }
     },
     "buttons": {
-      "back": "Zpet",
-      "next": "Dalsi",
-      "saveDraft": "Ulozit koncept",
-      "submit": "Odeslat hlaseni",
-      "submitting": "Odesilam..."
+      "back": "Zpět",
+      "next": "Další",
+      "saveDraft": "Uložit koncept",
+      "submit": "Odeslat hlášení",
+      "submitting": "Odesílám..."
     },
     "fraudTypes": {
-      "investment": "Investicni podvod",
+      "investment": "Investiční podvod",
       "romance": "Romance scam",
       "phishing": "Phishing",
-      "identity": "Kradez identity",
+      "identity": "Krádež identity",
       "ecommerce": "E-commerce podvod",
       "crypto": "Krypto podvod",
-      "job": "Pracovni podvod",
-      "rental": "Podvod s pronajmem",
-      "loan": "Podvod s pujckou",
-      "charity": "Falesna charita",
+      "job": "Pracovní podvod",
+      "rental": "Podvod s pronájmem",
+      "loan": "Podvod s půjčkou",
+      "charity": "Falešná charita",
       "techSupport": "Tech support scam",
-      "lottery": "Loterni podvod",
-      "other": "Jiny typ"
+      "lottery": "Loterijní podvod",
+      "other": "Jiný typ"
     },
     "fields": {
-      "title": "Nazev hlaseni",
-      "description": "Podrobny popis",
+      "title": "Název hlášení",
+      "description": "Podrobný popis",
       "incidentDate": "Datum incidentu",
-      "country": "Zeme",
-      "city": "Mesto",
-      "postalCode": "PSC",
-      "amount": "Vyse skody",
-      "currency": "Mena",
+      "country": "Země",
+      "city": "Město",
+      "postalCode": "PSČ",
+      "amount": "Výše škody",
+      "currency": "Měna",
       "perpetratorType": "Typ pachatele",
-      "perpetratorName": "Jmeno",
+      "perpetratorName": "Jméno",
       "phone": "Telefon",
       "email": "Email",
-      "website": "Webova stranka",
-      "socialMedia": "Socialni site",
+      "website": "Webová stránka",
+      "socialMedia": "Sociální sítě",
       "iban": "IBAN",
       "bankAccount": "Banka",
-      "cryptoWallet": "Krypto penezenka",
-      "reporterName": "Vase jmeno",
-      "reporterEmail": "Vas email",
-      "reporterPhone": "Vas telefon"
+      "cryptoWallet": "Krypto peněženka",
+      "reporterName": "Vaše jméno",
+      "reporterEmail": "Váš email",
+      "reporterPhone": "Váš telefon"
     },
     "consent": {
-      "terms": "Souhlasim s podminkami pouzivani",
-      "gdpr": "Souhlasim se zpracovanim osobnich udaju",
-      "updates": "Chci dostavat aktualizace"
+      "terms": "Souhlasím s podmínkami používání",
+      "gdpr": "Souhlasím se zpracováním osobních údajů",
+      "updates": "Chci dostávat aktualizace"
     },
-    "saveDraft": "Ulozit koncept",
-    "submitReport": "Odeslat hlaseni",
+    "saveDraft": "Uložit koncept",
+    "submitReport": "Odeslat hlášení",
     "success": {
-      "title": "Hlaseni bylo uspesne odeslano!",
-      "description": "Dekujeme za vas prispevek k ochrane ostatnich."
+      "title": "Hlášení bylo úspěšně odesláno!",
+      "description": "Děkujeme za váš příspěvek k ochraně ostatních."
     },
     "evidence": {
-      "title": "Dukazy a prilohy",
-      "subtitle": "Nahrajte screenshoty, dokumenty nebo videa, ktere dokazuji podvod",
+      "title": "Důkazy a přílohy",
+      "subtitle": "Nahrajte screenshoty, dokumenty nebo videa, které dokazují podvod",
       "categories": {
-        "payment": "Platebni dukazy",
-        "fraudsterPhotos": "Fotografie podvodnika",
+        "payment": "Platební důkazy",
+        "fraudsterPhotos": "Fotografie podvodníka",
         "screenshots": "Screenshoty",
-        "damageDocumentation": "Dokumentace skod",
-        "crimeScene": "Fotografie z mista cinu",
-        "other": "Ostatni dukazy"
+        "damageDocumentation": "Dokumentace škod",
+        "crimeScene": "Fotografie z místa činu",
+        "other": "Ostatní důkazy"
       },
       "descriptions": {
-        "paymentDesc": "Vypisy z uctu, potvrzeni o prevodu, platebni doklady",
-        "fraudsterPhotosDesc": "Fotografie nebo obrazky podvodnika",
-        "screenshotsDesc": "Screenshoty konverzaci, zprav, emailu",
-        "damageDocumentationDesc": "Dokumenty prokazujici financni nebo jinou skodu",
-        "crimeSceneDesc": "Fotografie z mist souvisejicich s podvodem",
-        "otherDesc": "Jakekoli jine relevantni dukazy"
+        "paymentDesc": "Výpisy z účtu, potvrzení o převodu, platební doklady",
+        "fraudsterPhotosDesc": "Fotografie nebo obrázky podvodníka",
+        "screenshotsDesc": "Screenshoty konverzací, zpráv, emailů",
+        "damageDocumentationDesc": "Dokumenty prokazující finanční nebo jinou škodu",
+        "crimeSceneDesc": "Fotografie z míst souvisejících s podvodem",
+        "otherDesc": "Jakékoli jiné relevantní důkazy"
       },
-      "dragDrop": "Pretahnete soubory sem",
-      "orClickToSelect": "nebo kliknete pro vyber",
+      "dragDrop": "Přetáhněte soubory sem",
+      "orClickToSelect": "nebo klikněte pro výběr",
       "selectFiles": "Vybrat soubory",
-      "addLink": "Pridat odkaz",
-      "add": "Pridat",
+      "addLink": "Přidat odkaz",
+      "add": "Přidat",
       "urlPlaceholder": "https://...",
-      "descriptionPlaceholder": "Popis (volitelne)",
+      "descriptionPlaceholder": "Popis (volitelné)",
       "maxSize": "Max. 20MB na soubor",
-      "fileDescription": "Popis souboru (volitelne)",
-      "tipsTitle": "Tipy pro kvalitni dukazy:",
+      "fileDescription": "Popis souboru (volitelné)",
+      "tipsTitle": "Tipy pro kvalitní důkazy:",
       "tips": [
-        "Screenshoty konverzaci s podvodnikem",
-        "Potvrzeni o platbach a prevody",
-        "Emaily a zpravy od podvodnika",
-        "Fotografie falesnych dokumentu",
-        "Zaznamy z webovych stranek"
+        "Screenshoty konverzací s podvodníkem",
+        "Potvrzení o platbách a převody",
+        "Emaily a zprávy od podvodníka",
+        "Fotografie falešných dokumentů",
+        "Záznamy z webových stránek"
       ]
     }
   },
   "reportDetail": {
     "status": {
-      "pending": "Ceka na schvaleni",
-      "approved": "Schvaleno",
-      "rejected": "Zamitnuto"
+      "pending": "Čeká na schválení",
+      "approved": "Schváleno",
+      "rejected": "Zamítnuto"
     },
     "sections": {
       "description": "Popis",
       "perpetrator": "Informace o pachateli",
-      "evidence": "Dukazy",
-      "similarReports": "Podobna hlaseni",
-      "comments": "Komentare"
+      "evidence": "Důkazy",
+      "similarReports": "Podobná hlášení",
+      "comments": "Komentáře"
     },
-    "share": "Sdilet",
-    "report": "Nahlasit"
+    "share": "Sdílet",
+    "report": "Nahlásit"
   },
   "comments": {
-    "title": "Komentare",
-    "placeholder": "Napiste komentar...",
-    "submit": "Pridat komentar",
-    "noComments": "Zatim zadne komentare",
-    "approval": "Komentar bude zverejnen po schvaleni"
+    "title": "Komentáře",
+    "placeholder": "Napište komentář...",
+    "submit": "Přidat komentář",
+    "noComments": "Zatím žádné komentáře",
+    "approval": "Komentář bude zveřejněn po schválení"
   },
   "auth": {
     "login": {
-      "title": "Prihlaseni",
+      "title": "Přihlášení",
       "email": "Email",
       "password": "Heslo",
-      "submit": "Prihlasit se",
-      "forgotPassword": "Zapomeli jste heslo?",
-      "noAccount": "Nemate ucet?"
+      "submit": "Přihlásit se",
+      "forgotPassword": "Zapomněli jste heslo?",
+      "noAccount": "Nemáte účet?"
     },
     "register": {
       "title": "Registrace",
-      "name": "Jmeno",
+      "name": "Jméno",
       "email": "Email",
       "password": "Heslo",
       "confirmPassword": "Potvrdit heslo",
       "submit": "Registrovat se",
-      "hasAccount": "Uz mate ucet?"
+      "hasAccount": "Už máte účet?"
     },
     "errors": {
-      "invalidCredentials": "Nespravne prihlasovaci udaje",
-      "emailExists": "Email jiz existuje",
-      "weakPassword": "Heslo je prilis slabe"
+      "invalidCredentials": "Nesprávné přihlašovací údaje",
+      "emailExists": "Email již existuje",
+      "weakPassword": "Heslo je příliš slabé"
     }
   },
   "admin": {
     "dashboard": "Dashboard",
-    "reports": "Hlaseni",
-    "users": "Uzivatele",
-    "duplicates": "Duplikaty",
-    "comments": "Komentare",
-    "settings": "Nastaveni",
+    "reports": "Hlášení",
+    "users": "Uživatelé",
+    "duplicates": "Duplikáty",
+    "comments": "Komentáře",
+    "settings": "Nastavení",
     "actions": {
-      "approve": "Schvalit",
-      "reject": "Zamitnout",
-      "merge": "Sloucit",
+      "approve": "Schválit",
+      "reject": "Zamítnout",
+      "merge": "Sloučit",
       "ban": "Zablokovat"
     }
   },
   "errors": {
-    "notFound": "Stranka nebyla nalezena",
+    "notFound": "Stránka nebyla nalezena",
     "serverError": "Chyba serveru",
-    "unauthorized": "Neautorizovany pristup",
-    "forbidden": "Pristup odmitnut"
+    "unauthorized": "Neautorizovaný přístup",
+    "forbidden": "Přístup odepřen"
   },
   "footer": {
-    "about": "O nas",
-    "privacy": "Ochrana soukromi",
-    "terms": "Podminky pouzivani",
+    "about": "O nás",
+    "privacy": "Ochrana soukromí",
+    "terms": "Podmínky používání",
     "contact": "Kontakt",
-    "copyright": "Vsechna prava vyhrazena"
+    "copyright": "Všechna práva vyhrazena"
   }
 }

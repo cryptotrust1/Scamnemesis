@@ -5,18 +5,18 @@
     "success": "Erfolg",
     "save": "Speichern",
     "cancel": "Abbrechen",
-    "delete": "Loschen",
+    "delete": "Löschen",
     "edit": "Bearbeiten",
-    "back": "Zuruck",
+    "back": "Zurück",
     "next": "Weiter",
     "submit": "Absenden",
     "search": "Suchen",
     "filter": "Filtern",
-    "reset": "Zurucksetzen",
+    "reset": "Zurücksetzen",
     "yes": "Ja",
     "no": "Nein",
-    "close": "Schliessen",
-    "confirm": "Bestatigen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
     "optional": "optional"
   },
   "nav": {
@@ -30,7 +30,7 @@
     "admin": "Verwaltung"
   },
   "home": {
-    "title": "Wir schutzen Sie vor Betrugern",
+    "title": "Wir schützen Sie vor Betrügern",
     "subtitle": "Suchen, melden und warnen Sie andere vor Betrug",
     "searchPlaceholder": "Name, Telefon, E-Mail oder IBAN eingeben...",
     "searchButton": "Suchen",
@@ -56,28 +56,28 @@
     "sort": {
       "label": "Sortieren",
       "newest": "Neueste",
-      "oldest": "Alteste",
-      "amountHigh": "Hochster Betrag",
+      "oldest": "Älteste",
+      "amountHigh": "Höchster Betrag",
       "amountLow": "Niedrigster Betrag"
     }
   },
   "report": {
     "title": "Betrug melden",
-    "subtitle": "Helfen Sie andere vor Betrugern zu schutzen",
-    "backToHome": "Zuruck zur Startseite",
+    "subtitle": "Helfen Sie andere vor Betrügern zu schützen",
+    "backToHome": "Zurück zur Startseite",
     "steps": {
       "fraudType": { "title": "Betrugsart", "description": "Kategorie" },
       "basicInfo": { "title": "Grundinfo", "description": "Vorfall" },
-      "perpetrator": { "title": "Tater", "description": "Daten" },
+      "perpetrator": { "title": "Täter", "description": "Daten" },
       "digitalFootprints": { "title": "Digitale Spuren", "description": "Online" },
       "financialDetails": { "title": "Finanzdaten", "description": "Konten" },
-      "companyVehicle": { "title": "Firma/Fahrzeug", "description": "Geschaft" },
-      "evidence": { "title": "Beweise", "description": "Anhange" },
+      "companyVehicle": { "title": "Firma/Fahrzeug", "description": "Geschäft" },
+      "evidence": { "title": "Beweise", "description": "Anhänge" },
       "contact": { "title": "Kontakt", "description": "Daten" },
-      "review": { "title": "Uberprufung", "description": "Absenden" }
+      "review": { "title": "Überprüfung", "description": "Absenden" }
     },
     "buttons": {
-      "back": "Zuruck",
+      "back": "Zurück",
       "next": "Weiter",
       "saveDraft": "Entwurf speichern",
       "submit": "Meldung absenden",
@@ -87,13 +87,13 @@
       "investment": "Anlagebetrug",
       "romance": "Romance Scam",
       "phishing": "Phishing",
-      "identity": "Identitatsdiebstahl",
+      "identity": "Identitätsdiebstahl",
       "ecommerce": "E-Commerce-Betrug",
       "crypto": "Krypto-Betrug",
       "job": "Jobbetrug",
       "rental": "Mietbetrug",
       "loan": "Kreditbetrug",
-      "charity": "Falsche Wohltatigkeit",
+      "charity": "Falsche Wohltätigkeit",
       "techSupport": "Tech-Support-Betrug",
       "lottery": "Lotteriebetrug",
       "other": "Sonstiges"
@@ -105,9 +105,9 @@
       "country": "Land",
       "city": "Stadt",
       "postalCode": "PLZ",
-      "amount": "Schadenshohe",
-      "currency": "Wahrung",
-      "perpetratorType": "Art des Taters",
+      "amount": "Schadenshöhe",
+      "currency": "Währung",
+      "perpetratorType": "Art des Täters",
       "perpetratorName": "Name",
       "phone": "Telefon",
       "email": "E-Mail",
@@ -123,63 +123,63 @@
     "consent": {
       "terms": "Ich stimme den Nutzungsbedingungen zu",
       "gdpr": "Ich stimme der Datenverarbeitung zu",
-      "updates": "Ich mochte Updates erhalten"
+      "updates": "Ich möchte Updates erhalten"
     },
     "saveDraft": "Entwurf speichern",
     "submitReport": "Meldung absenden",
     "success": {
       "title": "Meldung erfolgreich gesendet!",
-      "description": "Vielen Dank fur Ihren Beitrag zum Schutz anderer."
+      "description": "Vielen Dank für Ihren Beitrag zum Schutz anderer."
     },
     "evidence": {
-      "title": "Beweise & Anhange",
+      "title": "Beweise & Anhänge",
       "subtitle": "Laden Sie Screenshots, Dokumente oder Videos hoch, die den Betrug beweisen",
       "categories": {
         "payment": "Zahlungsnachweise",
-        "fraudsterPhotos": "Fotos des Betrugers",
+        "fraudsterPhotos": "Fotos des Betrügers",
         "screenshots": "Screenshots",
         "damageDocumentation": "Schadensdokumentation",
         "crimeScene": "Tatortfotos",
         "other": "Andere Beweise"
       },
       "descriptions": {
-        "paymentDesc": "Kontoauszuge, Uberweisungsbelege, Zahlungsbestatigungen",
-        "fraudsterPhotosDesc": "Fotos oder Bilder des Betrugers",
-        "screenshotsDesc": "Screenshots von Gesprachen, Nachrichten, E-Mails",
-        "damageDocumentationDesc": "Dokumente zum Nachweis finanzieller oder anderer Schaden",
+        "paymentDesc": "Kontoauszüge, Überweisungsbelege, Zahlungsbestätigungen",
+        "fraudsterPhotosDesc": "Fotos oder Bilder des Betrügers",
+        "screenshotsDesc": "Screenshots von Gesprächen, Nachrichten, E-Mails",
+        "damageDocumentationDesc": "Dokumente zum Nachweis finanzieller oder anderer Schäden",
         "crimeSceneDesc": "Fotos von Orten im Zusammenhang mit dem Betrug",
         "otherDesc": "Alle anderen relevanten Beweise"
       },
       "dragDrop": "Dateien hierher ziehen",
-      "orClickToSelect": "oder klicken zum Auswahlen",
-      "selectFiles": "Dateien auswahlen",
-      "addLink": "Link hinzufugen",
-      "add": "Hinzufugen",
+      "orClickToSelect": "oder klicken zum Auswählen",
+      "selectFiles": "Dateien auswählen",
+      "addLink": "Link hinzufügen",
+      "add": "Hinzufügen",
       "urlPlaceholder": "https://...",
       "descriptionPlaceholder": "Beschreibung (optional)",
       "maxSize": "Max. 20MB pro Datei",
       "fileDescription": "Dateibeschreibung (optional)",
-      "tipsTitle": "Tipps fur qualitativ hochwertige Beweise:",
+      "tipsTitle": "Tipps für qualitativ hochwertige Beweise:",
       "tips": [
-        "Screenshots von Gesprachen mit dem Betruger",
-        "Zahlungsbestatigungen und Uberweisungen",
-        "E-Mails und Nachrichten vom Betruger",
-        "Fotos von gefalschten Dokumenten",
+        "Screenshots von Gesprächen mit dem Betrüger",
+        "Zahlungsbestätigungen und Überweisungen",
+        "E-Mails und Nachrichten vom Betrüger",
+        "Fotos von gefälschten Dokumenten",
         "Website-Aufzeichnungen"
       ]
     }
   },
   "reportDetail": {
     "status": {
-      "pending": "Wartet auf Uberprufung",
+      "pending": "Wartet auf Überprüfung",
       "approved": "Genehmigt",
       "rejected": "Abgelehnt"
     },
     "sections": {
       "description": "Beschreibung",
-      "perpetrator": "Taterinformationen",
+      "perpetrator": "Täterinformationen",
       "evidence": "Beweise",
-      "similarReports": "Ahnliche Meldungen",
+      "similarReports": "Ähnliche Meldungen",
       "comments": "Kommentare"
     },
     "share": "Teilen",
@@ -188,9 +188,9 @@
   "comments": {
     "title": "Kommentare",
     "placeholder": "Kommentar schreiben...",
-    "submit": "Kommentar hinzufugen",
+    "submit": "Kommentar hinzufügen",
     "noComments": "Noch keine Kommentare",
-    "approval": "Kommentar wird nach Genehmigung veroffentlicht"
+    "approval": "Kommentar wird nach Genehmigung veröffentlicht"
   },
   "auth": {
     "login": {
@@ -206,12 +206,12 @@
       "name": "Name",
       "email": "E-Mail",
       "password": "Passwort",
-      "confirmPassword": "Passwort bestatigen",
+      "confirmPassword": "Passwort bestätigen",
       "submit": "Registrieren",
       "hasAccount": "Bereits ein Konto?"
     },
     "errors": {
-      "invalidCredentials": "Ungultige Anmeldedaten",
+      "invalidCredentials": "Ungültige Anmeldedaten",
       "emailExists": "E-Mail existiert bereits",
       "weakPassword": "Passwort ist zu schwach"
     }
@@ -226,7 +226,7 @@
     "actions": {
       "approve": "Genehmigen",
       "reject": "Ablehnen",
-      "merge": "Zusammenfuhren",
+      "merge": "Zusammenführen",
       "ban": "Sperren"
     }
   },
@@ -237,7 +237,7 @@
     "forbidden": "Zugriff verweigert"
   },
   "footer": {
-    "about": "Uber uns",
+    "about": "Über uns",
     "privacy": "Datenschutz",
     "terms": "Nutzungsbedingungen",
     "contact": "Kontakt",
