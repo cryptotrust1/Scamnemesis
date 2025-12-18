@@ -584,6 +584,51 @@ model Enrichment {
   @@map("enrichments")
 }
 
+// ==================== CRAWLER DATA ====================
+
+model CrawlResult {
+  id            String    @id @default(uuid())
+  sourceId      String    @map("source_id")
+  url           String?
+  urlCanonical  String?   @map("url_canonical")
+  title         String?
+  content       String?   @db.Text
+  language      String?   @db.VarChar(10)
+  publishedAt   DateTime? @map("published_at")
+  contentHash   String    @unique @map("content_hash")
+  entities      Json?     @default("[]")
+  metadata      Json?
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([sourceId])
+  @@index([publishedAt])
+  @@index([urlCanonical])
+  @@map("crawl_results")
+}
+
+model SanctionEntry {
+  id              String    @id @default(uuid())
+  sourceId        String    @map("source_id")
+  externalId      String    @map("external_id")
+  entryType       String    @map("entry_type")
+  names           String[]
+  aliases         String[]  @default([])
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  nationalities   String[]  @default([])
+  addresses       Json?     @default("[]")
+  identifications Json?     @default("[]")
+  programs        String[]  @default([])
+  remarks         String?   @db.Text
+  rawData         Json?     @map("raw_data")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([sourceId, externalId])
+  @@index([sourceId])
+  @@index([entryType])
+  @@map("sanctions_entries")
+}
+
 // ==================== AUDIT LOG ====================
 
 model AuditLog {

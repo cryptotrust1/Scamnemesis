@@ -276,12 +276,16 @@ export default function AdminReportDetailPage() {
     switch (s) {
       case 'PENDING':
         return <Badge variant="warning">Caka</Badge>;
+      case 'UNDER_REVIEW':
+        return <Badge variant="secondary">V kontrole</Badge>;
       case 'APPROVED':
         return <Badge variant="success">Schvalene</Badge>;
       case 'REJECTED':
         return <Badge variant="destructive">Zamietnute</Badge>;
-      case 'UNDER_REVIEW':
-        return <Badge variant="secondary">V kontrole</Badge>;
+      case 'MERGED':
+        return <Badge variant="outline">Zlucene</Badge>;
+      case 'ARCHIVED':
+        return <Badge variant="outline" className="text-gray-500">Archivovane</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }

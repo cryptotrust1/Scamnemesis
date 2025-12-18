@@ -489,6 +489,50 @@ CREATE INDEX IF NOT EXISTS "enrichments_status_idx" ON "enrichments"("status");
 CREATE INDEX IF NOT EXISTS "enrichments_reviewed_by_id_idx" ON "enrichments"("reviewed_by_id");
 CREATE INDEX IF NOT EXISTS "enrichments_event_type_idx" ON "enrichments"("event_type");
 
+-- Crawl Results (for news/RSS crawler data)
+CREATE TABLE IF NOT EXISTS "crawl_results" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
+    "source_id" TEXT NOT NULL,
+    "url" TEXT,
+    "url_canonical" TEXT,
+    "title" TEXT,
+    "content" TEXT,
+    "language" VARCHAR(10),
+    "published_at" TIMESTAMP(3),
+    "content_hash" TEXT NOT NULL,
+    "entities" JSONB DEFAULT '[]'::JSONB,
+    "metadata" JSONB,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "crawl_results_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "crawl_results_content_hash_key" ON "crawl_results"("content_hash");
+CREATE INDEX IF NOT EXISTS "crawl_results_source_id_idx" ON "crawl_results"("source_id");
+CREATE INDEX IF NOT EXISTS "crawl_results_published_at_idx" ON "crawl_results"("published_at");
+CREATE INDEX IF NOT EXISTS "crawl_results_url_canonical_idx" ON "crawl_results"("url_canonical");
+
+-- Sanction Entries (OFAC, EU, Interpol sanctions data)
+CREATE TABLE IF NOT EXISTS "sanctions_entries" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
+    "source_id" TEXT NOT NULL,
+    "external_id" TEXT NOT NULL,
+    "entry_type" TEXT NOT NULL,
+    "names" TEXT[] NOT NULL,
+    "aliases" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "date_of_birth" DATE,
+    "nationalities" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "addresses" JSONB DEFAULT '[]'::JSONB,
+    "identifications" JSONB DEFAULT '[]'::JSONB,
+    "programs" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "remarks" TEXT,
+    "raw_data" JSONB,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "sanctions_entries_pkey" PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "sanctions_entries_source_id_external_id_key" ON "sanctions_entries"("source_id", "external_id");
+CREATE INDEX IF NOT EXISTS "sanctions_entries_source_id_idx" ON "sanctions_entries"("source_id");
+CREATE INDEX IF NOT EXISTS "sanctions_entries_entry_type_idx" ON "sanctions_entries"("entry_type");
+
 -- Audit Logs
 CREATE TABLE IF NOT EXISTS "audit_logs" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
@@ -708,6 +752,63 @@ CREATE UNIQUE INDEX IF NOT EXISTS "system_settings_key_key" ON "system_settings"
 CREATE INDEX IF NOT EXISTS "system_settings_group_idx" ON "system_settings"("group");
 CREATE INDEX IF NOT EXISTS "system_settings_is_public_idx" ON "system_settings"("is_public");
 CREATE INDEX IF NOT EXISTS "system_settings_updated_by_id_idx" ON "system_settings"("updated_by_id");
+
+-- ==================== VECTOR & TRIGRAM INDEXES ====================
+-- These indexes improve semantic and fuzzy text search performance
+
+-- Vector indexes for similarity search (requires pgvector)
+DO $$
+BEGIN
+    -- HNSW index for perpetrator name embeddings (faster for ANN search)
+    CREATE INDEX IF NOT EXISTS "perpetrators_name_embedding_idx" ON "perpetrators"
+    USING hnsw ("name_embedding" vector_cosine_ops) WITH (m = 16, ef_construction = 64);
+EXCEPTION WHEN undefined_object THEN
+    RAISE NOTICE 'pgvector not available, skipping name_embedding index';
+END $$;
+
+DO $$
+BEGIN
+    -- HNSW index for face embeddings
+    CREATE INDEX IF NOT EXISTS "face_data_embedding_idx" ON "face_data"
+    USING hnsw ("embedding" vector_cosine_ops) WITH (m = 16, ef_construction = 64);
+EXCEPTION WHEN undefined_object THEN
+    RAISE NOTICE 'pgvector not available, skipping face embedding index';
+END $$;
+
+-- Trigram indexes for fuzzy text search (requires pg_trgm)
+DO $$
+BEGIN
+    -- Perpetrator name fuzzy search
+    CREATE INDEX IF NOT EXISTS "perpetrators_full_name_trgm_idx" ON "perpetrators"
+    USING gin ("full_name" gin_trgm_ops);
+
+    -- Perpetrator email fuzzy search
+    CREATE INDEX IF NOT EXISTS "perpetrators_email_trgm_idx" ON "perpetrators"
+    USING gin ("email" gin_trgm_ops);
+
+    -- Perpetrator phone fuzzy search
+    CREATE INDEX IF NOT EXISTS "perpetrators_phone_trgm_idx" ON "perpetrators"
+    USING gin ("phone" gin_trgm_ops);
+
+    -- Report summary fuzzy search
+    CREATE INDEX IF NOT EXISTS "reports_summary_trgm_idx" ON "reports"
+    USING gin ("summary" gin_trgm_ops);
+
+    -- Domain name fuzzy search
+    CREATE INDEX IF NOT EXISTS "digital_footprints_domain_trgm_idx" ON "digital_footprints"
+    USING gin ("domain_name" gin_trgm_ops);
+
+    -- Company name fuzzy search
+    CREATE INDEX IF NOT EXISTS "company_info_name_trgm_idx" ON "company_info"
+    USING gin ("name" gin_trgm_ops);
+
+    -- Sanctions names fuzzy search (array element search)
+    CREATE INDEX IF NOT EXISTS "sanctions_entries_names_trgm_idx" ON "sanctions_entries"
+    USING gin ("names");
+
+EXCEPTION WHEN undefined_object THEN
+    RAISE NOTICE 'pg_trgm not available, skipping trigram indexes';
+END $$;
 
 -- ==================== PRISMA MIGRATIONS TABLE ====================
 -- This tracks which migrations have been applied

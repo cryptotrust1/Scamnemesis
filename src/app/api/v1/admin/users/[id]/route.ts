@@ -96,7 +96,31 @@ export async function GET(
   }
 }
 
-// DELETE - Delete user (soft or hard delete)
+/**
+ * DELETE /api/v1/admin/users/:id
+ *
+ * Delete or deactivate a user account.
+ *
+ * Soft Delete (default):
+ * - Sets isActive=false
+ * - Optionally anonymizes user data
+ * - Revokes all refresh tokens
+ * - Deactivates all API keys
+ *
+ * Hard Delete (requires SUPER_ADMIN):
+ * - Permanently removes user from database
+ * - IMPORTANT: Cannot delete users with:
+ *   - Uploaded media (onDelete: Restrict)
+ *   - Authored pages (onDelete: Restrict)
+ *   - Authored page revisions (onDelete: Restrict)
+ * - Reports are ALWAYS anonymized (cannot be deleted)
+ * - Use soft delete for users with media/pages
+ *
+ * Request Body:
+ * - reason?: string - Reason for deletion/deactivation
+ * - hardDelete?: boolean - Permanent deletion (default: false)
+ * - anonymizeData?: boolean - Anonymize user data (default: true)
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -180,30 +204,28 @@ export async function DELETE(
     await prisma.$transaction(async (tx) => {
       if (body.hardDelete) {
         // Hard delete: Remove user and all related data
-        // Delete in correct order due to foreign key constraints
-        await tx.refreshToken.deleteMany({ where: { userId: id } });
-        await tx.apiKey.deleteMany({ where: { userId: id } });
-        await tx.comment.deleteMany({ where: { userId: id } });
-        await tx.pageRevision.deleteMany({ where: { authorId: id } });
-        await tx.page.deleteMany({ where: { authorId: id } });
-        await tx.media.deleteMany({ where: { uploadedById: id } });
-        await tx.systemSetting.deleteMany({ where: { updatedById: id } });
 
-        // Set moderated comments to null
-        await tx.comment.updateMany({
-          where: { moderatedById: id },
-          data: { moderatedById: null },
+        // Check for restrict constraints FIRST
+        const userCounts = await tx.user.findUnique({
+          where: { id },
+          select: {
+            _count: {
+              select: {
+                reports: true,
+                media: true,
+                pages: true,
+                pageRevisions: true,
+              },
+            },
+          },
         });
 
-        // Set moderated reports to null
-        await tx.report.updateMany({
-          where: { moderatedById: id },
-          data: { moderatedById: null },
-        });
+        if (!userCounts) {
+          throw new Error('User not found');
+        }
 
-        // Handle reports - either anonymize or delete
-        if (body.anonymizeData) {
-          // Anonymize reports (keep data but remove PII)
+        // Reports: ALWAYS anonymize (cannot delete due to Restrict constraint)
+        if (userCounts._count.reports > 0) {
           await tx.report.updateMany({
             where: { reporterId: id },
             data: {
@@ -214,7 +236,77 @@ export async function DELETE(
           });
         }
 
-        // Finally delete the user
+        // Media: Cannot delete due to Restrict constraint - must reassign or fail
+        if (userCounts._count.media > 0) {
+          throw new Error(
+            `Cannot delete user: User has ${userCounts._count.media} media file(s). ` +
+            'Media cannot be deleted due to data retention policies. ' +
+            'Use soft delete (deactivation) instead, or manually delete media first.'
+          );
+        }
+
+        // Pages: Cannot delete due to Restrict constraint - must reassign or fail
+        if (userCounts._count.pages > 0) {
+          throw new Error(
+            `Cannot delete user: User has ${userCounts._count.pages} page(s). ` +
+            'Pages must be reassigned or deleted manually before user deletion. ' +
+            'Use soft delete (deactivation) instead.'
+          );
+        }
+
+        // PageRevisions: Cannot delete due to Restrict constraint - must reassign or fail
+        if (userCounts._count.pageRevisions > 0) {
+          throw new Error(
+            `Cannot delete user: User has ${userCounts._count.pageRevisions} page revision(s). ` +
+            'Page revisions must be deleted manually before user deletion. ' +
+            'Use soft delete (deactivation) instead.'
+          );
+        }
+
+        // If we get here, user has no media/pages/revisions, safe to proceed
+
+        // Delete CASCADE relations (these are safe)
+        await tx.refreshToken.deleteMany({ where: { userId: id } });
+        await tx.apiKey.deleteMany({ where: { userId: id } });
+        await tx.comment.deleteMany({ where: { userId: id } });
+
+        // Set null for SetNull relations
+        await tx.systemSetting.updateMany({
+          where: { updatedById: id },
+          data: { updatedById: null },
+        });
+
+        // Set moderated comments to null (SetNull constraint)
+        await tx.comment.updateMany({
+          where: { moderatedById: id },
+          data: { moderatedById: null },
+        });
+
+        // Set moderated reports to null (SetNull constraint)
+        await tx.report.updateMany({
+          where: { moderatedById: id },
+          data: { moderatedById: null },
+        });
+
+        // Set resolved duplicate clusters to null
+        await tx.duplicateCluster.updateMany({
+          where: { resolvedById: id },
+          data: { resolvedById: null },
+        });
+
+        // Set reviewed enrichments to null
+        await tx.enrichment.updateMany({
+          where: { reviewedById: id },
+          data: { reviewedById: null },
+        });
+
+        // Set audit logs user to null (SetNull constraint)
+        await tx.auditLog.updateMany({
+          where: { userId: id },
+          data: { userId: null },
+        });
+
+        // Finally delete the user (reports are anonymized, no restrict violations)
         await tx.user.delete({ where: { id } });
       } else {
         // Soft delete: Deactivate and anonymize
@@ -270,6 +362,35 @@ export async function DELETE(
     });
   } catch (error) {
     console.error('Error deleting user:', error);
+
+    // Provide specific error messages for constraint violations
+    if (error instanceof Error) {
+      // Our custom errors from the checks
+      if (error.message.includes('Cannot delete user:')) {
+        return NextResponse.json(
+          {
+            error: 'constraint_violation',
+            message: error.message,
+            suggestion: 'Consider using soft delete (deactivation) instead of hard delete.',
+          },
+          { status: 409 } // Conflict
+        );
+      }
+
+      // Prisma foreign key constraint errors
+      if (error.message.includes('Foreign key constraint') ||
+          error.message.includes('violates foreign key constraint')) {
+        return NextResponse.json(
+          {
+            error: 'constraint_violation',
+            message: 'Cannot delete user due to existing related records. Use soft delete instead.',
+            details: error.message,
+          },
+          { status: 409 }
+        );
+      }
+    }
+
     return NextResponse.json(
       { error: 'internal_error', message: 'Failed to delete user' },
       { status: 500 }
