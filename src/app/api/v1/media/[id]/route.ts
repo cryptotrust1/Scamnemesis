@@ -72,7 +72,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { allowed, media: ownerCheck } = await checkMediaOwnership(
       id,
       auth.userId,
-      auth.scopes
+      auth.auth.scopes
     );
 
     if (!ownerCheck) {
@@ -122,7 +122,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { allowed, media: ownerCheck } = await checkMediaOwnership(
       id,
       auth.userId,
-      auth.scopes
+      auth.auth.scopes
     );
 
     if (!ownerCheck) {
@@ -173,7 +173,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { allowed, media: ownerCheck } = await checkMediaOwnership(
       id,
       auth.userId,
-      auth.scopes
+      auth.auth.scopes
     );
 
     if (!ownerCheck) {
