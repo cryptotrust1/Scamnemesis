@@ -1,13 +1,13 @@
 #!/bin/bash
 # =============================================================================
-# SCAMNEMESIS - JEDNODUCHÝ ŠTART
+# SCAMNEMESIS - PRODUKČNÝ ŠTART pre scamnemesis.com
 # =============================================================================
 # Spustite: chmod +x START.sh && ./START.sh
 # =============================================================================
 
 set -e
 
-echo "🚀 SCAMNEMESIS - Štartujem..."
+echo "🚀 SCAMNEMESIS - Štartujem produkciu..."
 echo ""
 
 # Farby
@@ -20,17 +20,18 @@ NC='\033[0m'
 # 1. Kontrola či existuje .env
 # -----------------------------------------------------------------------------
 if [ ! -f .env ]; then
-    echo -e "${YELLOW}⚠️  Súbor .env neexistuje, vytváram...${NC}"
+    echo -e "${YELLOW}⚠️  Súbor .env neexistuje, vytváram pre scamnemesis.com...${NC}"
 
     # Generovanie secrets
     JWT_SECRET=$(openssl rand -base64 32)
     AUTH_SECRET=$(openssl rand -base64 32)
 
     cat > .env << EOF
-# SCAMNEMESIS - AUTOMATICKY VYGENEROVANÁ KONFIGURÁCIA
+# SCAMNEMESIS - PRODUKČNÁ KONFIGURÁCIA
 NODE_ENV=production
-DOMAIN=localhost
-ACME_EMAIL=admin@example.com
+DOMAIN=scamnemesis.com
+ACME_EMAIL=admin@scamnemesis.com
+AUTH_TRUST_HOST=true
 
 # Databáza
 POSTGRES_DB=scamnemesis
@@ -59,7 +60,7 @@ TYPESENSE_API_KEY=
 ML_SERVICE_URL=
 CLAMAV_HOST=
 EOF
-    echo -e "${GREEN}✅ .env vytvorený${NC}"
+    echo -e "${GREEN}✅ .env vytvorený pre scamnemesis.com${NC}"
 fi
 
 # -----------------------------------------------------------------------------
@@ -67,16 +68,17 @@ fi
 # -----------------------------------------------------------------------------
 echo "🧹 Čistím staré kontajnery..."
 docker compose down --remove-orphans 2>/dev/null || true
+docker compose -f docker-compose.simple.yml down --remove-orphans 2>/dev/null || true
 docker compose -f docker-compose.local.yml down --remove-orphans 2>/dev/null || true
 
 # -----------------------------------------------------------------------------
-# 3. Spustenie
+# 3. Spustenie s Traefik (SSL)
 # -----------------------------------------------------------------------------
 echo ""
 echo "🔨 Budujem a spúšťam (môže trvať 2-5 minút)..."
 echo ""
 
-docker compose -f docker-compose.local.yml up -d --build
+docker compose -f docker-compose.simple.yml up -d --build
 
 # -----------------------------------------------------------------------------
 # 4. Čakanie na zdravé kontajnery
@@ -84,29 +86,26 @@ docker compose -f docker-compose.local.yml up -d --build
 echo ""
 echo "⏳ Čakám na štart služieb..."
 
-# Čakaj max 3 minúty
-for i in {1..36}; do
+# Čakaj max 5 minút
+for i in {1..60}; do
     # Skontroluj či app beží
-    if docker compose -f docker-compose.local.yml ps | grep -q "scamnemesis-app.*healthy"; then
+    if docker compose -f docker-compose.simple.yml ps | grep -q "scamnemesis-app.*healthy"; then
         echo ""
         echo -e "${GREEN}✅ HOTOVO! Aplikácia beží.${NC}"
         echo ""
         echo "=========================================="
         echo "🌐 Otvorte v prehliadači:"
-        echo "   http://localhost:3000"
-        echo ""
-        echo "📊 MinIO konzola (súbory):"
-        echo "   http://localhost:9001"
+        echo "   https://scamnemesis.com"
         echo "=========================================="
         echo ""
         exit 0
     fi
 
     # Kontrola či app beží (aj keď ešte nie healthy)
-    if docker compose -f docker-compose.local.yml ps | grep -q "scamnemesis-app.*Up"; then
-        echo "⏳ App beží, čakám na health check... ($i/36)"
+    if docker compose -f docker-compose.simple.yml ps | grep -q "scamnemesis-app.*Up"; then
+        echo "⏳ App beží, čakám na health check... ($i/60)"
     else
-        echo "⏳ Čakám na štart... ($i/36)"
+        echo "⏳ Čakám na štart... ($i/60)"
     fi
 
     sleep 5
@@ -118,8 +117,8 @@ done
 echo ""
 echo -e "${YELLOW}⚠️  App ešte neprešla health checkom. Kontrolujem logy...${NC}"
 echo ""
-docker compose -f docker-compose.local.yml logs --tail=50 app
+docker compose -f docker-compose.simple.yml logs --tail=50 app
 
 echo ""
 echo "Skúste:"
-echo "  docker compose -f docker-compose.local.yml logs -f app"
+echo "  docker compose -f docker-compose.simple.yml logs -f app"
