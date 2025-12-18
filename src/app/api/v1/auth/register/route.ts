@@ -21,6 +21,37 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
 
+// Cookie configuration (must match token endpoint)
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: 'lax' as const,
+  path: '/',
+};
+
+/**
+ * Set auth tokens as HttpOnly cookies on the response
+ */
+function setAuthCookies(
+  response: NextResponse,
+  accessToken: string,
+  refreshToken: string
+): void {
+  // Access token cookie - 1 hour
+  response.cookies.set('access_token', accessToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 60 * 60, // 1 hour
+  });
+
+  // Refresh token cookie - 7 days
+  response.cookies.set('refresh_token', refreshToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    path: '/api/v1/auth', // Restrict to auth endpoints only
+  });
+}
+
 // JWT_SECRET validation at runtime to avoid build-time failures
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -188,13 +219,12 @@ export async function POST(request: NextRequest) {
       // Don't fail the registration if email fails
     });
 
-    // Return success response with tokens and user data
-    return NextResponse.json(
+    // Create response with user info
+    const response = NextResponse.json(
       {
-        access_token: accessToken,
-        refresh_token: refreshToken,
         token_type: 'Bearer',
         expires_in: 3600,
+        scopes,
         user: {
           id: user.id,
           email: user.email,
@@ -203,9 +233,17 @@ export async function POST(request: NextRequest) {
           email_verified: false, // Email verification required
         },
         message: 'Registration successful. Please check your email to verify your account.',
+        // Legacy: Still include tokens in response body for API clients
+        access_token: accessToken,
+        refresh_token: refreshToken,
       },
       { status: 201 }
     );
+
+    // Set HttpOnly cookies for browser clients
+    setAuthCookies(response, accessToken, refreshToken);
+
+    return response;
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
