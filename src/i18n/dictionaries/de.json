@@ -113,204 +113,204 @@
       }
     },
     "roadmap": {
-      "title": "List of Features and Services We're Building",
-      "description": "For each item we list its status, completion percentage, and a brief note on what it's for."
+      "title": "Liste der Funktionen und Dienste, die wir entwickeln",
+      "description": "Für jeden Punkt listen wir seinen Status, den Fertigstellungsgrad und eine kurze Anmerkung, wofür er dient."
     },
     "services": {
-      "title": "Other Services",
+      "title": "Weitere Dienste",
       "recovery": {
-        "title": "Fraud Recovery Services",
-        "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
-        "included": "What the service includes",
-        "when": "When this service is suitable",
-        "price": "5 hours of investigator work",
-        "priceNote": "We offer this service in response to companies that charge €3,500–€10,000 and often only report the case to a financial institution. We consider such practices fraudulent and unethical.",
-        "cta": "Start Money Recovery",
+        "title": "Betrugs-Wiederherstellungsdienste",
+        "description": "Wiederherstellung von durch Betrug verlorenen Geldern. Wir kombinieren digitale Forensik, OSINT und rechtliche Koordination, um Ihr Geld aufzuspüren, einzufrieren und wiederzuerlangen — schnell, ethisch und vertretbar.",
+        "included": "Was der Service beinhaltet",
+        "when": "Wann dieser Service geeignet ist",
+        "price": "5 Stunden Ermittlerarbeit",
+        "priceNote": "Wir bieten diesen Service als Reaktion auf Unternehmen an, die 3.500–10.000 € verlangen und oft nur den Fall bei einem Finanzinstitut melden. Wir betrachten solche Praktiken als betrügerisch und unethisch.",
+        "cta": "Geldwiederherstellung starten",
         "features": {
-          "analysis": { "title": "Case analysis", "desc": "Assessment of the real chance of recovery, evidence collection and evaluation." },
-          "forensics": { "title": "Digital forensics", "desc": "Blockchain tracing, OSINT, communication and metadata analysis." },
-          "freezing": { "title": "Asset freezing", "desc": "Contacting banks and exchanges, preparing and sending Freezing Letters." },
-          "legal": { "title": "Legal coordination", "desc": "Drafting orders and filings, coordination with attorneys and authorities." },
-          "documentation": { "title": "Preparation of recovery documentation", "desc": "Arbitration, litigation, out-of-court settlement." },
-          "support": { "title": "Victim support", "desc": "Reporting, ongoing communication, recommendations and prevention." }
+          "analysis": { "title": "Fallanalyse", "desc": "Bewertung der realen Wiederherstellungschance, Beweissammlung und -bewertung." },
+          "forensics": { "title": "Digitale Forensik", "desc": "Blockchain-Verfolgung, OSINT, Kommunikations- und Metadatenanalyse." },
+          "freezing": { "title": "Vermögenseinfrierung", "desc": "Kontaktaufnahme mit Banken und Börsen, Vorbereitung und Versand von Einfrierungsschreiben." },
+          "legal": { "title": "Rechtliche Koordination", "desc": "Erstellung von Anordnungen und Anträgen, Koordination mit Anwälten und Behörden." },
+          "documentation": { "title": "Vorbereitung der Wiederherstellungsdokumentation", "desc": "Schiedsverfahren, Rechtsstreitigkeiten, außergerichtliche Einigung." },
+          "support": { "title": "Opferunterstützung", "desc": "Meldung, laufende Kommunikation, Empfehlungen und Prävention." }
         },
         "suitable": {
-          "1": "If you became a victim of fraudulent transfers (crypto/fiat), phishing, \"romance,\" and investment schemes.",
-          "2": "If you experienced account takeover and suspicious withdrawals via an exchange or bank.",
-          "3": "If you need to quickly block assets and provide defensible evidence."
+          "1": "Wenn Sie Opfer von betrügerischen Überweisungen (Krypto/Fiat), Phishing, \"Romance\"- und Investitionsbetrug wurden.",
+          "2": "Wenn Sie eine Kontoübernahme und verdächtige Abhebungen über eine Börse oder Bank erlebt haben.",
+          "3": "Wenn Sie schnell Vermögenswerte blockieren und vertretbare Beweise liefern müssen."
         }
       },
       "dueDiligence": {
-        "title": "DUE DILIGENCE SERVICES",
-        "description": "Independent screening of partners, clients, and investments. We combine OSINT, AML/KYB procedures, and a legal perspective so you can make decisions based on verifiable facts—fast, discreet, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Start Due Diligence",
+        "title": "DUE-DILIGENCE-DIENSTE",
+        "description": "Unabhängige Überprüfung von Partnern, Kunden und Investitionen. Wir kombinieren OSINT, AML/KYB-Verfahren und eine rechtliche Perspektive, damit Sie Entscheidungen auf der Grundlage überprüfbarer Fakten treffen können — schnell, diskret und vertretbar.",
+        "included": "Was enthalten ist",
+        "when": "Wann dieser Service angemessen ist",
+        "cta": "Due Diligence starten",
         "features": {
-          "entity": { "title": "Entity and UBO identification", "desc": "KYB/KYC, verification of registrations, ownership structure, PEP and sanctions checks." },
-          "reputation": { "title": "Reputational and legal screening", "desc": "adverse media, litigation, insolvency registers, regulatory actions." },
-          "financial": { "title": "Financial and operational indicators", "desc": "baseline financial health, affiliations, red flags (debt, tax arrears)." },
-          "technical": { "title": "Technical and security footprint", "desc": "domains, infrastructure, emails, data leaks, digital footprints of key people." },
-          "business": { "title": "Business ties and conflicts of interest", "desc": "network mapping of partners, risky connections, political exposure." },
-          "deliverables": { "title": "Deliverables", "desc": "risk summary (RAG), detailed report with evidence, red flags, and recommended actions (monitoring, contractual clauses)." }
+          "entity": { "title": "Entitäts- und UBO-Identifizierung", "desc": "KYB/KYC, Verifizierung von Registrierungen, Eigentumsstruktur, PEP- und Sanktionsprüfungen." },
+          "reputation": { "title": "Reputations- und Rechtsscreening", "desc": "Negative Medien, Rechtsstreitigkeiten, Insolvenzregister, regulatorische Maßnahmen." },
+          "financial": { "title": "Finanz- und Betriebsindikatoren", "desc": "Grundlegende finanzielle Gesundheit, Zugehörigkeiten, Warnsignale (Schulden, Steuerrückstände)." },
+          "technical": { "title": "Technischer und Sicherheits-Fußabdruck", "desc": "Domains, Infrastruktur, E-Mails, Datenlecks, digitale Fußabdrücke von Schlüsselpersonen." },
+          "business": { "title": "Geschäftsbeziehungen und Interessenkonflikte", "desc": "Netzwerkkartierung von Partnern, riskante Verbindungen, politische Exposition." },
+          "deliverables": { "title": "Lieferumfang", "desc": "Risikozusammenfassung (RAG), detaillierter Bericht mit Beweisen, Warnsignalen und empfohlenen Maßnahmen (Überwachung, Vertragsklauseln)." }
         },
         "appropriate": {
-          "1": "Onboarding a new client/vendor or third-party risk management (TPRM).",
-          "2": "M&A, joint venture, investor entry, franchise/licensing.",
-          "3": "Suspected links to fraud, sanctioned entities, or money laundering.",
-          "4": "Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit."
+          "1": "Onboarding eines neuen Kunden/Lieferanten oder Drittparteien-Risikomanagement (TPRM).",
+          "2": "M&A, Joint Venture, Investoreneinstieg, Franchise/Lizenzierung.",
+          "3": "Verdacht auf Verbindungen zu Betrug, sanktionierten Entitäten oder Geldwäsche.",
+          "4": "Erfüllung von AML/CTF-Verpflichtungen oder Anforderungen von Bank, Investor oder interner Compliance-Prüfung."
         }
       },
       "investigation": {
-        "title": "CORPORATE INVESTIGATIONS",
-        "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform (evidence management, chain of custody)—discreet, lawful, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Start Investigation",
+        "title": "UNTERNEHMENSERMITTLUNGEN",
+        "description": "Interne und externe Ermittlungen für Unternehmen. Wir kombinieren OSINT, digitale Forensik und Finanzanalytik mit der ScamNemesis-Plattform (Beweismanagement, Beweiskette) — diskret, rechtmäßig und vertretbar.",
+        "included": "Was enthalten ist",
+        "when": "Wann dieser Service angemessen ist",
+        "cta": "Ermittlung starten",
         "features": {
-          "scoping": { "title": "Scoping & preservation", "desc": "rapid hypotheses, evidence preservation." },
-          "forensics": { "title": "Digital forensics", "desc": "devices, email, logs, cloud." },
-          "osint": { "title": "OSINT & reputational analysis", "desc": "mapping people/companies, links, adverse media." },
-          "financial": { "title": "Financial investigation", "desc": "flows (bank/crypto), fake invoices, kickbacks." },
-          "incident": { "title": "Incident response", "desc": "BEC/ransomware/insider, damage mitigation." },
-          "legal": { "title": "Legal coordination", "desc": "filings, communication with authorities." }
+          "scoping": { "title": "Umfang & Sicherung", "desc": "Schnelle Hypothesen, Beweissicherung." },
+          "forensics": { "title": "Digitale Forensik", "desc": "Geräte, E-Mail, Logs, Cloud." },
+          "osint": { "title": "OSINT & Reputationsanalyse", "desc": "Kartierung von Personen/Unternehmen, Verbindungen, negative Medien." },
+          "financial": { "title": "Finanzermittlung", "desc": "Geldflüsse (Bank/Krypto), gefälschte Rechnungen, Schmiergelder." },
+          "incident": { "title": "Incident Response", "desc": "BEC/Ransomware/Insider, Schadensbegrenzung." },
+          "legal": { "title": "Rechtliche Koordination", "desc": "Anträge, Kommunikation mit Behörden." }
         },
         "appropriate": {
-          "1": "Suspected internal fraud or conflict of interest.",
-          "2": "Data breach, compromised accounts, ransomware/BEC.",
-          "3": "Invoice fraud, \"ghost\" vendors, collusion.",
-          "4": "Brand/IP abuse: cloned websites, fake profiles.",
-          "5": "Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor."
+          "1": "Verdacht auf internen Betrug oder Interessenkonflikt.",
+          "2": "Datenleck, kompromittierte Konten, Ransomware/BEC.",
+          "3": "Rechnungsbetrug, \"Geister\"-Lieferanten, Absprachen.",
+          "4": "Marken-/IP-Missbrauch: geklonte Websites, gefälschte Profile.",
+          "5": "Vorprozess- oder Compliance-Phase, wenn Sie vertretbare Beweise für Vorstand, Bank oder Prüfer benötigen."
         }
       },
       "training": {
-        "title": "SECURITY TRAINING & CONSULTING",
-        "description": "Security training and consulting for teams and management. We use real scenarios from ScamNemesis (OSINT, fraud, incident response) to make procedures practical, measurable, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Explore Training & Courses",
+        "title": "SICHERHEITSSCHULUNGEN & BERATUNG",
+        "description": "Sicherheitsschulungen und Beratung für Teams und Management. Wir verwenden reale Szenarien von ScamNemesis (OSINT, Betrug, Incident Response), um Verfahren praktisch, messbar und vertretbar zu gestalten.",
+        "included": "Was enthalten ist",
+        "when": "Wann dieser Service angemessen ist",
+        "cta": "Schulungen & Kurse erkunden",
         "features": {
-          "awareness": { "title": "Security awareness & anti-fraud program", "desc": "role-based, for finance/CS/support." },
-          "phishing": { "title": "Phishing/smishing simulations", "desc": "+ quick \"fix-it\" micro-lessons." },
-          "tabletop": { "title": "Incident response tabletop exercises", "desc": "BEC, ransomware, data breach." },
-          "osint": { "title": "OSINT & privacy hygiene", "desc": "safe searching, identity and metadata protection." },
-          "policy": { "title": "Policy and playbook development", "desc": "IR runbooks, reporting flows, chain of custody." },
-          "consulting": { "title": "Process consulting", "desc": "TPRM/AML/KYB and preparation of audit evidence." }
+          "awareness": { "title": "Security Awareness & Anti-Betrugs-Programm", "desc": "Rollenbasiert, für Finanzen/Kundenservice/Support." },
+          "phishing": { "title": "Phishing/Smishing-Simulationen", "desc": "+ schnelle \"Fix-it\"-Mikrolektionen." },
+          "tabletop": { "title": "Incident-Response-Tabletop-Übungen", "desc": "BEC, Ransomware, Datenleck." },
+          "osint": { "title": "OSINT & Datenschutz-Hygiene", "desc": "Sicheres Suchen, Identitäts- und Metadatenschutz." },
+          "policy": { "title": "Richtlinien- und Playbook-Entwicklung", "desc": "IR-Runbooks, Meldewege, Beweiskette." },
+          "consulting": { "title": "Prozessberatung", "desc": "TPRM/AML/KYB und Vorbereitung von Prüfungsnachweisen." }
         },
         "appropriate": {
-          "1": "When onboarding new hires or scaling teams with access to money/data.",
-          "2": "After an incident to reduce repeat risk and shorten response time.",
-          "3": "Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).",
-          "4": "If you face phishing, brand abuse, or fraudulent orders.",
-          "5": "When you need practical playbooks for the board, finance, and frontline teams."
+          "1": "Beim Onboarding neuer Mitarbeiter oder Skalierung von Teams mit Zugang zu Geld/Daten.",
+          "2": "Nach einem Vorfall zur Reduzierung des Wiederholungsrisikos und Verkürzung der Reaktionszeit.",
+          "3": "Vor einer Prüfung oder Investition, oder beim Onboarding eines wichtigen Kunden (TPRM/AML-Anforderungen).",
+          "4": "Bei Phishing, Markenmissbrauch oder betrügerischen Bestellungen.",
+          "5": "Wenn Sie praktische Playbooks für Vorstand, Finanzen und Frontline-Teams benötigen."
         }
       }
     },
     "consultation": {
-      "title": "BOOK A FREE CONSULTATION NOW",
-      "description": "We would love to learn more about your company's individual needs. That's why we offer a 15-minute consultation call."
+      "title": "BUCHEN SIE JETZT EINE KOSTENLOSE BERATUNG",
+      "description": "Wir würden gerne mehr über die individuellen Bedürfnisse Ihres Unternehmens erfahren. Deshalb bieten wir ein 15-minütiges Beratungsgespräch an."
     },
     "freeTraining": {
-      "badge": "Learn & Protect",
-      "title": "Free Security Training & Courses — Learn to Spot Scams",
-      "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
-      "topicsTitle": "Most Popular Topics:",
+      "badge": "Lernen & Schützen",
+      "title": "Kostenloses Sicherheitstraining & Kurse — Lernen Sie, Betrug zu erkennen",
+      "description": "Kostenlose, praktische Lektionen und Checklisten zur Identifizierung von Phishing, Krypto-/Investitionsbetrug, gefälschten Online-Shops und Social-Media-Betrug. Lernen Sie, Websites, Personen und IBANs zu verifizieren; Ihre Identität und Kreditwürdigkeit zu schützen; und Cyberkriminalität sicher zu melden — Schritt für Schritt.",
+      "topicsTitle": "Beliebteste Themen:",
       "topics": [
-        "How to prevent fraud in business",
-        "Identity protection insurance",
-        "Experian Identity Theft Protection",
-        "Safety on the internet",
-        "10 ways to prevent cybercrime",
-        "How to recognize a scam",
-        "Scammer helpline",
-        "Report cybercrime to the police"
+        "Wie man Betrug im Geschäft verhindert",
+        "Identitätsschutzversicherung",
+        "Experian Identitätsdiebstahlschutz",
+        "Sicherheit im Internet",
+        "10 Wege zur Prävention von Cyberkriminalität",
+        "Wie man einen Betrug erkennt",
+        "Betrugshilfe-Hotline",
+        "Cyberkriminalität bei der Polizei melden"
       ]
     },
     "certifications": {
-      "description": "Years of experience and certifications from leading institutions — professionals on your side."
+      "description": "Jahre der Erfahrung und Zertifizierungen von führenden Institutionen — Fachleute an Ihrer Seite."
     }
   },
   "contactUs": {
-    "title": "Contact us",
-    "description": "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
-    "emailLabel": "Send us an email",
-    "reportButton": "Report scam"
+    "title": "Kontaktieren Sie uns",
+    "description": "Sie können uns per E-Mail kontaktieren. Wenn Sie jedoch einen Betrug melden möchten, klicken Sie bitte auf die Schaltfläche unten und füllen Sie das Formular aus — ohne dieses können wir Ihnen nicht effektiv helfen.",
+    "emailLabel": "Senden Sie uns eine E-Mail",
+    "reportButton": "Betrug melden"
   },
   "supportUs": {
-    "title": "Support us",
-    "subtitle": "Join our mission",
-    "description": "ScamNemesis is a non-profit community project. We are building tools that help people verify identities, report fraud, and recover lost funds. Your support helps us maintain servers, develop new features, and keep the platform free for everyone.",
-    "howToHelp": "How you can help",
+    "title": "Unterstützen Sie uns",
+    "subtitle": "Treten Sie unserer Mission bei",
+    "description": "ScamNemesis ist ein gemeinnütziges Community-Projekt. Wir bauen Tools, die Menschen helfen, Identitäten zu verifizieren, Betrug zu melden und verlorene Gelder zurückzugewinnen. Ihre Unterstützung hilft uns, Server zu warten, neue Funktionen zu entwickeln und die Plattform für alle kostenlos zu halten.",
+    "howToHelp": "Wie Sie helfen können",
     "donate": {
-      "title": "Financial Support",
-      "description": "Every donation helps us maintain and improve the platform. We accept crypto and traditional payments."
+      "title": "Finanzielle Unterstützung",
+      "description": "Jede Spende hilft uns, die Plattform zu warten und zu verbessern. Wir akzeptieren Krypto und traditionelle Zahlungen."
     },
     "spread": {
-      "title": "Spread the Word",
-      "description": "Share ScamNemesis with friends, family, and colleagues. The more people know about us, the safer everyone becomes."
+      "title": "Verbreiten Sie die Nachricht",
+      "description": "Teilen Sie ScamNemesis mit Freunden, Familie und Kollegen. Je mehr Menschen von uns wissen, desto sicherer wird jeder."
     },
     "contribute": {
-      "title": "Contribute",
-      "description": "Are you a developer, designer, or security expert? Join our team and help build the future of fraud prevention."
+      "title": "Beitragen",
+      "description": "Sind Sie Entwickler, Designer oder Sicherheitsexperte? Treten Sie unserem Team bei und helfen Sie, die Zukunft der Betrugsprävention aufzubauen."
     },
     "report": {
-      "title": "Report Scams",
-      "description": "Every report strengthens our database and helps protect others. Your experience can save someone else."
+      "title": "Betrug melden",
+      "description": "Jede Meldung stärkt unsere Datenbank und hilft, andere zu schützen. Ihre Erfahrung kann jemand anderen retten."
     },
-    "cryptoTitle": "Support with Cryptocurrency",
-    "cryptoDescription": "We accept various cryptocurrencies. Click to copy the wallet address.",
-    "thankYou": "Thank you for your support!"
+    "cryptoTitle": "Unterstützung mit Kryptowährung",
+    "cryptoDescription": "Wir akzeptieren verschiedene Kryptowährungen. Klicken Sie, um die Wallet-Adresse zu kopieren.",
+    "thankYou": "Vielen Dank für Ihre Unterstützung!"
   },
   "trainingCourses": {
-    "title": "Training & Courses",
-    "subtitle": "Learn to protect yourself",
-    "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
-    "coursesTitle": "Available Courses",
-    "comingSoon": "More courses coming soon..."
+    "title": "Schulungen & Kurse",
+    "subtitle": "Lernen Sie, sich zu schützen",
+    "description": "Kostenlose, praktische Lektionen und Checklisten zur Identifizierung von Phishing, Krypto-/Investitionsbetrug, gefälschten Online-Shops und Social-Media-Betrug. Lernen Sie, Websites, Personen und IBANs zu verifizieren; Ihre Identität und Kreditwürdigkeit zu schützen; und Cyberkriminalität sicher zu melden — Schritt für Schritt.",
+    "coursesTitle": "Verfügbare Kurse",
+    "comingSoon": "Weitere Kurse kommen bald..."
   },
   "moneyRecovery": {
-    "title": "Money Recovery",
-    "subtitle": "Get your money back",
-    "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
-    "howItWorks": "How it works",
+    "title": "Geldwiederherstellung",
+    "subtitle": "Holen Sie Ihr Geld zurück",
+    "description": "Wiederherstellung von durch Betrug verlorenen Geldern. Wir kombinieren digitale Forensik, OSINT und rechtliche Koordination, um Ihr Geld aufzuspüren, einzufrieren und wiederzuerlangen — schnell, ethisch und vertretbar.",
+    "howItWorks": "Wie es funktioniert",
     "step1": {
-      "title": "Initial Assessment",
-      "description": "We evaluate your case to determine the likelihood of recovery and the best approach."
+      "title": "Erstbewertung",
+      "description": "Wir bewerten Ihren Fall, um die Wahrscheinlichkeit einer Wiederherstellung und den besten Ansatz zu bestimmen."
     },
     "step2": {
-      "title": "Investigation",
-      "description": "Our team traces the funds using blockchain analysis, OSINT, and other forensic techniques."
+      "title": "Ermittlung",
+      "description": "Unser Team verfolgt die Gelder mittels Blockchain-Analyse, OSINT und anderen forensischen Techniken."
     },
     "step3": {
-      "title": "Asset Freezing",
-      "description": "We contact banks and exchanges to freeze the assets before they can be moved."
+      "title": "Vermögenseinfrierung",
+      "description": "Wir kontaktieren Banken und Börsen, um die Vermögenswerte einzufrieren, bevor sie bewegt werden können."
     },
     "step4": {
-      "title": "Recovery",
-      "description": "We work with legal partners to recover your funds through appropriate channels."
+      "title": "Wiederherstellung",
+      "description": "Wir arbeiten mit Rechtspartnern zusammen, um Ihre Gelder über geeignete Kanäle wiederzuerlangen."
     },
-    "pricing": "Pricing",
-    "pricingNote": "We offer transparent pricing at €600 for 5 hours of investigator work. No hidden fees.",
-    "getStarted": "Start Recovery Process"
+    "pricing": "Preise",
+    "pricingNote": "Wir bieten transparente Preise von 600 € für 5 Stunden Ermittlerarbeit. Keine versteckten Gebühren.",
+    "getStarted": "Wiederherstellungsprozess starten"
   },
   "scammerRemoval": {
-    "title": "Scammer Removal",
-    "subtitle": "Corporate investigations & brand protection",
-    "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform—discreet, lawful, and defensible.",
-    "servicesTitle": "Our Services",
+    "title": "Betrüger-Entfernung",
+    "subtitle": "Unternehmensermittlungen & Markenschutz",
+    "description": "Interne und externe Ermittlungen für Unternehmen. Wir kombinieren OSINT, digitale Forensik und Finanzanalytik mit der ScamNemesis-Plattform — diskret, rechtmäßig und vertretbar.",
+    "servicesTitle": "Unsere Dienste",
     "brandProtection": {
-      "title": "Brand Protection",
-      "description": "We identify and take down fake websites, social media profiles, and fraudulent use of your brand."
+      "title": "Markenschutz",
+      "description": "Wir identifizieren und entfernen gefälschte Websites, Social-Media-Profile und betrügerische Nutzung Ihrer Marke."
     },
     "internalInvestigation": {
-      "title": "Internal Investigation",
-      "description": "Discreet investigation of suspected internal fraud, conflicts of interest, and policy violations."
+      "title": "Interne Ermittlung",
+      "description": "Diskrete Ermittlung bei Verdacht auf internen Betrug, Interessenkonflikte und Richtlinienverstöße."
     },
     "incidentResponse": {
       "title": "Incident Response",
-      "description": "Rapid response to BEC, ransomware, data breaches, and other security incidents."
+      "description": "Schnelle Reaktion auf BEC, Ransomware, Datenlecks und andere Sicherheitsvorfälle."
     },
-    "getStarted": "Start Investigation"
+    "getStarted": "Ermittlung starten"
   },
   "report": {
     "title": "Betrug melden",

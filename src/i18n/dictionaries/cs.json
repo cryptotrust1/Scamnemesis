@@ -113,204 +113,204 @@
       }
     },
     "roadmap": {
-      "title": "List of Features and Services We're Building",
-      "description": "For each item we list its status, completion percentage, and a brief note on what it's for."
+      "title": "Seznam funkcí a služeb, které vyvíjíme",
+      "description": "U každé položky uvádíme její stav, procento dokončení a stručnou poznámku o tom, k čemu slouží."
     },
     "services": {
-      "title": "Other Services",
+      "title": "Další služby",
       "recovery": {
-        "title": "Fraud Recovery Services",
-        "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
-        "included": "What the service includes",
-        "when": "When this service is suitable",
-        "price": "5 hours of investigator work",
-        "priceNote": "We offer this service in response to companies that charge €3,500–€10,000 and often only report the case to a financial institution. We consider such practices fraudulent and unethical.",
-        "cta": "Start Money Recovery",
+        "title": "Služby obnovy po podvodu",
+        "description": "Obnova prostředků ztracených podvodem. Kombinujeme digitální forenziku, OSINT a právní koordinaci ke sledování, zmrazení a obnově vašich peněz — rychle, eticky a obhajitelně.",
+        "included": "Co služba zahrnuje",
+        "when": "Kdy je tato služba vhodná",
+        "price": "5 hodin práce vyšetřovatele",
+        "priceNote": "Tuto službu nabízíme jako reakci na společnosti, které účtují 3 500–10 000 € a často pouze nahlásí případ finanční instituci. Takové praktiky považujeme za podvodné a neetické.",
+        "cta": "Zahájit obnovu peněz",
         "features": {
-          "analysis": { "title": "Case analysis", "desc": "Assessment of the real chance of recovery, evidence collection and evaluation." },
-          "forensics": { "title": "Digital forensics", "desc": "Blockchain tracing, OSINT, communication and metadata analysis." },
-          "freezing": { "title": "Asset freezing", "desc": "Contacting banks and exchanges, preparing and sending Freezing Letters." },
-          "legal": { "title": "Legal coordination", "desc": "Drafting orders and filings, coordination with attorneys and authorities." },
-          "documentation": { "title": "Preparation of recovery documentation", "desc": "Arbitration, litigation, out-of-court settlement." },
-          "support": { "title": "Victim support", "desc": "Reporting, ongoing communication, recommendations and prevention." }
+          "analysis": { "title": "Analýza případu", "desc": "Posouzení reálné šance na obnovu, sběr a vyhodnocení důkazů." },
+          "forensics": { "title": "Digitální forenzika", "desc": "Sledování blockchainu, OSINT, analýza komunikace a metadat." },
+          "freezing": { "title": "Zmrazení aktiv", "desc": "Kontaktování bank a burz, příprava a zasílání dopisů o zmrazení." },
+          "legal": { "title": "Právní koordinace", "desc": "Příprava příkazů a podání, koordinace s právníky a úřady." },
+          "documentation": { "title": "Příprava dokumentace pro obnovu", "desc": "Arbitráž, soudní spory, mimosoudní vyrovnání." },
+          "support": { "title": "Podpora oběti", "desc": "Nahlášení, průběžná komunikace, doporučení a prevence." }
         },
         "suitable": {
-          "1": "If you became a victim of fraudulent transfers (crypto/fiat), phishing, \"romance,\" and investment schemes.",
-          "2": "If you experienced account takeover and suspicious withdrawals via an exchange or bank.",
-          "3": "If you need to quickly block assets and provide defensible evidence."
+          "1": "Pokud jste se stali obětí podvodných převodů (krypto/fiat), phishingu, \"romance\" a investičních schémat.",
+          "2": "Pokud jste zažili převzetí účtu a podezřelé výběry přes burzu nebo banku.",
+          "3": "Pokud potřebujete rychle zablokovat aktiva a poskytnout obhajitelné důkazy."
         }
       },
       "dueDiligence": {
-        "title": "DUE DILIGENCE SERVICES",
-        "description": "Independent screening of partners, clients, and investments. We combine OSINT, AML/KYB procedures, and a legal perspective so you can make decisions based on verifiable facts—fast, discreet, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Start Due Diligence",
+        "title": "SLUŽBY DUE DILIGENCE",
+        "description": "Nezávislý screening partnerů, klientů a investic. Kombinujeme OSINT, AML/KYB procedury a právní perspektivu, abyste mohli rozhodovat na základě ověřitelných faktů — rychle, diskrétně a obhajitelně.",
+        "included": "Co je zahrnuto",
+        "when": "Kdy je tato služba vhodná",
+        "cta": "Zahájit Due Diligence",
         "features": {
-          "entity": { "title": "Entity and UBO identification", "desc": "KYB/KYC, verification of registrations, ownership structure, PEP and sanctions checks." },
-          "reputation": { "title": "Reputational and legal screening", "desc": "adverse media, litigation, insolvency registers, regulatory actions." },
-          "financial": { "title": "Financial and operational indicators", "desc": "baseline financial health, affiliations, red flags (debt, tax arrears)." },
-          "technical": { "title": "Technical and security footprint", "desc": "domains, infrastructure, emails, data leaks, digital footprints of key people." },
-          "business": { "title": "Business ties and conflicts of interest", "desc": "network mapping of partners, risky connections, political exposure." },
-          "deliverables": { "title": "Deliverables", "desc": "risk summary (RAG), detailed report with evidence, red flags, and recommended actions (monitoring, contractual clauses)." }
+          "entity": { "title": "Identifikace entity a UBO", "desc": "KYB/KYC, ověření registrací, vlastnická struktura, kontroly PEP a sankcí." },
+          "reputation": { "title": "Reputační a právní screening", "desc": "Negativní média, soudní spory, insolvenční rejstříky, regulační opatření." },
+          "financial": { "title": "Finanční a provozní ukazatele", "desc": "Základní finanční zdraví, propojení, varovné signály (dluhy, daňové nedoplatky)." },
+          "technical": { "title": "Technická a bezpečnostní stopa", "desc": "Domény, infrastruktura, e-maily, úniky dat, digitální stopy klíčových osob." },
+          "business": { "title": "Obchodní vazby a střety zájmů", "desc": "Mapování sítě partnerů, riziková spojení, politická expozice." },
+          "deliverables": { "title": "Výstupy", "desc": "Shrnutí rizik (RAG), podrobná zpráva s důkazy, varovné signály a doporučená opatření (monitoring, smluvní klauzule)." }
         },
         "appropriate": {
-          "1": "Onboarding a new client/vendor or third-party risk management (TPRM).",
-          "2": "M&A, joint venture, investor entry, franchise/licensing.",
-          "3": "Suspected links to fraud, sanctioned entities, or money laundering.",
-          "4": "Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit."
+          "1": "Onboarding nového klienta/dodavatele nebo řízení rizik třetích stran (TPRM).",
+          "2": "M&A, joint venture, vstup investora, franšíza/licencování.",
+          "3": "Podezření na spojení s podvodem, sankcionovanými subjekty nebo praním peněz.",
+          "4": "Plnění AML/CTF povinností nebo požadavků od banky, investora nebo interního compliance auditu."
         }
       },
       "investigation": {
-        "title": "CORPORATE INVESTIGATIONS",
-        "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform (evidence management, chain of custody)—discreet, lawful, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Start Investigation",
+        "title": "FIREMNÍ VYŠETŘOVÁNÍ",
+        "description": "Interní a externí vyšetřování pro firmy. Kombinujeme OSINT, digitální forenziku a finanční analytiku s platformou ScamNemesis (správa důkazů, řetězec úschovy) — diskrétně, legálně a obhajitelně.",
+        "included": "Co je zahrnuto",
+        "when": "Kdy je tato služba vhodná",
+        "cta": "Zahájit vyšetřování",
         "features": {
-          "scoping": { "title": "Scoping & preservation", "desc": "rapid hypotheses, evidence preservation." },
-          "forensics": { "title": "Digital forensics", "desc": "devices, email, logs, cloud." },
-          "osint": { "title": "OSINT & reputational analysis", "desc": "mapping people/companies, links, adverse media." },
-          "financial": { "title": "Financial investigation", "desc": "flows (bank/crypto), fake invoices, kickbacks." },
-          "incident": { "title": "Incident response", "desc": "BEC/ransomware/insider, damage mitigation." },
-          "legal": { "title": "Legal coordination", "desc": "filings, communication with authorities." }
+          "scoping": { "title": "Rozsah a uchování", "desc": "Rychlé hypotézy, uchování důkazů." },
+          "forensics": { "title": "Digitální forenzika", "desc": "Zařízení, e-mail, logy, cloud." },
+          "osint": { "title": "OSINT a reputační analýza", "desc": "Mapování osob/firem, vazby, negativní média." },
+          "financial": { "title": "Finanční vyšetřování", "desc": "Toky (bankovní/krypto), falešné faktury, úplatky." },
+          "incident": { "title": "Reakce na incident", "desc": "BEC/ransomware/insider, zmírnění škod." },
+          "legal": { "title": "Právní koordinace", "desc": "Podání, komunikace s úřady." }
         },
         "appropriate": {
-          "1": "Suspected internal fraud or conflict of interest.",
-          "2": "Data breach, compromised accounts, ransomware/BEC.",
-          "3": "Invoice fraud, \"ghost\" vendors, collusion.",
-          "4": "Brand/IP abuse: cloned websites, fake profiles.",
-          "5": "Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor."
+          "1": "Podezření na interní podvod nebo střet zájmů.",
+          "2": "Únik dat, kompromitované účty, ransomware/BEC.",
+          "3": "Fakturační podvod, \"duchové\" dodavatelé, tajné dohody.",
+          "4": "Zneužití značky/IP: klonované weby, falešné profily.",
+          "5": "Předsoudní nebo compliance fáze, když potřebujete obhajitelné důkazy pro představenstvo, banku nebo auditora."
         }
       },
       "training": {
-        "title": "SECURITY TRAINING & CONSULTING",
-        "description": "Security training and consulting for teams and management. We use real scenarios from ScamNemesis (OSINT, fraud, incident response) to make procedures practical, measurable, and defensible.",
-        "included": "What's included",
-        "when": "When this service is appropriate",
-        "cta": "Explore Training & Courses",
+        "title": "BEZPEČNOSTNÍ ŠKOLENÍ A KONZULTACE",
+        "description": "Bezpečnostní školení a konzultace pro týmy a management. Používáme reálné scénáře ze ScamNemesis (OSINT, podvody, reakce na incidenty), aby postupy byly praktické, měřitelné a obhajitelné.",
+        "included": "Co je zahrnuto",
+        "when": "Kdy je tato služba vhodná",
+        "cta": "Prozkoumat školení a kurzy",
         "features": {
-          "awareness": { "title": "Security awareness & anti-fraud program", "desc": "role-based, for finance/CS/support." },
-          "phishing": { "title": "Phishing/smishing simulations", "desc": "+ quick \"fix-it\" micro-lessons." },
-          "tabletop": { "title": "Incident response tabletop exercises", "desc": "BEC, ransomware, data breach." },
-          "osint": { "title": "OSINT & privacy hygiene", "desc": "safe searching, identity and metadata protection." },
-          "policy": { "title": "Policy and playbook development", "desc": "IR runbooks, reporting flows, chain of custody." },
-          "consulting": { "title": "Process consulting", "desc": "TPRM/AML/KYB and preparation of audit evidence." }
+          "awareness": { "title": "Security awareness a anti-fraud program", "desc": "Založený na rolích, pro finance/zákaznický servis/podporu." },
+          "phishing": { "title": "Phishing/smishing simulace", "desc": "+ rychlé \"opravné\" mikrolekce." },
+          "tabletop": { "title": "Tabletop cvičení reakce na incident", "desc": "BEC, ransomware, únik dat." },
+          "osint": { "title": "OSINT a hygiena soukromí", "desc": "Bezpečné vyhledávání, ochrana identity a metadat." },
+          "policy": { "title": "Vývoj politik a playbooks", "desc": "IR runbooks, reportovací toky, řetězec úschovy." },
+          "consulting": { "title": "Procesní konzultace", "desc": "TPRM/AML/KYB a příprava auditních důkazů." }
         },
         "appropriate": {
-          "1": "When onboarding new hires or scaling teams with access to money/data.",
-          "2": "After an incident to reduce repeat risk and shorten response time.",
-          "3": "Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).",
-          "4": "If you face phishing, brand abuse, or fraudulent orders.",
-          "5": "When you need practical playbooks for the board, finance, and frontline teams."
+          "1": "Při onboardingu nových zaměstnanců nebo škálování týmů s přístupem k penězům/datům.",
+          "2": "Po incidentu ke snížení rizika opakování a zkrácení reakční doby.",
+          "3": "Před auditem nebo investicí, nebo při onboardingu významného klienta (TPRM/AML požadavky).",
+          "4": "Pokud čelíte phishingu, zneužití značky nebo podvodným objednávkám.",
+          "5": "Když potřebujete praktické playbooks pro představenstvo, finance a frontline týmy."
         }
       }
     },
     "consultation": {
-      "title": "BOOK A FREE CONSULTATION NOW",
-      "description": "We would love to learn more about your company's individual needs. That's why we offer a 15-minute consultation call."
+      "title": "REZERVUJTE SI BEZPLATNOU KONZULTACI",
+      "description": "Rádi bychom se dozvěděli více o individuálních potřebách vaší společnosti. Proto nabízíme 15minutový konzultační hovor."
     },
     "freeTraining": {
-      "badge": "Learn & Protect",
-      "title": "Free Security Training & Courses — Learn to Spot Scams",
-      "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
-      "topicsTitle": "Most Popular Topics:",
+      "badge": "Učte se a chraňte",
+      "title": "Bezplatné bezpečnostní školení a kurzy — Naučte se rozpoznat podvody",
+      "description": "Bezplatné, praktické lekce a checklisty pro identifikaci phishingu, krypto/investičních podvodů, falešných e-shopů a podvodů na sociálních sítích. Naučte se ověřovat weby, lidi a IBAN; chránit svou identitu a kredit; a bezpečně nahlašovat kybernetickou kriminalitu — krok za krokem.",
+      "topicsTitle": "Nejoblíbenější témata:",
       "topics": [
-        "How to prevent fraud in business",
-        "Identity protection insurance",
-        "Experian Identity Theft Protection",
-        "Safety on the internet",
-        "10 ways to prevent cybercrime",
-        "How to recognize a scam",
-        "Scammer helpline",
-        "Report cybercrime to the police"
+        "Jak předcházet podvodům v podnikání",
+        "Pojištění ochrany identity",
+        "Experian ochrana před krádeží identity",
+        "Bezpečnost na internetu",
+        "10 způsobů prevence kybernetické kriminality",
+        "Jak rozpoznat podvod",
+        "Linka pomoci pro oběti podvodů",
+        "Nahlášení kybernetické kriminality policii"
       ]
     },
     "certifications": {
-      "description": "Years of experience and certifications from leading institutions — professionals on your side."
+      "description": "Roky zkušeností a certifikace od předních institucí — profesionálové na vaší straně."
     }
   },
   "contactUs": {
-    "title": "Contact us",
-    "description": "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
-    "emailLabel": "Send us an email",
-    "reportButton": "Report scam"
+    "title": "Kontaktujte nás",
+    "description": "Můžete nás kontaktovat e-mailem. Pokud však chcete nahlásit podvod, klikněte prosím na tlačítko níže a vyplňte formulář — bez něj vám nebudeme moci efektivně pomoci.",
+    "emailLabel": "Pošlete nám e-mail",
+    "reportButton": "Nahlásit podvod"
   },
   "supportUs": {
-    "title": "Support us",
-    "subtitle": "Join our mission",
-    "description": "ScamNemesis is a non-profit community project. We are building tools that help people verify identities, report fraud, and recover lost funds. Your support helps us maintain servers, develop new features, and keep the platform free for everyone.",
-    "howToHelp": "How you can help",
+    "title": "Podpořte nás",
+    "subtitle": "Připojte se k naší misi",
+    "description": "ScamNemesis je neziskový komunitní projekt. Budujeme nástroje, které pomáhají lidem ověřovat identity, nahlašovat podvody a získat zpět ztracené prostředky. Vaše podpora pomáhá udržovat servery, vyvíjet nové funkce a udržovat platformu zdarma pro všechny.",
+    "howToHelp": "Jak můžete pomoci",
     "donate": {
-      "title": "Financial Support",
-      "description": "Every donation helps us maintain and improve the platform. We accept crypto and traditional payments."
+      "title": "Finanční podpora",
+      "description": "Každý dar nám pomáhá udržovat a zlepšovat platformu. Přijímáme krypto i tradiční platby."
     },
     "spread": {
-      "title": "Spread the Word",
-      "description": "Share ScamNemesis with friends, family, and colleagues. The more people know about us, the safer everyone becomes."
+      "title": "Šiřte povědomí",
+      "description": "Sdílejte ScamNemesis s přáteli, rodinou a kolegy. Čím více lidí o nás ví, tím bezpečnější jsou všichni."
     },
     "contribute": {
-      "title": "Contribute",
-      "description": "Are you a developer, designer, or security expert? Join our team and help build the future of fraud prevention."
+      "title": "Přispějte",
+      "description": "Jste vývojář, designér nebo bezpečnostní expert? Připojte se k našemu týmu a pomozte budovat budoucnost prevence podvodů."
     },
     "report": {
-      "title": "Report Scams",
-      "description": "Every report strengthens our database and helps protect others. Your experience can save someone else."
+      "title": "Nahlašujte podvody",
+      "description": "Každé hlášení posiluje naši databázi a pomáhá chránit ostatní. Vaše zkušenost může zachránit někoho jiného."
     },
-    "cryptoTitle": "Support with Cryptocurrency",
-    "cryptoDescription": "We accept various cryptocurrencies. Click to copy the wallet address.",
-    "thankYou": "Thank you for your support!"
+    "cryptoTitle": "Podpora kryptoměnami",
+    "cryptoDescription": "Přijímáme různé kryptoměny. Kliknutím zkopírujete adresu peněženky.",
+    "thankYou": "Děkujeme za vaši podporu!"
   },
   "trainingCourses": {
-    "title": "Training & Courses",
-    "subtitle": "Learn to protect yourself",
-    "description": "Free, practical lessons and checklists to identify phishing, crypto/investment fraud, fake online shops, and social-media scams. Learn to verify websites, people, and IBANs; protect your identity and credit score; and report cybercrime safely—step by step.",
-    "coursesTitle": "Available Courses",
-    "comingSoon": "More courses coming soon..."
+    "title": "Školení a kurzy",
+    "subtitle": "Naučte se chránit",
+    "description": "Bezplatné, praktické lekce a checklisty pro identifikaci phishingu, krypto/investičních podvodů, falešných e-shopů a podvodů na sociálních sítích. Naučte se ověřovat weby, lidi a IBAN; chránit svou identitu a kredit; a bezpečně nahlašovat kybernetickou kriminalitu — krok za krokem.",
+    "coursesTitle": "Dostupné kurzy",
+    "comingSoon": "Další kurzy již brzy..."
   },
   "moneyRecovery": {
-    "title": "Money Recovery",
-    "subtitle": "Get your money back",
-    "description": "Recovery of funds lost to fraud. We combine digital forensics, OSINT, and legal coordination to trace, freeze, and recover your money—fast, ethically, and defensibly.",
-    "howItWorks": "How it works",
+    "title": "Obnova peněz",
+    "subtitle": "Získejte své peníze zpět",
+    "description": "Obnova prostředků ztracených podvodem. Kombinujeme digitální forenziku, OSINT a právní koordinaci ke sledování, zmrazení a obnově vašich peněz — rychle, eticky a obhajitelně.",
+    "howItWorks": "Jak to funguje",
     "step1": {
-      "title": "Initial Assessment",
-      "description": "We evaluate your case to determine the likelihood of recovery and the best approach."
+      "title": "Počáteční posouzení",
+      "description": "Vyhodnotíme váš případ a určíme pravděpodobnost obnovy a nejlepší přístup."
     },
     "step2": {
-      "title": "Investigation",
-      "description": "Our team traces the funds using blockchain analysis, OSINT, and other forensic techniques."
+      "title": "Vyšetřování",
+      "description": "Náš tým sleduje prostředky pomocí blockchain analýzy, OSINT a dalších forenzních technik."
     },
     "step3": {
-      "title": "Asset Freezing",
-      "description": "We contact banks and exchanges to freeze the assets before they can be moved."
+      "title": "Zmrazení aktiv",
+      "description": "Kontaktujeme banky a burzy pro zmrazení aktiv předtím, než budou přesunuta."
     },
     "step4": {
-      "title": "Recovery",
-      "description": "We work with legal partners to recover your funds through appropriate channels."
+      "title": "Obnova",
+      "description": "Spolupracujeme s právními partnery na obnově vašich prostředků prostřednictvím vhodných kanálů."
     },
-    "pricing": "Pricing",
-    "pricingNote": "We offer transparent pricing at €600 for 5 hours of investigator work. No hidden fees.",
-    "getStarted": "Start Recovery Process"
+    "pricing": "Ceny",
+    "pricingNote": "Nabízíme transparentní ceny 600 € za 5 hodin práce vyšetřovatele. Žádné skryté poplatky.",
+    "getStarted": "Zahájit proces obnovy"
   },
   "scammerRemoval": {
-    "title": "Scammer Removal",
-    "subtitle": "Corporate investigations & brand protection",
-    "description": "Internal and external investigations for companies. We combine OSINT, digital forensics, and financial analytics with the ScamNemesis platform—discreet, lawful, and defensible.",
-    "servicesTitle": "Our Services",
+    "title": "Odstranění podvodníků",
+    "subtitle": "Firemní vyšetřování a ochrana značky",
+    "description": "Interní a externí vyšetřování pro firmy. Kombinujeme OSINT, digitální forenziku a finanční analytiku s platformou ScamNemesis — diskrétně, legálně a obhajitelně.",
+    "servicesTitle": "Naše služby",
     "brandProtection": {
-      "title": "Brand Protection",
-      "description": "We identify and take down fake websites, social media profiles, and fraudulent use of your brand."
+      "title": "Ochrana značky",
+      "description": "Identifikujeme a odstraňujeme falešné weby, profily na sociálních sítích a podvodné používání vaší značky."
     },
     "internalInvestigation": {
-      "title": "Internal Investigation",
-      "description": "Discreet investigation of suspected internal fraud, conflicts of interest, and policy violations."
+      "title": "Interní vyšetřování",
+      "description": "Diskrétní vyšetřování podezření na interní podvod, střety zájmů a porušení politik."
     },
     "incidentResponse": {
-      "title": "Incident Response",
-      "description": "Rapid response to BEC, ransomware, data breaches, and other security incidents."
+      "title": "Reakce na incident",
+      "description": "Rychlá reakce na BEC, ransomware, úniky dat a další bezpečnostní incidenty."
     },
-    "getStarted": "Start Investigation"
+    "getStarted": "Zahájit vyšetřování"
   },
   "report": {
     "title": "Nahlásit podvod",
