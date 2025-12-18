@@ -121,6 +121,13 @@ enum EnrichmentEventType {
   NEWS_MATCH
 }
 
+enum EnrichmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
 // ==================== USERS & AUTH ====================
 
 model User {
@@ -156,6 +163,9 @@ model User {
   pages            Page[]
   pageRevisions    PageRevision[]
   systemSettings   SystemSetting[]
+
+  // Enrichment Relations
+  reviewedEnrichments Enrichment[]
 
   @@map("users")
 }
@@ -313,6 +323,9 @@ model Perpetrator {
 
   // One-to-many relation: one perpetrator belongs to one report
   report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  // Enrichment data linked to this perpetrator
+  enrichments Enrichment[]
 
   @@index([reportId])
   @@index([phoneNormalized])
@@ -552,13 +565,19 @@ model Enrichment {
   matchValue    String              @map("match_value")
   similarity    Float?
   data          Json
-  status        String              @default("pending")
+  status        EnrichmentStatus    @default(PENDING)
   reviewedAt    DateTime?           @map("reviewed_at")
   reviewedById  String?             @map("reviewed_by_id")
   createdAt     DateTime            @default(now()) @map("created_at")
 
+  // Relations
+  perpetrator   Perpetrator?        @relation(fields: [perpetratorId], references: [id], onDelete: SetNull)
+  reviewedBy    User?               @relation(fields: [reviewedById], references: [id], onDelete: SetNull)
+
   @@index([perpetratorId])
   @@index([status])
+  @@index([reviewedById])
+  @@index([eventType])
   @@map("enrichments")
 }
 
@@ -848,6 +867,7 @@ model PageRevision {
 
   @@index([pageId])
   @@index([version])
+  @@index([authorId])
   @@map("page_revisions")
 }
 

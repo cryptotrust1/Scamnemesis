@@ -92,6 +92,12 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+-- EnrichmentStatus
+DO $$ BEGIN
+    CREATE TYPE "EnrichmentStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'ARCHIVED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
 -- MediaType
 DO $$ BEGIN
     CREATE TYPE "MediaType" AS ENUM ('IMAGE', 'VIDEO', 'DOCUMENT', 'AUDIO', 'OTHER');
@@ -467,14 +473,18 @@ CREATE TABLE IF NOT EXISTS "enrichments" (
     "match_value" TEXT NOT NULL,
     "similarity" DOUBLE PRECISION,
     "data" JSONB NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'pending',
+    "status" "EnrichmentStatus" NOT NULL DEFAULT 'PENDING',
     "reviewed_at" TIMESTAMP(3),
     "reviewed_by_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "enrichments_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "enrichments_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "enrichments_perpetrator_id_fkey" FOREIGN KEY ("perpetrator_id") REFERENCES "perpetrators"("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "enrichments_reviewed_by_id_fkey" FOREIGN KEY ("reviewed_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS "enrichments_perpetrator_id_idx" ON "enrichments"("perpetrator_id");
 CREATE INDEX IF NOT EXISTS "enrichments_status_idx" ON "enrichments"("status");
+CREATE INDEX IF NOT EXISTS "enrichments_reviewed_by_id_idx" ON "enrichments"("reviewed_by_id");
+CREATE INDEX IF NOT EXISTS "enrichments_event_type_idx" ON "enrichments"("event_type");
 
 -- Audit Logs
 CREATE TABLE IF NOT EXISTS "audit_logs" (
@@ -660,6 +670,7 @@ CREATE TABLE IF NOT EXISTS "page_revisions" (
 );
 CREATE INDEX IF NOT EXISTS "page_revisions_page_id_idx" ON "page_revisions"("page_id");
 CREATE INDEX IF NOT EXISTS "page_revisions_version_idx" ON "page_revisions"("version");
+CREATE INDEX IF NOT EXISTS "page_revisions_author_id_idx" ON "page_revisions"("author_id");
 
 -- Page Media (Join Table)
 CREATE TABLE IF NOT EXISTS "page_media" (
