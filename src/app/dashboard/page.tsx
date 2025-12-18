@@ -16,6 +16,9 @@ import {
   XCircle,
   Mail,
   AlertTriangle,
+  Search,
+  GitMerge,
+  Archive,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -137,6 +140,13 @@ export default function DashboardPage() {
             Čaká na schválenie
           </Badge>
         );
+      case 'UNDER_REVIEW':
+        return (
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Search className="h-3 w-3" />
+            V procese
+          </Badge>
+        );
       case 'APPROVED':
         return (
           <Badge variant="success" className="flex items-center gap-1">
@@ -149,6 +159,20 @@ export default function DashboardPage() {
           <Badge variant="destructive" className="flex items-center gap-1">
             <XCircle className="h-3 w-3" />
             Zamietnuté
+          </Badge>
+        );
+      case 'MERGED':
+        return (
+          <Badge variant="outline" className="flex items-center gap-1">
+            <GitMerge className="h-3 w-3" />
+            Zlúčené
+          </Badge>
+        );
+      case 'ARCHIVED':
+        return (
+          <Badge variant="outline" className="flex items-center gap-1 text-gray-500">
+            <Archive className="h-3 w-3" />
+            Archivované
           </Badge>
         );
       default:

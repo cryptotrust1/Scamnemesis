@@ -130,10 +130,16 @@ export default function AdminReportsPage() {
     switch (status) {
       case 'PENDING':
         return <Badge variant="warning">Čaká</Badge>;
+      case 'UNDER_REVIEW':
+        return <Badge variant="secondary">V procese</Badge>;
       case 'APPROVED':
         return <Badge variant="success">Schválené</Badge>;
       case 'REJECTED':
         return <Badge variant="destructive">Zamietnuté</Badge>;
+      case 'MERGED':
+        return <Badge variant="outline">Zlúčené</Badge>;
+      case 'ARCHIVED':
+        return <Badge variant="outline" className="text-gray-500">Archivované</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }

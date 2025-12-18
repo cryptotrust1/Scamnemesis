@@ -62,9 +62,12 @@ const countries = [
 
 const statuses = [
   { value: 'all', label: 'Všetky stavy' },
-  { value: 'APPROVED', label: 'Schválené' },
   { value: 'PENDING', label: 'Čaká na schválenie' },
+  { value: 'UNDER_REVIEW', label: 'V procese schvaľovania' },
+  { value: 'APPROVED', label: 'Schválené' },
   { value: 'REJECTED', label: 'Zamietnuté' },
+  { value: 'MERGED', label: 'Zlúčené' },
+  { value: 'ARCHIVED', label: 'Archivované' },
 ];
 
 export function SearchFiltersComponent({

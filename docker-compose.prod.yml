@@ -216,9 +216,9 @@ services:
   # to match the current .env file. This is necessary because the postgres
   # docker image only uses POSTGRES_PASSWORD during initial database creation.
   password-sync:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: scamnemesis-password-sync
-    user: "999:999"  # postgres user UID:GID in Debian-based pgvector image
+    user: "999:999"  # postgres user UID:GID in Debian-based pgvector image (matches postgres service)
     environment:
       - PGUSER=${POSTGRES_USER:-postgres}
       - PGDATABASE=${POSTGRES_DB:-scamnemesis}
