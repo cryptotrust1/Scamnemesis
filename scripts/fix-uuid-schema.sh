@@ -117,16 +117,19 @@ fi
 log_success "App container started."
 
 # -----------------------------------------------------------------------------
-# STEP 5: Run Prisma db push
+# STEP 5: Run Prisma db push (with correct permissions)
 # -----------------------------------------------------------------------------
 log_info "[5/6] Running Prisma db push..."
 
-docker exec -e DATABASE_URL="postgresql://postgres:ScamNemesis2024Prod@postgres:5432/scamnemesis" \
-    scamnemesis-app npx prisma db push --accept-data-loss 2>&1 | tail -30
+# Run as root with HOME=/tmp to avoid permission issues
+docker exec -u root \
+    -e HOME=/tmp \
+    -e DATABASE_URL="postgresql://postgres:ScamNemesis2024Prod@postgres:5432/scamnemesis" \
+    scamnemesis-app /app/node_modules/.bin/prisma db push --accept-data-loss 2>&1 | tail -30
 
 log_success "Prisma schema pushed."
 
-# Verify tables
+# Verify tables - should be 27+ for full Prisma schema
 TABLES=$(docker exec -i scamnemesis-postgres psql -U postgres -d scamnemesis -t -c \
     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';")
 log_info "Tables created: $TABLES"
