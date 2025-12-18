@@ -180,9 +180,10 @@ Platba: kartou`,
 async function main() {
   console.log('Starting database seed...');
 
-  // Check if we're in production
-  if (process.env.NODE_ENV === 'production') {
-    console.error('ERROR: Cannot run seed in production environment!');
+  // Check if we're in production (allow with SEED_PRODUCTION=true for initial setup)
+  if (process.env.NODE_ENV === 'production' && process.env.SEED_PRODUCTION !== 'true') {
+    console.error('ERROR: Cannot run seed in production without SEED_PRODUCTION=true');
+    console.error('Run with: SEED_PRODUCTION=true npm run db:seed');
     process.exit(1);
   }
 
@@ -218,7 +219,8 @@ async function main() {
         displayName: userData.displayName,
         role: userData.role,
         passwordHash,
-        emailVerified: userData.emailVerified,
+        // emailVerified is DateTime in Auth.js schema (null = not verified, Date = verified)
+        emailVerified: userData.emailVerified ? new Date() : null,
         emailVerifiedAt: userData.emailVerified ? new Date() : null,
         isActive: true,
       },
