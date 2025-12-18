@@ -26,10 +26,10 @@ export const dynamic = 'force-dynamic';
 // Cookie configuration
 // Note: secure should be true in production, but temporarily disabled
 // until valid SSL certificate is configured
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const _IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: false, // TODO: Set to IS_PRODUCTION once SSL is properly configured
+  secure: false, // TODO: Set to _IS_PRODUCTION once SSL is properly configured
   sameSite: 'lax' as const,
   path: '/',
 };
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const validPassword = await verifyPassword(data.password, user.passwordHash);
+      const validPassword = await verifyPassword(data.password, user.passwordHash!);
 
       if (!validPassword) {
         // SECURITY: Record failed attempt for brute force protection

@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
             passwordHash: randomPasswordHash,
             displayName: data.reporter.name || 'Anonymous Reporter',
             role: 'BASIC',
-            emailVerified: false,
+            emailVerified: null,
             isActive: true,
           },
         });
