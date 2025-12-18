@@ -7,18 +7,16 @@ import Typesense from 'typesense';
 import { Client as TypesenseClient } from 'typesense';
 
 // Typesense configuration
-const TYPESENSE_HOST = process.env.TYPESENSE_HOST || 'localhost';
+const TYPESENSE_HOST = process.env.TYPESENSE_HOST;
 const TYPESENSE_PORT = parseInt(process.env.TYPESENSE_PORT || '8108');
 const TYPESENSE_PROTOCOL = process.env.TYPESENSE_PROTOCOL || 'http';
 const TYPESENSE_API_KEY = process.env.TYPESENSE_API_KEY;
 
-// Warn about missing Typesense API key
-if (!TYPESENSE_API_KEY) {
-  if (process.env.NODE_ENV === 'production') {
-    console.error('[Typesense] TYPESENSE_API_KEY must be set in production!');
-  } else {
-    console.warn('[Typesense] TYPESENSE_API_KEY not set. Using development fallback.');
-  }
+// Check if Typesense is enabled (TYPESENSE_HOST must be set)
+export const TYPESENSE_ENABLED = Boolean(TYPESENSE_HOST && TYPESENSE_API_KEY);
+
+if (!TYPESENSE_ENABLED) {
+  console.log('[Typesense] DISABLED - using PostgreSQL full-text search instead');
 }
 
 // Collection names
@@ -30,17 +28,22 @@ export const COLLECTIONS = {
 // Initialize Typesense client
 let client: TypesenseClient | null = null;
 
-export function getTypesenseClient(): TypesenseClient {
+export function getTypesenseClient(): TypesenseClient | null {
+  // Return null if Typesense is disabled
+  if (!TYPESENSE_ENABLED) {
+    return null;
+  }
+
   if (!client) {
     client = new Typesense.Client({
       nodes: [
         {
-          host: TYPESENSE_HOST,
+          host: TYPESENSE_HOST!,
           port: TYPESENSE_PORT,
           protocol: TYPESENSE_PROTOCOL,
         },
       ],
-      apiKey: TYPESENSE_API_KEY || 'xyz', // Development fallback
+      apiKey: TYPESENSE_API_KEY!,
       connectionTimeoutSeconds: 10,
     });
   }
