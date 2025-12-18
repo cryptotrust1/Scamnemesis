@@ -9,18 +9,53 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAuth } from '@/lib/middleware/auth';
 import { mediaService } from '@/lib/services/media';
+import { prisma } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 const UpdateMediaSchema = z.object({
-  title: z.string().optional(),
-  altText: z.string().optional(),
-  caption: z.string().optional(),
-  description: z.string().optional(),
+  title: z.string().max(255).optional(),
+  altText: z.string().max(500).optional(),
+  caption: z.string().max(2000).optional(),
+  description: z.string().max(5000).optional(),
 });
 
 interface RouteParams {
   params: Promise<{ id: string }>;
+}
+
+/**
+ * Check if user has permission to access/modify media
+ * Admins can access any media, regular users only their own
+ */
+async function checkMediaOwnership(
+  mediaId: string,
+  userId: string,
+  userScopes: string[]
+): Promise<{ allowed: boolean; media: { uploadedById: string } | null }> {
+  // Admins with wildcard scope can access anything
+  if (userScopes.includes('*') || userScopes.includes('admin:read')) {
+    const media = await prisma.media.findUnique({
+      where: { id: mediaId, deletedAt: null },
+      select: { uploadedById: true },
+    });
+    return { allowed: true, media };
+  }
+
+  // Regular users can only access their own media
+  const media = await prisma.media.findUnique({
+    where: { id: mediaId, deletedAt: null },
+    select: { uploadedById: true },
+  });
+
+  if (!media) {
+    return { allowed: false, media: null };
+  }
+
+  return {
+    allowed: media.uploadedById === userId,
+    media,
+  };
 }
 
 /**
@@ -32,6 +67,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
   try {
     const { id } = await params;
+
+    // SECURITY: Check ownership before returning media
+    const { allowed, media: ownerCheck } = await checkMediaOwnership(
+      id,
+      auth.userId,
+      auth.scopes
+    );
+
+    if (!ownerCheck) {
+      return NextResponse.json(
+        { error: 'not_found', message: 'Media not found' },
+        { status: 404 }
+      );
+    }
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'forbidden', message: 'You do not have permission to access this media' },
+        { status: 403 }
+      );
+    }
+
     const media = await mediaService.getMedia(id);
 
     if (!media) {
@@ -60,16 +117,30 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   try {
     const { id } = await params;
-    const body = await request.json();
-    const data = UpdateMediaSchema.parse(body);
 
-    const media = await mediaService.getMedia(id);
-    if (!media) {
+    // SECURITY: Check ownership before allowing update
+    const { allowed, media: ownerCheck } = await checkMediaOwnership(
+      id,
+      auth.userId,
+      auth.scopes
+    );
+
+    if (!ownerCheck) {
       return NextResponse.json(
         { error: 'not_found', message: 'Media not found' },
         { status: 404 }
       );
     }
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'forbidden', message: 'You do not have permission to modify this media' },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const data = UpdateMediaSchema.parse(body);
 
     const updated = await mediaService.updateMedia(id, data);
     return NextResponse.json(updated);
@@ -97,12 +168,25 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   try {
     const { id } = await params;
-    const media = await mediaService.getMedia(id);
 
-    if (!media) {
+    // SECURITY: Check ownership before allowing deletion
+    const { allowed, media: ownerCheck } = await checkMediaOwnership(
+      id,
+      auth.userId,
+      auth.scopes
+    );
+
+    if (!ownerCheck) {
       return NextResponse.json(
         { error: 'not_found', message: 'Media not found' },
         { status: 404 }
+      );
+    }
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'forbidden', message: 'You do not have permission to delete this media' },
+        { status: 403 }
       );
     }
 

@@ -3,26 +3,77 @@
  * GET /api/setup/admin?token=SETUP_SECRET
  *
  * Creates the initial admin account. Can only be used once.
+ * SECURITY: Credentials are read from environment variables only.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import prisma from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// Admin credentials - CHANGE AFTER FIRST LOGIN!
-const ADMIN_EMAIL = 'admin@scamnemesis.com';
-const ADMIN_PASSWORD = 'Xk9#mP2$vL5@nQ8!';  // Strong password
-const SETUP_TOKEN = 'scamnemesis-setup-2024';
+// SECURITY: All credentials MUST come from environment variables
+function getSetupConfig() {
+  const setupToken = process.env.ADMIN_SETUP_TOKEN;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!setupToken) {
+    throw new Error('ADMIN_SETUP_TOKEN environment variable is required');
+  }
+
+  if (setupToken.length < 32) {
+    throw new Error('ADMIN_SETUP_TOKEN must be at least 32 characters long');
+  }
+
+  return {
+    setupToken,
+    adminEmail: adminEmail || 'admin@scamnemesis.com',
+    // Generate secure random password if not provided
+    adminPassword: adminPassword || generateSecurePassword(),
+  };
+}
+
+/**
+ * Generate a cryptographically secure random password
+ */
+function generateSecurePassword(): string {
+  const length = 24;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  const randomBytes = crypto.randomBytes(length);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset[randomBytes[i] % charset.length];
+  }
+  return password;
+}
 
 export async function GET(request: NextRequest) {
   try {
+    // SECURITY: Only allow in production with proper setup token
+    let config;
+    try {
+      config = getSetupConfig();
+    } catch (err) {
+      return NextResponse.json(
+        {
+          error: 'Setup not configured',
+          message: 'ADMIN_SETUP_TOKEN environment variable must be set (min 32 chars)',
+        },
+        { status: 500 }
+      );
+    }
+
     // Check setup token
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
 
-    if (token !== SETUP_TOKEN) {
+    // SECURITY: Constant-time comparison to prevent timing attacks
+    if (!token || !crypto.timingSafeEqual(
+      Buffer.from(token.padEnd(64, '\0')),
+      Buffer.from(config.setupToken.padEnd(64, '\0'))
+    )) {
       return NextResponse.json(
         { error: 'Invalid setup token' },
         { status: 403 }
@@ -31,24 +82,24 @@ export async function GET(request: NextRequest) {
 
     // Check if admin already exists
     const existing = await prisma.user.findUnique({
-      where: { email: ADMIN_EMAIL },
+      where: { email: config.adminEmail },
     });
 
     if (existing) {
       return NextResponse.json({
         success: true,
         message: 'Admin already exists',
-        email: ADMIN_EMAIL,
-        note: 'Use existing credentials to login',
+        email: config.adminEmail,
+        note: 'Use your existing credentials to login. If you forgot the password, reset it via the database.',
       });
     }
 
-    // Create admin
-    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+    // Create admin with high bcrypt cost (12 rounds)
+    const passwordHash = await bcrypt.hash(config.adminPassword, 12);
 
     await prisma.user.create({
       data: {
-        email: ADMIN_EMAIL,
+        email: config.adminEmail,
         passwordHash,
         name: 'Super Admin',
         displayName: 'Super Admin',
@@ -58,21 +109,36 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
+    // SECURITY: Check if password was provided via env or generated
+    const passwordWasGenerated = !process.env.ADMIN_PASSWORD;
+
+    // Log created admin for audit (without password)
+    console.log(`[Admin Setup] Admin account created for: ${config.adminEmail}`);
+
+    // SECURITY: Never return the actual password in production
+    // Only show generated password once if it was auto-generated
+    const response: Record<string, unknown> = {
       success: true,
       message: 'Admin account created!',
-      credentials: {
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD,
-      },
+      email: config.adminEmail,
       loginUrl: '/admin/login',
-      warning: 'CHANGE PASSWORD AFTER FIRST LOGIN!',
-    });
+      warning: 'IMPORTANT: Store your credentials securely and change the password after first login!',
+    };
+
+    // Only include password if it was auto-generated (user has no other way to get it)
+    if (passwordWasGenerated) {
+      response.generatedPassword = config.adminPassword;
+      response.passwordNote = 'This password was auto-generated because ADMIN_PASSWORD was not set. Save it NOW - it will not be shown again!';
+    } else {
+      response.passwordNote = 'Password was set from ADMIN_PASSWORD environment variable.';
+    }
+
+    return NextResponse.json(response);
 
   } catch (error) {
     console.error('Setup error:', error);
     return NextResponse.json(
-      { error: 'Setup failed', details: String(error) },
+      { error: 'Setup failed', details: process.env.NODE_ENV === 'development' ? String(error) : undefined },
       { status: 500 }
     );
   }

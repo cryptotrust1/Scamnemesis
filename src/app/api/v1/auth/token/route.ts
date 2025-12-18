@@ -15,6 +15,11 @@ import {
   getScopesForRole,
 } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import {
+  isAccountLocked,
+  recordFailedAttempt,
+  clearFailedAttempts,
+} from '@/lib/services/brute-force';
 
 export const dynamic = 'force-dynamic';
 
@@ -107,6 +112,28 @@ export async function POST(request: NextRequest) {
     const data = parsed.data;
 
     if (data.grant_type === 'password') {
+      // SECURITY: Check if account is locked due to brute force
+      const lockStatus = await isAccountLocked(data.email);
+      if (lockStatus.locked) {
+        const retryAfter = lockStatus.lockedUntil
+          ? Math.ceil((lockStatus.lockedUntil.getTime() - Date.now()) / 1000)
+          : 900;
+
+        return NextResponse.json(
+          {
+            error: 'account_locked',
+            message: 'Account temporarily locked due to too many failed login attempts.',
+            locked_until: lockStatus.lockedUntil?.toISOString(),
+          },
+          {
+            status: 423,
+            headers: {
+              'Retry-After': retryAfter.toString(),
+            },
+          }
+        );
+      }
+
       // Password authentication
       const user = await prisma.user.findUnique({
         where: { email: data.email },
@@ -120,6 +147,9 @@ export async function POST(request: NextRequest) {
       });
 
       if (!user || !user.isActive) {
+        // SECURITY: Record failed attempt for brute force protection
+        const attemptResult = await recordFailedAttempt(data.email, ip);
+
         // Log failed login attempt
         await prisma.auditLog.create({
           data: {
@@ -130,6 +160,7 @@ export async function POST(request: NextRequest) {
             changes: {
               reason: !user ? 'user_not_found' : 'user_inactive',
               email: data.email,
+              remainingAttempts: attemptResult.remainingAttempts,
             },
             ipAddress: ip,
           },
@@ -139,6 +170,7 @@ export async function POST(request: NextRequest) {
           {
             error: 'unauthorized',
             message: 'Invalid email or password',
+            remaining_attempts: attemptResult.remainingAttempts,
           },
           { status: 401 }
         );
@@ -147,6 +179,9 @@ export async function POST(request: NextRequest) {
       const validPassword = await verifyPassword(data.password, user.passwordHash);
 
       if (!validPassword) {
+        // SECURITY: Record failed attempt for brute force protection
+        const attemptResult = await recordFailedAttempt(data.email, ip);
+
         // Log failed login attempt
         await prisma.auditLog.create({
           data: {
@@ -157,19 +192,32 @@ export async function POST(request: NextRequest) {
             changes: {
               reason: 'invalid_password',
               email: data.email,
+              remainingAttempts: attemptResult.remainingAttempts,
             },
             ipAddress: ip,
           },
         });
 
-        return NextResponse.json(
-          {
-            error: 'unauthorized',
-            message: 'Invalid email or password',
-          },
-          { status: 401 }
-        );
+        const response: Record<string, unknown> = {
+          error: 'unauthorized',
+          message: 'Invalid email or password',
+          remaining_attempts: attemptResult.remainingAttempts,
+        };
+
+        // Warn user if close to lockout
+        if (attemptResult.remainingAttempts <= 2 && attemptResult.remainingAttempts > 0) {
+          response.warning = `Warning: ${attemptResult.remainingAttempts} attempt(s) remaining before lockout.`;
+        }
+
+        if (attemptResult.locked) {
+          response.locked_until = attemptResult.lockedUntil?.toISOString();
+        }
+
+        return NextResponse.json(response, { status: 401 });
       }
+
+      // SECURITY: Clear failed attempts on successful login
+      await clearFailedAttempts(data.email);
 
       // Get scopes for role
       const scopes = getScopesForRole(user.role);

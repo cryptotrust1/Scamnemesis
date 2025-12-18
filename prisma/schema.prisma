@@ -709,6 +709,7 @@ enum MediaStatus {
   READY
   FAILED
   DELETED
+  QUARANTINED
 }
 
 model Media {
