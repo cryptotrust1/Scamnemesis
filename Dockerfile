@@ -105,7 +105,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Copy Prisma CLI and dependencies for migrations
 # Note: Standalone mode has minimal node_modules, so we need to add Prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+# With pnpm, the generated client is inside @prisma/client/.prisma/client/
+# We copy the entire @prisma directory which includes the generated client
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 
