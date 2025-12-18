@@ -439,7 +439,7 @@ services:
   # MINIO - S3 kompatibilne ulozisko
   # ===========================================================================
   minio:
-    image: minio/minio:RELEASE.2024-11-17T01-53-34Z
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
     container_name: scamnemesis-minio
     restart: always
     logging: *default-logging
