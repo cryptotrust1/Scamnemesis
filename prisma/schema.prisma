@@ -124,7 +124,7 @@ enum EnrichmentEventType {
 // ==================== USERS & AUTH ====================
 
 model User {
-  id              String    @id @default(cuid())
+  id              String    @id @default(uuid())
   email           String    @unique
   passwordHash    String    @map("password_hash")
   name            String?
@@ -161,7 +161,7 @@ model User {
 }
 
 model ApiKey {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
   userId      String    @map("user_id")
   key         String    @unique
   name        String
@@ -180,7 +180,7 @@ model ApiKey {
 }
 
 model RefreshToken {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String   @map("user_id")
   token     String   @unique
   expiresAt DateTime @map("expires_at")
@@ -196,10 +196,10 @@ model RefreshToken {
 // ==================== REPORTS ====================
 
 model Report {
-  id              String       @id @default(cuid())
+  id              String       @id @default(uuid())
   status          ReportStatus @default(PENDING)
   severity        Severity?
-  publicId        String       @unique @default(cuid()) @map("public_id")
+  publicId        String       @unique @default(uuid()) @map("public_id")
 
   // Incident
   fraudType             FraudType    @map("fraud_type")
@@ -283,7 +283,7 @@ model Report {
 }
 
 model Perpetrator {
-  id                  String          @id @default(cuid())
+  id                  String          @id @default(uuid())
   reportId            String          @map("report_id")
   perpetratorType     PerpetratorType @default(INDIVIDUAL) @map("perpetrator_type")
 
@@ -322,7 +322,7 @@ model Perpetrator {
 }
 
 model DigitalFootprint {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   reportId String @unique @map("report_id")
 
   telegram            String?
@@ -348,7 +348,7 @@ model DigitalFootprint {
 }
 
 model FinancialInfo {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   reportId String @unique @map("report_id")
 
   iban                String?
@@ -373,7 +373,7 @@ model FinancialInfo {
 }
 
 model CryptoInfo {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   reportId String @unique @map("report_id")
 
   walletAddress      String?     @map("wallet_address")
@@ -390,7 +390,7 @@ model CryptoInfo {
 }
 
 model CompanyInfo {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   reportId String @unique @map("report_id")
 
   name            String?
@@ -407,7 +407,7 @@ model CompanyInfo {
 }
 
 model VehicleInfo {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   reportId String @unique @map("report_id")
 
   make            String?
@@ -425,7 +425,7 @@ model VehicleInfo {
 }
 
 model Evidence {
-  id          String       @id @default(cuid())
+  id          String       @id @default(uuid())
   reportId    String       @map("report_id")
   type        EvidenceType
   fileKey     String?      @map("file_key")
@@ -458,7 +458,7 @@ model Evidence {
 }
 
 model FaceData {
-  id         String @id @default(cuid())
+  id         String @id @default(uuid())
   evidenceId String @map("evidence_id")
 
   boundingBox Json      @map("bounding_box")
@@ -475,7 +475,7 @@ model FaceData {
 // ==================== COMMENTS ====================
 
 model Comment {
-  id              String        @id @default(cuid())
+  id              String        @id @default(uuid())
   reportId        String        @map("report_id")
   userId          String        @map("user_id")
   content         String        @db.Text
@@ -509,7 +509,7 @@ model Comment {
 // ==================== DUPLICATE DETECTION ====================
 
 model DuplicateCluster {
-  id               String                 @id @default(cuid())
+  id               String                 @id @default(uuid())
   primaryReportId  String?                @map("primary_report_id")
   status           DuplicateClusterStatus @default(PENDING)
   confidence       Float                  @default(0)
@@ -544,7 +544,7 @@ model DuplicateClusterReport {
 // ==================== ENRICHMENT ====================
 
 model Enrichment {
-  id            String              @id @default(cuid())
+  id            String              @id @default(uuid())
   perpetratorId String?             @map("perpetrator_id")
   eventType     EnrichmentEventType @map("event_type")
   sourceId      String              @map("source_id")
@@ -565,7 +565,7 @@ model Enrichment {
 // ==================== AUDIT LOG ====================
 
 model AuditLog {
-  id         String   @id @default(cuid())
+  id         String   @id @default(uuid())
   userId     String?  @map("user_id")
   action     String
   entityType String   @map("entity_type")
@@ -589,7 +589,7 @@ model AuditLog {
 // ==================== VIEW TRACKING ====================
 
 model ReportView {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   reportId  String   @map("report_id")
   ipHash    String   @map("ip_hash")
   userAgent String?  @map("user_agent")
@@ -606,7 +606,7 @@ model ReportView {
 // ==================== SEARCH INDEX ====================
 
 model SearchIndex {
-  id            String   @id @default(cuid())
+  id            String   @id @default(uuid())
   reportId      String   @unique @map("report_id")
   searchText    String   @map("search_text") @db.Text
   lastIndexedAt DateTime @default(now()) @map("last_indexed_at")
@@ -617,7 +617,7 @@ model SearchIndex {
 // ==================== RATE LIMITING ====================
 
 model RateLimit {
-  id         String   @id @default(cuid())
+  id         String   @id @default(uuid())
   identifier String   @unique
   count      Int      @default(0)
   windowStart DateTime @map("window_start")
@@ -645,7 +645,7 @@ enum MediaStatus {
 }
 
 model Media {
-  id          String      @id @default(cuid())
+  id          String      @id @default(uuid())
   type        MediaType   @default(IMAGE)
   status      MediaStatus @default(PROCESSING)
 
@@ -706,7 +706,7 @@ model Media {
 // ==================== CMS - SEO ====================
 
 model SeoMeta {
-  id              String    @id @default(cuid())
+  id              String    @id @default(uuid())
 
   // Target entity (polymorphic)
   entityType      String    @map("entity_type")  // 'page', 'report', 'home'
@@ -746,7 +746,7 @@ model SeoMeta {
 }
 
 model SeoRedirect {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
 
   fromPath    String    @unique @map("from_path")
   toPath      String    @map("to_path")
@@ -773,7 +773,7 @@ enum PageStatus {
 }
 
 model Page {
-  id          String      @id @default(cuid())
+  id          String      @id @default(uuid())
 
   // URL and identification
   slug        String      @unique
@@ -826,7 +826,7 @@ model Page {
 }
 
 model PageRevision {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
   pageId      String    @map("page_id")
 
   // Snapshot
@@ -852,7 +852,7 @@ model PageRevision {
 }
 
 model PageMedia {
-  id        String @id @default(cuid())
+  id        String @id @default(uuid())
   pageId    String @map("page_id")
   mediaId   String @map("media_id")
   sortOrder Int    @default(0) @map("sort_order")
@@ -867,7 +867,7 @@ model PageMedia {
 // ==================== CMS - SYSTEM SETTINGS ====================
 
 model SystemSetting {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
 
   key         String    @unique
   value       Json
