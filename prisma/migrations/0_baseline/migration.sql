@@ -246,6 +246,13 @@ CREATE TABLE IF NOT EXISTS "perpetrators" (
     CONSTRAINT "perpetrators_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "perpetrators_report_id_fkey" FOREIGN KEY ("report_id") REFERENCES "reports"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+-- Add vector column for name embeddings (optional - only if pgvector is available)
+DO $$
+BEGIN
+    ALTER TABLE "perpetrators" ADD COLUMN IF NOT EXISTS "name_embedding" vector(384);
+EXCEPTION WHEN undefined_object THEN
+    RAISE NOTICE 'pgvector not available, skipping name_embedding column';
+END $$;
 CREATE INDEX IF NOT EXISTS "perpetrators_report_id_idx" ON "perpetrators"("report_id");
 CREATE INDEX IF NOT EXISTS "perpetrators_phone_normalized_idx" ON "perpetrators"("phone_normalized");
 CREATE INDEX IF NOT EXISTS "perpetrators_email_normalized_idx" ON "perpetrators"("email_normalized");
@@ -385,6 +392,13 @@ CREATE TABLE IF NOT EXISTS "face_data" (
     CONSTRAINT "face_data_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "face_data_evidence_id_fkey" FOREIGN KEY ("evidence_id") REFERENCES "evidence"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+-- Add vector column for face embeddings (optional - only if pgvector is available)
+DO $$
+BEGIN
+    ALTER TABLE "face_data" ADD COLUMN IF NOT EXISTS "embedding" vector(512);
+EXCEPTION WHEN undefined_object THEN
+    RAISE NOTICE 'pgvector not available, skipping face embedding column';
+END $$;
 CREATE INDEX IF NOT EXISTS "face_data_evidence_id_idx" ON "face_data"("evidence_id");
 
 -- Comments

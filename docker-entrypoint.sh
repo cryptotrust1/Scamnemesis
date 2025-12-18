@@ -1,15 +1,18 @@
 #!/bin/sh
 # =============================================================================
-# Scamnemesis Docker Entrypoint
+# Scamnemesis Docker Entrypoint - Production Ready
 # =============================================================================
 # This script:
 # 1. Constructs DATABASE_URL with URL-encoded password
-# 2. Waits for database to be ready
+# 2. Waits for database to be ready (using curl to postgres)
 # 3. Runs Prisma migrations automatically
 # 4. Starts the application
 # =============================================================================
 
 set -e
+
+# Set HOME for Prisma (required for cache directory)
+export HOME=/tmp
 
 # If individual DB components are provided, construct DATABASE_URL with proper encoding
 if [ -n "$POSTGRES_PASSWORD" ] && [ -n "$POSTGRES_USER" ] && [ -n "$POSTGRES_HOST" ]; then
@@ -33,7 +36,7 @@ echo "[entrypoint] NODE_ENV: ${NODE_ENV:-development}"
 echo "[entrypoint] PORT: ${PORT:-3000}"
 
 # =============================================================================
-# Wait for database to be ready
+# Wait for database to be ready (simple TCP check)
 # =============================================================================
 wait_for_db() {
     echo "[entrypoint] Waiting for database to be ready..."
@@ -42,15 +45,19 @@ wait_for_db() {
     attempt=0
 
     while [ $attempt -lt $max_attempts ]; do
-        # Try to connect to database using Node.js
+        # Simple check: try to connect to postgres port using Node.js net module
         if node -e "
-            const { Client } = require('pg');
-            const client = new Client({ connectionString: process.env.DATABASE_URL });
-            client.connect()
-                .then(() => { client.end(); process.exit(0); })
-                .catch(() => process.exit(1));
+            const net = require('net');
+            const socket = new net.Socket();
+            socket.setTimeout(2000);
+            socket.on('connect', () => { socket.destroy(); process.exit(0); });
+            socket.on('error', () => process.exit(1));
+            socket.on('timeout', () => { socket.destroy(); process.exit(1); });
+            socket.connect(${POSTGRES_PORT:-5432}, '${POSTGRES_HOST:-postgres}');
         " 2>/dev/null; then
-            echo "[entrypoint] Database is ready!"
+            echo "[entrypoint] Database port is accessible!"
+            # Give PostgreSQL a moment to fully initialize
+            sleep 2
             return 0
         fi
 
@@ -69,30 +76,40 @@ wait_for_db() {
 run_migrations() {
     echo "[entrypoint] Running database migrations..."
 
-    # Check if prisma binary exists
+    # Find Prisma CLI
+    PRISMA_BIN=""
     if [ -f "/app/node_modules/.bin/prisma" ]; then
         PRISMA_BIN="/app/node_modules/.bin/prisma"
-    elif command -v npx >/dev/null 2>&1; then
-        PRISMA_BIN="npx prisma"
-    else
-        echo "[entrypoint] WARNING: Prisma CLI not found, skipping migrations"
-        return 0
+    elif [ -f "/app/node_modules/prisma/build/index.js" ]; then
+        PRISMA_BIN="node /app/node_modules/prisma/build/index.js"
     fi
 
-    # Try prisma migrate deploy first (production-safe)
-    if $PRISMA_BIN migrate deploy 2>/dev/null; then
+    if [ -z "$PRISMA_BIN" ]; then
+        echo "[entrypoint] WARNING: Prisma CLI not found, using db push via npx..."
+        # Fallback: Use prisma db push which syncs schema without migration history
+        if npx --yes prisma db push --skip-generate 2>&1; then
+            echo "[entrypoint] Schema synchronized with db push!"
+            return 0
+        fi
+        echo "[entrypoint] WARNING: Could not run migrations"
+        return 1
+    fi
+
+    # Try prisma migrate deploy first (production-safe, uses migration history)
+    echo "[entrypoint] Trying prisma migrate deploy..."
+    if $PRISMA_BIN migrate deploy 2>&1; then
         echo "[entrypoint] Prisma migrations applied successfully!"
         return 0
     fi
 
-    # Fallback: Use db push if migrate deploy fails (for fresh setups)
+    # Fallback: Use db push if migrate deploy fails (for fresh setups or missing migration history)
     echo "[entrypoint] migrate deploy failed, trying db push..."
     if $PRISMA_BIN db push --skip-generate 2>&1; then
         echo "[entrypoint] Database schema synchronized with db push!"
         return 0
     fi
 
-    echo "[entrypoint] WARNING: Migration commands failed, application may not work correctly"
+    echo "[entrypoint] WARNING: Migration commands failed"
     return 1
 }
 
@@ -100,14 +117,18 @@ run_migrations() {
 # Main execution
 # =============================================================================
 
-# Only run migrations if DATABASE_URL is set and we're in production
+# Only run migrations if DATABASE_URL is set
 if [ -n "$DATABASE_URL" ]; then
     # Wait for database
-    wait_for_db || true
-
-    # Run migrations (don't fail startup if migrations fail)
-    run_migrations || echo "[entrypoint] Continuing despite migration issues..."
+    if wait_for_db; then
+        # Run migrations (don't fail startup if migrations fail - app might recover)
+        run_migrations || echo "[entrypoint] Continuing despite migration issues..."
+    else
+        echo "[entrypoint] Skipping migrations - database not accessible"
+    fi
 fi
+
+echo "[entrypoint] Starting application..."
 
 # Execute the main command (start the app)
 exec "$@"

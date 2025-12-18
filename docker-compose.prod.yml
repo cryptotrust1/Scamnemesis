@@ -40,19 +40,24 @@ services:
       - scamnemesis
 
   # ===========================================================================
-  # DATABASE MIGRATIONS (runs before app starts)
+  # DATABASE MIGRATIONS (Prisma - runs before app starts)
   # ===========================================================================
+  # NOTE: This service ensures database schema is ready before app starts.
+  # The app entrypoint also runs migrations as a safety net.
   migrations:
-    image: postgres:16-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
     container_name: scamnemesis-migrations
     environment:
-      - PGHOST=postgres
-      - PGPORT=5432
-      - PGUSER=${POSTGRES_USER:-postgres}
-      - PGPASSWORD=${POSTGRES_PASSWORD}
-      - PGDATABASE=${POSTGRES_DB:-scamnemesis}
-    volumes:
-      - ./migrations:/migrations:ro
+      - NODE_ENV=production
+      - HOME=/tmp
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-scamnemesis}
     depends_on:
       postgres:
         condition: service_healthy
@@ -61,14 +66,26 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        echo "=== Running database migrations ==="
-        for file in /migrations/*.sql; do
-          if [ -f "$$file" ]; then
-            echo "Executing: $$file"
-            psql -f "$$file" || echo "Warning: $$file may have already been applied"
-          fi
-        done
-        echo "=== Migrations completed! ==="
+        echo "=== Running Prisma migrations ==="
+        # Construct DATABASE_URL with encoded password
+        ENCODED_PASSWORD=$$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$$POSTGRES_PASSWORD")
+        export DATABASE_URL="postgresql://$$POSTGRES_USER:$$ENCODED_PASSWORD@postgres:5432/$$POSTGRES_DB"
+
+        # Try migrate deploy first (production-safe)
+        if npx --yes prisma migrate deploy 2>&1; then
+          echo "=== Prisma migrations applied successfully! ==="
+          exit 0
+        fi
+
+        # Fallback to db push for fresh installs
+        echo "migrate deploy failed, trying db push..."
+        if npx --yes prisma db push --skip-generate 2>&1; then
+          echo "=== Database schema synchronized! ==="
+          exit 0
+        fi
+
+        echo "WARNING: Migrations may have failed, app will retry on startup"
+        exit 0
     networks:
       - scamnemesis
     restart: "no"

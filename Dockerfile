@@ -100,8 +100,19 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy public assets
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Copy prisma schema for potential migrations
+# Copy prisma schema and migrations
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# Copy Prisma CLI and dependencies for migrations
+# Note: Standalone mode has minimal node_modules, so we need to add Prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+
+# Create bin directory and prisma symlink for CLI access
+RUN mkdir -p /app/node_modules/.bin && \
+    ln -sf /app/node_modules/prisma/build/index.js /app/node_modules/.bin/prisma && \
+    chmod +x /app/node_modules/.bin/prisma
 
 # Copy entrypoint script
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
