@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -92,29 +92,29 @@ export default function CaseUpdatePage() {
   const [submitting, setSubmitting] = useState(false);
   const [showUpdates, setShowUpdates] = useState(true);
 
-  useEffect(() => {
-    const fetchCaseData = async () => {
-      try {
-        const response = await fetch(`/api/v1/case-update/${token}`);
-        const data = await response.json();
+  const fetchCaseData = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/v1/case-update/${token}`);
+      const data = await response.json();
 
-        if (!response.ok) {
-          setError(data.message || 'Nepodarilo sa načítať stav prípadu');
-          return;
-        }
-
-        setCaseData(data);
-      } catch {
-        setError('Nepodarilo sa pripojiť k serveru');
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        setError(data.message || 'Nepodarilo sa načítať stav prípadu');
+        return;
       }
-    };
 
+      setCaseData(data);
+    } catch {
+      setError('Nepodarilo sa pripojiť k serveru');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
     if (token) {
       fetchCaseData();
     }
-  }, [token]);
+  }, [token, fetchCaseData]);
 
   const handleSubmitUpdate = async () => {
     if (!updateMessage.trim() || updateMessage.length < 10) {
