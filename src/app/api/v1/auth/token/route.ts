@@ -280,7 +280,8 @@ export async function POST(request: NextRequest) {
       return response;
     } else {
       // API key authentication
-      const apiKey = await prisma.apiKey.findUnique({
+      // Note: Using findFirst instead of findUnique because isActive is not part of unique constraint
+      const apiKey = await prisma.apiKey.findFirst({
         where: { key: data.api_key, isActive: true },
         include: {
           user: {
