@@ -168,7 +168,7 @@ export async function hashPassword(password: string): Promise<string> {
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 100000,
+      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
       hash: 'SHA-256',
     },
     key,
@@ -208,7 +208,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 100000,
+      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
       hash: 'SHA-256',
     },
     key,

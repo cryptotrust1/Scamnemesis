@@ -8,6 +8,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { prisma } from '@/lib/db';
 import { MediaType, MediaStatus, Prisma } from '@prisma/client';
 import crypto from 'crypto';
+import { clamavService, ScanResult } from './clamav';
 
 // S3/MinIO Configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:9000';
@@ -45,12 +46,6 @@ function getS3Client(): S3Client {
   }
   return _s3Client;
 }
-
-// ClamAV configuration (reserved for future virus scanning feature)
-const _CLAMAV_HOST = process.env.CLAMAV_HOST || 'localhost';
-const _CLAMAV_PORT = parseInt(process.env.CLAMAV_PORT || '3310');
-void _CLAMAV_HOST;
-void _CLAMAV_PORT;
 
 // Allowed file types
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -102,6 +97,7 @@ export interface MediaItem {
   height: number | null;
   title: string | null;
   altText: string | null;
+  scanStatus: string | null;
   createdAt: Date;
 }
 
@@ -181,6 +177,53 @@ function generateThumbnailKey(fileKey: string): string {
 }
 
 /**
+ * Scan file for viruses using ClamAV
+ */
+async function scanFileForViruses(mediaId: string, fileUrl: string): Promise<ScanResult> {
+  console.log(`[Media] Starting virus scan for media ${mediaId}`);
+
+  // Check if ClamAV is available
+  const isAvailable = await clamavService.isClamAVAvailable();
+  if (!isAvailable) {
+    console.warn('[Media] ClamAV is not available, skipping virus scan');
+    return {
+      isClean: true, // Assume clean if scanner is unavailable
+      error: 'Scanner unavailable',
+      scannedAt: new Date(),
+    };
+  }
+
+  // Scan the file
+  const result = await clamavService.scanFileFromUrl(fileUrl);
+
+  // Update scan status in database
+  await prisma.media.update({
+    where: { id: mediaId },
+    data: {
+      scanStatus: result.isClean ? 'clean' : 'infected',
+      scanResult: result.virusName || result.error || null,
+      scannedAt: result.scannedAt,
+    },
+  });
+
+  if (!result.isClean) {
+    console.error(`[Media] Virus detected in media ${mediaId}: ${result.virusName || result.error}`);
+
+    // Mark as quarantined and don't serve to users
+    await prisma.media.update({
+      where: { id: mediaId },
+      data: {
+        status: 'QUARANTINED',
+      },
+    });
+  } else {
+    console.log(`[Media] Virus scan clean for media ${mediaId}`);
+  }
+
+  return result;
+}
+
+/**
  * Create presigned upload URL
  */
 export async function createPresignedUpload(options: UploadOptions): Promise<PresignedUploadResult> {
@@ -217,6 +260,7 @@ export async function createPresignedUpload(options: UploadOptions): Promise<Pre
       caption,
       description,
       uploadedById: userId,
+      scanStatus: 'pending',
     },
   });
 
@@ -263,23 +307,33 @@ export async function confirmUpload(mediaId: string, fileHash?: string): Promise
     const url = `${S3_ENDPOINT}/${S3_BUCKET}/${media.fileKey}`;
     const thumbnailUrl = media.thumbnailKey ? `${S3_ENDPOINT}/${S3_BUCKET}/${media.thumbnailKey}` : null;
 
-    // Update media record
+    // Update media record to scanning status
+    await prisma.media.update({
+      where: { id: mediaId },
+      data: {
+        url,
+        thumbnailUrl,
+        hash: fileHash,
+        scanStatus: 'scanning',
+      },
+    });
+
+    // Perform virus scan (async but we wait for result)
+    const scanResult = await scanFileForViruses(mediaId, url);
+
+    // If infected, throw error
+    if (!scanResult.isClean && scanResult.virusName) {
+      throw new Error(`File rejected: virus detected (${scanResult.virusName})`);
+    }
+
+    // Update to READY status if scan passed
     const updatedMedia = await prisma.media.update({
       where: { id: mediaId },
       data: {
         status: 'READY',
-        url,
-        thumbnailUrl,
-        hash: fileHash,
-        scanStatus: 'pending',
+        scanStatus: 'clean',
       },
     });
-
-    // Queue background jobs for:
-    // 1. Virus scanning
-    // 2. Thumbnail generation (for images)
-    // 3. Image dimension extraction
-    // These would be handled by BullMQ workers
 
     return {
       id: updatedMedia.id,
@@ -295,6 +349,7 @@ export async function confirmUpload(mediaId: string, fileHash?: string): Promise
       height: updatedMedia.height,
       title: updatedMedia.title,
       altText: updatedMedia.altText,
+      scanStatus: updatedMedia.scanStatus,
       createdAt: updatedMedia.createdAt,
     };
   } catch (error) {
@@ -308,14 +363,29 @@ export async function confirmUpload(mediaId: string, fileHash?: string): Promise
 }
 
 /**
- * Get media by ID
+ * Get media by ID with security check
  */
-export async function getMedia(mediaId: string): Promise<MediaItem | null> {
+export async function getMedia(mediaId: string, requireCleanScan = true): Promise<MediaItem | null> {
   const media = await prisma.media.findUnique({
     where: { id: mediaId, deletedAt: null },
   });
 
   if (!media) return null;
+
+  // SECURITY: Don't serve quarantined files
+  if (media.status === 'QUARANTINED') {
+    console.warn(`[Media] Attempted to access quarantined media: ${mediaId}`);
+    return null;
+  }
+
+  // SECURITY: Optionally require clean scan status
+  if (requireCleanScan && media.scanStatus !== 'clean' && media.scanStatus !== null) {
+    // Allow files with null scanStatus (legacy) or clean status
+    if (media.scanStatus === 'infected') {
+      console.warn(`[Media] Attempted to access infected media: ${mediaId}`);
+      return null;
+    }
+  }
 
   return {
     id: media.id,
@@ -331,6 +401,7 @@ export async function getMedia(mediaId: string): Promise<MediaItem | null> {
     height: media.height,
     title: media.title,
     altText: media.altText,
+    scanStatus: media.scanStatus,
     createdAt: media.createdAt,
   };
 }
@@ -351,6 +422,8 @@ export async function listMedia(options: {
 
   const where: Prisma.MediaWhereInput = {
     deletedAt: null,
+    // SECURITY: Never list quarantined files
+    status: { not: 'QUARANTINED' },
     ...(type && { type }),
     ...(status && { status }),
     ...(uploadedById && { uploadedById }),
@@ -388,6 +461,7 @@ export async function listMedia(options: {
       height: media.height,
       title: media.title,
       altText: media.altText,
+      scanStatus: media.scanStatus,
       createdAt: media.createdAt,
     })),
     total,
@@ -432,6 +506,7 @@ export async function updateMedia(
     height: media.height,
     title: media.title,
     altText: media.altText,
+    scanStatus: media.scanStatus,
     createdAt: media.createdAt,
   };
 }
@@ -485,7 +560,7 @@ export async function permanentlyDeleteMedia(mediaId: string): Promise<void> {
 }
 
 /**
- * Generate presigned download URL
+ * Generate presigned download URL with security check
  */
 export async function getDownloadUrl(mediaId: string): Promise<string> {
   const media = await prisma.media.findUnique({
@@ -494,6 +569,11 @@ export async function getDownloadUrl(mediaId: string): Promise<string> {
 
   if (!media) {
     throw new Error('Media not found');
+  }
+
+  // SECURITY: Don't allow download of quarantined or infected files
+  if (media.status === 'QUARANTINED' || media.scanStatus === 'infected') {
+    throw new Error('This file has been quarantined due to security concerns');
   }
 
   const command = new GetObjectCommand({
@@ -529,8 +609,24 @@ export async function findDuplicateByHash(hash: string): Promise<MediaItem | nul
     height: media.height,
     title: media.title,
     altText: media.altText,
+    scanStatus: media.scanStatus,
     createdAt: media.createdAt,
   };
+}
+
+/**
+ * Re-scan a media file (for admin use)
+ */
+export async function rescanMedia(mediaId: string): Promise<ScanResult> {
+  const media = await prisma.media.findUnique({
+    where: { id: mediaId },
+  });
+
+  if (!media || !media.url) {
+    throw new Error('Media not found or has no URL');
+  }
+
+  return scanFileForViruses(mediaId, media.url);
 }
 
 export const mediaService = {
@@ -543,6 +639,7 @@ export const mediaService = {
   permanentlyDeleteMedia,
   getDownloadUrl,
   findDuplicateByHash,
+  rescanMedia,
   validateFileType,
   validateFileSize,
   validateMagicBytes,

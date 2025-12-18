@@ -9,6 +9,14 @@
 #   3. Pockaj 5-10 minut na inicializaciu
 # =============================================================================
 
+# Default logging configuration to prevent disk fill
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "5"
+    compress: "true"
+
 services:
   # ===========================================================================
   # TRAEFIK - Reverse Proxy + Automaticke SSL certifikaty
@@ -17,6 +25,7 @@ services:
     image: traefik:latest
     container_name: scamnemesis-traefik
     restart: always
+    logging: *default-logging
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -38,6 +47,12 @@ services:
       - traefik_certs:/letsencrypt
     networks:
       - scamnemesis
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
 
   # ===========================================================================
   # DATABASE MIGRATIONS (Prisma - runs before app starts)
@@ -50,6 +65,7 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: scamnemesis-migrations
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - HOME=/tmp
@@ -103,6 +119,7 @@ services:
       target: production
     container_name: scamnemesis-app
     restart: always
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -127,9 +144,14 @@ services:
       - TYPESENSE_PROTOCOL=http
       - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-changeme}
       - ML_SERVICE_URL=http://ml-service:8000
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
       - NEXT_PUBLIC_API_URL=https://${DOMAIN:-localhost}
       - NEXT_PUBLIC_DOMAIN=${DOMAIN:-localhost}
       - NEXT_PUBLIC_SITE_URL=https://${DOMAIN:-localhost}
+      # Admin setup (generate secure values!)
+      - ADMIN_SETUP_TOKEN=${ADMIN_SETUP_TOKEN}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@scamnemesis.com}
     depends_on:
       postgres:
         condition: service_healthy
@@ -176,6 +198,7 @@ services:
       start_period: 90s
     networks:
       - scamnemesis
+    stop_grace_period: 30s
     deploy:
       resources:
         limits:
@@ -189,6 +212,7 @@ services:
     image: pgvector/pgvector:pg16
     container_name: scamnemesis-postgres
     restart: unless-stopped
+    logging: *default-logging
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-scamnemesis}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -203,6 +227,7 @@ services:
       retries: 5
     networks:
       - scamnemesis
+    stop_grace_period: 60s
     deploy:
       resources:
         limits:
@@ -219,6 +244,7 @@ services:
     image: pgvector/pgvector:pg16
     container_name: scamnemesis-password-sync
     user: "999:999"  # postgres user UID:GID in Debian-based pgvector image (matches postgres service)
+    logging: *default-logging
     environment:
       - PGUSER=${POSTGRES_USER:-postgres}
       - PGDATABASE=${POSTGRES_DB:-scamnemesis}
@@ -248,6 +274,7 @@ services:
     image: redis:7-alpine
     container_name: scamnemesis-redis
     restart: unless-stopped
+    logging: *default-logging
     command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru --requirepass ${REDIS_PASSWORD:-scamnemesis_redis_2024}
     volumes:
       - redis_data:/data
@@ -258,6 +285,7 @@ services:
       retries: 5
     networks:
       - scamnemesis
+    stop_grace_period: 30s
     deploy:
       resources:
         limits:
@@ -271,6 +299,7 @@ services:
     image: typesense/typesense:0.25.2
     container_name: scamnemesis-typesense
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - TYPESENSE_DATA_DIR=/data
       - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-changeme}
@@ -286,6 +315,7 @@ services:
       start_period: 60s
     networks:
       - scamnemesis
+    stop_grace_period: 30s
     deploy:
       resources:
         limits:
@@ -301,6 +331,7 @@ services:
       dockerfile: Dockerfile
     container_name: scamnemesis-ml
     restart: unless-stopped
+    logging: *default-logging
     environment:
       # Note: ML service needs URL-encoded password if it contains special chars
       # Using internal docker hostname 'postgres' instead of localhost
@@ -323,6 +354,7 @@ services:
       start_period: 60s
     networks:
       - scamnemesis
+    stop_grace_period: 30s
     deploy:
       resources:
         limits:
@@ -336,6 +368,7 @@ services:
     image: clamav/clamav:stable
     container_name: scamnemesis-clamav
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - clamav_data:/var/lib/clamav
     networks:
@@ -346,6 +379,7 @@ services:
       timeout: 30s
       retries: 3
       start_period: 300s
+    stop_grace_period: 30s
     deploy:
       resources:
         limits:
@@ -359,6 +393,7 @@ services:
     image: minio/minio:latest
     container_name: scamnemesis-minio
     restart: always
+    logging: *default-logging
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
@@ -373,10 +408,17 @@ services:
       start_period: 30s
     networks:
       - scamnemesis
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
 
   minio-init:
     image: minio/mc:latest
     container_name: scamnemesis-minio-init
+    logging: *default-logging
     depends_on:
       minio:
         condition: service_healthy
@@ -401,6 +443,7 @@ services:
     image: prom/prometheus:v2.48.0
     container_name: scamnemesis-prometheus
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       app:
         condition: service_healthy
@@ -419,11 +462,18 @@ services:
       start_period: 30s
     networks:
       - scamnemesis
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
   grafana:
     image: grafana/grafana:10.2.0
     container_name: scamnemesis-grafana
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
@@ -433,6 +483,12 @@ services:
       - grafana_data:/var/lib/grafana
     networks:
       - scamnemesis
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
 # ===========================================================================
 # VOLUMES

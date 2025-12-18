@@ -24,8 +24,21 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 # Copy application code
 COPY . .
 
+# SECURITY: Create non-root user for running the application
+# This prevents container escape attacks from gaining root access
+RUN groupadd --gid 1000 appgroup && \
+    useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser && \
+    chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
 # Expose port
 EXPOSE 8000
 
-# Run FastAPI server
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run FastAPI server with graceful shutdown support
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
