@@ -652,7 +652,7 @@ export async function POST(request: NextRequest) {
       {
         error: 'internal_error',
         message: isDev ? errorDetails.message : 'An unexpected error occurred',
-        ...(isDev && { details: errorDetails }),
+        ...(isDev ? { details: errorDetails } : {}),
       },
       { status: 500 }
     );

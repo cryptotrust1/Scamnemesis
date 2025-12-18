@@ -16,8 +16,9 @@ interface BasicInfoStepProps {
 const countries = getCountriesWithPriority();
 const currencies = getCurrenciesWithPriority();
 
-// Static max date to prevent hydration mismatch (recalculated on page refresh)
-const TODAY_DATE = new Date().toISOString().split('T')[0];
+// Use a far-future date to avoid hydration mismatch (new Date() differs server/client)
+// The actual validation of "not future date" should be done on form submit
+const MAX_DATE = '2099-12-31';
 
 export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
   return (
@@ -79,7 +80,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
             type="date"
             value={data.incidentDate || ''}
             onChange={(e) => onChange('incidentDate', e.target.value)}
-            max={TODAY_DATE}
+            max={MAX_DATE}
             className={errors.incidentDate ? 'border-destructive' : ''}
           />
           {errors.incidentDate && (

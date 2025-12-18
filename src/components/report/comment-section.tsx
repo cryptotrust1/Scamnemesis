@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, ThumbsUp, Flag, Send, Loader2 } from 'lucide-react';
 import { Button, Card, Badge } from '@/components/ui';
-import { formatRelativeTime, getInitials } from '@/lib/utils';
+import { getInitials } from '@/lib/utils';
+import { RelativeTime } from '@/components/ui/relative-time';
 import { toast } from 'sonner';
 
 interface Comment {
@@ -219,7 +220,7 @@ export function CommentSection({ reportId }: CommentSectionProps) {
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {formatRelativeTime(comment.createdAt)}
+                        <RelativeTime date={comment.createdAt} />
                       </div>
                     </div>
                   </div>
