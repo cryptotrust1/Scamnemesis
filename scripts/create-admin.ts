@@ -6,7 +6,7 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -17,6 +17,40 @@ const ADMIN_EMAIL = 'admin@scamnemesis.com';
 const ADMIN_PASSWORD = 'Admin123!@#';  // Change this!
 const ADMIN_NAME = 'Super Admin';
 // ========================================
+
+/**
+ * Hash password using PBKDF2 (must match verifyPassword in src/lib/auth/jwt.ts)
+ */
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    data,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 310000,
+      hash: 'SHA-256',
+    },
+    key,
+    256
+  );
+
+  const hashArray = new Uint8Array(derivedBits);
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
+  const hashHex = Array.from(hashArray).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  return `${saltHex}:${hashHex}`;
+}
 
 async function createAdmin() {
   console.log('🔐 Creating admin account...\n');
@@ -42,8 +76,8 @@ async function createAdmin() {
       return;
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+    // Hash password using PBKDF2 (matches verifyPassword in jwt.ts)
+    const passwordHash = await hashPassword(ADMIN_PASSWORD);
 
     // Create admin user
     await prisma.user.create({
