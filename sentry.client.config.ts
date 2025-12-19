@@ -16,9 +16,6 @@ Sentry.init({
   // Set environment
   environment: process.env.NODE_ENV,
 
-  // Debug mode - remove after testing
-  debug: process.env.NODE_ENV === "production",
-
   // Ignore common non-actionable errors
   ignoreErrors: [
     // Network errors
@@ -40,7 +37,3 @@ Sentry.init({
   ],
 });
 
-// Export Sentry to window for debugging (can be removed after testing)
-if (typeof window !== "undefined") {
-  (window as typeof window & { Sentry: typeof Sentry }).Sentry = Sentry;
-}
