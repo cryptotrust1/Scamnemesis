@@ -63,6 +63,11 @@ const nextConfig = {
         destination: '/sk/report/:path*',
         permanent: false,
       },
+      {
+        source: '/scam-prevention',
+        destination: '/sk/scam-prevention',
+        permanent: false,
+      },
     ];
   },
 
