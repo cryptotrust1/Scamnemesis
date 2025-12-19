@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Standalone output for better CI/CD and Docker deployments
@@ -14,6 +16,8 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
     // Optimize memory usage during builds
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    // Enable instrumentation for Sentry
+    instrumentationHook: true,
   },
 
   // Compiler options
@@ -63,7 +67,7 @@ const nextConfig = {
       "style-src 'self' 'unsafe-inline'", // Next.js uses inline styles
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.resend.com", // API endpoints
+      "connect-src 'self' https://api.resend.com https://*.ingest.de.sentry.io", // API endpoints + Sentry
       "frame-ancestors 'self'",
       "form-action 'self'",
       "base-uri 'self'",
@@ -128,4 +132,28 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  // Sentry webpack plugin options
+  org: "m0ne-sro",
+  project: "scamnemesis",
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Upload source maps for better stack traces
+  widenClientFileUpload: true,
+
+  // Automatically tree-shake Sentry logger statements
+  disableLogger: true,
+
+  // Hide source maps from client bundles
+  hideSourceMaps: true,
+
+  // Automatically instrument React components
+  reactComponentAnnotation: {
+    enabled: true,
+  },
+
+  // Route handler and middleware instrumentation
+  tunnelRoute: "/monitoring",
+});
