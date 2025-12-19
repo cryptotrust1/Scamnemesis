@@ -41,10 +41,13 @@ services:
       - "--entrypoints.websecure.address=:443"
 
       # =======================================================================
-      # Let's Encrypt Certificate Configuration
+      # Let's Encrypt Certificate Configuration (DNS-01 Challenge)
+      # DNS-01 works with Cloudflare proxy mode (orange cloud) enabled!
       # =======================================================================
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=10"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
       - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       # IMPORTANT: Uncomment line below for testing to avoid Let's Encrypt rate limits
@@ -60,6 +63,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      # Cloudflare API for DNS-01 challenge (required for SSL certificates)
+      - CF_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_certs:/letsencrypt
