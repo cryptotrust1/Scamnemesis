@@ -36,7 +36,8 @@ export default function AdminLoginPage() {
     const result = await login(email, password);
 
     if (result.success) {
-      router.push('/admin');
+      // Note: useEffect will handle redirect when isAuthenticated changes
+      // Don't call router.push here to avoid duplicate navigation
     } else {
       setError(result.error || 'Prihlásenie zlyhalo');
       setIsSubmitting(false);
