@@ -176,6 +176,6 @@ module.exports = withSentryConfig(nextConfig, {
     enabled: true,
   },
 
-  // Route handler and middleware instrumentation
-  tunnelRoute: "/monitoring",
+  // NOTE: tunnelRoute removed - sending directly to Sentry
+  // CSP already allows https://*.ingest.de.sentry.io
 });
