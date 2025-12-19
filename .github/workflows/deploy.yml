@@ -34,13 +34,16 @@ jobs:
           TYPESENSE_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
           S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
           S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           command_timeout: 45m
-          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY
+          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,RESEND_API_KEY
           script: |
             set -e  # Exit on any error (replaces script_stop which breaks heredocs)
             cd /var/www/Scamnemesis
@@ -80,6 +83,13 @@ jobs:
             echo "TYPESENSE_API_KEY=$(strip_newlines "${TYPESENSE_API_KEY:-changeme}")" >> .env
             echo "S3_ACCESS_KEY=$(strip_newlines "${S3_ACCESS_KEY:-minioadmin}")" >> .env
             echo "S3_SECRET_KEY=$(strip_newlines "${S3_SECRET_KEY:-minioadmin}")" >> .env
+
+            # OAuth and Email secrets
+            echo "GOOGLE_CLIENT_ID=$(strip_newlines "${GOOGLE_CLIENT_ID:-}")" >> .env
+            echo "GOOGLE_CLIENT_SECRET=$(strip_newlines "${GOOGLE_CLIENT_SECRET:-}")" >> .env
+            echo "RESEND_API_KEY=$(strip_newlines "${RESEND_API_KEY:-}")" >> .env
+            echo "FROM_EMAIL=noreply@scamnemesis.com" >> .env
+            echo "AUTH_SECRET=$(openssl rand -base64 32)" >> .env
 
             # Verify .env file was created and validate it
             echo "Environment file created with $(wc -l < .env) lines"
