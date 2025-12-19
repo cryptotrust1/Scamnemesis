@@ -60,6 +60,11 @@ CMD ["pnpm", "dev"]
 # ===========================================================================
 FROM base AS builder
 
+# Sentry build args for source map upload
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG=m0ne-sro
+ARG SENTRY_PROJECT=scamnemesis
+
 # Copy dependencies
 COPY --from=dependencies /app/node_modules ./node_modules
 
@@ -69,8 +74,11 @@ COPY . .
 # Generate Prisma client
 RUN pnpm prisma generate
 
-# Build Next.js application
+# Build Next.js application with Sentry source maps
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG=${SENTRY_ORG}
+ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 RUN pnpm build
 
 # ===========================================================================
