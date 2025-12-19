@@ -156,6 +156,10 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
+      args:
+        - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN:-}
+        - SENTRY_ORG=${SENTRY_ORG:-m0ne-sro}
+        - SENTRY_PROJECT=${SENTRY_PROJECT:-scamnemesis}
     container_name: scamnemesis-app
     restart: always
     logging: *default-logging
@@ -195,6 +199,9 @@ services:
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_TRUST_HOST=true
       - NEXTAUTH_URL=https://${DOMAIN:-localhost}
+      # Sentry error tracking (runtime)
+      - SENTRY_ORG=${SENTRY_ORG:-m0ne-sro}
+      - SENTRY_PROJECT=${SENTRY_PROJECT:-scamnemesis}
     depends_on:
       postgres:
         condition: service_healthy
