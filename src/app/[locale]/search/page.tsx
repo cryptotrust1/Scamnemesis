@@ -433,8 +433,8 @@ export default function SearchPage() {
   }, [currentPage, sortBy]);
 
   const handleSearch = async () => {
-    // Require at least 2 characters for search
-    if (filters.query && filters.query.length < 2) {
+    // Require at least 2 characters for search (query is optional when using filters)
+    if (filters.query && filters.query.length > 0 && filters.query.length < 2) {
       setSearchError('Zadajte aspoň 2 znaky pre vyhľadávanie');
       return;
     }

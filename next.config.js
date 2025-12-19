@@ -50,6 +50,22 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
 
+  // Redirects for non-localized routes
+  async redirects() {
+    return [
+      {
+        source: '/report/new',
+        destination: '/sk/report/new',
+        permanent: false,
+      },
+      {
+        source: '/report/:path*',
+        destination: '/sk/report/:path*',
+        permanent: false,
+      },
+    ];
+  },
+
   // Security headers
   async headers() {
     // Content Security Policy
@@ -68,6 +84,7 @@ const nextConfig = {
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
       "connect-src 'self' https://api.resend.com https://*.ingest.de.sentry.io", // API endpoints + Sentry
+      "worker-src 'self' blob:", // Allow Web Workers from blob URLs (needed for Sentry and other libraries)
       "frame-ancestors 'self'",
       "form-action 'self'",
       "base-uri 'self'",
