@@ -8,6 +8,7 @@
     "build": "next build",
     "build:ci": "next build --no-lint",
     "start": "next start",
+    "start:standalone": "node .next/standalone/server.js",
     "lint": "eslint src e2e --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src e2e --ext .ts,.tsx,.js,.jsx --fix",
     "type-check": "tsc --noEmit",
