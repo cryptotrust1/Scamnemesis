@@ -119,7 +119,8 @@ jobs:
             docker network prune -f 2>/dev/null || true
 
             # Stop all containers via docker compose (in case any are still running)
-            docker compose -f docker-compose.prod.yml down --remove-orphans --volumes 2>/dev/null || true
+            # NOTE: Do NOT use --volumes here! It deletes SSL certificates (traefik_certs)
+            docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
 
             # Final cleanup - ensure no scamnemesis containers exist
             if docker ps -a --filter "name=scamnemesis" --format "{{.Names}}" | grep -q .; then
