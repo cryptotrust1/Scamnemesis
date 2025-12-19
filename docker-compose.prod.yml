@@ -65,7 +65,8 @@ services:
       - "443:443"
     environment:
       # Cloudflare API for DNS-01 challenge (required for SSL certificates)
-      - CF_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      # IMPORTANT: Must be CF_DNS_API_TOKEN (not CF_API_TOKEN) - this is what lego/Traefik expects
+      - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_certs:/letsencrypt
