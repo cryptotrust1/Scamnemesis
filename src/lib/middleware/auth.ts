@@ -235,9 +235,8 @@ export async function requireRateLimit(
   limit: number = 100
 ): Promise<NextResponse | null> {
   // Use IP or user ID as identifier
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
-             request.headers.get('x-real-ip') ||
-             'unknown';
+  // IMPORTANT: Use getClientIp() to properly handle Cloudflare cf-connecting-ip header
+  const ip = getClientIp(request);
 
   const auth = await getAuthContext(request);
   const identifier = auth.user?.sub || auth.apiKey?.userId || `ip:${ip}`;
