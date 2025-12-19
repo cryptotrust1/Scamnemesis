@@ -7,7 +7,7 @@
  * - Database connection
  * - Required tables existence
  * - Redis connection (if configured)
- * - Recent errors from logs
+ * - Email service configuration (Resend API key)
  */
 
 import { NextResponse } from 'next/server';
@@ -51,6 +51,10 @@ interface HealthCheckResult {
       status: 'ok' | 'error' | 'not_configured';
       error?: string;
     };
+    email: {
+      status: 'ok' | 'not_configured';
+      warning?: string;
+    };
   };
   version: string;
   environment: string;
@@ -65,6 +69,7 @@ export async function GET() {
       database: { status: 'ok' },
       tables: { status: 'ok', details: {} },
       redis: { status: 'not_configured' },
+      email: { status: 'ok' },
     },
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
@@ -140,6 +145,17 @@ export async function GET() {
       if (result.status === 'healthy') {
         result.status = 'degraded';
       }
+    }
+  }
+
+  // Check Email Service configuration
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey || resendApiKey.trim() === '') {
+    result.checks.email.status = 'not_configured';
+    result.checks.email.warning = 'RESEND_API_KEY not set. Confirmation emails will not be sent after report submission.';
+    // Email is not critical, so mark as degraded instead of unhealthy
+    if (result.status === 'healthy') {
+      result.status = 'degraded';
     }
   }
 

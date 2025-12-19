@@ -28,6 +28,20 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
+// Warn at startup if email service is not configured
+if (!resend) {
+  console.error('⚠️  EMAIL SERVICE NOT CONFIGURED ⚠️');
+  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.error('RESEND_API_KEY is not set in environment variables.');
+  console.error('Confirmation emails will NOT be sent to users after report submission.');
+  console.error('');
+  console.error('To fix this:');
+  console.error('1. Sign up for Resend at https://resend.com');
+  console.error('2. Get your API key from https://resend.com/api-keys');
+  console.error('3. Add RESEND_API_KEY=your_key_here to your .env file');
+  console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+}
+
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@scamnemesis.com';
 const SITE_NAME = process.env.SITE_NAME || 'ScamNemesis';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';

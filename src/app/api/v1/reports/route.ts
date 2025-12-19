@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { randomBytes } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
@@ -632,6 +633,9 @@ export async function POST(request: NextRequest) {
     // Send confirmation email if reporter provided a valid email (not anonymous)
     console.log(`[Reports API][${requestId}] Step 8: Processing email...`);
     const reporterEmail = data.reporter.email;
+    let emailSentSuccessfully = false;
+    let emailError: string | undefined;
+
     if (reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com' && reporterEmail.includes('@')) {
       console.log(`[Reports API][${requestId}] Sending confirmation email...`);
       try {
@@ -654,12 +658,15 @@ export async function POST(request: NextRequest) {
 
         if (emailResult.success) {
           console.log(`[Reports API][${requestId}] Confirmation email sent successfully`);
+          emailSentSuccessfully = true;
         } else {
           console.warn(`[Reports API][${requestId}] Failed to send confirmation email: ${emailResult.error}`);
+          emailError = emailResult.error;
         }
-      } catch (emailError) {
+      } catch (emailException) {
         // Log but don't fail the request - email is not critical
-        console.error(`[Reports API][${requestId}] Email sending error (non-fatal):`, emailError);
+        console.error(`[Reports API][${requestId}] Email sending error (non-fatal):`, emailException);
+        emailError = emailException instanceof Error ? emailException.message : 'Unknown error';
       }
     } else {
       console.log(`[Reports API][${requestId}] Skipping email (anonymous or no email)`);
@@ -678,11 +685,21 @@ export async function POST(request: NextRequest) {
           cluster_id: duplicateResult.clusterId,
           match_count: duplicateResult.totalMatches,
         },
-        email_sent: !!(reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com'),
+        email_sent: emailSentSuccessfully,
+        ...(emailError && !emailSentSuccessfully ? {
+          email_warning: emailError,
+          email_note: 'Report was saved successfully, but confirmation email could not be sent. Please check server logs for details.'
+        } : {}),
       },
       { status: 201 }
     );
   } catch (error) {
+    // Send to Sentry for monitoring
+    Sentry.captureException(error, {
+      tags: { api: 'reports', method: 'POST' },
+      extra: { requestId },
+    });
+
     // Enhanced error logging for debugging
     const errorDetails = {
       name: error instanceof Error ? error.name : 'Unknown',

@@ -84,25 +84,32 @@ describe('Search API', () => {
   };
 
   describe('GET /api/v1/search - Validation', () => {
-    it('should return 400 when query is missing', async () => {
+    it('should return 200 when query is missing (browse mode)', async () => {
+      mockPrismaReport.count.mockResolvedValue(0);
+      mockPrismaReport.findMany.mockResolvedValue([]);
+
       const request = createRequest({});
 
       const response = await GET(request);
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('validation_error');
+      expect(response.status).toBe(200);
+      expect(data.total).toBe(0);
+      expect(data.results).toEqual([]);
     });
 
-    it('should return 400 when query is too short', async () => {
-      const request = createRequest({ q: 'a' });
+    it('should allow empty query with filters', async () => {
+      mockPrismaReport.count.mockResolvedValue(5);
+      mockPrismaReport.findMany.mockResolvedValue([]);
+      mockPrismaReport.groupBy.mockResolvedValue([]);
+
+      const request = createRequest({ country: 'SK', fraud_type: 'phishing' });
 
       const response = await GET(request);
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('validation_error');
-      expect(data.details.q).toBeDefined();
+      expect(response.status).toBe(200);
+      expect(data.total).toBe(5);
     });
 
     it('should return 400 when query exceeds max length', async () => {

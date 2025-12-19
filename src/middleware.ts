@@ -9,7 +9,9 @@ export function middleware(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) return;
+  if (pathnameHasLocale) {
+    return NextResponse.next();
+  }
 
   // Skip static files and API routes
   if (
@@ -18,39 +20,70 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/images') ||
     pathname.includes('.') // static files
   ) {
-    return;
+    return NextResponse.next();
   }
 
-  // Detect locale from Accept-Language header
-  const acceptLanguage = request.headers.get('accept-language');
-  let locale: Locale = i18n.defaultLocale;
+  // List of root-level routes that should NOT be redirected (they exist at root level)
+  const rootRoutes = [
+    '/',
+    '/about',
+    '/contact',
+    '/contact-us',
+    '/dashboard',
+    '/i-was-scammed-need-help',
+    '/money-recovery',
+    '/privacy',
+    '/scam-prevention',
+    '/scammer-removal',
+    '/search',
+    '/support-us',
+    '/terms',
+    '/training-courses',
+    '/verify-serviceproduct',
+  ];
 
-  if (acceptLanguage) {
-    const preferredLocale = acceptLanguage
-      .split(',')
-      .map((lang) => lang.split(';')[0].trim().toLowerCase())
-      .find((lang) => {
-        const langCode = lang.split('-')[0];
-        return i18n.locales.includes(langCode as Locale);
-      });
+  // If it's not a root route, redirect to locale-prefixed path
+  if (!rootRoutes.includes(pathname)) {
+    // Detect locale from Accept-Language header
+    const acceptLanguage = request.headers.get('accept-language');
+    let locale: Locale = i18n.defaultLocale;
 
-    if (preferredLocale) {
-      const langCode = preferredLocale.split('-')[0] as Locale;
-      if (i18n.locales.includes(langCode)) {
-        locale = langCode;
+    if (acceptLanguage) {
+      const preferredLocale = acceptLanguage
+        .split(',')
+        .map((lang) => lang.split(';')[0].trim().toLowerCase())
+        .find((lang) => {
+          const langCode = lang.split('-')[0];
+          return i18n.locales.includes(langCode as Locale);
+        });
+
+      if (preferredLocale) {
+        const langCode = preferredLocale.split('-')[0] as Locale;
+        if (i18n.locales.includes(langCode)) {
+          locale = langCode;
+        }
       }
     }
+
+    // Redirect to locale-prefixed path with query params preserved
+    const url = new URL(`/${locale}${pathname}`, request.url);
+    url.search = request.nextUrl.search;
+    return NextResponse.redirect(url);
   }
 
-  // Redirect to locale-prefixed path
-  return NextResponse.redirect(
-    new URL(`/${locale}${pathname}`, request.url)
-  );
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next, api)
-    '/((?!_next|api|images|favicon.ico|.*\\..*).*)',
+    /*
+     * Match all request paths except:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - files with extensions (.png, .jpg, .css, .js, etc.)
+     */
+    '/((?!api/|_next/|images/|favicon.ico).*)',
   ],
 };
