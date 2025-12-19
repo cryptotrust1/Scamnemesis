@@ -7,9 +7,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import prisma from '@/lib/db';
+import { hashPassword } from '@/lib/auth/jwt';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,8 +94,8 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Create admin with high bcrypt cost (12 rounds)
-    const passwordHash = await bcrypt.hash(config.adminPassword, 12);
+    // Create admin with PBKDF2 hashing (matches verifyPassword in jwt.ts)
+    const passwordHash = await hashPassword(config.adminPassword);
 
     await prisma.user.create({
       data: {
