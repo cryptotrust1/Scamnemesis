@@ -106,7 +106,7 @@ END $$;
 
 -- MediaStatus
 DO $$ BEGIN
-    CREATE TYPE "MediaStatus" AS ENUM ('PROCESSING', 'READY', 'FAILED', 'DELETED');
+    CREATE TYPE "MediaStatus" AS ENUM ('PROCESSING', 'READY', 'FAILED', 'DELETED', 'QUARANTINED');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
