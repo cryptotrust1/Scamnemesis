@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Footer.module.css';
@@ -48,13 +48,16 @@ const translations = {
   },
 };
 
-// Static year to prevent hydration mismatch
-const CURRENT_YEAR = new Date().getFullYear();
-
 export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
   const pathname = usePathname();
   const currentLocale = pathname?.startsWith('/sk') ? 'sk' : pathname?.startsWith('/en') ? 'en' : locale;
   const t = translations[currentLocale] || translations.en;
+
+  // Use state for year to prevent hydration mismatch (server vs client date difference)
+  const [year, setYear] = useState<number>(2025);
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className={styles.footer}>
@@ -107,7 +110,7 @@ export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
         {/* Bottom bar */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {CURRENT_YEAR} ScamNemesis. {t.copyright}
+            © {year} ScamNemesis. {t.copyright}
           </p>
           <div className={styles.social}>
             <a
