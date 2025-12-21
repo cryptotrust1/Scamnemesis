@@ -964,6 +964,110 @@ const getTrainingFeatures = (locale: Locale) => {
   ];
 };
 
+// When suitable texts - locale-aware
+const getRecoveryWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Wenn Sie Opfer von betrügerischen Überweisungen (Krypto/Fiat), Phishing, „Romance"- und Investitionsbetrug wurden.',
+      'Wenn Sie eine Kontoübernahme und verdächtige Abhebungen über eine Börse oder Bank erlebt haben.',
+      'Wenn Sie Vermögenswerte schnell blockieren und vertretbare Beweise vorlegen müssen.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Ak ste sa stali obeťou podvodných prevodov (krypto/fiat), phishingu, „romance" a investičných schém.',
+      'Ak ste zažili prevzatie účtu a podozrivé výbery cez burzu alebo banku.',
+      'Ak potrebujete rýchlo zablokovať aktíva a poskytnúť obhájiteľné dôkazy.',
+    ];
+  }
+  return [
+    'If you became a victim of fraudulent transfers (crypto/fiat), phishing, "romance," and investment schemes.',
+    'If you experienced account takeover and suspicious withdrawals via an exchange or bank.',
+    'If you need to quickly block assets and provide defensible evidence.',
+  ];
+};
+
+const getDueDiligenceWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Onboarding eines neuen Kunden/Lieferanten oder Drittpartei-Risikomanagement (TPRM).',
+      'M&A, Joint Venture, Investoreneintritt, Franchise/Lizenzierung.',
+      'Verdacht auf Verbindungen zu Betrug, sanktionierten Entitäten oder Geldwäsche.',
+      'Erfüllung von AML/CTF-Verpflichtungen oder Anforderungen einer Bank, eines Investors oder eines internen Compliance-Audits.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Onboarding nového klienta/dodávateľa alebo riadenie rizík tretích strán (TPRM).',
+      'M&A, joint venture, vstup investora, franšíza/licencovanie.',
+      'Podozrenie na prepojenie s podvodom, sankcionovanými entitami alebo praním špinavých peňazí.',
+      'Plnenie AML/CTF povinností alebo požiadaviek banky, investora alebo interného compliance auditu.',
+    ];
+  }
+  return [
+    'Onboarding a new client/vendor or third-party risk management (TPRM).',
+    'M&A, joint venture, investor entry, franchise/licensing.',
+    'Suspected links to fraud, sanctioned entities, or money laundering.',
+    'Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit.',
+  ];
+};
+
+const getInvestigationWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Verdacht auf internen Betrug oder Interessenkonflikt.',
+      'Datenschutzverletzung, kompromittierte Konten, Ransomware/BEC.',
+      'Rechnungsbetrug, „Geister"-Lieferanten, Absprachen.',
+      'Marken-/IP-Missbrauch: geklonte Websites, gefälschte Profile.',
+      'Vorprozess- oder Compliance-Phase, wenn Sie vertretbare Beweise für den Vorstand, die Bank oder den Prüfer benötigen.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Podozrenie na interný podvod alebo konflikt záujmov.',
+      'Únik dát, kompromitované účty, ransomware/BEC.',
+      'Faktúrový podvod, „ghost" dodávatelia, tajné dohody.',
+      'Zneužitie značky/IP: klonované webstránky, falošné profily.',
+      'Pred-súdna alebo compliance fáza, keď potrebujete obhájiteľné dôkazy pre predstavenstvo, banku alebo audítora.',
+    ];
+  }
+  return [
+    'Suspected internal fraud or conflict of interest.',
+    'Data breach, compromised accounts, ransomware/BEC.',
+    'Invoice fraud, "ghost" vendors, collusion.',
+    'Brand/IP abuse: cloned websites, fake profiles.',
+    'Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor.',
+  ];
+};
+
+const getTrainingWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Beim Onboarding neuer Mitarbeiter oder der Skalierung von Teams mit Zugang zu Geld/Daten.',
+      'Nach einem Vorfall, um das Wiederholungsrisiko zu reduzieren und die Reaktionszeit zu verkürzen.',
+      'Vor einem Audit oder einer Investition, oder beim Onboarding eines wichtigen Kunden (TPRM/AML-Anforderungen).',
+      'Wenn Sie mit Phishing, Markenmissbrauch oder betrügerischen Bestellungen konfrontiert sind.',
+      'Wenn Sie praktische Playbooks für den Vorstand, die Finanzabteilung und die Frontline-Teams benötigen.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Pri onboardingu nových zamestnancov alebo škálovaní tímov s prístupom k peniazom/dátam.',
+      'Po incidente na zníženie rizika opakovania a skrátenie reakčného času.',
+      'Pred auditom alebo investíciou, alebo pri onboardingu významného klienta (TPRM/AML požiadavky).',
+      'Ak čelíte phishingu, zneužitiu značky alebo podvodným objednávkam.',
+      'Keď potrebujete praktické príručky pre predstavenstvo, financie a frontline tímy.',
+    ];
+  }
+  return [
+    'When onboarding new hires or scaling teams with access to money/data.',
+    'After an incident to reduce repeat risk and shorten response time.',
+    'Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).',
+    'If you face phishing, brand abuse, or fraudulent orders.',
+    'When you need practical playbooks for the board, finance, and frontline teams.',
+  ];
+};
+
 export default function HomePage() {
   const params = useParams();
   const locale = (params?.locale as Locale) || 'en';
@@ -1420,18 +1524,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-slate-900 dark:bg-slate-800">
                     <h4 className="text-lg font-bold text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you became a victim of fraudulent transfers (crypto/fiat), phishing, "romance," and investment schemes.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you experienced account takeover and suspicious withdrawals via an exchange or bank.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you need to quickly block assets and provide defensible evidence.</span>
-                      </li>
+                      {getRecoveryWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1486,22 +1584,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-blue-50 dark:bg-blue-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Onboarding a new client/vendor or third-party risk management (TPRM).</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>M&A, joint venture, investor entry, franchise/licensing.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Suspected links to fraud, sanctioned entities, or money laundering.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit.</span>
-                      </li>
+                      {getDueDiligenceWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1549,26 +1637,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-purple-50 dark:bg-purple-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Suspected internal fraud or conflict of interest.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Data breach, compromised accounts, ransomware/BEC.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Invoice fraud, &quot;ghost&quot; vendors, collusion.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Brand/IP abuse: cloned websites, fake profiles.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor.</span>
-                      </li>
+                      {getInvestigationWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1616,26 +1690,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>When onboarding new hires or scaling teams with access to money/data.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>After an incident to reduce repeat risk and shorten response time.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>If you face phishing, brand abuse, or fraudulent orders.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>When you need practical playbooks for the board, finance, and frontline teams.</span>
-                      </li>
+                      {getTrainingWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
