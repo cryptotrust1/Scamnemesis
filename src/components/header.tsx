@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { i18n, type Locale } from '@/i18n/config';
 
@@ -127,11 +126,9 @@ export function Header() {
               href={getLocalizedHref(item.href)}
               className={cn(
                 'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                item.href === '/report/new'
-                  ? 'bg-[#0E74FF] text-white hover:bg-[#0E74FF]/90'
-                  : isActive(item.href)
-                    ? 'bg-[#0E74FF] text-white'
-                    : 'text-foreground hover:bg-muted'
+                isActive(item.href)
+                  ? 'bg-[#0E74FF] text-white'
+                  : 'text-foreground hover:bg-muted'
               )}
             >
               {item.name[displayLocale]}
@@ -213,13 +210,6 @@ export function Header() {
             )}
           </div>
 
-          {/* Report Button */}
-          <Button asChild className="hidden md:inline-flex bg-[#0E74FF] hover:bg-[#0E74FF]/90">
-            <Link href={getLocalizedHref('/report/new')}>
-              {{ en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }[displayLocale]}
-            </Link>
-          </Button>
-
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -245,11 +235,9 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   'block px-4 py-3 rounded-md text-base font-medium transition-colors',
-                  item.href === '/report/new'
-                    ? 'bg-[#0E74FF] text-white hover:bg-[#0E74FF]/90'
-                    : isActive(item.href)
-                      ? 'bg-[#0E74FF] text-white'
-                      : 'text-foreground hover:bg-muted'
+                  isActive(item.href)
+                    ? 'bg-[#0E74FF] text-white'
+                    : 'text-foreground hover:bg-muted'
                 )}
               >
                 {item.name[displayLocale]}
