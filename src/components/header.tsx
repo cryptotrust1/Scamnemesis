@@ -127,9 +127,11 @@ export function Header() {
               href={getLocalizedHref(item.href)}
               className={cn(
                 'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                isActive(item.href)
-                  ? 'bg-[#0E74FF] text-white'
-                  : 'text-foreground hover:bg-muted'
+                item.href === '/report/new'
+                  ? 'bg-[#0E74FF] text-white hover:bg-[#0E74FF]/90'
+                  : isActive(item.href)
+                    ? 'bg-[#0E74FF] text-white'
+                    : 'text-foreground hover:bg-muted'
               )}
             >
               {item.name[displayLocale]}
@@ -243,9 +245,11 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   'block px-4 py-3 rounded-md text-base font-medium transition-colors',
-                  isActive(item.href)
-                    ? 'bg-[#0E74FF] text-white'
-                    : 'text-foreground hover:bg-muted'
+                  item.href === '/report/new'
+                    ? 'bg-[#0E74FF] text-white hover:bg-[#0E74FF]/90'
+                    : isActive(item.href)
+                      ? 'bg-[#0E74FF] text-white'
+                      : 'text-foreground hover:bg-muted'
                 )}
               >
                 {item.name[displayLocale]}
