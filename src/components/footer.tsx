@@ -84,11 +84,10 @@ export function Footer() {
               <Image
                 src="/images/logo-scam-blue.png"
                 alt="ScamNemesis"
-                width={40}
-                height={40}
-                className="h-10 w-10"
+                width={108}
+                height={24}
+                className="h-6 w-auto"
               />
-              <span className="font-bold text-xl">ScamNemesis</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs mb-4">
               {descriptions[currentLocale]}
