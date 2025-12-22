@@ -26,6 +26,27 @@ async function handleResponse<T>(response: Response): Promise<T> {
     throw new Error('Relácia vypršala. Prihláste sa znova.');
   }
 
+  if (response.status === 429) {
+    // Rate limited - provide helpful message
+    const retryAfter = response.headers.get('Retry-After');
+    const resetTime = response.headers.get('X-RateLimit-Reset');
+    let waitTime = 'niekoľko minút';
+
+    if (retryAfter) {
+      const seconds = parseInt(retryAfter, 10);
+      if (seconds < 60) {
+        waitTime = `${seconds} sekúnd`;
+      } else {
+        waitTime = `${Math.ceil(seconds / 60)} minút`;
+      }
+    } else if (resetTime) {
+      const resetDate = new Date(parseInt(resetTime, 10) * 1000);
+      waitTime = resetDate.toLocaleTimeString('sk-SK');
+    }
+
+    throw new Error(`Príliš veľa požiadaviek. Skúste znova o ${waitTime}. Ak problém pretrváva, kontaktujte administrátora.`);
+  }
+
   const data = await response.json();
 
   if (!response.ok) {
