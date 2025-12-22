@@ -66,9 +66,10 @@ jobs:
             ENVEOF
 
             # Append secrets (with defaults for non-critical values)
-            # IMPORTANT: Strip newlines/carriage returns from all values to prevent Traefik errors
+            # IMPORTANT: Strip newlines/carriage returns and invisible chars from all values to prevent Traefik errors
             strip_newlines() {
-              echo -n "$1" | tr -d '\n\r'
+              # Use printf for reliability, remove ALL control characters (not just \n\r)
+              printf '%s' "$1" | tr -d '\n\r\t' | tr -d '[:cntrl:]'
             }
 
             POSTGRES_PASSWORD_VAL=$(strip_newlines "${POSTGRES_PASSWORD:-scamnemesis_prod_password}")
@@ -107,10 +108,34 @@ jobs:
             echo "ADMIN_PASSWORD=$(strip_newlines "${ADMIN_PASSWORD:-}")" >> .env
 
             # Cloudflare API token for DNS-01 ACME challenge (SSL certificates)
-            echo "CLOUDFLARE_API_TOKEN=$(strip_newlines "${CLOUDFLARE_API_TOKEN:-}")" >> .env
+            # CRITICAL: Must be clean without any newlines/control chars or Traefik will fail
+            CF_TOKEN_CLEAN=$(strip_newlines "${CLOUDFLARE_API_TOKEN:-}")
+            echo "CLOUDFLARE_API_TOKEN=\"${CF_TOKEN_CLEAN}\"" >> .env
+
+            # Debug: Verify token was written correctly (show only last 4 chars for security)
+            TOKEN_LEN=${#CF_TOKEN_CLEAN}
+            if [ "$TOKEN_LEN" -gt 0 ]; then
+              TOKEN_LAST4="${CF_TOKEN_CLEAN: -4}"
+              echo "✓ CLOUDFLARE_API_TOKEN set (${TOKEN_LEN} chars, ends with: ...${TOKEN_LAST4})"
+            else
+              echo "⚠ WARNING: CLOUDFLARE_API_TOKEN is empty!"
+            fi
 
             # Verify .env file was created and validate it
             echo "Environment file created with $(wc -l < .env) lines"
+
+            # CRITICAL: Validate that CLOUDFLARE_API_TOKEN in .env has no control characters
+            # This check catches the newline issue that causes "invalid header field value" errors
+            if grep -q 'CLOUDFLARE_API_TOKEN=' .env; then
+              # Check for any control characters in the value
+              TOKEN_LINE=$(grep 'CLOUDFLARE_API_TOKEN=' .env)
+              if echo "$TOKEN_LINE" | grep -q $'[\x00-\x1f]'; then
+                echo "ERROR: CLOUDFLARE_API_TOKEN contains control characters!"
+                echo "Token line (hex): $(echo "$TOKEN_LINE" | xxd | head -2)"
+                exit 1
+              fi
+              echo "✓ CLOUDFLARE_API_TOKEN validation passed (no control characters)"
+            fi
 
             # CRITICAL: Validate that DOMAIN looks correct (no newlines, not empty)
             # Note: strip_newlines already removed \n\r, so just verify it's a valid domain
@@ -191,9 +216,32 @@ jobs:
               exit 1
             fi
 
+            # CRITICAL: Check for Cloudflare API token errors IMMEDIATELY after Traefik starts
+            # This catches the "invalid header field value" error caused by newlines in the token
+            echo "Checking for Cloudflare API token errors..."
+            sleep 10  # Give Traefik a moment to try ACME
+            CF_API_ERRORS=$(docker compose -f docker-compose.prod.yml logs traefik 2>&1 | grep -i "invalid header field value" || true)
+            if [ -n "$CF_API_ERRORS" ]; then
+              echo "═══════════════════════════════════════════════════════════════"
+              echo "CRITICAL ERROR: Cloudflare API token is invalid!"
+              echo "═══════════════════════════════════════════════════════════════"
+              echo ""
+              echo "The token likely contains hidden characters (newline, tab, etc.)"
+              echo ""
+              echo "TO FIX: Update the CLOUDFLARE_API_TOKEN GitHub secret:"
+              echo "1. Go to GitHub repo Settings -> Secrets and variables -> Actions"
+              echo "2. Delete and recreate CLOUDFLARE_API_TOKEN"
+              echo "3. When pasting, make sure there are NO trailing spaces or newlines"
+              echo ""
+              echo "Traefik error log:"
+              echo "$CF_API_ERRORS"
+              exit 1
+            fi
+            echo "✓ No Cloudflare API token errors detected"
+
             # Wait additional time for Let's Encrypt certificate acquisition
-            echo "Waiting for SSL certificate acquisition (60 seconds)..."
-            sleep 60
+            echo "Waiting for SSL certificate acquisition (50 seconds)..."
+            sleep 50
 
             # Check container status
             docker compose -f docker-compose.prod.yml ps
