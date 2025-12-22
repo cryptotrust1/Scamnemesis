@@ -127,18 +127,20 @@ export default function AdminReportsPage() {
   }, [statusFilter, fraudTypeFilter, severityFilter, search]);
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'PENDING':
+    // API returns lowercase status
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case 'pending':
         return <Badge variant="warning">Čaká</Badge>;
-      case 'UNDER_REVIEW':
+      case 'under_review':
         return <Badge variant="secondary">V procese</Badge>;
-      case 'APPROVED':
+      case 'approved':
         return <Badge variant="success">Schválené</Badge>;
-      case 'REJECTED':
+      case 'rejected':
         return <Badge variant="destructive">Zamietnuté</Badge>;
-      case 'MERGED':
+      case 'merged':
         return <Badge variant="outline">Zlúčené</Badge>;
-      case 'ARCHIVED':
+      case 'archived':
         return <Badge variant="outline" className="text-gray-500">Archivované</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -146,14 +148,16 @@ export default function AdminReportsPage() {
   };
 
   const getSeverityBadge = (severity: string) => {
-    switch (severity) {
-      case 'LOW':
+    // API returns lowercase severity
+    const severityLower = severity?.toLowerCase();
+    switch (severityLower) {
+      case 'low':
         return <Badge variant="outline" className="text-gray-600">Nízka</Badge>;
-      case 'MEDIUM':
+      case 'medium':
         return <Badge variant="outline" className="text-amber-600">Stredná</Badge>;
-      case 'HIGH':
+      case 'high':
         return <Badge variant="outline" className="text-orange-600">Vysoká</Badge>;
-      case 'CRITICAL':
+      case 'critical':
         return <Badge variant="outline" className="text-red-600">Kritická</Badge>;
       default:
         return <Badge variant="outline">{severity}</Badge>;
@@ -175,8 +179,8 @@ export default function AdminReportsPage() {
     try {
       setIsSubmitting(true);
       await approveReport(id);
-      // Update local state
-      setReports(reports.map(r => r.id === id ? { ...r, status: 'APPROVED' as const } : r));
+      // Update local state (status is lowercase from API)
+      setReports(reports.map(r => r.id === id ? { ...r, status: 'approved' } : r));
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Nepodarilo sa schváliť hlásenie');
     } finally {
@@ -196,8 +200,8 @@ export default function AdminReportsPage() {
     try {
       setIsSubmitting(true);
       await rejectReport(rejectingReportId, rejectReason);
-      // Update local state
-      setReports(reports.map(r => r.id === rejectingReportId ? { ...r, status: 'REJECTED' as const } : r));
+      // Update local state (status is lowercase from API)
+      setReports(reports.map(r => r.id === rejectingReportId ? { ...r, status: 'rejected' } : r));
       setRejectDialogOpen(false);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Nepodarilo sa zamietnuť hlásenie');
@@ -336,7 +340,7 @@ export default function AdminReportsPage() {
                   </div>
 
                   <div className="col-span-3">
-                    <p className="font-medium truncate">{report.title}</p>
+                    <p className="font-medium truncate">{report.summary || 'Bez názvu'}</p>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(report.createdAt)}
                     </p>
@@ -344,22 +348,22 @@ export default function AdminReportsPage() {
 
                   <div className="col-span-2 flex flex-col gap-1">
                     <Badge variant="outline" className="w-fit">
-                      {FRAUD_TYPES.find(t => t.value === report.fraudType)?.label || report.fraudType}
+                      {FRAUD_TYPES.find(t => t.value.toLowerCase() === report.fraudType?.toLowerCase())?.label || report.fraudType}
                     </Badge>
-                    {getSeverityBadge(report.severity)}
+                    {report.severity && getSeverityBadge(report.severity)}
                   </div>
 
                   <div className="col-span-2">
-                    {report.amount && report.amount > 0 ? (
+                    {report.financialLoss && report.financialLoss.amount > 0 ? (
                       <span className="font-semibold">
-                        {report.amount.toLocaleString()} {report.currency || 'EUR'}
+                        {report.financialLoss.amount.toLocaleString()} {report.financialLoss.currency || 'EUR'}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}
-                    {report.similarCount && report.similarCount > 0 && (
+                    {report.counts && report.counts.perpetrators > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        {report.similarCount} podobných
+                        {report.counts.perpetrators} páchateľov
                       </p>
                     )}
                   </div>
@@ -374,7 +378,7 @@ export default function AdminReportsPage() {
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
-                    {report.status === 'PENDING' && (
+                    {report.status?.toLowerCase() === 'pending' && (
                       <>
                         <Button
                           variant="ghost"
