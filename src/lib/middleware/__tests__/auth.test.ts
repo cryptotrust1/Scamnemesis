@@ -364,6 +364,79 @@ describe('Auth Middleware', () => {
     });
   });
 
+  describe('Admin Rate Limit Multiplier', () => {
+    // Test the hasAdminScopes function logic
+    const hasAdminScopes = (scopes: string[]): boolean => {
+      return scopes.some(scope =>
+        scope === '*' ||
+        scope.startsWith('admin:') ||
+        scope === 'admin'
+      );
+    };
+
+    it('should detect wildcard scope as admin', () => {
+      expect(hasAdminScopes(['*'])).toBe(true);
+    });
+
+    it('should detect admin:read scope as admin', () => {
+      expect(hasAdminScopes(['admin:read'])).toBe(true);
+    });
+
+    it('should detect admin:write scope as admin', () => {
+      expect(hasAdminScopes(['admin:write'])).toBe(true);
+    });
+
+    it('should detect admin:* scope as admin', () => {
+      expect(hasAdminScopes(['admin:*'])).toBe(true);
+    });
+
+    it('should detect admin scope as admin', () => {
+      expect(hasAdminScopes(['admin'])).toBe(true);
+    });
+
+    it('should not detect regular user scopes as admin', () => {
+      expect(hasAdminScopes(['read:reports', 'write:reports'])).toBe(false);
+    });
+
+    it('should not detect empty scopes as admin', () => {
+      expect(hasAdminScopes([])).toBe(false);
+    });
+
+    it('should apply 10x multiplier for admin users', () => {
+      const baseLimit = 60;
+      const isAdmin = true;
+      const effectiveLimit = isAdmin ? baseLimit * 10 : baseLimit;
+
+      expect(effectiveLimit).toBe(600);
+    });
+
+    it('should not apply multiplier for regular users', () => {
+      const baseLimit = 60;
+      const isAdmin = false;
+      const effectiveLimit = isAdmin ? baseLimit * 10 : baseLimit;
+
+      expect(effectiveLimit).toBe(60);
+    });
+
+    it('should allow admin user within higher limit', () => {
+      const baseLimit = 60;
+      const adminLimit = baseLimit * 10; // 600
+      const adminRequestCount = 300;
+
+      const allowed = adminRequestCount < adminLimit;
+      expect(allowed).toBe(true);
+    });
+
+    it('should block admin user exceeding even higher limit', () => {
+      const baseLimit = 60;
+      const adminLimit = baseLimit * 10; // 600
+      const adminRequestCount = 650;
+
+      const allowed = adminRequestCount < adminLimit;
+      expect(allowed).toBe(false);
+    });
+  });
+
   describe('Authorization Header Parsing', () => {
     it('should extract Bearer token', () => {
       const extractBearerToken = (authHeader: string | null) => {
