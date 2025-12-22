@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { SearchFiltersComponent, type SearchFilters } from '@/components/search/search-filters';
 import { ReportList, type Report } from '@/components/search/report-list';
@@ -57,6 +57,307 @@ import {
   UserCog,
   TrendingDown,
 } from 'lucide-react';
+
+type Locale = 'en' | 'sk' | 'cs' | 'de';
+
+// Translations
+const getTranslations = (locale: Locale) => {
+  const t = {
+    en: {
+      badge: 'Most Advanced Scam Detection Platform',
+      heroTitle: 'Free Scam Checker — Verify People, Websites, Phone Numbers, Emails, Bank Accounts & Crypto + more',
+      heroSubtitle: "Welcome to the most advanced platform for scam detection and prevention. Paste a URL, phone number, email, bank account, wallet address, or a person's name to run a real-time check. Get results in seconds.",
+      dataSources: 'Data Sources',
+      records: 'Records',
+      searchTypes: 'Search Types',
+      realtimeUpdates: 'Real-time Updates',
+      startFreeSearch: 'Start Free Search',
+      communityAccessRequired: 'Community Access Required',
+      communityAccessDesc: 'To comply with GDPR regulations, you need to join our community before searching our database. This helps us maintain legal access to shared fraud information while protecting privacy rights.',
+      joinCommunity: 'Join Community',
+      aboutPlatform: 'About Our Platform',
+      firstPlatform: 'The First Platform of Its Kind',
+      platformDesc1: "We're a platform that systematically collects and analyzes data on scams and scammers. As the first of its kind, we combine investigative work with modern technology to detect and prevent fraud.",
+      platformDesc2: "We tap into 130+ data sources, look for patterns, and link recurring schemes across cases. Anyone who's been scammed can report their case safely — even anonymously. That helps us connect victims to one another and to existing case files faster, moving investigations forward.",
+      platformDesc3: "We give you an easy way to vet partners, companies, websites, social profiles, phone numbers, bank accounts, and crypto wallets — before you commit to an investment, a deal, or a relationship. Join us and help make the internet a safer place.",
+      websites: 'Websites',
+      urlDomainCheck: 'URL & Domain check',
+      people: 'People',
+      nameVerification: 'Name verification',
+      phone: 'Phone',
+      numberLookup: 'Number lookup',
+      email: 'Email',
+      addressSearch: 'Address search',
+      bank: 'Bank',
+      ibanAccount: 'IBAN & Account',
+      crypto: 'Crypto',
+      walletAddress: 'Wallet address',
+      company: 'Company',
+      businessCheck: 'Business check',
+      vehicle: 'Vehicle',
+      licensePlate: 'License plate',
+      howToVerify: 'How to Verify a Company, Person, or Domain Before You Trust',
+      step1Title: 'Search',
+      step1Desc: 'Enter an identifier for the person or entity you want to check—such as a name, email, phone number, domain/URL, IBAN, social media handle, license plate number, etc. The more identifiers you try, the better your chances of finding a match.',
+      filterBy: 'You can also filter by:',
+      date: 'Date',
+      country: 'Country',
+      caseType: 'Case Type',
+      step2Title: 'Results',
+      step2Desc: "If the system finds a match, it will show results sorted by how closely they match your query. The best matches appear at the top; similarity decreases as you scroll. We recommend reviewing several results, especially when you're dealing with common names or incomplete data.",
+      matchScore: 'Match Score',
+      step3Title: 'Case Details & Safe Communication',
+      step3Desc: 'Clicking a result opens a report with all available information. Some sensitive fields may be blurred for legal and safety reasons. You can comment on a case and discuss it with other victims.',
+      stayAnonymous: 'Stay Anonymous',
+      stayAnonymousDesc: "Don't share your real name or phone number. Communicate only on the platform.",
+      autoLinkedCases: 'Auto-Linked Cases',
+      autoLinkedDesc: 'Our system automatically links cases that share the same identifiers (e.g., email, name, phone number, domain). You can navigate those connections and explore related cases. Security is in your hands. — ScamNemesis',
+      searchDatabase: 'Search Our Database',
+      searchDatabaseDesc: 'Browse reported scams and protect yourself from fraudsters',
+      found: 'Found',
+      of: 'of',
+      results: 'results',
+      sort: 'Sort:',
+      newest: 'Newest',
+      oldest: 'Oldest',
+      amountDesc: 'Amount (desc)',
+      amountAsc: 'Amount (asc)',
+      relevance: 'Relevance',
+      moreInfo: 'More Information',
+      fieldMapTitle: 'ScamNemesis – Field Map & Rules',
+      fieldMapDesc: "Overview of all fields in the system, their properties, and processing rules. Below you'll find an overview of the data we process, how it's organized, and which identifiers you can search for.",
+      showFieldMap: 'Show Field Map Table',
+      hideFieldMap: 'Hide Field Map Table',
+      scamCategories: 'Scam Categories',
+      commonScams: 'Most Common Types of Scams',
+      commonScamsDesc: "Here you'll find a list of the most common scams with brief explanations of how they work—so you can categorize cases and search more easily.",
+      scamTypes: 'scam types',
+      readyToVerify: 'Ready to Verify?',
+      readyDesc: 'Start your free search now and protect yourself from scams. Join thousands of users who trust ScamNemesis for fraud detection.',
+      reportScam: 'Report a Scam',
+    },
+    de: {
+      badge: 'Fortschrittlichste Plattform zur Betrugserkennung',
+      heroTitle: 'Kostenloser Betrugscheck — Überprüfen Sie Personen, Websites, Telefonnummern, E-Mails, Bankkonten & Krypto + mehr',
+      heroSubtitle: 'Willkommen auf der fortschrittlichsten Plattform zur Betrugserkennung und -prävention. Fügen Sie eine URL, Telefonnummer, E-Mail, Bankkonto, Wallet-Adresse oder einen Namen ein, um eine Echtzeit-Überprüfung durchzuführen. Erhalten Sie Ergebnisse in Sekunden.',
+      dataSources: 'Datenquellen',
+      records: 'Datensätze',
+      searchTypes: 'Suchtypen',
+      realtimeUpdates: 'Echtzeit-Updates',
+      startFreeSearch: 'Kostenlose Suche starten',
+      communityAccessRequired: 'Community-Zugang erforderlich',
+      communityAccessDesc: 'Um die DSGVO-Vorschriften einzuhalten, müssen Sie unserer Community beitreten, bevor Sie unsere Datenbank durchsuchen können. Dies hilft uns, den legalen Zugang zu geteilten Betrugsinformationen zu gewährleisten und gleichzeitig die Datenschutzrechte zu schützen.',
+      joinCommunity: 'Community beitreten',
+      aboutPlatform: 'Über unsere Plattform',
+      firstPlatform: 'Die erste Plattform ihrer Art',
+      platformDesc1: 'Wir sind eine Plattform, die systematisch Daten über Betrug und Betrüger sammelt und analysiert. Als erste ihrer Art kombinieren wir investigative Arbeit mit moderner Technologie, um Betrug zu erkennen und zu verhindern.',
+      platformDesc2: 'Wir nutzen über 130 Datenquellen, suchen nach Mustern und verknüpfen wiederkehrende Schemata über verschiedene Fälle hinweg. Jeder, der betrogen wurde, kann seinen Fall sicher melden — auch anonym. Das hilft uns, Opfer miteinander und mit bestehenden Fallakten schneller zu verbinden und Ermittlungen voranzutreiben.',
+      platformDesc3: 'Wir bieten Ihnen eine einfache Möglichkeit, Partner, Unternehmen, Websites, Social-Media-Profile, Telefonnummern, Bankkonten und Krypto-Wallets zu überprüfen — bevor Sie sich auf eine Investition, ein Geschäft oder eine Beziehung einlassen. Schließen Sie sich uns an und helfen Sie, das Internet sicherer zu machen.',
+      websites: 'Websites',
+      urlDomainCheck: 'URL- & Domain-Prüfung',
+      people: 'Personen',
+      nameVerification: 'Namensverifizierung',
+      phone: 'Telefon',
+      numberLookup: 'Nummernsuche',
+      email: 'E-Mail',
+      addressSearch: 'Adresssuche',
+      bank: 'Bank',
+      ibanAccount: 'IBAN & Konto',
+      crypto: 'Krypto',
+      walletAddress: 'Wallet-Adresse',
+      company: 'Unternehmen',
+      businessCheck: 'Unternehmenscheck',
+      vehicle: 'Fahrzeug',
+      licensePlate: 'Kennzeichen',
+      howToVerify: 'So überprüfen Sie ein Unternehmen, eine Person oder eine Domain, bevor Sie vertrauen',
+      step1Title: 'Suchen',
+      step1Desc: 'Geben Sie einen Identifikator für die Person oder Einheit ein, die Sie überprüfen möchten — wie Name, E-Mail, Telefonnummer, Domain/URL, IBAN, Social-Media-Handle, Kennzeichen usw. Je mehr Identifikatoren Sie ausprobieren, desto besser sind Ihre Chancen, eine Übereinstimmung zu finden.',
+      filterBy: 'Sie können auch filtern nach:',
+      date: 'Datum',
+      country: 'Land',
+      caseType: 'Falltyp',
+      step2Title: 'Ergebnisse',
+      step2Desc: 'Wenn das System eine Übereinstimmung findet, werden die Ergebnisse nach ihrer Ähnlichkeit mit Ihrer Anfrage sortiert angezeigt. Die besten Übereinstimmungen erscheinen oben; die Ähnlichkeit nimmt beim Scrollen ab. Wir empfehlen, mehrere Ergebnisse zu überprüfen, besonders bei häufigen Namen oder unvollständigen Daten.',
+      matchScore: 'Übereinstimmung',
+      step3Title: 'Falldetails & sichere Kommunikation',
+      step3Desc: 'Durch Klicken auf ein Ergebnis öffnet sich ein Bericht mit allen verfügbaren Informationen. Einige sensible Felder können aus rechtlichen und Sicherheitsgründen unscharf dargestellt werden. Sie können einen Fall kommentieren und mit anderen Opfern diskutieren.',
+      stayAnonymous: 'Bleiben Sie anonym',
+      stayAnonymousDesc: 'Teilen Sie nicht Ihren echten Namen oder Ihre Telefonnummer. Kommunizieren Sie nur auf der Plattform.',
+      autoLinkedCases: 'Automatisch verknüpfte Fälle',
+      autoLinkedDesc: 'Unser System verknüpft automatisch Fälle, die dieselben Identifikatoren teilen (z.B. E-Mail, Name, Telefonnummer, Domain). Sie können diesen Verbindungen folgen und verwandte Fälle erkunden. Sicherheit liegt in Ihren Händen. — ScamNemesis',
+      searchDatabase: 'Unsere Datenbank durchsuchen',
+      searchDatabaseDesc: 'Durchsuchen Sie gemeldete Betrugsfälle und schützen Sie sich vor Betrügern',
+      found: 'Gefunden',
+      of: 'von',
+      results: 'Ergebnissen',
+      sort: 'Sortieren:',
+      newest: 'Neueste',
+      oldest: 'Älteste',
+      amountDesc: 'Betrag (abst.)',
+      amountAsc: 'Betrag (aufst.)',
+      relevance: 'Relevanz',
+      moreInfo: 'Weitere Informationen',
+      fieldMapTitle: 'ScamNemesis – Feldübersicht & Regeln',
+      fieldMapDesc: 'Übersicht aller Felder im System, ihrer Eigenschaften und Verarbeitungsregeln. Unten finden Sie eine Übersicht der Daten, die wir verarbeiten, wie sie organisiert sind und nach welchen Identifikatoren Sie suchen können.',
+      showFieldMap: 'Feldtabelle anzeigen',
+      hideFieldMap: 'Feldtabelle ausblenden',
+      scamCategories: 'Betrugskategorien',
+      commonScams: 'Häufigste Betrugsarten',
+      commonScamsDesc: 'Hier finden Sie eine Liste der häufigsten Betrugsfälle mit kurzen Erklärungen, wie sie funktionieren — damit Sie Fälle kategorisieren und einfacher suchen können.',
+      scamTypes: 'Betrugsarten',
+      readyToVerify: 'Bereit zur Überprüfung?',
+      readyDesc: 'Starten Sie jetzt Ihre kostenlose Suche und schützen Sie sich vor Betrug. Schließen Sie sich Tausenden von Nutzern an, die ScamNemesis für die Betrugserkennung vertrauen.',
+      reportScam: 'Betrug melden',
+    },
+    sk: {
+      badge: 'Najpokročilejšia platforma na detekciu podvodov',
+      heroTitle: 'Bezplatná kontrola podvodov — Overte osoby, webstránky, telefónne čísla, e-maily, bankové účty a krypto + viac',
+      heroSubtitle: 'Vitajte na najpokročilejšej platforme na detekciu a prevenciu podvodov. Vložte URL, telefónne číslo, e-mail, bankový účet, adresu peňaženky alebo meno osoby pre kontrolu v reálnom čase. Získajte výsledky za sekundy.',
+      dataSources: 'Zdroje dát',
+      records: 'Záznamov',
+      searchTypes: 'Typov vyhľadávania',
+      realtimeUpdates: 'Aktualizácie v reálnom čase',
+      startFreeSearch: 'Spustiť bezplatné vyhľadávanie',
+      communityAccessRequired: 'Vyžaduje sa prístup do komunity',
+      communityAccessDesc: 'Pre súlad s GDPR sa musíte pripojiť k našej komunite pred vyhľadávaním v databáze. To nám pomáha udržiavať legálny prístup k zdieľaným informáciám o podvodoch a zároveň chrániť práva na súkromie.',
+      joinCommunity: 'Pripojiť sa ku komunite',
+      aboutPlatform: 'O našej platforme',
+      firstPlatform: 'Prvá platforma svojho druhu',
+      platformDesc1: 'Sme platforma, ktorá systematicky zbiera a analyzuje údaje o podvodoch a podvodníkoch. Ako prvá svojho druhu kombinujeme vyšetrovaciu prácu s modernou technológiou na detekciu a prevenciu podvodov.',
+      platformDesc2: 'Využívame viac ako 130 zdrojov dát, hľadáme vzory a prepájame opakujúce sa schémy naprieč prípadmi. Každý, kto bol podvedený, môže bezpečne nahlásiť svoj prípad — aj anonymne. To nám pomáha rýchlejšie spájať obete medzi sebou a s existujúcimi spismi.',
+      platformDesc3: 'Poskytujeme vám jednoduchý spôsob, ako preveriť partnerov, spoločnosti, webstránky, profily na sociálnych sieťach, telefónne čísla, bankové účty a krypto peňaženky — predtým, ako sa zaviažete k investícii, obchodu alebo vzťahu. Pridajte sa k nám a pomôžte urobiť internet bezpečnejším.',
+      websites: 'Webstránky',
+      urlDomainCheck: 'Kontrola URL a domény',
+      people: 'Ľudia',
+      nameVerification: 'Overenie mena',
+      phone: 'Telefón',
+      numberLookup: 'Vyhľadávanie čísla',
+      email: 'E-mail',
+      addressSearch: 'Vyhľadávanie adresy',
+      bank: 'Banka',
+      ibanAccount: 'IBAN a účet',
+      crypto: 'Krypto',
+      walletAddress: 'Adresa peňaženky',
+      company: 'Spoločnosť',
+      businessCheck: 'Kontrola firmy',
+      vehicle: 'Vozidlo',
+      licensePlate: 'ŠPZ',
+      howToVerify: 'Ako overiť spoločnosť, osobu alebo doménu predtým, ako jej dôverujete',
+      step1Title: 'Vyhľadávanie',
+      step1Desc: 'Zadajte identifikátor osoby alebo subjektu, ktorý chcete skontrolovať — ako meno, e-mail, telefónne číslo, doménu/URL, IBAN, handle na sociálnych sieťach, ŠPZ atď. Čím viac identifikátorov vyskúšate, tým väčšia šanca nájsť zhodu.',
+      filterBy: 'Môžete tiež filtrovať podľa:',
+      date: 'Dátum',
+      country: 'Krajina',
+      caseType: 'Typ prípadu',
+      step2Title: 'Výsledky',
+      step2Desc: 'Ak systém nájde zhodu, zobrazí výsledky zoradené podľa podobnosti s vaším dotazom. Najlepšie zhody sa zobrazujú hore; podobnosť klesá pri posúvaní. Odporúčame skontrolovať viacero výsledkov, najmä pri bežných menách alebo neúplných údajoch.',
+      matchScore: 'Skóre zhody',
+      step3Title: 'Detaily prípadu a bezpečná komunikácia',
+      step3Desc: 'Kliknutím na výsledok sa otvorí hlásenie so všetkými dostupnými informáciami. Niektoré citlivé polia môžu byť rozmazané z právnych a bezpečnostných dôvodov. Môžete komentovať prípad a diskutovať s inými obeťami.',
+      stayAnonymous: 'Zostaňte v anonymite',
+      stayAnonymousDesc: 'Nezdieľajte svoje skutočné meno ani telefónne číslo. Komunikujte iba na platforme.',
+      autoLinkedCases: 'Automaticky prepojené prípady',
+      autoLinkedDesc: 'Náš systém automaticky prepája prípady, ktoré zdieľajú rovnaké identifikátory (napr. e-mail, meno, telefónne číslo, doménu). Môžete prechádzať tieto prepojenia a skúmať súvisiace prípady. Bezpečnosť je vo vašich rukách. — ScamNemesis',
+      searchDatabase: 'Prehľadať našu databázu',
+      searchDatabaseDesc: 'Prehliadajte nahlásené podvody a chráňte sa pred podvodníkmi',
+      found: 'Nájdených',
+      of: 'z',
+      results: 'výsledkov',
+      sort: 'Zoradiť:',
+      newest: 'Najnovšie',
+      oldest: 'Najstaršie',
+      amountDesc: 'Suma (zostup.)',
+      amountAsc: 'Suma (vzostup.)',
+      relevance: 'Relevancia',
+      moreInfo: 'Ďalšie informácie',
+      fieldMapTitle: 'ScamNemesis – Mapa polí a pravidlá',
+      fieldMapDesc: 'Prehľad všetkých polí v systéme, ich vlastností a pravidiel spracovania. Nižšie nájdete prehľad údajov, ktoré spracúvame, ako sú organizované a podľa akých identifikátorov môžete vyhľadávať.',
+      showFieldMap: 'Zobraziť tabuľku polí',
+      hideFieldMap: 'Skryť tabuľku polí',
+      scamCategories: 'Kategórie podvodov',
+      commonScams: 'Najčastejšie typy podvodov',
+      commonScamsDesc: 'Tu nájdete zoznam najčastejších podvodov s krátkymi vysvetleniami, ako fungujú — aby ste mohli kategorizovať prípady a jednoduchšie vyhľadávať.',
+      scamTypes: 'typov podvodov',
+      readyToVerify: 'Pripravení na overenie?',
+      readyDesc: 'Spustite teraz bezplatné vyhľadávanie a chráňte sa pred podvodmi. Pridajte sa k tisícom používateľov, ktorí dôverujú ScamNemesis pri detekcii podvodov.',
+      reportScam: 'Nahlásiť podvod',
+    },
+    cs: {
+      badge: 'Nejpokročilejší platforma pro detekci podvodů',
+      heroTitle: 'Bezplatná kontrola podvodů — Ověřte osoby, webové stránky, telefonní čísla, e-maily, bankovní účty a krypto + více',
+      heroSubtitle: 'Vítejte na nejpokročilejší platformě pro detekci a prevenci podvodů. Vložte URL, telefonní číslo, e-mail, bankovní účet, adresu peněženky nebo jméno osoby pro kontrolu v reálném čase. Získejte výsledky za sekundy.',
+      dataSources: 'Zdroje dat',
+      records: 'Záznamů',
+      searchTypes: 'Typů vyhledávání',
+      realtimeUpdates: 'Aktualizace v reálném čase',
+      startFreeSearch: 'Spustit bezplatné vyhledávání',
+      communityAccessRequired: 'Vyžaduje se přístup do komunity',
+      communityAccessDesc: 'Pro soulad s GDPR se musíte připojit k naší komunitě před vyhledáváním v databázi. To nám pomáhá udržovat legální přístup ke sdíleným informacím o podvodech a zároveň chránit práva na soukromí.',
+      joinCommunity: 'Připojit se ke komunitě',
+      aboutPlatform: 'O naší platformě',
+      firstPlatform: 'První platforma svého druhu',
+      platformDesc1: 'Jsme platforma, která systematicky sbírá a analyzuje údaje o podvodech a podvodnících. Jako první svého druhu kombinujeme vyšetřovací práci s moderní technologií k detekci a prevenci podvodů.',
+      platformDesc2: 'Využíváme více než 130 zdrojů dat, hledáme vzory a propojujeme opakující se schémata napříč případy. Každý, kdo byl podveden, může bezpečně nahlásit svůj případ — i anonymně. To nám pomáhá rychleji spojovat oběti mezi sebou a s existujícími spisy.',
+      platformDesc3: 'Poskytujeme vám jednoduchý způsob, jak prověřit partnery, společnosti, webové stránky, profily na sociálních sítích, telefonní čísla, bankovní účty a krypto peněženky — předtím, než se zavážete k investici, obchodu nebo vztahu. Přidejte se k nám a pomozte učinit internet bezpečnějším.',
+      websites: 'Webové stránky',
+      urlDomainCheck: 'Kontrola URL a domény',
+      people: 'Lidé',
+      nameVerification: 'Ověření jména',
+      phone: 'Telefon',
+      numberLookup: 'Vyhledávání čísla',
+      email: 'E-mail',
+      addressSearch: 'Vyhledávání adresy',
+      bank: 'Banka',
+      ibanAccount: 'IBAN a účet',
+      crypto: 'Krypto',
+      walletAddress: 'Adresa peněženky',
+      company: 'Společnost',
+      businessCheck: 'Kontrola firmy',
+      vehicle: 'Vozidlo',
+      licensePlate: 'SPZ',
+      howToVerify: 'Jak ověřit společnost, osobu nebo doménu předtím, než jí důvěřujete',
+      step1Title: 'Vyhledávání',
+      step1Desc: 'Zadejte identifikátor osoby nebo subjektu, který chcete zkontrolovat — jako jméno, e-mail, telefonní číslo, doménu/URL, IBAN, handle na sociálních sítích, SPZ atd. Čím více identifikátorů vyzkoušíte, tím větší šance najít shodu.',
+      filterBy: 'Můžete také filtrovat podle:',
+      date: 'Datum',
+      country: 'Země',
+      caseType: 'Typ případu',
+      step2Title: 'Výsledky',
+      step2Desc: 'Pokud systém najde shodu, zobrazí výsledky seřazené podle podobnosti s vaším dotazem. Nejlepší shody se zobrazují nahoře; podobnost klesá při posouvání. Doporučujeme zkontrolovat více výsledků, zejména u běžných jmen nebo neúplných údajů.',
+      matchScore: 'Skóre shody',
+      step3Title: 'Detaily případu a bezpečná komunikace',
+      step3Desc: 'Kliknutím na výsledek se otevře hlášení se všemi dostupnými informacemi. Některá citlivá pole mohou být rozmazaná z právních a bezpečnostních důvodů. Můžete komentovat případ a diskutovat s dalšími oběťmi.',
+      stayAnonymous: 'Zůstaňte v anonymitě',
+      stayAnonymousDesc: 'Nesdílejte své skutečné jméno ani telefonní číslo. Komunikujte pouze na platformě.',
+      autoLinkedCases: 'Automaticky propojené případy',
+      autoLinkedDesc: 'Náš systém automaticky propojuje případy, které sdílejí stejné identifikátory (např. e-mail, jméno, telefonní číslo, doménu). Můžete procházet tato propojení a zkoumat související případy. Bezpečnost je ve vašich rukou. — ScamNemesis',
+      searchDatabase: 'Prohledat naši databázi',
+      searchDatabaseDesc: 'Procházejte nahlášené podvody a chraňte se před podvodníky',
+      found: 'Nalezeno',
+      of: 'z',
+      results: 'výsledků',
+      sort: 'Řadit:',
+      newest: 'Nejnovější',
+      oldest: 'Nejstarší',
+      amountDesc: 'Částka (sest.)',
+      amountAsc: 'Částka (vzest.)',
+      relevance: 'Relevance',
+      moreInfo: 'Další informace',
+      fieldMapTitle: 'ScamNemesis – Mapa polí a pravidla',
+      fieldMapDesc: 'Přehled všech polí v systému, jejich vlastností a pravidel zpracování. Níže najdete přehled údajů, které zpracováváme, jak jsou organizovány a podle jakých identifikátorů můžete vyhledávat.',
+      showFieldMap: 'Zobrazit tabulku polí',
+      hideFieldMap: 'Skrýt tabulku polí',
+      scamCategories: 'Kategorie podvodů',
+      commonScams: 'Nejčastější typy podvodů',
+      commonScamsDesc: 'Zde najdete seznam nejčastějších podvodů s krátkými vysvětleními, jak fungují — abyste mohli kategorizovat případy a jednodušeji vyhledávat.',
+      scamTypes: 'typů podvodů',
+      readyToVerify: 'Připraveni k ověření?',
+      readyDesc: 'Spusťte nyní bezplatné vyhledávání a chraňte se před podvody. Přidejte se k tisícům uživatelů, kteří důvěřují ScamNemesis při detekci podvodů.',
+      reportScam: 'Nahlásit podvod',
+    },
+  };
+  return t[locale] || t.en;
+};
 
 // JSON-LD Schemas
 const jsonLdSchemas = {
@@ -404,6 +705,9 @@ interface SearchApiResponse {
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'en';
+  const t = getTranslations(locale);
   const initialQuery = searchParams?.get('q') || '';
 
   const [filters, setFilters] = useState<SearchFilters>({
@@ -599,36 +903,36 @@ export default function SearchPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8">
                 <Shield className="h-4 w-4 text-[#0E74FF]" />
-                <span className="text-sm font-semibold text-[#0E74FF]">Most Advanced Scam Detection Platform</span>
+                <span className="text-sm font-semibold text-[#0E74FF]">{t.badge}</span>
               </div>
 
               {/* Title */}
               <h1 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-                Free Scam Checker — Verify People, Websites, Phone Numbers, Emails, Bank Accounts & Crypto + more
+                {t.heroTitle}
               </h1>
 
               {/* Subtitle */}
               <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-                Welcome to the most advanced platform for scam detection and prevention. Paste a URL, phone number, email, bank account, wallet address, or a person&apos;s name to run a real-time check. Get results in seconds.
+                {t.heroSubtitle}
               </p>
 
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10">
                 <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 md:p-6">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-1">130+</div>
-                  <div className="text-xs md:text-sm text-slate-400">Data Sources</div>
+                  <div className="text-xs md:text-sm text-slate-400">{t.dataSources}</div>
                 </div>
                 <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 md:p-6">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-1">612M+</div>
-                  <div className="text-xs md:text-sm text-slate-400">Records</div>
+                  <div className="text-xs md:text-sm text-slate-400">{t.records}</div>
                 </div>
                 <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 md:p-6">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-1">38+</div>
-                  <div className="text-xs md:text-sm text-slate-400">Search Types</div>
+                  <div className="text-xs md:text-sm text-slate-400">{t.searchTypes}</div>
                 </div>
                 <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 md:p-6">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-1">24/7</div>
-                  <div className="text-xs md:text-sm text-slate-400">Real-time Updates</div>
+                  <div className="text-xs md:text-sm text-slate-400">{t.realtimeUpdates}</div>
                 </div>
               </div>
 
@@ -640,7 +944,7 @@ export default function SearchPage() {
                   onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <Search className="mr-2 h-5 w-5" />
-                  Start Free Search
+                  {t.startFreeSearch}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
@@ -658,14 +962,14 @@ export default function SearchPage() {
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl md:text-3xl font-bold text-[#1e293b] mb-3">
-                    Community Access Required
+                    {t.communityAccessRequired}
                   </h2>
                   <p className="text-[#64748b] leading-relaxed mb-4">
-                    To comply with GDPR regulations, you need to join our community before searching our database. This helps us maintain legal access to shared fraud information while protecting privacy rights.
+                    {t.communityAccessDesc}
                   </p>
                   <Button className="bg-amber-600 hover:bg-amber-700 text-white">
                     <Users className="mr-2 h-4 w-4" />
-                    Join Community
+                    {t.joinCommunity}
                   </Button>
                 </div>
               </div>
@@ -681,31 +985,31 @@ export default function SearchPage() {
                 <div>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E74FF]/10 border border-[#0E74FF]/20 mb-6">
                     <Database className="h-4 w-4 text-[#0E74FF]" />
-                    <span className="text-sm font-semibold text-[#0E74FF]">About Our Platform</span>
+                    <span className="text-sm font-semibold text-[#0E74FF]">{t.aboutPlatform}</span>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-6 leading-tight">
-                    The First Platform of Its Kind
+                    {t.firstPlatform}
                   </h2>
                   <p className="text-[#64748b] leading-relaxed mb-6">
-                    We&apos;re a platform that systematically collects and analyzes data on scams and scammers. As the first of its kind, we combine investigative work with modern technology to detect and prevent fraud.
+                    {t.platformDesc1}
                   </p>
                   <p className="text-[#64748b] leading-relaxed mb-6">
-                    We tap into <strong className="text-[#1e293b]">130+ data sources</strong>, look for patterns, and link recurring schemes across cases. Anyone who&apos;s been scammed can report their case safely — even anonymously. That helps us connect victims to one another and to existing case files faster, moving investigations forward.
+                    {t.platformDesc2}
                   </p>
                   <p className="text-[#64748b] leading-relaxed">
-                    We give you an easy way to vet partners, companies, websites, social profiles, phone numbers, bank accounts, and crypto wallets — before you commit to an investment, a deal, or a relationship. <strong className="text-[#1e293b]">Join us and help make the internet a safer place.</strong>
+                    {t.platformDesc3}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { icon: Globe, label: 'Websites', desc: 'URL & Domain check' },
-                    { icon: User, label: 'People', desc: 'Name verification' },
-                    { icon: Phone, label: 'Phone', desc: 'Number lookup' },
-                    { icon: Mail, label: 'Email', desc: 'Address search' },
-                    { icon: CreditCard, label: 'Bank', desc: 'IBAN & Account' },
-                    { icon: Bitcoin, label: 'Crypto', desc: 'Wallet address' },
-                    { icon: Building, label: 'Company', desc: 'Business check' },
-                    { icon: Car, label: 'Vehicle', desc: 'License plate' },
+                    { icon: Globe, label: t.websites, desc: t.urlDomainCheck },
+                    { icon: User, label: t.people, desc: t.nameVerification },
+                    { icon: Phone, label: t.phone, desc: t.numberLookup },
+                    { icon: Mail, label: t.email, desc: t.addressSearch },
+                    { icon: CreditCard, label: t.bank, desc: t.ibanAccount },
+                    { icon: Bitcoin, label: t.crypto, desc: t.walletAddress },
+                    { icon: Building, label: t.company, desc: t.businessCheck },
+                    { icon: Car, label: t.vehicle, desc: t.licensePlate },
                   ].map((item, idx) => (
                     <div
                       key={idx}
@@ -734,7 +1038,7 @@ export default function SearchPage() {
                   <Target className="h-8 w-8 text-[#0E74FF]" />
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
-                  How to Verify a Company, Person, or Domain Before You Trust
+                  {t.howToVerify}
                 </h2>
               </div>
 
@@ -753,17 +1057,17 @@ export default function SearchPage() {
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 flex items-center justify-center mb-6 border border-[#0E74FF]/20 shadow-md">
                         <Search className="h-10 w-10 text-[#0E74FF]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">Search</h3>
+                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">{t.step1Title}</h3>
                       <p className="text-[#64748b] leading-relaxed text-center mb-6">
-                        Enter an identifier for the person or entity you want to check—such as a name, email, phone number, domain/URL, IBAN, social media handle, license plate number, etc. The more identifiers you try, the better your chances of finding a match.
+                        {t.step1Desc}
                       </p>
                       <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 w-full">
                         <p className="font-semibold text-[#1e293b] text-sm mb-3 flex items-center gap-2">
                           <Filter className="h-4 w-4 text-[#0E74FF]" />
-                          You can also filter by:
+                          {t.filterBy}
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          {['Date', 'Country', 'Case Type'].map((f) => (
+                          {[t.date, t.country, t.caseType].map((f) => (
                             <span key={f} className="px-3 py-1.5 bg-[#0E74FF]/5 text-[#0E74FF] rounded-lg text-xs font-medium border border-[#0E74FF]/20">
                               {f}
                             </span>
@@ -782,13 +1086,13 @@ export default function SearchPage() {
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 flex items-center justify-center mb-6 border border-[#0E74FF]/20 shadow-md">
                         <FileText className="h-10 w-10 text-[#0E74FF]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">Results</h3>
+                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">{t.step2Title}</h3>
                       <p className="text-[#64748b] leading-relaxed text-center mb-6">
-                        If the system finds a match, it will show results sorted by how closely they match your query. The best matches appear at the top; similarity decreases as you scroll. We recommend reviewing several results, especially when you&apos;re dealing with common names or incomplete data.
+                        {t.step2Desc}
                       </p>
                       <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 w-full">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-semibold text-[#0E74FF] uppercase tracking-wide">Match Score</span>
+                          <span className="text-xs font-semibold text-[#0E74FF] uppercase tracking-wide">{t.matchScore}</span>
                           <span className="text-lg font-bold text-[#0E74FF]">95%</span>
                         </div>
                         <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -807,17 +1111,17 @@ export default function SearchPage() {
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0E74FF]/10 to-[#0E74FF]/20 flex items-center justify-center mb-6 border border-[#0E74FF]/20 shadow-md">
                         <Shield className="h-10 w-10 text-[#0E74FF]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">Case Details & Safe Communication</h3>
+                      <h3 className="text-2xl font-bold text-[#1e293b] mb-4 text-center">{t.step3Title}</h3>
                       <p className="text-[#64748b] leading-relaxed text-center mb-6">
-                        Clicking a result opens a report with all available information. Some sensitive fields may be blurred for legal and safety reasons. You can comment on a case and discuss it with other victims.
+                        {t.step3Desc}
                       </p>
                       <div className="bg-amber-50 rounded-2xl p-5 border border-amber-200 w-full">
                         <div className="flex items-start gap-3">
                           <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                           <div>
-                            <p className="font-semibold text-amber-900 text-sm mb-1">Stay Anonymous</p>
+                            <p className="font-semibold text-amber-900 text-sm mb-1">{t.stayAnonymous}</p>
                             <p className="text-amber-800 text-xs leading-relaxed">
-                              Don&apos;t share your real name or phone number. Communicate only on the platform.
+                              {t.stayAnonymousDesc}
                             </p>
                           </div>
                         </div>
@@ -834,9 +1138,9 @@ export default function SearchPage() {
                     <Link2 className="h-6 w-6 text-indigo-600" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#1e293b] mb-2">Auto-Linked Cases</h4>
+                    <h4 className="font-bold text-[#1e293b] mb-2">{t.autoLinkedCases}</h4>
                     <p className="text-[#64748b] leading-relaxed">
-                      Our system automatically links cases that share the same identifiers (e.g., email, name, phone number, domain). You can navigate those connections and explore related cases. <strong className="text-[#1e293b]">Security is in your hands.</strong> — ScamNemesis
+                      {t.autoLinkedDesc}
                     </p>
                   </div>
                 </div>
@@ -849,9 +1153,9 @@ export default function SearchPage() {
         <section id="search-section" className="w-full py-16 md:py-24 bg-white">
           <div className="container px-4 md:px-6">
             <div className="mb-10 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">Search Our Database</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">{t.searchDatabase}</h2>
               <p className="text-[#64748b] max-w-2xl mx-auto">
-                Browse reported scams and protect yourself from fraudsters
+                {t.searchDatabaseDesc}
               </p>
             </div>
 
@@ -872,24 +1176,24 @@ export default function SearchPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">
-                      Found <span className="font-semibold text-foreground">{reports.length}</span> of{' '}
-                      <span className="font-semibold text-foreground">{totalResults}</span> results
+                      {t.found} <span className="font-semibold text-foreground">{reports.length}</span> {t.of}{' '}
+                      <span className="font-semibold text-foreground">{totalResults}</span> {t.results}
                     </p>
                   </div>
 
                   {/* Sort */}
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Sort:</span>
+                    <span className="text-sm text-muted-foreground">{t.sort}</span>
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger className="w-[180px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="date-desc">Newest</SelectItem>
-                        <SelectItem value="date-asc">Oldest</SelectItem>
-                        <SelectItem value="amount-desc">Amount (desc)</SelectItem>
-                        <SelectItem value="amount-asc">Amount (asc)</SelectItem>
-                        <SelectItem value="relevance">Relevance</SelectItem>
+                        <SelectItem value="date-desc">{t.newest}</SelectItem>
+                        <SelectItem value="date-asc">{t.oldest}</SelectItem>
+                        <SelectItem value="amount-desc">{t.amountDesc}</SelectItem>
+                        <SelectItem value="amount-asc">{t.amountAsc}</SelectItem>
+                        <SelectItem value="relevance">{t.relevance}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -968,13 +1272,13 @@ export default function SearchPage() {
               <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E74FF]/10 border border-[#0E74FF]/20 mb-6">
                   <Database className="h-4 w-4 text-[#0E74FF]" />
-                  <span className="text-sm font-semibold text-[#0E74FF]">More Information</span>
+                  <span className="text-sm font-semibold text-[#0E74FF]">{t.moreInfo}</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
-                  ScamNemesis – Field Map & Rules
+                  {t.fieldMapTitle}
                 </h2>
                 <p className="text-[#64748b] max-w-3xl mx-auto mb-6">
-                  Overview of all fields in the system, their properties, and processing rules. Below you&apos;ll find an overview of the data we process, how it&apos;s organized, and which identifiers you can search for.
+                  {t.fieldMapDesc}
                 </p>
 
                 <button
@@ -982,7 +1286,7 @@ export default function SearchPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#0E74FF]/30 transition-all duration-300"
                 >
                   <span className="font-semibold text-[#1e293b]">
-                    {showFieldMap ? 'Hide' : 'Show'} Field Map Table
+                    {showFieldMap ? t.hideFieldMap : t.showFieldMap}
                   </span>
                   <ChevronDown className={`h-5 w-5 text-[#64748b] transition-transform duration-300 ${showFieldMap ? 'rotate-180' : ''}`} />
                 </button>
@@ -1153,13 +1457,13 @@ export default function SearchPage() {
               <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E74FF]/10 border border-[#0E74FF]/20 mb-6">
                   <AlertTriangle className="h-4 w-4 text-[#0E74FF]" />
-                  <span className="text-sm font-semibold text-[#0E74FF]">Scam Categories</span>
+                  <span className="text-sm font-semibold text-[#0E74FF]">{t.scamCategories}</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold text-[#1e293b] mb-4">
-                  Most Common Types of Scams
+                  {t.commonScams}
                 </h2>
                 <p className="text-[#64748b] max-w-3xl mx-auto">
-                  Here you&apos;ll find a list of the most common scams with brief explanations of how they work—so you can categorize cases and search more easily.
+                  {t.commonScamsDesc}
                 </p>
               </div>
 
@@ -1188,7 +1492,7 @@ export default function SearchPage() {
                               {category.title}
                             </h3>
                             <p className="text-sm md:text-base text-[#64748b]">
-                              {category.types.length} scam types
+                              {category.types.length} {t.scamTypes}
                             </p>
                           </div>
                         </div>
@@ -1242,10 +1546,10 @@ export default function SearchPage() {
           <div className="container px-4 md:px-6">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                Ready to Verify?
+                {t.readyToVerify}
               </h2>
               <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-2xl mx-auto">
-                Start your free search now and protect yourself from scams. Join thousands of users who trust ScamNemesis for fraud detection.
+                {t.readyDesc}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
@@ -1254,16 +1558,16 @@ export default function SearchPage() {
                   onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <Search className="mr-2 h-5 w-5" />
-                  Start Free Search
+                  {t.startFreeSearch}
                 </Button>
-                <Link href="/report">
+                <Link href={`/${locale}/report/new`}>
                   <Button
                     size="lg"
                     variant="outline"
                     className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
                   >
                     <FileText className="mr-2 h-5 w-5" />
-                    Report a Scam
+                    {t.reportScam}
                   </Button>
                 </Link>
               </div>
