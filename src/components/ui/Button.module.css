@@ -25,6 +25,16 @@
 }
 
 /* Variants */
+.default {
+  background-color: var(--color-background-secondary, #f3f4f6);
+  color: var(--color-text, #1f2937);
+  border: 1px solid var(--color-border, #d1d5db);
+}
+
+.default:hover:not(:disabled) {
+  background-color: var(--color-background-tertiary, #e5e7eb);
+}
+
 .primary {
   background-color: var(--color-primary);
   color: white;
@@ -90,6 +100,12 @@
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   height: 3rem;
+}
+
+.icon {
+  padding: 0;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 /* Full Width */

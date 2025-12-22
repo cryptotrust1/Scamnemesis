@@ -11,10 +11,11 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const passwordRequirements = [
-  { label: 'Aspoň 8 znakov', test: (pwd: string) => pwd.length >= 8 },
+  { label: 'Aspoň 9 znakov', test: (pwd: string) => pwd.length >= 9 },
   { label: 'Obsahuje veľké písmeno', test: (pwd: string) => /[A-Z]/.test(pwd) },
   { label: 'Obsahuje malé písmeno', test: (pwd: string) => /[a-z]/.test(pwd) },
   { label: 'Obsahuje číslo', test: (pwd: string) => /[0-9]/.test(pwd) },
+  { label: 'Obsahuje špeciálny znak (!@#$%^&*...)', test: (pwd: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
 ];
 
 export default function RegisterPage() {
