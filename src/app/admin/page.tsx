@@ -231,12 +231,12 @@ export default function AdminDashboard() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
-                      <h4 className="font-medium truncate">{report.title}</h4>
+                      <h4 className="font-medium truncate">{report.summary || 'Bez názvu'}</h4>
                       {getStatusBadge(report.status)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span>{new Date(report.createdAt).toLocaleString('sk-SK')}</span>
-                      {report.reporterEmail && <span>{report.reporterEmail}</span>}
+                      {report.reporter?.email && <span>{report.reporter.email}</span>}
                       <Badge variant="outline">{report.fraudType}</Badge>
                     </div>
                   </div>
