@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -29,9 +29,106 @@ import {
   ChevronDown,
   Sparkles,
   BookOpen,
+  Filter,
+  X,
+  Loader2,
+  MapPin,
+  ExternalLink,
+  User,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+// Fraud type options for filter
+const fraudTypeOptions = [
+  { value: '', label: 'All Types' },
+  { value: 'INVESTMENT_FRAUD', label: 'Investment Fraud' },
+  { value: 'ROMANCE_SCAM', label: 'Romance Scam' },
+  { value: 'PHISHING', label: 'Phishing' },
+  { value: 'IDENTITY_THEFT', label: 'Identity Theft' },
+  { value: 'ONLINE_SHOPPING_FRAUD', label: 'E-commerce Fraud' },
+  { value: 'CRYPTOCURRENCY_SCAM', label: 'Crypto Scam' },
+  { value: 'EMPLOYMENT_SCAM', label: 'Employment Scam' },
+  { value: 'RENTAL_SCAM', label: 'Rental Scam' },
+  { value: 'ADVANCE_FEE_FRAUD', label: 'Advance Fee Fraud' },
+  { value: 'FAKE_CHARITY', label: 'Fake Charity' },
+  { value: 'TECH_SUPPORT_SCAM', label: 'Tech Support Scam' },
+  { value: 'LOTTERY_PRIZE_SCAM', label: 'Lottery Scam' },
+  { value: 'PYRAMID_MLM_SCHEME', label: 'Pyramid/MLM' },
+  { value: 'PONZI_SCHEME', label: 'Ponzi Scheme' },
+  { value: 'OTHER', label: 'Other' },
+];
+
+// Country options for filter
+const countryOptions = [
+  { value: '', label: 'All Countries' },
+  { value: 'SK', label: 'Slovakia' },
+  { value: 'CZ', label: 'Czech Republic' },
+  { value: 'US', label: 'United States' },
+  { value: 'GB', label: 'United Kingdom' },
+  { value: 'DE', label: 'Germany' },
+  { value: 'AT', label: 'Austria' },
+  { value: 'PL', label: 'Poland' },
+  { value: 'HU', label: 'Hungary' },
+  { value: 'UA', label: 'Ukraine' },
+  { value: 'RU', label: 'Russia' },
+  { value: 'CN', label: 'China' },
+  { value: 'NG', label: 'Nigeria' },
+  { value: 'IN', label: 'India' },
+];
+
+// Search result interface
+interface SearchResult {
+  id: string;
+  score: number;
+  source: string;
+  perpetrator: {
+    name?: string | null;
+    phone?: string | null;
+    email?: string | null;
+  };
+  fraud_type: string;
+  country?: string;
+  incident_date?: string;
+}
+
+// Fraud type label mapping
+const fraudTypeLabels: Record<string, string> = {
+  investment_fraud: 'Investment Fraud',
+  romance_scam: 'Romance Scam',
+  phishing: 'Phishing',
+  identity_theft: 'Identity Theft',
+  online_shopping_fraud: 'E-commerce Fraud',
+  cryptocurrency_scam: 'Crypto Scam',
+  employment_scam: 'Employment Scam',
+  rental_scam: 'Rental Scam',
+  advance_fee_fraud: 'Advance Fee Fraud',
+  fake_charity: 'Fake Charity',
+  tech_support_scam: 'Tech Support Scam',
+  lottery_prize_scam: 'Lottery Scam',
+  pyramid_mlm_scheme: 'Pyramid/MLM',
+  ponzi_scheme: 'Ponzi Scheme',
+  other: 'Other',
+};
+
+// Fraud type colors
+const fraudTypeColors: Record<string, { bg: string; text: string }> = {
+  investment_fraud: { bg: 'bg-red-500/20', text: 'text-red-300' },
+  romance_scam: { bg: 'bg-pink-500/20', text: 'text-pink-300' },
+  phishing: { bg: 'bg-orange-500/20', text: 'text-orange-300' },
+  identity_theft: { bg: 'bg-purple-500/20', text: 'text-purple-300' },
+  online_shopping_fraud: { bg: 'bg-cyan-500/20', text: 'text-cyan-300' },
+  cryptocurrency_scam: { bg: 'bg-amber-500/20', text: 'text-amber-300' },
+  employment_scam: { bg: 'bg-blue-500/20', text: 'text-blue-300' },
+  rental_scam: { bg: 'bg-green-500/20', text: 'text-green-300' },
+  advance_fee_fraud: { bg: 'bg-yellow-500/20', text: 'text-yellow-300' },
+  fake_charity: { bg: 'bg-rose-500/20', text: 'text-rose-300' },
+  tech_support_scam: { bg: 'bg-indigo-500/20', text: 'text-indigo-300' },
+  lottery_prize_scam: { bg: 'bg-emerald-500/20', text: 'text-emerald-300' },
+  pyramid_mlm_scheme: { bg: 'bg-violet-500/20', text: 'text-violet-300' },
+  ponzi_scheme: { bg: 'bg-fuchsia-500/20', text: 'text-fuchsia-300' },
+  other: { bg: 'bg-slate-500/20', text: 'text-slate-300' },
+};
 
 // JSON-LD Schemas
 const organizationSchema = {
@@ -385,12 +482,72 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
+  // Search filters state
+  const [showFilters, setShowFilters] = useState(false);
+  const [fraudType, setFraudType] = useState('');
+  const [country, setCountry] = useState('');
+  const [searchMode, setSearchMode] = useState<'auto' | 'fuzzy' | 'exact'>('auto');
+
+  // Search results state
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Perform search
+  const performSearch = useCallback(async () => {
+    if (!searchQuery.trim() && !fraudType && !country) {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchError(null);
+
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.set('q', searchQuery.trim());
+      if (fraudType) params.set('fraud_type', fraudType);
+      if (country) params.set('country', country);
+      params.set('mode', searchMode);
+      params.set('limit', '10');
+
+      const response = await fetch(`/api/v1/search?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error('Search failed');
+      }
+
+      const data = await response.json();
+      setSearchResults(data.results || []);
+      setTotalResults(data.total || 0);
+      setHasSearched(true);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchError('Search failed. Please try again.');
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [searchQuery, fraudType, country, searchMode]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
-    }
+    performSearch();
   };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setFraudType('');
+    setCountry('');
+    setSearchResults([]);
+    setHasSearched(false);
+    setSearchError(null);
+  };
+
+  const hasActiveFilters = fraudType || country;
 
   const getColorClasses = (color: string) => {
     const colors: Record<string, { bg: string; text: string; border: string; gradient: string }> = {
@@ -467,28 +624,153 @@ export default function HomePage() {
               </div>
 
               {/* Search Bar */}
-              <div className="max-w-3xl mx-auto pt-6">
+              <div className="max-w-4xl mx-auto pt-6">
                 <form onSubmit={handleSearch} className="relative group">
                   {/* Glow Effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-2xl blur opacity-50 group-hover:opacity-75 transition duration-300" />
 
                   {/* Search Container */}
-                  <div className="relative bg-slate-900/90 backdrop-blur-sm rounded-2xl p-2 flex items-center gap-2 border border-white/10">
-                    <Search className="w-6 h-6 text-blue-300 ml-4 flex-shrink-0" />
-                    <Input
-                      type="text"
-                      placeholder="Search by name, email, phone, website, IBAN, crypto wallet..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1 bg-transparent border-0 text-white placeholder-blue-300/50 outline-none text-base sm:text-lg py-4 focus:ring-0 focus-visible:ring-0"
-                    />
-                    <Button
-                      type="submit"
-                      className="px-6 sm:px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 flex items-center gap-2"
-                    >
-                      <span className="hidden sm:inline">Search</span>
-                      <Search className="w-5 h-5" />
-                    </Button>
+                  <div className="relative bg-slate-900/90 backdrop-blur-sm rounded-2xl p-2 border border-white/10">
+                    {/* Main Search Row */}
+                    <div className="flex items-center gap-2">
+                      <Search className="w-6 h-6 text-blue-300 ml-4 flex-shrink-0" />
+                      <Input
+                        type="text"
+                        placeholder="Search by name, email, phone, website, IBAN, crypto wallet..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="flex-1 bg-transparent border-0 text-white placeholder-blue-300/50 outline-none text-base sm:text-lg py-4 focus:ring-0 focus-visible:ring-0"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`px-3 py-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors ${showFilters || hasActiveFilters ? 'text-blue-400 bg-blue-500/10' : ''}`}
+                      >
+                        <Filter className="w-5 h-5" />
+                        {hasActiveFilters && (
+                          <span className="ml-1 w-2 h-2 bg-blue-400 rounded-full" />
+                        )}
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={isSearching}
+                        className="px-6 sm:px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 disabled:opacity-50"
+                      >
+                        {isSearching ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <>
+                            <span className="hidden sm:inline">Search</span>
+                            <Search className="w-5 h-5" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Filters Panel */}
+                    {showFilters && (
+                      <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
+                        {/* Search Mode Toggle */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm text-slate-400 mr-2">Search Mode:</span>
+                          <div className="flex rounded-lg bg-slate-800/50 p-1">
+                            {(['auto', 'fuzzy', 'exact'] as const).map((mode) => (
+                              <button
+                                key={mode}
+                                type="button"
+                                onClick={() => setSearchMode(mode)}
+                                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                                  searchMode === mode
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                                }`}
+                              >
+                                {mode === 'auto' ? 'Auto' : mode === 'fuzzy' ? 'Fuzzy' : 'Exact'}
+                              </button>
+                            ))}
+                          </div>
+                          <span className="text-xs text-slate-500 ml-2">
+                            {searchMode === 'auto' && 'Tries exact match first, then fuzzy'}
+                            {searchMode === 'fuzzy' && 'Finds similar matches (names, typos)'}
+                            {searchMode === 'exact' && 'Only exact matches (email, phone, IBAN)'}
+                          </span>
+                        </div>
+
+                        {/* Filter Dropdowns */}
+                        <div className="flex flex-wrap gap-3">
+                          {/* Fraud Type Filter */}
+                          <div className="flex-1 min-w-[180px]">
+                            <label className="text-xs text-slate-400 mb-1 block">Fraud Type</label>
+                            <select
+                              value={fraudType}
+                              onChange={(e) => setFraudType(e.target.value)}
+                              className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500 cursor-pointer"
+                            >
+                              {fraudTypeOptions.map((opt) => (
+                                <option key={opt.value} value={opt.value} className="bg-slate-800">
+                                  {opt.label}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* Country Filter */}
+                          <div className="flex-1 min-w-[180px]">
+                            <label className="text-xs text-slate-400 mb-1 block">Country</label>
+                            <select
+                              value={country}
+                              onChange={(e) => setCountry(e.target.value)}
+                              className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500 cursor-pointer"
+                            >
+                              {countryOptions.map((opt) => (
+                                <option key={opt.value} value={opt.value} className="bg-slate-800">
+                                  {opt.label}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Active Filters & Clear */}
+                        {hasActiveFilters && (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs text-slate-400">Active filters:</span>
+                            {fraudType && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">
+                                {fraudTypeOptions.find(o => o.value === fraudType)?.label}
+                                <button
+                                  type="button"
+                                  onClick={() => setFraudType('')}
+                                  className="hover:text-white"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </span>
+                            )}
+                            {country && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs">
+                                {countryOptions.find(o => o.value === country)?.label}
+                                <button
+                                  type="button"
+                                  onClick={() => setCountry('')}
+                                  className="hover:text-white"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={clearSearch}
+                              className="text-xs text-slate-400 hover:text-white underline ml-2"
+                            >
+                              Clear all
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </form>
 
@@ -511,6 +793,175 @@ export default function HomePage() {
                     <span>Always Free</span>
                   </div>
                 </div>
+
+                {/* Search Results Section */}
+                {(hasSearched || isSearching) && (
+                  <div className="mt-10 bg-slate-900/70 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
+                    {/* Results Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-semibold text-white">
+                        {isSearching ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Searching...
+                          </span>
+                        ) : (
+                          <>
+                            {totalResults > 0 ? (
+                              <>Found {totalResults} result{totalResults !== 1 ? 's' : ''}</>
+                            ) : (
+                              'No results found'
+                            )}
+                          </>
+                        )}
+                      </h3>
+                      {hasSearched && !isSearching && totalResults > 10 && (
+                        <Link
+                          href={`/search?q=${encodeURIComponent(searchQuery)}${fraudType ? `&fraud_type=${fraudType}` : ''}${country ? `&country=${country}` : ''}&mode=${searchMode}`}
+                          className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+                        >
+                          View all results
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                    </div>
+
+                    {/* Error Message */}
+                    {searchError && (
+                      <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-4 text-red-300">
+                        {searchError}
+                      </div>
+                    )}
+
+                    {/* Results List */}
+                    {!isSearching && searchResults.length > 0 && (
+                      <div className="space-y-4">
+                        {searchResults.map((result) => {
+                          const typeColors = fraudTypeColors[result.fraud_type] || fraudTypeColors.other;
+                          const typeLabel = fraudTypeLabels[result.fraud_type] || result.fraud_type;
+
+                          return (
+                            <Link
+                              key={result.id}
+                              href={`/reports/${result.id}`}
+                              className="block group"
+                            >
+                              <div className="bg-slate-800/50 hover:bg-slate-800/80 border border-white/5 hover:border-blue-500/30 rounded-xl p-4 transition-all duration-200">
+                                <div className="flex flex-wrap items-start gap-3 mb-3">
+                                  {/* Fraud Type Badge */}
+                                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${typeColors.bg} ${typeColors.text}`}>
+                                    {typeLabel}
+                                  </span>
+
+                                  {/* Match Score */}
+                                  {result.score < 1 && (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400">
+                                      {Math.round(result.score * 100)}% match
+                                    </span>
+                                  )}
+
+                                  {/* Country */}
+                                  {result.country && (
+                                    <span className="inline-flex items-center gap-1 text-xs text-slate-400 ml-auto">
+                                      <MapPin className="w-3 h-3" />
+                                      {result.country}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Perpetrator Info */}
+                                <div className="flex flex-wrap items-center gap-4 text-sm">
+                                  {result.perpetrator.name && (
+                                    <div className="flex items-center gap-2 text-white">
+                                      <User className="w-4 h-4 text-slate-400" />
+                                      <span className="font-medium">{result.perpetrator.name}</span>
+                                    </div>
+                                  )}
+                                  {result.perpetrator.phone && (
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                      <Phone className="w-4 h-4" />
+                                      <span className="font-mono text-xs">{result.perpetrator.phone}</span>
+                                    </div>
+                                  )}
+                                  {result.perpetrator.email && (
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                      <Mail className="w-4 h-4" />
+                                      <span className="font-mono text-xs">{result.perpetrator.email}</span>
+                                    </div>
+                                  )}
+                                  {result.incident_date && (
+                                    <div className="flex items-center gap-2 text-slate-400 ml-auto">
+                                      <Calendar className="w-4 h-4" />
+                                      <span className="text-xs">{result.incident_date}</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* View Link */}
+                                <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
+                                  <span className="text-xs text-slate-500">
+                                    ID: {result.id.substring(0, 8)}...
+                                  </span>
+                                  <span className="text-blue-400 group-hover:text-blue-300 text-sm flex items-center gap-1">
+                                    View details
+                                    <ExternalLink className="w-4 h-4" />
+                                  </span>
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+
+                        {/* View More Link */}
+                        {totalResults > 10 && (
+                          <div className="text-center pt-4">
+                            <Link
+                              href={`/search?q=${encodeURIComponent(searchQuery)}${fraudType ? `&fraud_type=${fraudType}` : ''}${country ? `&country=${country}` : ''}&mode=${searchMode}`}
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+                            >
+                              View all {totalResults} results
+                              <ArrowRight className="w-4 h-4" />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* No Results Message */}
+                    {!isSearching && hasSearched && searchResults.length === 0 && !searchError && (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                          <Search className="w-8 h-8 text-slate-500" />
+                        </div>
+                        <p className="text-slate-400 mb-2">No matching reports found</p>
+                        <p className="text-slate-500 text-sm mb-4">
+                          Try different search terms or adjust filters
+                        </p>
+                        <div className="flex flex-wrap gap-3 justify-center">
+                          {searchMode === 'exact' && (
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setSearchMode('fuzzy');
+                                setTimeout(performSearch, 100);
+                              }}
+                              className="text-sm border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
+                            >
+                              Try fuzzy search
+                            </Button>
+                          )}
+                          <Link
+                            href="/reports/new"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-sm font-medium transition-colors"
+                          >
+                            <AlertTriangle className="w-4 h-4" />
+                            Report a scam
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

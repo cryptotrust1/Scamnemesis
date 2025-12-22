@@ -672,6 +672,47 @@ export async function POST(request: NextRequest) {
       console.log(`[Reports API][${requestId}] Skipping email (anonymous or no email)`);
     }
 
+    // Send notification to admin users about new report
+    console.log(`[Reports API][${requestId}] Step 8b: Sending admin notifications...`);
+    try {
+      // Get all admin and super admin users
+      const adminUsers = await prisma.user.findMany({
+        where: {
+          role: { in: ['ADMIN', 'SUPER_ADMIN'] },
+          isActive: true,
+          emailVerified: { not: null },
+        },
+        select: { email: true },
+      });
+
+      if (adminUsers.length > 0) {
+        console.log(`[Reports API][${requestId}] Notifying ${adminUsers.length} admin(s)...`);
+
+        // Send notification to each admin (non-blocking)
+        const adminNotifications = adminUsers.map(admin =>
+          emailService.sendNewReportNotification(
+            admin.email,
+            report.id,
+            data.incident.summary.substring(0, 100),
+            data.incident.fraud_type
+          ).catch(err => {
+            console.error(`[Reports API][${requestId}] Failed to notify admin ${admin.email}:`, err);
+            return { success: false, error: err.message };
+          })
+        );
+
+        // Wait for all notifications (but don't fail if some fail)
+        const results = await Promise.allSettled(adminNotifications);
+        const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as { success: boolean }).success).length;
+        console.log(`[Reports API][${requestId}] Admin notifications sent: ${successCount}/${adminUsers.length}`);
+      } else {
+        console.log(`[Reports API][${requestId}] No active admin users to notify`);
+      }
+    } catch (adminNotifyError) {
+      // Log but don't fail - admin notification is not critical
+      console.error(`[Reports API][${requestId}] Admin notification error (non-fatal):`, adminNotifyError);
+    }
+
     console.log(`[Reports API][${requestId}] Step 9: Returning success response`);
     return NextResponse.json(
       {
