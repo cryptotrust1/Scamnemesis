@@ -411,6 +411,7 @@ export default function SearchPage() {
     dateTo: '',
     amountMin: '',
     amountMax: '',
+    searchMode: 'auto',
   });
 
   const [reports, setReports] = useState<Report[]>([]);
@@ -447,7 +448,7 @@ export default function SearchPage() {
       }
 
       // Set search mode
-      params.set('mode', 'auto');
+      params.set('mode', filters.searchMode || 'auto');
 
       // Pagination - API expects offset, not page
       const pageSize = 10;
@@ -552,6 +553,7 @@ export default function SearchPage() {
       dateTo: '',
       amountMin: '',
       amountMax: '',
+      searchMode: 'auto',
     });
     setCurrentPage(1);
   };
