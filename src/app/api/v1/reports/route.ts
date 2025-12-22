@@ -138,7 +138,7 @@ const perpetratorSchema = z.object({
   nickname: z.string().max(100).optional(),
   username: z.string().max(100).optional(),
   approx_age: z.number().int().min(0).max(150).optional(),
-  nationality: z.string().max(2).optional(),
+  nationality: z.string().max(50).optional(),
   physical_description: z.string().max(2000).optional(),
   phone: z.string().max(50).optional(),
   email: z.string().email().optional().or(z.literal('')),

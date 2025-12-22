@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { MapPin, Calendar, DollarSign, AlertTriangle, Users, Phone, Mail, User, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { formatDate, formatCurrency } from '@/lib/utils';
 
 export interface Report {
