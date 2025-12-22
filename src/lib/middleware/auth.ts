@@ -228,7 +228,19 @@ export async function checkRateLimit(
 }
 
 /**
+ * Check if user has admin scopes
+ */
+function hasAdminScopes(scopes: string[]): boolean {
+  return scopes.some(scope =>
+    scope === '*' ||
+    scope.startsWith('admin:') ||
+    scope === 'admin'
+  );
+}
+
+/**
  * Rate limit middleware
+ * Admin users get 10x higher limits to allow normal workflow
  */
 export async function requireRateLimit(
   request: NextRequest,
@@ -241,7 +253,12 @@ export async function requireRateLimit(
   const auth = await getAuthContext(request);
   const identifier = auth.user?.sub || auth.apiKey?.userId || `ip:${ip}`;
 
-  const { allowed, remaining: _remaining, resetAt } = await checkRateLimit(identifier, limit);
+  // Admin users get 10x higher rate limits to allow normal admin workflow
+  // This prevents 429 errors when admins are actively managing reports
+  const isAdmin = hasAdminScopes(auth.scopes);
+  const effectiveLimit = isAdmin ? limit * 10 : limit;
+
+  const { allowed, remaining: _remaining, resetAt } = await checkRateLimit(identifier, effectiveLimit);
 
   if (!allowed) {
     return NextResponse.json(
@@ -252,7 +269,7 @@ export async function requireRateLimit(
       {
         status: 429,
         headers: {
-          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Limit': effectiveLimit.toString(),
           'X-RateLimit-Remaining': '0',
           'X-RateLimit-Reset': Math.floor(resetAt.getTime() / 1000).toString(),
           'Retry-After': Math.ceil((resetAt.getTime() - Date.now()) / 1000).toString(),
