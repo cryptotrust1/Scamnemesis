@@ -728,5 +728,173 @@
       "contactUs": "Contact us",
       "learnMore": "to learn more about our work."
     }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Request for Database Deletion",
+      "titleHighlight": "A Second Chance",
+      "subtitle": "Help for a New Beginning in Life",
+      "description": "We believe in privacy and second chances. Our platform offers individuals with criminal pasts an opportunity to request deletion from our scammer database and receive support for life reintegration.",
+      "submitRequest": "Submit Removal Request",
+      "learnMore": "Learn More"
+    },
+    "quote": {
+      "text": "Everyone deserves a second chance. It's not where you started that matters, but where you're going.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Requirements & Conditions",
+      "title": "Terms and Conditions",
+      "subtitle": "Please review these requirements carefully before submitting your request",
+      "basicRequirements": {
+        "title": "Basic Requirements",
+        "items": [
+          "Your case/scammer ID from our database",
+          "Valid identification documents",
+          "Detailed explanation of your situation",
+          "Commitment statement for future lawful behavior"
+        ]
+      },
+      "importantNotices": {
+        "title": "Important Notices",
+        "items": [
+          "One opportunity per person — use it wisely",
+          "Any future criminal activity permanently closes this door",
+          "Review period: 14-30 days",
+          "All requests are evaluated individually based on case severity"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Step-by-Step Process",
+      "title": "How to Request Deletion",
+      "subtitle": "Follow these simple steps to submit your database removal request",
+      "steps": [
+        { "title": "Contact Us", "description": "Send your request to info@scamnemesis.com" },
+        { "title": "Submit Documents", "description": "Provide required documentation and explanation" },
+        { "title": "Wait for Review", "description": "Our team will evaluate your case (14-30 days)" },
+        { "title": "Receive Decision", "description": "Get notified about the outcome of your request" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Free Resource",
+      "title": "PDF Guide: The Path Out of Criminality",
+      "subtitle": "Practical guidance for those seeking to leave criminal environments",
+      "insideTitle": "What's Inside the Guide",
+      "features": [
+        "Step-by-step guide for leaving criminal environments safely",
+        "Resources for mental health and addiction recovery",
+        "Employment strategies for individuals with criminal records",
+        "Legal rights and reintegration information by country"
+      ],
+      "downloadButton": "Download Free PDF Guide"
+    },
+    "breakCycle": {
+      "badge": "Breaking Free",
+      "title": "Break the Cycle",
+      "importantMessage": "Important Message",
+      "content": "If you are currently part of a criminal organization and want to leave, know that there is always a way out. Your first step is to seek help — whether from law enforcement, support organizations, or trusted individuals. The path to a new life begins with a single decision.",
+      "reminder": "Remember: It's never too late to change your path."
+    },
+    "vision": {
+      "badge": "Future Plans",
+      "title": "Our Vision of Help",
+      "subtitle": "We are developing comprehensive programs to assist individuals seeking to leave their criminal past behind. Here are three initiatives we plan to implement:",
+      "plannedInitiative": "Planned Initiative",
+      "initiatives": [
+        { "title": "Financial Support", "description": "Assistance for released individuals during the transition period" },
+        { "title": "Family Assistance", "description": "Support services for families of those seeking a fresh start" },
+        { "title": "Education & Retraining", "description": "Opportunities for skill development and career change" }
+      ]
+    },
+    "donation": {
+      "title": "Support the Second Chance Program",
+      "description": "Your contribution helps us provide resources, guidance, and support to individuals seeking to leave criminal lifestyles behind and build a better future.",
+      "cryptoButton": "Donate with Cryptocurrency",
+      "cardButton": "Donate by Card",
+      "securePayment": "Secure Payment",
+      "goesToPrograms": "100% Goes to Programs",
+      "makeDifference": "Make a Difference"
+    },
+    "contact": {
+      "badge": "Get in Touch",
+      "title": "Ready to Start Your New Journey?",
+      "description": "Contact us at",
+      "descriptionEnd": "to begin your removal request process. We're here to help you every step of the way.",
+      "submitRequest": "Submit Removal Request",
+      "contactPage": "Contact Page"
+    },
+    "finalMessage": {
+      "quote": "The past is your lesson. The present is your gift. The future is your motivation.",
+      "message": "Everyone deserves a second chance."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "World-class, expert-led cybersecurity training from the world's",
+      "titleHighlight": "top security professionals.",
+      "description": "Prevent fraud and attacks—secure your environment and strengthen cyber resilience with Scamnemesis.",
+      "comingSoon": "Coming Soon",
+      "comingSoonText": "Our training courses are currently in development. Contact us at",
+      "comingSoonTextEnd": "to be notified when they launch."
+    },
+    "programs": {
+      "badge": "Our Programs",
+      "title": "Cybersecurity Courses",
+      "description": "We offer training and educational content tailored for different audiences — from the general public seeking basic protection to specialized professionals and organizations requiring advanced instruction."
+    },
+    "freeCourses": {
+      "badge": "FREE",
+      "title": "Free Courses for the Public",
+      "description": "Short, practical lessons to protect yourself and your loved ones online:",
+      "items": [
+        "How to recognize a scam — key red flags and warning signals",
+        "What to do if you've been scammed — a quick, effective response guide",
+        "How to set up your phone and computer securely",
+        "How to behave safely online — practical habits and guidelines",
+        "How to protect your children online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONAL",
+      "title": "Professional Videos",
+      "description": "OPSEC and cybersecurity for professionals — training for specialists who need to recognize, prevent, and respond to threats:",
+      "audiences": [
+        { "title": "AML Specialists", "description": "In-depth modules on transaction monitoring, red flags, and investigative techniques." },
+        { "title": "Police Officers", "description": "Focused on investigation methodology, evidence collection, and cyber-enabled crime response." },
+        { "title": "Accountants", "description": "Fraud indicators in financial records, internal controls, and whistleblower best practices." },
+        { "title": "IT and Security Personnel", "description": "Network defense, phishing simulations, secure infrastructure configuration." },
+        { "title": "Investigators", "description": "OSINT techniques, digital forensics fundamentals, and case documentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "CUSTOM",
+      "title": "Company Training and Security Methodology",
+      "description1": "We train staff and help implement a complete security methodology — so every team member knows what to do and who to contact in case of a threat.",
+      "description2": "Our corporate programs include policy implementation, role clarification, incident response procedures, and ongoing support.",
+      "button": "Request Custom Training"
+    },
+    "differentiators": {
+      "badge": "Why Choose Us",
+      "title": "What makes our training unique?",
+      "items": [
+        { "emoji": "📡", "title": "Live threat intelligence", "description": "We work daily on active crypto and investment fraud cases, so our content always reflects the latest tactics used by criminals." },
+        { "emoji": "🔄", "title": "Continuously updated curriculum", "description": "As new scam methods emerge, our courses evolve, ensuring you're never behind." },
+        { "emoji": "🛡️", "title": "Practical, not just theoretical", "description": "We teach actual protection strategies, not just abstract concepts." },
+        { "emoji": "💡", "title": "From victims to experts", "description": "Our perspective includes deep insight into both victim psychology and scammer behavior, giving you a 360° understanding." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifications and Credentials",
+      "description": "Our instructors and content creators hold recognized certifications in cybersecurity, fraud investigation, and compliance — bringing credibility and expertise to every lesson."
+    },
+    "cta": {
+      "title": "Book a Free Consultation",
+      "description": "Whether you're an individual looking to learn, a professional seeking certification-track training, or an organization interested in a tailored security program, we're here to help.",
+      "button": "Book a Free Consultation",
+      "freeConsultation": "Free Consultation",
+      "expertInstructors": "Expert Instructors",
+      "updatedContent": "Updated Content"
+    }
   }
 }

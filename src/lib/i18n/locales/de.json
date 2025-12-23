@@ -619,5 +619,173 @@
       "contactUs": "Kontaktieren Sie uns",
       "learnMore": "um mehr über unsere Arbeit zu erfahren."
     }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Antrag auf Löschung aus der Datenbank",
+      "titleHighlight": "Eine zweite Chance",
+      "subtitle": "Hilfe für einen Neuanfang im Leben",
+      "description": "Wir glauben an Privatsphäre und zweite Chancen. Unsere Plattform bietet Personen mit krimineller Vergangenheit die Möglichkeit, die Löschung aus unserer Betrügerdatenbank zu beantragen und Unterstützung für die Wiedereingliederung ins Leben zu erhalten.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "learnMore": "Mehr erfahren"
+    },
+    "quote": {
+      "text": "Jeder verdient eine zweite Chance. Es kommt nicht darauf an, wo Sie angefangen haben, sondern wohin Sie gehen.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Anforderungen & Bedingungen",
+      "title": "Geschäftsbedingungen",
+      "subtitle": "Bitte lesen Sie diese Anforderungen sorgfältig durch, bevor Sie Ihren Antrag einreichen",
+      "basicRequirements": {
+        "title": "Grundvoraussetzungen",
+        "items": [
+          "Ihre Fall-/Betrüger-ID aus unserer Datenbank",
+          "Gültige Ausweisdokumente",
+          "Detaillierte Erläuterung Ihrer Situation",
+          "Verpflichtungserklärung für zukünftiges rechtmäßiges Verhalten"
+        ]
+      },
+      "importantNotices": {
+        "title": "Wichtige Hinweise",
+        "items": [
+          "Eine Chance pro Person — nutzen Sie sie weise",
+          "Jede zukünftige kriminelle Aktivität schließt diese Tür dauerhaft",
+          "Prüfungszeitraum: 14-30 Tage",
+          "Alle Anträge werden individuell nach Schwere des Falls bewertet"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Schritt-für-Schritt-Prozess",
+      "title": "So beantragen Sie die Löschung",
+      "subtitle": "Befolgen Sie diese einfachen Schritte, um Ihren Antrag auf Löschung aus der Datenbank einzureichen",
+      "steps": [
+        { "title": "Kontaktieren Sie uns", "description": "Senden Sie Ihren Antrag an info@scamnemesis.com" },
+        { "title": "Dokumente einreichen", "description": "Stellen Sie die erforderlichen Unterlagen und Erklärungen bereit" },
+        { "title": "Auf Prüfung warten", "description": "Unser Team wird Ihren Fall prüfen (14-30 Tage)" },
+        { "title": "Entscheidung erhalten", "description": "Werden Sie über das Ergebnis Ihres Antrags benachrichtigt" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Kostenlose Ressource",
+      "title": "PDF-Leitfaden: Der Weg aus der Kriminalität",
+      "subtitle": "Praktische Anleitung für diejenigen, die kriminelle Umgebungen verlassen möchten",
+      "insideTitle": "Was im Leitfaden enthalten ist",
+      "features": [
+        "Schritt-für-Schritt-Anleitung zum sicheren Verlassen krimineller Umgebungen",
+        "Ressourcen für psychische Gesundheit und Suchtgenesung",
+        "Beschäftigungsstrategien für Personen mit Vorstrafen",
+        "Rechtsrechte und Wiedereingliederungsinformationen nach Land"
+      ],
+      "downloadButton": "Kostenlosen PDF-Leitfaden herunterladen"
+    },
+    "breakCycle": {
+      "badge": "Sich befreien",
+      "title": "Den Kreislauf durchbrechen",
+      "importantMessage": "Wichtige Nachricht",
+      "content": "Wenn Sie derzeit Teil einer kriminellen Organisation sind und aussteigen möchten, wissen Sie, dass es immer einen Weg hinaus gibt. Ihr erster Schritt ist, Hilfe zu suchen — sei es von Strafverfolgungsbehörden, Hilfsorganisationen oder vertrauenswürdigen Personen. Der Weg zu einem neuen Leben beginnt mit einer einzigen Entscheidung.",
+      "reminder": "Denken Sie daran: Es ist nie zu spät, Ihren Weg zu ändern."
+    },
+    "vision": {
+      "badge": "Zukunftspläne",
+      "title": "Unsere Vision der Hilfe",
+      "subtitle": "Wir entwickeln umfassende Programme zur Unterstützung von Personen, die ihre kriminelle Vergangenheit hinter sich lassen möchten. Hier sind drei Initiativen, die wir umsetzen wollen:",
+      "plannedInitiative": "Geplante Initiative",
+      "initiatives": [
+        { "title": "Finanzielle Unterstützung", "description": "Hilfe für Entlassene während der Übergangszeit" },
+        { "title": "Familienunterstützung", "description": "Unterstützungsdienste für Familien derjenigen, die einen Neuanfang suchen" },
+        { "title": "Bildung & Umschulung", "description": "Möglichkeiten zur Kompetenzentwicklung und Karrierewechsel" }
+      ]
+    },
+    "donation": {
+      "title": "Unterstützen Sie das Zweite-Chance-Programm",
+      "description": "Ihr Beitrag hilft uns, Ressourcen, Beratung und Unterstützung für Personen bereitzustellen, die kriminelle Lebensstile hinter sich lassen und eine bessere Zukunft aufbauen möchten.",
+      "cryptoButton": "Mit Kryptowährung spenden",
+      "cardButton": "Mit Karte spenden",
+      "securePayment": "Sichere Zahlung",
+      "goesToPrograms": "100% geht an Programme",
+      "makeDifference": "Machen Sie einen Unterschied"
+    },
+    "contact": {
+      "badge": "Kontaktieren Sie uns",
+      "title": "Bereit, Ihre neue Reise zu beginnen?",
+      "description": "Kontaktieren Sie uns unter",
+      "descriptionEnd": "um den Prozess Ihres Löschungsantrags zu beginnen. Wir sind hier, um Ihnen bei jedem Schritt zu helfen.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "contactPage": "Kontaktseite"
+    },
+    "finalMessage": {
+      "quote": "Die Vergangenheit ist Ihre Lektion. Die Gegenwart ist Ihr Geschenk. Die Zukunft ist Ihre Motivation.",
+      "message": "Jeder verdient eine zweite Chance."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Erstklassige, von Experten geleitete Cybersicherheitsschulungen von den weltweit",
+      "titleHighlight": "führenden Sicherheitsexperten.",
+      "description": "Verhindern Sie Betrug und Angriffe — sichern Sie Ihre Umgebung und stärken Sie die Cyberresilienz mit Scamnemesis.",
+      "comingSoon": "Demnächst verfügbar",
+      "comingSoonText": "Unsere Schulungskurse befinden sich derzeit in der Entwicklung. Kontaktieren Sie uns unter",
+      "comingSoonTextEnd": "um benachrichtigt zu werden, wenn sie starten."
+    },
+    "programs": {
+      "badge": "Unsere Programme",
+      "title": "Cybersicherheitskurse",
+      "description": "Wir bieten Schulungen und Bildungsinhalte, die auf verschiedene Zielgruppen zugeschnitten sind — von der allgemeinen Öffentlichkeit, die grundlegenden Schutz sucht, bis hin zu spezialisierten Fachleuten und Organisationen, die fortgeschrittene Anleitungen benötigen."
+    },
+    "freeCourses": {
+      "badge": "KOSTENLOS",
+      "title": "Kostenlose Kurse für die Öffentlichkeit",
+      "description": "Kurze, praktische Lektionen zum Schutz von sich selbst und Ihren Lieben online:",
+      "items": [
+        "Wie man einen Betrug erkennt — wichtige Warnsignale und rote Flaggen",
+        "Was tun, wenn Sie betrogen wurden — ein schneller, effektiver Reaktionsleitfaden",
+        "Wie Sie Ihr Telefon und Ihren Computer sicher einrichten",
+        "Wie man sich online sicher verhält — praktische Gewohnheiten und Richtlinien",
+        "Wie Sie Ihre Kinder online schützen"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONELL",
+      "title": "Professionelle Videos",
+      "description": "OPSEC und Cybersicherheit für Profis — Schulungen für Spezialisten, die Bedrohungen erkennen, verhindern und darauf reagieren müssen:",
+      "audiences": [
+        { "title": "AML-Spezialisten", "description": "Tiefgehende Module zur Transaktionsüberwachung, roten Flaggen und Ermittlungstechniken." },
+        { "title": "Polizeibeamte", "description": "Fokussiert auf Ermittlungsmethodik, Beweissammlung und Reaktion auf cyber-gestützte Kriminalität." },
+        { "title": "Buchhalter", "description": "Betrugsindika​toren in Finanzunterlagen, interne Kontrollen und Best Practices für Whistleblower." },
+        { "title": "IT- und Sicherheitspersonal", "description": "Netzwerkverteidigung, Phishing-Simulationen, sichere Infrastrukturkonfiguration." },
+        { "title": "Ermittler", "description": "OSINT-Techniken, Grundlagen der digitalen Forensik und Falldokumentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "INDIVIDUELL",
+      "title": "Unternehmensschulungen und Sicherheitsmethodik",
+      "description1": "Wir schulen Mitarbeiter und helfen bei der Implementierung einer vollständigen Sicherheitsmethodik — damit jedes Teammitglied weiß, was zu tun ist und wen es im Falle einer Bedrohung kontaktieren soll.",
+      "description2": "Unsere Unternehmensprogramme umfassen Richtlinienimplementierung, Rollenklärug, Verfahren zur Reaktion auf Vorfälle und laufende Unterstützung.",
+      "button": "Individuelle Schulung anfordern"
+    },
+    "differentiators": {
+      "badge": "Warum uns wählen",
+      "title": "Was macht unsere Schulungen einzigartig?",
+      "items": [
+        { "emoji": "📡", "title": "Live-Bedrohungsintelligenz", "description": "Wir arbeiten täglich an aktiven Krypto- und Investitionsbetrugsfällen, sodass unsere Inhalte immer die neuesten von Kriminellen verwendeten Taktiken widerspiegeln." },
+        { "emoji": "🔄", "title": "Kontinuierlich aktualisierter Lehrplan", "description": "Wenn neue Betrugsmethoden auftauchen, entwickeln sich unsere Kurse weiter und stellen sicher, dass Sie nie ins Hintertreffen geraten." },
+        { "emoji": "🛡️", "title": "Praktisch, nicht nur theoretisch", "description": "Wir lehren tatsächliche Schutzstrategien, nicht nur abstrakte Konzepte." },
+        { "emoji": "💡", "title": "Von Opfern zu Experten", "description": "Unsere Perspektive umfasst tiefe Einblicke sowohl in die Psychologie der Opfer als auch in das Verhalten der Betrüger, was Ihnen ein 360°-Verständnis gibt." }
+      ]
+    },
+    "certifications": {
+      "title": "Zertifizierungen und Berechtigungsnachweise",
+      "description": "Unsere Ausbilder und Inhaltsersteller verfügen über anerkannte Zertifizierungen in Cybersicherheit, Betrugsermittlung und Compliance — und bringen Glaubwürdigkeit und Fachwissen in jede Lektion ein."
+    },
+    "cta": {
+      "title": "Buchen Sie eine kostenlose Beratung",
+      "description": "Ob Sie eine Einzelperson sind, die lernen möchte, ein Fachmann, der eine Schulung mit Zertifizierungspfad sucht, oder eine Organisation, die an einem maßgeschneiderten Sicherheitsprogramm interessiert ist — wir sind hier, um zu helfen.",
+      "button": "Kostenlose Beratung buchen",
+      "freeConsultation": "Kostenlose Beratung",
+      "expertInstructors": "Experten-Ausbilder",
+      "updatedContent": "Aktualisierte Inhalte"
+    }
   }
 }

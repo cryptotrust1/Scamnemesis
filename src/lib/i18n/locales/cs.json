@@ -619,5 +619,173 @@
       "contactUs": "Kontaktujte nás",
       "learnMore": "a dozvíte se více o naší práci."
     }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Žádost o smazání z databáze",
+      "titleHighlight": "Druhá šance",
+      "subtitle": "Pomoc pro nový začátek v životě",
+      "description": "Věříme v soukromí a druhé šance. Naše platforma nabízí jednotlivcům s kriminální minulostí možnost požádat o smazání z naší databáze podvodníků a získat podporu pro opětovné začlenění do života.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "learnMore": "Dozvědět se více"
+    },
+    "quote": {
+      "text": "Každý si zaslouží druhou šanci. Nezáleží na tom, kde jste začali, ale kam směřujete.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Požadavky a podmínky",
+      "title": "Podmínky",
+      "subtitle": "Před odesláním žádosti si pečlivě přečtěte tyto požadavky",
+      "basicRequirements": {
+        "title": "Základní požadavky",
+        "items": [
+          "Vaše ID případu/podvodníka z naší databáze",
+          "Platné identifikační doklady",
+          "Podrobné vysvětlení vaší situace",
+          "Prohlášení o závazku k budoucímu zákonnému chování"
+        ]
+      },
+      "importantNotices": {
+        "title": "Důležitá upozornění",
+        "items": [
+          "Jedna příležitost na osobu — využijte ji moudře",
+          "Jakákoli budoucí kriminální činnost natrvalo zavře tyto dveře",
+          "Doba posouzení: 14-30 dní",
+          "Všechny žádosti jsou posuzovány individuálně na základě závažnosti případu"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Postup krok za krokem",
+      "title": "Jak požádat o smazání",
+      "subtitle": "Postupujte podle těchto jednoduchých kroků k odeslání žádosti o smazání z databáze",
+      "steps": [
+        { "title": "Kontaktujte nás", "description": "Pošlete svou žádost na info@scamnemesis.com" },
+        { "title": "Odešlete dokumenty", "description": "Poskytněte požadovanou dokumentaci a vysvětlení" },
+        { "title": "Čekejte na posouzení", "description": "Náš tým posoudí váš případ (14-30 dní)" },
+        { "title": "Obdržíte rozhodnutí", "description": "Budete informováni o výsledku vaší žádosti" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Bezplatný zdroj",
+      "title": "PDF průvodce: Cesta z kriminality",
+      "subtitle": "Praktické pokyny pro ty, kteří chtějí opustit kriminální prostředí",
+      "insideTitle": "Co je v průvodci",
+      "features": [
+        "Návod krok za krokem pro bezpečné opuštění kriminálního prostředí",
+        "Zdroje pro duševní zdraví a zotavení ze závislostí",
+        "Strategie zaměstnání pro osoby s kriminální minulostí",
+        "Právní práva a informace o reintegraci podle země"
+      ],
+      "downloadButton": "Stáhnout bezplatného PDF průvodce"
+    },
+    "breakCycle": {
+      "badge": "Osvobodit se",
+      "title": "Přerušte bludný kruh",
+      "importantMessage": "Důležitá zpráva",
+      "content": "Pokud jste v současné době součástí kriminální organizace a chcete odejít, vězte, že vždy existuje cesta ven. Váš první krok je vyhledat pomoc — ať už od orgánů činných v trestním řízení, podpůrných organizací nebo důvěryhodných osob. Cesta k novému životu začíná jediným rozhodnutím.",
+      "reminder": "Pamatujte: Nikdy není pozdě změnit svou cestu."
+    },
+    "vision": {
+      "badge": "Budoucí plány",
+      "title": "Naše vize pomoci",
+      "subtitle": "Vyvíjíme komplexní programy na pomoc jednotlivcům, kteří chtějí zanechat svou kriminální minulost. Zde jsou tři iniciativy, které plánujeme implementovat:",
+      "plannedInitiative": "Plánovaná iniciativa",
+      "initiatives": [
+        { "title": "Finanční podpora", "description": "Pomoc pro propuštěné během přechodného období" },
+        { "title": "Pomoc rodinám", "description": "Podpůrné služby pro rodiny těch, kteří hledají nový začátek" },
+        { "title": "Vzdělávání a rekvalifikace", "description": "Příležitosti pro rozvoj dovedností a změnu kariéry" }
+      ]
+    },
+    "donation": {
+      "title": "Podpořte program Druhá šance",
+      "description": "Váš příspěvek nám pomáhá poskytovat zdroje, pokyny a podporu jednotlivcům, kteří chtějí zanechat kriminální životní styl a vybudovat lepší budoucnost.",
+      "cryptoButton": "Přispět kryptoměnou",
+      "cardButton": "Přispět kartou",
+      "securePayment": "Bezpečná platba",
+      "goesToPrograms": "100% jde na programy",
+      "makeDifference": "Udělejte rozdíl"
+    },
+    "contact": {
+      "badge": "Kontaktujte nás",
+      "title": "Jste připraveni začít svou novou cestu?",
+      "description": "Kontaktujte nás na",
+      "descriptionEnd": "a začněte proces žádosti o smazání. Jsme zde, abychom vám pomohli na každém kroku.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "contactPage": "Kontaktní stránka"
+    },
+    "finalMessage": {
+      "quote": "Minulost je vaše lekce. Přítomnost je váš dar. Budoucnost je vaše motivace.",
+      "message": "Každý si zaslouží druhou šanci."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Světová třída, odborná školení kybernetické bezpečnosti od světových",
+      "titleHighlight": "špičkových bezpečnostních profesionálů.",
+      "description": "Předcházejte podvodům a útokům — zabezpečte své prostředí a posílte kybernetickou odolnost se Scamnemesis.",
+      "comingSoon": "Již brzy",
+      "comingSoonText": "Naše školící kurzy jsou momentálně ve vývoji. Kontaktujte nás na",
+      "comingSoonTextEnd": "a budete informováni o jejich spuštění."
+    },
+    "programs": {
+      "badge": "Naše programy",
+      "title": "Kurzy kybernetické bezpečnosti",
+      "description": "Nabízíme školení a vzdělávací obsah přizpůsobený různým cílovým skupinám — od široké veřejnosti hledající základní ochranu po specializované profesionály a organizace vyžadující pokročilé instrukce."
+    },
+    "freeCourses": {
+      "badge": "ZDARMA",
+      "title": "Bezplatné kurzy pro veřejnost",
+      "description": "Krátké, praktické lekce na ochranu sebe a svých blízkých online:",
+      "items": [
+        "Jak rozpoznat podvod — klíčové varovné signály a červené vlajky",
+        "Co dělat, když jste byli podvedeni — rychlý a efektivní průvodce reakcí",
+        "Jak bezpečně nastavit telefon a počítač",
+        "Jak se bezpečně chovat online — praktické návyky a pokyny",
+        "Jak chránit své děti online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESIONÁLNÍ",
+      "title": "Profesionální videa",
+      "description": "OPSEC a kybernetická bezpečnost pro profesionály — školení pro specialisty, kteří potřebují rozpoznat, předcházet a reagovat na hrozby:",
+      "audiences": [
+        { "title": "AML specialisté", "description": "Hloubkové moduly o monitorování transakcí, červených vlajkách a vyšetřovacích technikách." },
+        { "title": "Policisté", "description": "Zaměřeno na metodologii vyšetřování, shromažďování důkazů a reakci na kyberneticky podporovanou trestnou činnost." },
+        { "title": "Účetní", "description": "Indikátory podvodů ve finančních záznamech, interní kontroly a nejlepší postupy pro whistleblowery." },
+        { "title": "IT a bezpečnostní personál", "description": "Obrana sítě, simulace phishingu, bezpečná konfigurace infrastruktury." },
+        { "title": "Vyšetřovatelé", "description": "OSINT techniky, základy digitální forenziky a dokumentace případů." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "VLASTNÍ",
+      "title": "Firemní školení a bezpečnostní metodologie",
+      "description1": "Školíme zaměstnance a pomáháme implementovat kompletní bezpečnostní metodologii — aby každý člen týmu věděl, co má dělat a koho kontaktovat v případě hrozby.",
+      "description2": "Naše firemní programy zahrnují implementaci politik, objasnění rolí, postupy reakce na incidenty a průběžnou podporu.",
+      "button": "Požádat o vlastní školení"
+    },
+    "differentiators": {
+      "badge": "Proč si vybrat nás",
+      "title": "Čím jsou naše školení jedinečná?",
+      "items": [
+        { "emoji": "📡", "title": "Živé zpravodajství o hrozbách", "description": "Denně pracujeme na aktivních případech krypto a investičních podvodů, takže náš obsah vždy odráží nejnovější taktiky používané zločinci." },
+        { "emoji": "🔄", "title": "Průběžně aktualizovaný učební plán", "description": "Jak se objevují nové metody podvodů, naše kurzy se vyvíjejí, čímž zajistíme, že nikdy nezaostanete." },
+        { "emoji": "🛡️", "title": "Praktické, nejen teoretické", "description": "Učíme skutečné ochranné strategie, nejen abstraktní koncepty." },
+        { "emoji": "💡", "title": "Od obětí k expertům", "description": "Naše perspektiva zahrnuje hluboký vhled do psychologie obětí i chování podvodníků, což vám dává 360° porozumění." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifikace a pověření",
+      "description": "Naši instruktoři a tvůrci obsahu mají uznávané certifikace v oblasti kybernetické bezpečnosti, vyšetřování podvodů a compliance — přinášejíce důvěryhodnost a odbornost do každé lekce."
+    },
+    "cta": {
+      "title": "Rezervujte si bezplatnou konzultaci",
+      "description": "Ať už jste jednotlivec, který se chce učit, profesionál hledající školení s certifikací, nebo organizace se zájmem o přizpůsobený bezpečnostní program, jsme zde, abychom vám pomohli.",
+      "button": "Rezervovat bezplatnou konzultaci",
+      "freeConsultation": "Bezplatná konzultace",
+      "expertInstructors": "Expertní instruktoři",
+      "updatedContent": "Aktualizovaný obsah"
+    }
   }
 }
