@@ -22,8 +22,6 @@ import {
   Gift,
   HeartHandshake,
   Building2,
-  Pill,
-  Hammer,
   Camera,
   FolderOpen,
   FileCheck,
