@@ -41,7 +41,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 // Fraud type options for filter
-const fraudTypeOptions = [
+const fraudTypeOptions: Array<{ value: string; label: Record<'en' | 'sk', string> }> = [
   { value: '', label: { en: 'All Types', sk: 'Všetky typy' } },
   { value: 'INVESTMENT_FRAUD', label: { en: 'Investment Fraud', sk: 'Investičný podvod' } },
   { value: 'ROMANCE_SCAM', label: { en: 'Romance Scam', sk: 'Romantický podvod' } },
@@ -58,7 +58,7 @@ const fraudTypeOptions = [
 ];
 
 // Country options for filter
-const countryOptions = [
+const countryOptions: Array<{ value: string; label: Record<'en' | 'sk', string> }> = [
   { value: '', label: { en: 'All Countries', sk: 'Všetky krajiny' } },
   { value: 'SK', label: { en: 'Slovakia', sk: 'Slovensko' } },
   { value: 'CZ', label: { en: 'Czech Republic', sk: 'Česká republika' } },
@@ -330,8 +330,8 @@ const getTranslations = (locale: Locale) => {
         description: 'Roky skúseností a certifikácie od popredných inštitúcií — profesionáli na vašej strane.',
       },
     },
-  };
-  return translations[locale] || translations.en;
+  } as const;
+  return translations[locale] ?? translations.en;
 };
 
 // FAQ translations
