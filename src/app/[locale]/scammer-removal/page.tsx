@@ -28,91 +28,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Script from 'next/script';
+import { useTranslation } from '@/lib/i18n/context';
 
-// Basic Requirements data
-const basicRequirements = [
-  'Your case/scammer ID from our database',
-  'Valid identification documents',
-  'Detailed explanation of your situation',
-  'Commitment statement for future lawful behavior',
-];
+// Step icons mapping
+const stepIcons = [Mail, FileText, Clock, FileCheck];
 
-// Important Notices data
-const importantNotices = [
-  'One opportunity per person — use it wisely',
-  'Any future criminal activity permanently closes this door',
-  'Review period: 14-30 days',
-  'All requests are evaluated individually based on case severity',
-];
+// PDF feature icons
+const pdfFeatureIcons = [BookOpen, Users, GraduationCap, Shield];
 
-// How to Request steps
-const requestSteps = [
-  {
-    step: 1,
-    icon: Mail,
-    title: 'Contact Us',
-    description: 'Send your request to info@scamnemesis.com',
-  },
-  {
-    step: 2,
-    icon: FileText,
-    title: 'Submit Documents',
-    description: 'Provide required documentation and explanation',
-  },
-  {
-    step: 3,
-    icon: Clock,
-    title: 'Wait for Review',
-    description: 'Our team will evaluate your case (14-30 days)',
-  },
-  {
-    step: 4,
-    icon: FileCheck,
-    title: 'Receive Decision',
-    description: 'Get notified about the outcome of your request',
-  },
-];
-
-// PDF Guide features
-const pdfFeatures = [
-  {
-    icon: BookOpen,
-    text: 'Step-by-step guide for leaving criminal environments safely',
-  },
-  {
-    icon: Users,
-    text: 'Resources for mental health and addiction recovery',
-  },
-  {
-    icon: GraduationCap,
-    text: 'Employment strategies for individuals with criminal records',
-  },
-  {
-    icon: Shield,
-    text: 'Legal rights and reintegration information by country',
-  },
-];
-
-// Vision initiatives
-const visionInitiatives = [
-  {
-    title: 'Financial Support',
-    description: 'Assistance for released individuals during the transition period',
-    icon: HeartHandshake,
-    color: 'emerald',
-  },
-  {
-    title: 'Family Assistance',
-    description: 'Support services for families of those seeking a fresh start',
-    icon: Users,
-    color: 'teal',
-  },
-  {
-    title: 'Education & Retraining',
-    description: 'Opportunities for skill development and career change',
-    icon: GraduationCap,
-    color: 'cyan',
-  },
+// Vision initiative icons and colors
+const visionConfig = [
+  { icon: HeartHandshake, color: 'emerald' },
+  { icon: Users, color: 'teal' },
+  { icon: GraduationCap, color: 'cyan' },
 ];
 
 // JSON-LD Schemas
@@ -222,6 +150,15 @@ const breadcrumbSchema = {
 };
 
 export default function ScammerRemovalPage() {
+  const { t, locale } = useTranslation();
+
+  // Get translations as arrays
+  const basicRequirements = (t('scammerRemoval.terms.basicRequirements.items') as unknown as string[]) || [];
+  const importantNotices = (t('scammerRemoval.terms.importantNotices.items') as unknown as string[]) || [];
+  const requestSteps = (t('scammerRemoval.howToRequest.steps') as unknown as { title: string; description: string }[]) || [];
+  const pdfFeatures = (t('scammerRemoval.pdfGuide.features') as unknown as string[]) || [];
+  const visionInitiatives = (t('scammerRemoval.vision.initiatives') as unknown as { title: string; description: string }[]) || [];
+
   return (
     <>
       {/* JSON-LD Schemas */}
@@ -270,19 +207,18 @@ export default function ScammerRemovalPage() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
-                Request for Database Deletion{' '}
+                {t('scammerRemoval.hero.title')}{' '}
                 <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
-                  A Second Chance
+                  {t('scammerRemoval.hero.titleHighlight')}
                 </span>
               </h1>
 
               <p className="text-lg md:text-xl lg:text-2xl text-emerald-100/90 font-medium mb-4">
-                Help for a New Beginning in Life
+                {t('scammerRemoval.hero.subtitle')}
               </p>
 
               <p className="text-base md:text-lg text-slate-300/80 max-w-3xl mx-auto mb-10 leading-relaxed">
-                We believe in privacy and second chances. Our platform offers individuals with criminal pasts
-                an opportunity to request deletion from our scammer database and receive support for life reintegration.
+                {t('scammerRemoval.hero.description')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -293,7 +229,7 @@ export default function ScammerRemovalPage() {
                 >
                   <Link href="mailto:info@scamnemesis.com">
                     <Send className="mr-2 h-5 w-5" />
-                    Submit Removal Request
+                    {t('scammerRemoval.hero.submitRequest')}
                   </Link>
                 </Button>
                 <Button
@@ -304,7 +240,7 @@ export default function ScammerRemovalPage() {
                 >
                   <Link href="#how-to-request">
                     <Eye className="mr-2 h-5 w-5" />
-                    Learn More
+                    {t('scammerRemoval.hero.learnMore')}
                   </Link>
                 </Button>
               </div>
@@ -330,12 +266,12 @@ export default function ScammerRemovalPage() {
 
                 <blockquote className="relative z-10 text-center">
                   <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white leading-relaxed mb-6 italic">
-                    Everyone deserves a second chance. It&apos;s not where you started that matters, but where you&apos;re going.
+                    {t('scammerRemoval.quote.text')}
                   </p>
                   <footer className="flex items-center justify-center gap-3">
                     <div className="h-px w-12 bg-white/40" />
                     <cite className="text-emerald-100 text-lg md:text-xl not-italic font-medium">
-                      ScamNemesis
+                      {t('scammerRemoval.quote.author')}
                     </cite>
                     <div className="h-px w-12 bg-white/40" />
                   </footer>
@@ -358,13 +294,13 @@ export default function ScammerRemovalPage() {
               <div className="text-center mb-12 md:mb-16">
                 <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-4">
                   <FileText className="h-4 w-4" />
-                  Requirements & Conditions
+                  {t('scammerRemoval.terms.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                  Terms and Conditions
+                  {t('scammerRemoval.terms.title')}
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                  Please review these requirements carefully before submitting your request
+                  {t('scammerRemoval.terms.subtitle')}
                 </p>
               </div>
 
@@ -378,7 +314,7 @@ export default function ScammerRemovalPage() {
                         <CheckCircle className="h-6 w-6 text-white" />
                       </div>
                       <CardTitle className="text-xl md:text-2xl text-slate-900 dark:text-white">
-                        Basic Requirements
+                        {t('scammerRemoval.terms.basicRequirements.title')}
                       </CardTitle>
                     </div>
                   </CardHeader>
@@ -409,7 +345,7 @@ export default function ScammerRemovalPage() {
                         <AlertTriangle className="h-6 w-6 text-white" />
                       </div>
                       <CardTitle className="text-xl md:text-2xl text-slate-900 dark:text-white">
-                        Important Notices
+                        {t('scammerRemoval.terms.importantNotices.title')}
                       </CardTitle>
                     </div>
                   </CardHeader>
@@ -443,27 +379,27 @@ export default function ScammerRemovalPage() {
               <div className="text-center mb-12 md:mb-16">
                 <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium mb-4">
                   <RefreshCw className="h-4 w-4" />
-                  Step-by-Step Process
+                  {t('scammerRemoval.howToRequest.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                  How to Request Deletion
+                  {t('scammerRemoval.howToRequest.title')}
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                  Follow these simple steps to submit your database removal request
+                  {t('scammerRemoval.howToRequest.subtitle')}
                 </p>
               </div>
 
               {/* Steps Grid */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {requestSteps.map((step) => {
-                  const Icon = step.icon;
+                {requestSteps.map((step, index) => {
+                  const Icon = stepIcons[index] || Mail;
                   return (
                     <div
-                      key={step.step}
+                      key={index}
                       className="group relative"
                     >
                       {/* Connection line for desktop */}
-                      {step.step < 4 && (
+                      {index < 3 && (
                         <div className="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-teal-300 to-transparent dark:from-teal-700" />
                       )}
 
@@ -472,7 +408,7 @@ export default function ScammerRemovalPage() {
                           {/* Step number badge */}
                           <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold shadow-lg shadow-teal-500/30">
-                              {step.step}
+                              {index + 1}
                             </div>
                           </div>
 
@@ -506,13 +442,13 @@ export default function ScammerRemovalPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-sm font-medium mb-4">
                   <Download className="h-4 w-4" />
-                  Free Resource
+                  {t('scammerRemoval.pdfGuide.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                  PDF Guide: The Path Out of Criminality
+                  {t('scammerRemoval.pdfGuide.title')}
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400">
-                  Practical guidance for those seeking to leave criminal environments
+                  {t('scammerRemoval.pdfGuide.subtitle')}
                 </p>
               </div>
 
@@ -538,19 +474,19 @@ export default function ScammerRemovalPage() {
                     {/* Content */}
                     <div className="flex-1 text-center lg:text-left">
                       <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                        What&apos;s Inside the Guide
+                        {t('scammerRemoval.pdfGuide.insideTitle')}
                       </h3>
 
                       <ul className="space-y-4 mb-8">
                         {pdfFeatures.map((feature, index) => {
-                          const Icon = feature.icon;
+                          const Icon = pdfFeatureIcons[index] || BookOpen;
                           return (
                             <li key={index} className="flex items-start gap-4">
                               <div className="flex-shrink-0 p-2 rounded-lg bg-white/20 backdrop-blur-sm">
                                 <Icon className="h-5 w-5 text-white" />
                               </div>
                               <span className="text-white/90 text-base md:text-lg leading-relaxed">
-                                {feature.text}
+                                {feature}
                               </span>
                             </li>
                           );
@@ -564,7 +500,7 @@ export default function ScammerRemovalPage() {
                       >
                         <Link href="/pdf/path-out-of-criminality.pdf" target="_blank">
                           <Download className="mr-2 h-5 w-5" />
-                          Download Free PDF Guide
+                          {t('scammerRemoval.pdfGuide.downloadButton')}
                         </Link>
                       </Button>
                     </div>
@@ -583,10 +519,10 @@ export default function ScammerRemovalPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-medium mb-4">
                   <RefreshCw className="h-4 w-4" />
-                  Breaking Free
+                  {t('scammerRemoval.breakCycle.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                  Break the Cycle
+                  {t('scammerRemoval.breakCycle.title')}
                 </h2>
               </div>
 
@@ -600,17 +536,14 @@ export default function ScammerRemovalPage() {
                     </div>
                     <div>
                       <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4">
-                        Important Message
+                        {t('scammerRemoval.breakCycle.importantMessage')}
                       </h3>
                       <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-base md:text-lg">
-                        If you are currently part of a criminal organization and want to leave,
-                        know that there is always a way out. Your first step is to seek help — whether
-                        from law enforcement, support organizations, or trusted individuals.
-                        The path to a new life begins with a single decision.
+                        {t('scammerRemoval.breakCycle.content')}
                       </p>
                       <div className="mt-6 pt-6 border-t border-purple-200 dark:border-purple-800/50">
                         <p className="text-purple-700 dark:text-purple-300 font-medium">
-                          Remember: It&apos;s never too late to change your path.
+                          {t('scammerRemoval.breakCycle.reminder')}
                         </p>
                       </div>
                     </div>
@@ -629,21 +562,21 @@ export default function ScammerRemovalPage() {
               <div className="text-center mb-12 md:mb-16">
                 <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-4">
                   <Sparkles className="h-4 w-4" />
-                  Future Plans
+                  {t('scammerRemoval.vision.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                  Our Vision of Help
+                  {t('scammerRemoval.vision.title')}
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-                  We are developing comprehensive programs to assist individuals seeking to leave their criminal past behind.
-                  Here are three initiatives we plan to implement:
+                  {t('scammerRemoval.vision.subtitle')}
                 </p>
               </div>
 
               {/* Vision Cards Grid */}
               <div className="grid md:grid-cols-3 gap-6 md:gap-8">
                 {visionInitiatives.map((initiative, index) => {
-                  const Icon = initiative.icon;
+                  const config = visionConfig[index] || visionConfig[0];
+                  const Icon = config.icon;
                   const colorClasses = {
                     emerald: {
                       bg: 'from-emerald-500 to-green-500',
@@ -667,7 +600,7 @@ export default function ScammerRemovalPage() {
                       badge: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
                     },
                   };
-                  const colors = colorClasses[initiative.color as keyof typeof colorClasses];
+                  const colors = colorClasses[config.color as keyof typeof colorClasses];
 
                   return (
                     <Card
@@ -678,7 +611,7 @@ export default function ScammerRemovalPage() {
                       <CardContent className="pt-8 pb-8 px-6 text-center">
                         {/* Badge */}
                         <div className={`inline-flex items-center justify-center px-3 py-1 rounded-full ${colors.badge} text-xs font-medium mb-4`}>
-                          Planned Initiative
+                          {t('scammerRemoval.vision.plannedInitiative')}
                         </div>
 
                         {/* Icon */}
@@ -722,11 +655,10 @@ export default function ScammerRemovalPage() {
               </div>
 
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                Support the Second Chance Program
+                {t('scammerRemoval.donation.title')}
               </h2>
               <p className="text-lg md:text-xl text-emerald-100/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-                Your contribution helps us provide resources, guidance, and support to individuals
-                seeking to leave criminal lifestyles behind and build a better future.
+                {t('scammerRemoval.donation.description')}
               </p>
 
               {/* Donation Buttons */}
@@ -742,7 +674,7 @@ export default function ScammerRemovalPage() {
                     rel="noopener noreferrer"
                   >
                     <Bitcoin className="mr-2 h-5 w-5" />
-                    Donate with Cryptocurrency
+                    {t('scammerRemoval.donation.cryptoButton')}
                   </a>
                 </Button>
                 <Button
@@ -756,7 +688,7 @@ export default function ScammerRemovalPage() {
                     rel="noopener noreferrer"
                   >
                     <CreditCard className="mr-2 h-5 w-5" />
-                    Donate by Card
+                    {t('scammerRemoval.donation.cardButton')}
                   </a>
                 </Button>
               </div>
@@ -765,15 +697,15 @@ export default function ScammerRemovalPage() {
               <div className="flex flex-wrap justify-center gap-6 text-emerald-200/60 text-sm">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4" />
-                  <span>Secure Payment</span>
+                  <span>{t('scammerRemoval.donation.securePayment')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4" />
-                  <span>100% Goes to Programs</span>
+                  <span>{t('scammerRemoval.donation.goesToPrograms')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Heart className="h-4 w-4" />
-                  <span>Make a Difference</span>
+                  <span>{t('scammerRemoval.donation.makeDifference')}</span>
                 </div>
               </div>
             </div>
@@ -786,22 +718,22 @@ export default function ScammerRemovalPage() {
             <div className="max-w-3xl mx-auto text-center">
               <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium mb-6">
                 <Mail className="h-4 w-4" />
-                Get in Touch
+                {t('scammerRemoval.contact.badge')}
               </div>
 
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                Ready to Start Your New Journey?
+                {t('scammerRemoval.contact.title')}
               </h2>
 
               <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-                Contact us at{' '}
+                {t('scammerRemoval.contact.description')}{' '}
                 <a
                   href="mailto:info@scamnemesis.com"
                   className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
                 >
                   info@scamnemesis.com
                 </a>
-                {' '}to begin your removal request process. We&apos;re here to help you every step of the way.
+                {' '}{t('scammerRemoval.contact.descriptionEnd')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -812,7 +744,7 @@ export default function ScammerRemovalPage() {
                 >
                   <a href="mailto:info@scamnemesis.com">
                     <Send className="mr-2 h-5 w-5" />
-                    Submit Removal Request
+                    {t('scammerRemoval.contact.submitRequest')}
                   </a>
                 </Button>
                 <Button
@@ -821,9 +753,9 @@ export default function ScammerRemovalPage() {
                   className="border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-base px-8 py-6"
                   asChild
                 >
-                  <Link href="/contact-us">
+                  <Link href={`/${locale}/contact-us`}>
                     <ArrowRight className="mr-2 h-5 w-5" />
-                    Contact Page
+                    {t('scammerRemoval.contact.contactPage')}
                   </Link>
                 </Button>
               </div>
@@ -836,10 +768,10 @@ export default function ScammerRemovalPage() {
           <div className="container px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center">
               <p className="text-xl md:text-2xl font-medium text-slate-700 dark:text-slate-300 italic leading-relaxed">
-                &ldquo;The past is your lesson. The present is your gift. The future is your motivation.&rdquo;
+                &ldquo;{t('scammerRemoval.finalMessage.quote')}&rdquo;
               </p>
               <p className="mt-4 text-emerald-600 dark:text-emerald-400 font-medium">
-                Everyone deserves a second chance.
+                {t('scammerRemoval.finalMessage.message')}
               </p>
             </div>
           </div>

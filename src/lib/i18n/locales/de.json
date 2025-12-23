@@ -619,5 +619,105 @@
       "contactUs": "Kontaktieren Sie uns",
       "learnMore": "um mehr über unsere Arbeit zu erfahren."
     }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Antrag auf Löschung aus der Datenbank",
+      "titleHighlight": "Eine zweite Chance",
+      "subtitle": "Hilfe für einen Neuanfang im Leben",
+      "description": "Wir glauben an Privatsphäre und zweite Chancen. Unsere Plattform bietet Personen mit krimineller Vergangenheit die Möglichkeit, die Löschung aus unserer Betrügerdatenbank zu beantragen und Unterstützung für die Wiedereingliederung ins Leben zu erhalten.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "learnMore": "Mehr erfahren"
+    },
+    "quote": {
+      "text": "Jeder verdient eine zweite Chance. Es kommt nicht darauf an, wo Sie angefangen haben, sondern wohin Sie gehen.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Anforderungen & Bedingungen",
+      "title": "Geschäftsbedingungen",
+      "subtitle": "Bitte lesen Sie diese Anforderungen sorgfältig durch, bevor Sie Ihren Antrag einreichen",
+      "basicRequirements": {
+        "title": "Grundvoraussetzungen",
+        "items": [
+          "Ihre Fall-/Betrüger-ID aus unserer Datenbank",
+          "Gültige Ausweisdokumente",
+          "Detaillierte Erläuterung Ihrer Situation",
+          "Verpflichtungserklärung für zukünftiges rechtmäßiges Verhalten"
+        ]
+      },
+      "importantNotices": {
+        "title": "Wichtige Hinweise",
+        "items": [
+          "Eine Chance pro Person — nutzen Sie sie weise",
+          "Jede zukünftige kriminelle Aktivität schließt diese Tür dauerhaft",
+          "Prüfungszeitraum: 14-30 Tage",
+          "Alle Anträge werden individuell nach Schwere des Falls bewertet"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Schritt-für-Schritt-Prozess",
+      "title": "So beantragen Sie die Löschung",
+      "subtitle": "Befolgen Sie diese einfachen Schritte, um Ihren Antrag auf Löschung aus der Datenbank einzureichen",
+      "steps": [
+        { "title": "Kontaktieren Sie uns", "description": "Senden Sie Ihren Antrag an info@scamnemesis.com" },
+        { "title": "Dokumente einreichen", "description": "Stellen Sie die erforderlichen Unterlagen und Erklärungen bereit" },
+        { "title": "Auf Prüfung warten", "description": "Unser Team wird Ihren Fall prüfen (14-30 Tage)" },
+        { "title": "Entscheidung erhalten", "description": "Werden Sie über das Ergebnis Ihres Antrags benachrichtigt" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Kostenlose Ressource",
+      "title": "PDF-Leitfaden: Der Weg aus der Kriminalität",
+      "subtitle": "Praktische Anleitung für diejenigen, die kriminelle Umgebungen verlassen möchten",
+      "insideTitle": "Was im Leitfaden enthalten ist",
+      "features": [
+        "Schritt-für-Schritt-Anleitung zum sicheren Verlassen krimineller Umgebungen",
+        "Ressourcen für psychische Gesundheit und Suchtgenesung",
+        "Beschäftigungsstrategien für Personen mit Vorstrafen",
+        "Rechtsrechte und Wiedereingliederungsinformationen nach Land"
+      ],
+      "downloadButton": "Kostenlosen PDF-Leitfaden herunterladen"
+    },
+    "breakCycle": {
+      "badge": "Sich befreien",
+      "title": "Den Kreislauf durchbrechen",
+      "importantMessage": "Wichtige Nachricht",
+      "content": "Wenn Sie derzeit Teil einer kriminellen Organisation sind und aussteigen möchten, wissen Sie, dass es immer einen Weg hinaus gibt. Ihr erster Schritt ist, Hilfe zu suchen — sei es von Strafverfolgungsbehörden, Hilfsorganisationen oder vertrauenswürdigen Personen. Der Weg zu einem neuen Leben beginnt mit einer einzigen Entscheidung.",
+      "reminder": "Denken Sie daran: Es ist nie zu spät, Ihren Weg zu ändern."
+    },
+    "vision": {
+      "badge": "Zukunftspläne",
+      "title": "Unsere Vision der Hilfe",
+      "subtitle": "Wir entwickeln umfassende Programme zur Unterstützung von Personen, die ihre kriminelle Vergangenheit hinter sich lassen möchten. Hier sind drei Initiativen, die wir umsetzen wollen:",
+      "plannedInitiative": "Geplante Initiative",
+      "initiatives": [
+        { "title": "Finanzielle Unterstützung", "description": "Hilfe für Entlassene während der Übergangszeit" },
+        { "title": "Familienunterstützung", "description": "Unterstützungsdienste für Familien derjenigen, die einen Neuanfang suchen" },
+        { "title": "Bildung & Umschulung", "description": "Möglichkeiten zur Kompetenzentwicklung und Karrierewechsel" }
+      ]
+    },
+    "donation": {
+      "title": "Unterstützen Sie das Zweite-Chance-Programm",
+      "description": "Ihr Beitrag hilft uns, Ressourcen, Beratung und Unterstützung für Personen bereitzustellen, die kriminelle Lebensstile hinter sich lassen und eine bessere Zukunft aufbauen möchten.",
+      "cryptoButton": "Mit Kryptowährung spenden",
+      "cardButton": "Mit Karte spenden",
+      "securePayment": "Sichere Zahlung",
+      "goesToPrograms": "100% geht an Programme",
+      "makeDifference": "Machen Sie einen Unterschied"
+    },
+    "contact": {
+      "badge": "Kontaktieren Sie uns",
+      "title": "Bereit, Ihre neue Reise zu beginnen?",
+      "description": "Kontaktieren Sie uns unter",
+      "descriptionEnd": "um den Prozess Ihres Löschungsantrags zu beginnen. Wir sind hier, um Ihnen bei jedem Schritt zu helfen.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "contactPage": "Kontaktseite"
+    },
+    "finalMessage": {
+      "quote": "Die Vergangenheit ist Ihre Lektion. Die Gegenwart ist Ihr Geschenk. Die Zukunft ist Ihre Motivation.",
+      "message": "Jeder verdient eine zweite Chance."
+    }
   }
 }

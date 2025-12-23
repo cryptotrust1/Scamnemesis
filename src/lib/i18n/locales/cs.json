@@ -619,5 +619,105 @@
       "contactUs": "Kontaktujte nás",
       "learnMore": "a dozvíte se více o naší práci."
     }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Žádost o smazání z databáze",
+      "titleHighlight": "Druhá šance",
+      "subtitle": "Pomoc pro nový začátek v životě",
+      "description": "Věříme v soukromí a druhé šance. Naše platforma nabízí jednotlivcům s kriminální minulostí možnost požádat o smazání z naší databáze podvodníků a získat podporu pro opětovné začlenění do života.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "learnMore": "Dozvědět se více"
+    },
+    "quote": {
+      "text": "Každý si zaslouží druhou šanci. Nezáleží na tom, kde jste začali, ale kam směřujete.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Požadavky a podmínky",
+      "title": "Podmínky",
+      "subtitle": "Před odesláním žádosti si pečlivě přečtěte tyto požadavky",
+      "basicRequirements": {
+        "title": "Základní požadavky",
+        "items": [
+          "Vaše ID případu/podvodníka z naší databáze",
+          "Platné identifikační doklady",
+          "Podrobné vysvětlení vaší situace",
+          "Prohlášení o závazku k budoucímu zákonnému chování"
+        ]
+      },
+      "importantNotices": {
+        "title": "Důležitá upozornění",
+        "items": [
+          "Jedna příležitost na osobu — využijte ji moudře",
+          "Jakákoli budoucí kriminální činnost natrvalo zavře tyto dveře",
+          "Doba posouzení: 14-30 dní",
+          "Všechny žádosti jsou posuzovány individuálně na základě závažnosti případu"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Postup krok za krokem",
+      "title": "Jak požádat o smazání",
+      "subtitle": "Postupujte podle těchto jednoduchých kroků k odeslání žádosti o smazání z databáze",
+      "steps": [
+        { "title": "Kontaktujte nás", "description": "Pošlete svou žádost na info@scamnemesis.com" },
+        { "title": "Odešlete dokumenty", "description": "Poskytněte požadovanou dokumentaci a vysvětlení" },
+        { "title": "Čekejte na posouzení", "description": "Náš tým posoudí váš případ (14-30 dní)" },
+        { "title": "Obdržíte rozhodnutí", "description": "Budete informováni o výsledku vaší žádosti" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Bezplatný zdroj",
+      "title": "PDF průvodce: Cesta z kriminality",
+      "subtitle": "Praktické pokyny pro ty, kteří chtějí opustit kriminální prostředí",
+      "insideTitle": "Co je v průvodci",
+      "features": [
+        "Návod krok za krokem pro bezpečné opuštění kriminálního prostředí",
+        "Zdroje pro duševní zdraví a zotavení ze závislostí",
+        "Strategie zaměstnání pro osoby s kriminální minulostí",
+        "Právní práva a informace o reintegraci podle země"
+      ],
+      "downloadButton": "Stáhnout bezplatného PDF průvodce"
+    },
+    "breakCycle": {
+      "badge": "Osvobodit se",
+      "title": "Přerušte bludný kruh",
+      "importantMessage": "Důležitá zpráva",
+      "content": "Pokud jste v současné době součástí kriminální organizace a chcete odejít, vězte, že vždy existuje cesta ven. Váš první krok je vyhledat pomoc — ať už od orgánů činných v trestním řízení, podpůrných organizací nebo důvěryhodných osob. Cesta k novému životu začíná jediným rozhodnutím.",
+      "reminder": "Pamatujte: Nikdy není pozdě změnit svou cestu."
+    },
+    "vision": {
+      "badge": "Budoucí plány",
+      "title": "Naše vize pomoci",
+      "subtitle": "Vyvíjíme komplexní programy na pomoc jednotlivcům, kteří chtějí zanechat svou kriminální minulost. Zde jsou tři iniciativy, které plánujeme implementovat:",
+      "plannedInitiative": "Plánovaná iniciativa",
+      "initiatives": [
+        { "title": "Finanční podpora", "description": "Pomoc pro propuštěné během přechodného období" },
+        { "title": "Pomoc rodinám", "description": "Podpůrné služby pro rodiny těch, kteří hledají nový začátek" },
+        { "title": "Vzdělávání a rekvalifikace", "description": "Příležitosti pro rozvoj dovedností a změnu kariéry" }
+      ]
+    },
+    "donation": {
+      "title": "Podpořte program Druhá šance",
+      "description": "Váš příspěvek nám pomáhá poskytovat zdroje, pokyny a podporu jednotlivcům, kteří chtějí zanechat kriminální životní styl a vybudovat lepší budoucnost.",
+      "cryptoButton": "Přispět kryptoměnou",
+      "cardButton": "Přispět kartou",
+      "securePayment": "Bezpečná platba",
+      "goesToPrograms": "100% jde na programy",
+      "makeDifference": "Udělejte rozdíl"
+    },
+    "contact": {
+      "badge": "Kontaktujte nás",
+      "title": "Jste připraveni začít svou novou cestu?",
+      "description": "Kontaktujte nás na",
+      "descriptionEnd": "a začněte proces žádosti o smazání. Jsme zde, abychom vám pomohli na každém kroku.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "contactPage": "Kontaktní stránka"
+    },
+    "finalMessage": {
+      "quote": "Minulost je vaše lekce. Přítomnost je váš dar. Budoucnost je vaše motivace.",
+      "message": "Každý si zaslouží druhou šanci."
+    }
   }
 }
