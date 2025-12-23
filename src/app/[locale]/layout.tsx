@@ -41,6 +41,10 @@ export async function generateMetadata({
     description: descriptions[locale] || descriptions.en,
     keywords: locale === 'sk'
       ? ['kontrola podvodov', 'prevencia podvodov', 'overenie webu', 'kontrola podvodníka', 'overenie e-mailu', 'kontrola telefónneho čísla', 'nahlásenie podvodu', 'ochrana pred podvodmi', 'kybernetická bezpečnosť', 'kryptomenové podvody', 'phishing', 'romantické podvody', 'investičné podvody', 'krádeže identity', 'overenie firmy', 'online bezpečnosť', 'kontrola IBAN', 'sledovanie blockchainu', 'vymáhanie peňazí', 'digitálna forenzná analýza', 'OSINT', 'due diligence', 'firemné vyšetrovania', 'bezpečnostné školenia']
+      : locale === 'cs'
+      ? ['kontrola podvodů', 'prevence podvodů', 'ověření webu', 'kontrola podvodníka', 'ověření e-mailu', 'kontrola telefonního čísla', 'nahlášení podvodu', 'ochrana před podvody', 'kybernetická bezpečnost', 'kryptoměnové podvody', 'phishing', 'romantické podvody', 'investiční podvody', 'krádeže identity', 'ověření firmy', 'online bezpečnost', 'kontrola IBAN', 'sledování blockchainu', 'vymáhání peněz', 'digitální forenzní analýza', 'OSINT', 'due diligence', 'firemní vyšetřování', 'bezpečnostní školení']
+      : locale === 'de'
+      ? ['Betrugscheck', 'Betrugsprävention', 'Website überprüfen', 'Betrüger prüfen', 'E-Mail-Verifizierung', 'Telefonnummer prüfen', 'Betrug melden', 'Betrugsschutz', 'Cybersicherheit', 'Kryptowährungsbetrug', 'Phishing', 'Romance Scam', 'Investitionsbetrug', 'Identitätsdiebstahl', 'Firmenverifizierung', 'Online-Sicherheit', 'IBAN-Prüfung', 'Blockchain-Verfolgung', 'Geldwiederherstellung', 'Digitale Forensik', 'OSINT', 'Due Diligence', 'Unternehmensermittlungen', 'Sicherheitsschulung']
       : ['scam checker', 'fraud prevention', 'verify website', 'scammer check', 'email verification', 'phone number check', 'report scam', 'fraud protection', 'cybersecurity', 'cryptocurrency scams', 'phishing', 'romance scams', 'investment fraud', 'identity theft', 'company verification', 'online safety', 'IBAN check', 'blockchain tracing', 'money recovery', 'digital forensics', 'OSINT', 'due diligence', 'corporate investigations', 'security training'],
     authors: [{ name: 'ScamNemesis Team' }],
     creator: 'ScamNemesis',
@@ -56,12 +60,15 @@ export async function generateMetadata({
       languages: {
         'en': 'https://scamnemesis.com/en',
         'sk': 'https://scamnemesis.com/sk',
+        'cs': 'https://scamnemesis.com/cs',
+        'de': 'https://scamnemesis.com/de',
+        'x-default': 'https://scamnemesis.com/en',
       },
     },
     openGraph: {
       type: 'website',
-      locale: locale === 'sk' ? 'sk_SK' : 'en_US',
-      alternateLocale: locale === 'sk' ? 'en_US' : 'sk_SK',
+      locale: locale === 'sk' ? 'sk_SK' : locale === 'cs' ? 'cs_CZ' : locale === 'de' ? 'de_DE' : 'en_US',
+      alternateLocale: ['en_US', 'sk_SK', 'cs_CZ', 'de_DE'].filter(l => !l.startsWith(locale)),
       url: `https://scamnemesis.com/${locale}`,
       siteName: 'ScamNemesis',
       title: titles[locale] || titles.en,

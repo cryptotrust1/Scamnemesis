@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Mail, AlertTriangle, Shield, Clock, Headphones } from 'lucide-react';
 
-type Locale = 'en' | 'sk';
+type Locale = 'en' | 'sk' | 'cs' | 'de';
 
 const getTranslations = (locale: Locale) => {
   const translations = {
@@ -58,6 +58,58 @@ const getTranslations = (locale: Locale) => {
         title: 'Ste pripravení konať?',
         description: 'Ak ste sa stali obeťou podvodu, nečakajte. Odošlite podrobnú správu, aby náš tím mohol začať vyšetrovať váš prípad.',
         button: 'Nahlásiť podvod',
+      },
+    },
+    cs: {
+      badge: 'Kontaktujte nás',
+      title: 'Kontaktujte',
+      titleHighlight: 'nás',
+      description: 'Můžete nás kontaktovat e-mailem. Pokud však chcete nahlásit podvod, klikněte na tlačítko níže a vyplňte formulář — bez něj vám nebudeme moci účinně pomoci.',
+      emailLabel: 'Napište nám na',
+      reportPrompt: 'Potřebujete nahlásit podvod?',
+      reportButton: 'Nahlásit podvod',
+      quickResponse: {
+        title: 'Rychlá odpověď',
+        description: 'Na všechny dotazy odpovídáme do 24-48 hodin',
+      },
+      confidential: {
+        title: 'Důvěrné',
+        description: 'Vaše informace jsou chráněny a přísně důvěrné',
+      },
+      expertSupport: {
+        title: 'Odborná podpora',
+        description: 'Náš tým specialistů je tu, aby vám pomohl',
+      },
+      cta: {
+        title: 'Jste připraveni jednat?',
+        description: 'Pokud jste se stali obětí podvodu, nečekejte. Odešlete podrobnou zprávu, aby náš tým mohl začít vyšetřovat váš případ.',
+        button: 'Nahlásit podvod',
+      },
+    },
+    de: {
+      badge: 'Kontaktieren Sie uns',
+      title: 'Kontaktieren Sie',
+      titleHighlight: 'uns',
+      description: 'Sie können uns per E-Mail kontaktieren. Wenn Sie jedoch einen Betrug melden möchten, klicken Sie bitte auf die Schaltfläche unten und füllen Sie das Formular aus — ohne dieses können wir Ihnen nicht effektiv helfen.',
+      emailLabel: 'Schreiben Sie uns an',
+      reportPrompt: 'Müssen Sie einen Betrug melden?',
+      reportButton: 'Betrug melden',
+      quickResponse: {
+        title: 'Schnelle Antwort',
+        description: 'Wir beantworten alle Anfragen innerhalb von 24-48 Stunden',
+      },
+      confidential: {
+        title: 'Vertraulich',
+        description: 'Ihre Informationen sind geschützt und streng vertraulich',
+      },
+      expertSupport: {
+        title: 'Expertenunterstützung',
+        description: 'Unser Spezialistenteam steht Ihnen zur Verfügung',
+      },
+      cta: {
+        title: 'Bereit zu handeln?',
+        description: 'Wenn Sie von Betrug betroffen sind, warten Sie nicht. Reichen Sie einen detaillierten Bericht ein, damit unser Team mit der Untersuchung Ihres Falls beginnen kann.',
+        button: 'Betrug melden',
       },
     },
   };

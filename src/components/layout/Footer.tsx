@@ -15,17 +15,16 @@ const translations = {
     quickLinks: 'Quick Links',
     search: 'Search',
     report: 'Report Scam',
-    stats: 'Statistics',
-    verify: 'Quick Verification',
+    supportUs: 'Support Us',
+    training: 'Training',
     information: 'Information',
     about: 'About',
-    faq: 'FAQ',
-    apiDocs: 'API Documentation',
+    moneyRecovery: 'Money Recovery',
+    investigations: 'Investigations',
     contact: 'Contact',
     legal: 'Legal',
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
-    gdpr: 'GDPR',
     copyright: 'All rights reserved.',
   },
   sk: {
@@ -33,17 +32,16 @@ const translations = {
     quickLinks: 'Rýchle odkazy',
     search: 'Vyhľadávanie',
     report: 'Nahlásiť podvod',
-    stats: 'Štatistiky',
-    verify: 'Rýchle overenie',
+    supportUs: 'Podporte nás',
+    training: 'Školenia',
     information: 'Informácie',
     about: 'O projekte',
-    faq: 'FAQ',
-    apiDocs: 'API dokumentácia',
+    moneyRecovery: 'Vymáhanie peňazí',
+    investigations: 'Vyšetrovania',
     contact: 'Kontakt',
     legal: 'Právne',
     privacy: 'Ochrana súkromia',
     terms: 'Podmienky používania',
-    gdpr: 'GDPR',
     copyright: 'Všetky práva vyhradené.',
   },
 };
@@ -81,8 +79,8 @@ export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
             <nav className={styles.links}>
               <Link href={`/${currentLocale}/search`} className={styles.link}>{t.search}</Link>
               <Link href={`/${currentLocale}/report/new`} className={styles.link}>{t.report}</Link>
-              <Link href={`/${currentLocale}/support-us`} className={styles.link}>{currentLocale === 'sk' ? 'Podporte nás' : 'Support Us'}</Link>
-              <Link href={`/${currentLocale}/training-courses`} className={styles.link}>{currentLocale === 'sk' ? 'Školenia' : 'Training'}</Link>
+              <Link href={`/${currentLocale}/support-us`} className={styles.link}>{t.supportUs}</Link>
+              <Link href={`/${currentLocale}/training-courses`} className={styles.link}>{t.training}</Link>
             </nav>
           </div>
 
@@ -91,8 +89,8 @@ export const Footer: React.FC<FooterProps> = ({ locale = 'en' }) => {
             <h4 className={styles.linkGroupTitle}>{t.information}</h4>
             <nav className={styles.links}>
               <Link href={`/${currentLocale}/about`} className={styles.link}>{t.about}</Link>
-              <Link href={`/${currentLocale}/money-recovery`} className={styles.link}>{currentLocale === 'sk' ? 'Vymáhanie peňazí' : 'Money Recovery'}</Link>
-              <Link href={`/${currentLocale}/scammer-removal`} className={styles.link}>{currentLocale === 'sk' ? 'Vyšetrovania' : 'Investigations'}</Link>
+              <Link href={`/${currentLocale}/money-recovery`} className={styles.link}>{t.moneyRecovery}</Link>
+              <Link href={`/${currentLocale}/scammer-removal`} className={styles.link}>{t.investigations}</Link>
               <Link href={`/${currentLocale}/contact-us`} className={styles.link}>{t.contact}</Link>
             </nav>
           </div>

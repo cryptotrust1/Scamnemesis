@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-type Locale = 'en' | 'sk';
+type Locale = 'en' | 'sk' | 'cs' | 'de';
 
 const getTranslations = (locale: Locale) => {
   const translations = {
@@ -150,6 +150,138 @@ const getTranslations = (locale: Locale) => {
         description: 'Či chcete overiť niekoho legitimitu, nahlásiť podvod alebo potrebujete pomoc s vrátením peňazí — sme tu pre vás.',
         scamChecker: 'Použiť kontrolu podvodov',
         contact: 'Kontaktujte nás',
+      },
+    },
+    cs: {
+      hero: {
+        title: 'O ScamNemesis',
+        description: 'Jsme tým právníků, forenzních analytiků a etických hackerů, kteří se věnují pomoci obětem krypto podvodů a investičních podvodů. Naším posláním je chránit lidi před podvody a pomáhat těm, kteří se stali oběťmi.',
+      },
+      mission: {
+        title: 'Naše poslání',
+        text1: 'Vytvořit bezpečnější digitální prostředí poskytováním dostupných nástrojů pro prevenci podvodů, profesionálních vyšetřovacích služeb a podpory pro oběti online podvodů.',
+        text2: 'Věříme, že každý si zaslouží ochranu před podvody, bez ohledu na svou finanční situaci. Proto nabízíme bezplatné nástroje vedle našich profesionálních služeb.',
+        imageAlt: 'Náš tým',
+      },
+      values: {
+        title: 'Naše hodnoty',
+        items: [
+          {
+            title: 'Transparentnost',
+            description: 'Jsme upřímní v tom, co můžeme a nemůžeme udělat. Žádné falešné sliby, jen profesionální vyšetřování.',
+          },
+          {
+            title: 'Odbornost',
+            description: 'Náš tým zahrnuje certifikované vyšetřovatele podvodů, OSINT specialisty a právní profesionály.',
+          },
+          {
+            title: 'Dostupnost',
+            description: 'Spravedlnost a bezpečnost by neměly být vyhrazeny pouze těm, kteří si je mohou finančně dovolit.',
+          },
+          {
+            title: 'Soucit',
+            description: 'Chápeme emocionální dopad podvodu a ke každé oběti přistupujeme s respektem.',
+          },
+        ],
+      },
+      team: {
+        title: 'Expertní tým',
+        description: 'Náš tým má certifikace od předních institucí se zkušenostmi ve vyšetřování finanční kriminality, vojenském zpravodajství a Big 4 konzultingu.',
+        credentials: [
+          'Certifikovaní vyšetřovatelé podvodů (CFE®)',
+          'Certifikovaní specialisté na boj proti praní špinavých peněz (CAMS®)',
+          'Certifikovaní auditoři informačních systémů (CISA®)',
+          'Certifikovaní manažeři informační bezpečnosti (CISM®)',
+          'Offensive Security Certified Professionals (OSCP®)',
+          'Zkušenosti z vojenského zpravodajství',
+          'Zkušenosti z Big 4 konzultingu',
+        ],
+      },
+      services: {
+        title: 'Co nabízíme',
+        items: [
+          { name: 'Kontrola podvodů', description: 'Bezplatný nástroj pro ověření identity a kontrolu indikátorů podvodu' },
+          { name: 'Nahlášení podvodu', description: 'Komplexní formulář pro dokumentaci a nahlášení incidentů podvodu' },
+          { name: 'Vymáhání peněz', description: 'Profesionální vyšetřování a služby pro vymáhání prostředků' },
+          { name: 'Due Diligence', description: 'Prověřování obchodních partnerů a firemní verifikace' },
+          { name: 'Školení', description: 'Kurzy kybernetické bezpečnosti a prevence podvodů (již brzy)' },
+          { name: 'Program druhé šance', description: 'Podpora rehabilitace pro bývalé pachatele' },
+        ],
+      },
+      certifications: {
+        title: 'Naše certifikace',
+      },
+      cta: {
+        title: 'Potřebujete pomoc?',
+        description: 'Ať už chcete ověřit něčí legitimitu, nahlásit podvod nebo potřebujete pomoc s vrácením peněz — jsme tu pro vás.',
+        scamChecker: 'Použít kontrolu podvodů',
+        contact: 'Kontaktujte nás',
+      },
+    },
+    de: {
+      hero: {
+        title: 'Über ScamNemesis',
+        description: 'Wir sind ein Team aus Anwälten, forensischen Analysten und ethischen Hackern, die sich der Hilfe für Opfer von Krypto-Betrug und Investitionsbetrug widmen. Unsere Mission ist es, Menschen vor Betrug zu schützen und denjenigen zu helfen, die Opfer geworden sind.',
+      },
+      mission: {
+        title: 'Unsere Mission',
+        text1: 'Eine sicherere digitale Umgebung zu schaffen, indem wir zugängliche Werkzeuge zur Betrugsprävention, professionelle Ermittlungsdienste und Unterstützung für Opfer von Online-Betrug bereitstellen.',
+        text2: 'Wir glauben, dass jeder Schutz vor Betrug verdient, unabhängig von seiner finanziellen Situation. Deshalb bieten wir kostenlose Tools neben unseren professionellen Dienstleistungen an.',
+        imageAlt: 'Unser Team',
+      },
+      values: {
+        title: 'Unsere Werte',
+        items: [
+          {
+            title: 'Transparenz',
+            description: 'Wir sind ehrlich darüber, was wir tun können und was nicht. Keine falschen Versprechen, nur professionelle Ermittlung.',
+          },
+          {
+            title: 'Expertise',
+            description: 'Unser Team umfasst zertifizierte Betrugsermittler, OSINT-Spezialisten und Rechtsexperten.',
+          },
+          {
+            title: 'Zugänglichkeit',
+            description: 'Gerechtigkeit und Sicherheit sollten nicht nur denen vorbehalten sein, die sie sich finanziell leisten können.',
+          },
+          {
+            title: 'Mitgefühl',
+            description: 'Wir verstehen die emotionale Auswirkung von Betrug und behandeln jedes Opfer mit Respekt.',
+          },
+        ],
+      },
+      team: {
+        title: 'Expertenteam',
+        description: 'Unser Team verfügt über Zertifizierungen von führenden Institutionen mit Hintergründen in der Untersuchung von Finanzkriminalität, militärischer Aufklärung und Big 4 Beratung.',
+        credentials: [
+          'Zertifizierte Betrugsermittler (CFE®)',
+          'Zertifizierte Anti-Geldwäsche-Spezialisten (CAMS®)',
+          'Zertifizierte Informationssystem-Auditoren (CISA®)',
+          'Zertifizierte Informationssicherheits-Manager (CISM®)',
+          'Offensive Security Certified Professionals (OSCP®)',
+          'Militärischer Nachrichtendienst-Hintergrund',
+          'Big 4 Beratungserfahrung',
+        ],
+      },
+      services: {
+        title: 'Was wir anbieten',
+        items: [
+          { name: 'Betrugscheck', description: 'Kostenloses Tool zur Identitätsverifizierung und Überprüfung von Betrugsindikatoren' },
+          { name: 'Betrugsmeldung', description: 'Umfassendes Formular zur Dokumentation und Meldung von Betrugsfällen' },
+          { name: 'Geldwiederherstellung', description: 'Professionelle Ermittlung und Dienstleistungen zur Rückgewinnung von Geldern' },
+          { name: 'Due Diligence', description: 'Überprüfung von Geschäftspartnern und Unternehmensverifizierung' },
+          { name: 'Schulungen', description: 'Kurse zu Cybersicherheit und Betrugsprävention (demnächst)' },
+          { name: 'Zweite-Chance-Programm', description: 'Rehabilitationsunterstützung für ehemalige Straftäter' },
+        ],
+      },
+      certifications: {
+        title: 'Unsere Zertifizierungen',
+      },
+      cta: {
+        title: 'Brauchen Sie Hilfe?',
+        description: 'Ob Sie die Legitimität einer Person überprüfen, einen Betrug melden oder Hilfe bei der Rückholung Ihres Geldes benötigen — wir sind für Sie da.',
+        scamChecker: 'Betrugscheck verwenden',
+        contact: 'Kontaktieren Sie uns',
       },
     },
   };
