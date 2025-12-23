@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { i18n, type Locale } from '@/i18n/config';
 
@@ -210,13 +209,6 @@ export function Header() {
               </div>
             )}
           </div>
-
-          {/* Report Button */}
-          <Button asChild className="hidden md:inline-flex bg-[#0E74FF] hover:bg-[#0E74FF]/90">
-            <Link href={getLocalizedHref('/report/new')}>
-              {{ en: 'Report Scam', sk: 'Nahlásiť podvod', cs: 'Nahlásit podvod', de: 'Betrug melden' }[displayLocale]}
-            </Link>
-          </Button>
 
           {/* Mobile Menu Button */}
           <button

@@ -103,7 +103,7 @@ const fraudTypeColors: Record<string, { bg: string; text: string }> = {
 };
 
 // Translation helper type
-type Locale = 'en' | 'sk';
+type Locale = 'en' | 'sk' | 'de' | 'cs';
 
 // Get translations based on locale
 const getTranslations = (locale: Locale) => {
@@ -330,12 +330,212 @@ const getTranslations = (locale: Locale) => {
         description: 'Roky skúseností a certifikácie od popredných inštitúcií — profesionáli na vašej strane.',
       },
     },
+    de: {
+      hero: {
+        badge: 'Plattform zur Betrugsprävention',
+        title1: 'Ist es Betrug? Überprüfen Sie jede',
+        titleHighlight: 'Website, Person, Firma, Telefon oder E-Mail',
+        title2: 'sofort',
+        description: 'Überprüfen Sie Betrug sofort 🔎 — verifizieren Sie <strong>Personen</strong>, <strong>Websites</strong>, <strong>Unternehmen</strong>, <strong>Stellenangebote</strong>, <strong>E-Mails</strong>, <strong>Telefonnummern</strong>, <strong>Dating-Profile</strong> und vieles mehr. Genießen Sie <strong>kostenlosen Echtzeitschutz</strong> 🛡️. Betrug gefunden oder betrogen worden? ⚠️ <strong>Melden Sie es jetzt</strong> — Ihre Warnung könnte <strong>andere schützen</strong>. Erkunden Sie unsere <strong>Sicherheitsdienste</strong> 🔐.',
+        searchPlaceholder: 'Suche nach Name, E-Mail, Telefon, Website, IBAN, Krypto-Wallet...',
+        search: 'Suchen',
+        records: '640M+ Datensätze',
+        sources: '130+ Quellen',
+        realtime: 'Echtzeit-Updates',
+        free: 'Immer kostenlos',
+      },
+      database: {
+        badge: 'Echtzeitdaten',
+        title: 'Unsere Datenbank in Zahlen',
+        description: 'Echtzeitzugriff auf über 640 Millionen verifizierte Betrugsdatensätze aus 130+ vertrauenswürdigen globalen Quellen einschließlich FBI, OFAC, Interpol und internationalen Strafverfolgungsbehörden',
+        note: '(Einige Datenquellen werden noch integriert) Aktualisierung alle 5 Minuten',
+        categoriesTitle: 'Umfassende Betrugs-Datenbankkategorien',
+        totalCoverage: 'Gesamte Datenbankabdeckung',
+        totalRecords: 'Gesamte Datensätze',
+        dataSources: 'Datenquellen',
+        categories: 'Kategorien',
+        realtimeAccess: 'Echtzeitzugriff',
+        updateFreq: 'Aktualisierungsfrequenz',
+        sourcesFooter: 'Verifizierte Datenquellen umfassen FBI Most Wanted API, OFAC SDN-Liste, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre und 120+ weitere verifizierte globale Datenbanken von Strafverfolgungsbehörden und Verbraucherschutzagenturen weltweit.',
+        maliciousIPs: 'Bösartige IP-Adressen',
+        stolenVehicles: 'Datenbank gestohlener Fahrzeuge',
+        phishingURLs: 'Verifizierte Phishing-URLs',
+        dissolvedCompanies: 'Aufgelöste Unternehmen',
+      },
+      roadmap: {
+        title: 'Liste der Funktionen und Dienste, die wir entwickeln',
+        description: 'Für jeden Punkt listen wir seinen Status, den Fertigstellungsgrad und eine kurze Anmerkung, wofür er dient.',
+        feature: 'Funktion',
+        status: 'Status',
+        complete: 'Abgeschlossen',
+        whatFor: 'Wofür es ist',
+        functional: 'Funktional',
+        inDevelopment: 'In Entwicklung',
+        planned: 'Geplant',
+      },
+      services: {
+        title: 'Weitere Dienste',
+        included: 'Was der Service beinhaltet',
+        when: 'Wann dieser Service geeignet ist',
+        recovery: {
+          title: 'Betrugs-Wiederherstellungsdienste',
+          description: 'Wiederherstellung von durch Betrug verlorenen Geldern. Wir kombinieren digitale Forensik, OSINT und rechtliche Koordination, um Ihr Geld aufzuspüren, einzufrieren und wiederzuerlangen — schnell, ethisch und vertretbar.',
+          priceNote: '5 Stunden Ermittlerarbeit',
+          priceDesc: 'Wir bieten diesen Service als Reaktion auf Unternehmen an, die 3.500–10.000 € verlangen und oft nur den Fall bei einem Finanzinstitut melden. Wir betrachten solche Praktiken als betrügerisch und unethisch.',
+          cta: 'Geldwiederherstellung starten',
+        },
+        dueDiligence: {
+          title: 'DUE-DILIGENCE-DIENSTE',
+          description: 'Unabhängige Überprüfung von Partnern, Kunden und Investitionen. Wir kombinieren OSINT, AML/KYB-Verfahren und eine rechtliche Perspektive, damit Sie Entscheidungen auf der Grundlage überprüfbarer Fakten treffen können — schnell, diskret und vertretbar.',
+          cta: 'Due Diligence starten',
+        },
+        investigation: {
+          title: 'UNTERNEHMENSERMITTLUNGEN',
+          description: 'Interne und externe Ermittlungen für Unternehmen. Wir kombinieren OSINT, digitale Forensik und Finanzanalytik mit der ScamNemesis-Plattform (Beweismanagement, Beweiskette) — diskret, rechtmäßig und vertretbar.',
+          cta: 'Ermittlung starten',
+        },
+        training: {
+          title: 'SICHERHEITSSCHULUNGEN & BERATUNG',
+          description: 'Sicherheitsschulungen und Beratung für Teams und Management. Wir verwenden reale Szenarien von ScamNemesis (OSINT, Betrug, Incident Response), um Verfahren praktisch, messbar und vertretbar zu gestalten.',
+          cta: 'Schulungen & Kurse erkunden',
+        },
+      },
+      consultation: {
+        badge: 'Kostenlose Beratung',
+        title: 'BUCHEN SIE JETZT EINE KOSTENLOSE BERATUNG',
+        description: 'Wir würden gerne mehr über die individuellen Bedürfnisse Ihres Unternehmens erfahren. Deshalb bieten wir ein 15-minütiges Beratungsgespräch an.',
+        cta: 'Kostenlose Beratung buchen',
+      },
+      freeTraining: {
+        badge: 'Lernen & Schützen',
+        title: 'Kostenloses Sicherheitstraining & Kurse — Lernen Sie, Betrug zu erkennen',
+        description: 'Kostenlose, praktische Lektionen und Checklisten zur Identifizierung von Phishing, Krypto-/Investitionsbetrug, gefälschten Online-Shops und Social-Media-Betrug. Lernen Sie, Websites, Personen und IBANs zu verifizieren; Ihre Identität und Kreditwürdigkeit zu schützen; und Cyberkriminalität sicher zu melden — Schritt für Schritt.',
+        topicsTitle: 'Beliebteste Themen:',
+        cta: 'Kostenloses Training starten',
+      },
+      certifications: {
+        description: 'Jahre der Erfahrung und Zertifizierungen von führenden Institutionen — Fachleute an Ihrer Seite.',
+      },
+    },
+    cs: {
+      hero: {
+        badge: 'Platforma pro prevenci podvodů',
+        title1: 'Je to podvod? Ověřte jakoukoli',
+        titleHighlight: 'webovou stránku, osobu, firmu, telefon nebo e-mail',
+        title2: 'okamžitě',
+        description: 'Ověřte podvody okamžitě 🔎 — verifikujte <strong>osoby</strong>, <strong>webové stránky</strong>, <strong>firmy</strong>, <strong>pracovní nabídky</strong>, <strong>e-maily</strong>, <strong>telefonní čísla</strong>, <strong>seznamovací profily</strong> a mnoho dalšího. Užívejte si <strong>bezplatnou ochranu v reálném čase</strong> 🛡️. Našli jste podvod nebo jste byli podvedeni? ⚠️ <strong>Nahlaste to nyní</strong> — vaše varování může <strong>ochránit ostatní</strong>. Prozkoumejte naše <strong>bezpečnostní služby</strong> 🔐.',
+        searchPlaceholder: 'Hledejte podle jména, e-mailu, telefonu, webu, IBAN, krypto peněženky...',
+        search: 'Hledat',
+        records: '640M+ záznamů',
+        sources: '130+ zdrojů',
+        realtime: 'Aktualizace v reálném čase',
+        free: 'Vždy zdarma',
+      },
+      database: {
+        badge: 'Data v reálném čase',
+        title: 'Naše databáze v číslech',
+        description: 'Přístup v reálném čase k více než 640 milionům ověřených záznamů o podvodech ze 130+ důvěryhodných globálních zdrojů včetně FBI, OFAC, Interpolu a mezinárodních orgánů činných v trestním řízení',
+        note: '(Některé zdroje dat se stále integrují) Aktualizace každých 5 minut',
+        categoriesTitle: 'Komplexní kategorie databáze podvodů',
+        totalCoverage: 'Celkové pokrytí databáze',
+        totalRecords: 'Celkem záznamů',
+        dataSources: 'Zdroje dat',
+        categories: 'Kategorie',
+        realtimeAccess: 'Přístup v reálném čase',
+        updateFreq: 'Frekvence aktualizací',
+        sourcesFooter: 'Ověřené zdroje dat zahrnují FBI Most Wanted API, OFAC SDN List, Chainabuse, CryptoScamDB, URLhaus, PhishTank, AbuseIPDB, CFPB Consumer Complaints, Companies House UK, Interpol Stolen Motor Vehicles, FTC Do Not Call, Canadian Anti-Fraud Centre a 120+ dalších ověřených globálních databází od orgánů činných v trestním řízení a agentur na ochranu spotřebitelů po celém světě.',
+        maliciousIPs: 'Škodlivé IP adresy',
+        stolenVehicles: 'Databáze odcizených vozidel',
+        phishingURLs: 'Ověřené phishingové URL',
+        dissolvedCompanies: 'Zrušené společnosti',
+      },
+      roadmap: {
+        title: 'Seznam funkcí a služeb, které budujeme',
+        description: 'Pro každou položku uvádíme její stav, procento dokončení a stručnou poznámku, k čemu slouží.',
+        feature: 'Funkce',
+        status: 'Stav',
+        complete: 'Dokončeno',
+        whatFor: 'K čemu to je',
+        functional: 'Funkční',
+        inDevelopment: 'Ve vývoji',
+        planned: 'Plánováno',
+      },
+      services: {
+        title: 'Další služby',
+        included: 'Co služba zahrnuje',
+        when: 'Kdy je tato služba vhodná',
+        recovery: {
+          title: 'Služby obnovy po podvodu',
+          description: 'Obnova prostředků ztracených podvodem. Kombinujeme digitální forenzní analýzu, OSINT a právní koordinaci pro vystopování, zmrazení a získání vašich peněz zpět — rychle, eticky a obhajitelně.',
+          priceNote: '5 hodin práce vyšetřovatele',
+          priceDesc: 'Tuto službu nabízíme jako odpověď firmám, které účtují 3 500–10 000 € a často pouze nahlásí případ finanční instituci. Takové praktiky považujeme za podvodné a neetické.',
+          cta: 'Zahájit obnovu peněz',
+        },
+        dueDiligence: {
+          title: 'SLUŽBY DUE DILIGENCE',
+          description: 'Nezávislá prověrka partnerů, klientů a investic. Kombinujeme OSINT, AML/KYB postupy a právní perspektivu, abyste mohli rozhodovat na základě ověřitelných faktů — rychle, diskrétně a obhajitelně.',
+          cta: 'Zahájit Due Diligence',
+        },
+        investigation: {
+          title: 'FIREMNÍ VYŠETŘOVÁNÍ',
+          description: 'Interní a externí vyšetřování pro firmy. Kombinujeme OSINT, digitální forenzní analýzu a finanční analytiku s platformou ScamNemesis (správa důkazů, řetězec úschovy) — diskrétně, legálně a obhajitelně.',
+          cta: 'Zahájit vyšetřování',
+        },
+        training: {
+          title: 'BEZPEČNOSTNÍ ŠKOLENÍ A KONZULTACE',
+          description: 'Bezpečnostní školení a konzultace pro týmy a management. Používáme reálné scénáře ze ScamNemesis (OSINT, podvody, reakce na incidenty), aby byly postupy praktické, měřitelné a obhajitelné.',
+          cta: 'Prozkoumat školení a kurzy',
+        },
+      },
+      consultation: {
+        badge: 'Bezplatná konzultace',
+        title: 'REZERVUJTE SI BEZPLATNOU KONZULTACI',
+        description: 'Rádi bychom se dozvěděli více o individuálních potřebách vaší společnosti. Proto nabízíme 15minutový konzultační hovor.',
+        cta: 'Rezervovat bezplatnou konzultaci',
+      },
+      freeTraining: {
+        badge: 'Učte se a chraňte se',
+        title: 'Bezplatné bezpečnostní školení a kurzy — Naučte se rozpoznat podvody',
+        description: 'Bezplatné, praktické lekce a kontrolní seznamy pro identifikaci phishingu, krypto/investičních podvodů, falešných internetových obchodů a podvodů na sociálních sítích. Naučte se ověřovat webové stránky, osoby a IBAN; chránit svou identitu a kreditní skóre; a bezpečně nahlašovat kybernetickou kriminalitu — krok za krokem.',
+        topicsTitle: 'Nejpopulárnější témata:',
+        cta: 'Zahájit bezplatné školení',
+      },
+      certifications: {
+        description: 'Roky zkušeností a certifikace od předních institucí — profesionálové na vaší straně.',
+      },
+    },
   } as const;
   return translations[locale] ?? translations.en;
 };
 
 // FAQ translations
 const getFaqSections = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { id: '1', title: '1. Für wen ist diese Plattform?', content: 'ScamNemesis ist für Menschen, die eine Person, ein Unternehmen, eine Telefonnummer, eine E-Mail oder eine Website überprüfen möchten. Die Liste finden Sie hier. Es ist auch für Menschen, die bereits betrogen wurden und ihren Fall melden und sich mit anderen Opfern desselben Täters verbinden möchten. Die Plattform hilft sowohl alltäglichen Nutzern als auch Fachleuten — Polizei, Journalisten, Anwälten, Analysten, Banken und Börsen.\n\nHeute ist es schwer, einen Betrug von einem legitimen Service zu unterscheiden — jeder kann getäuscht werden. Wenn es Ihnen passiert ist, sind Sie nicht allein; wir sind hier, um zu helfen.', icon: Users, color: 'blue' },
+      { id: '2', title: '2. Welches Problem lösen wir?', content: 'Es gibt keine einzelne \"globale\" Zahl, aber Daten zeigen, dass Online-Betrug zwischen 2019 und 2024 um etwa 2.300% gewachsen ist; 2024 erreichten die geschätzten Verluste 1,03 Billionen USD.\n\nScamNemesis bringt Ordnung in dieses Chaos: Es konsolidiert Meldungen und Beweise in einem einzigen koordinierten Fall, verknüpft automatisch Opfer mit ähnlichen Mustern, spart Ermittlern Zeit und beschleunigt Untersuchungen.', icon: AlertTriangle, color: 'amber' },
+      { id: '3', title: '3. Wie benutzt man ScamNemesis?', content: 'Suche:\n\nOben finden Sie die Suchleiste, in die Sie einen Namen, eine E-Mail, eine Telefonnummer und andere Identifikatoren eingeben können. Die Ergebnisse werden nach Übereinstimmungswert angezeigt.\n\nMelden:\n\nWenn Sie betrogen wurden, klicken Sie auf Betrug melden. Ein Formular wird geöffnet — die meisten Felder sind optional, aber wir empfehlen, so viele Details wie möglich hinzuzufügen.\n\nÜbereinstimmungen interpretieren:\n\nDenken Sie daran, dass derselbe Name ≠ dieselbe Person ist. Bewerten Sie den Kontext (Land, Betrugsart, Zeit, andere Identifikatoren).', icon: Search, color: 'cyan' },
+      { id: '4', title: '4. Warum ist das wichtig?', content: 'Jeder nicht gemeldete Betrug hilft Betrügern, mehr Opfer zu erreichen, verursacht mehr zerstörte Leben und schafft mehr Leid für Opfer und ihre Familien. Wir wollen das stoppen.\n\nWenn Gemeinschaften Daten über Länder hinweg teilen, entstehen Muster. Geteilte Intelligenz durchbricht ihren größten Vorteil — die Isolation. Die Warnung einer Person wird zum Schutz für alle.', icon: Shield, color: 'emerald' },
+      { id: '5', title: '5. Warum haben wir dieses Projekt erstellt?', content: 'Das Projekt entstand aus Wut und Frustration über ineffektive Polizeimethoden. Wir selbst wurden Opfer von Betrug, und die Polizei konnte nicht helfen, weil sie überlastet war und die Werkzeuge und das Fachwissen zur Bekämpfung moderner Betrugsarten fehlten.\n\nEs ist Zeit zu handeln, deshalb haben wir beschlossen, unser Wissen über OSINT, Hacking und Nachrichtendienst zu nutzen, um Menschen und Ermittlungsteams bei der Prävention und Aufdeckung von Betrug zu helfen.', icon: Target, color: 'rose' },
+      { id: '6', title: '6. Was ist ScamNemesis?', content: 'Eine gemeinschaftsgetriebene Verifizierungs- und Nachrichtenplattform, die eine Datenbank gemeldeter Betrugsfälle, Blockchain-Verfolgung, Überwachung über 130+ Datenquellen, Telefon- und E-Mail-Verifizierung, Gesichtserkennung, Dokumentenforensik (OCR + Metadatenanalyse) und Beziehungsmapping kombiniert.', icon: Database, color: 'indigo' },
+      { id: '7', title: '7. Was werden Sie hier finden?', content: 'Ein Suchsystem für mehr als 38 Identifikatoren (z.B. Name, E-Mail, Telefon usw.), das Ihnen hilft festzustellen, ob Sie es mit einem Betrüger zu tun haben, und Ihre Vermögenswerte zu schützen.\n\nBei einer Übereinstimmung erscheint eine Meldung mit allen verfügbaren Details über den Verdächtigen.', icon: FileSearch, color: 'purple' },
+      { id: '8', title: '8. Wer steht hinter diesem Projekt?', content: 'Ein internationales Team von Ermittlern und ethischen Hackern aus drei Kontinenten und mehr als fünf Ländern — Experten für Cybersicherheit, Datenanalyse und Fachleute mit Ausbildung und Erfahrung im Nachrichtendiensthandwerk.\n\nUnser Ziel ist es, für immer kostenlos zu bleiben. Wir bauen auf Transparenz, weil Vertrauen verdient werden muss.', icon: Users, color: 'teal' },
+      { id: '9', title: '9. Was planen wir für die Zukunft?', content: 'Unten können Sie eine Tabelle sehen, die genau zeigt, was wir als Nächstes bauen und was wir bereits geliefert haben. ScamNemesis zielt darauf ab, das effektivste und am weitesten verbreitete Werkzeug für aktive Betrugsstörung, Prävention und Erkennung zu werden.', icon: Sparkles, color: 'orange' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { id: '1', title: '1. Pro koho je tato platforma určena?', content: 'ScamNemesis je pro lidi, kteří chtějí ověřit osobu, firmu, telefonní číslo, e-mail nebo webovou stránku. Seznam najdete zde. Je také pro lidi, kteří již byli podvedeni a chtějí nahlásit svůj případ a spojit se s dalšími oběťmi téhož pachatele. Platforma pomáhá běžným uživatelům i profesionálům — policii, novinářům, právníkům, analytikům, bankám a burzám.\n\nRozlišit podvod od legitimní služby je dnes těžké — každý může být oklamán. Pokud se vám to stalo, nejste sami; jsme tu, abychom vám pomohli.', icon: Users, color: 'blue' },
+      { id: '2', title: '2. Jaký problém řešíme?', content: 'Neexistuje jediné \"globální\" číslo, ale údaje ukazují, že online podvody vzrostly přibližně o 2 300 % mezi lety 2019 a 2024; v roce 2024 odhadované ztráty dosáhly 1,03 bilionu USD.\n\nScamNemesis přináší pořádek do tohoto chaosu: konsoliduje hlášení a důkazy do jednoho koordinovaného případu, automaticky spojuje oběti s podobnými vzorci, šetří čas vyšetřovatelům a urychluje vyšetřování.', icon: AlertTriangle, color: 'amber' },
+      { id: '3', title: '3. Jak používat ScamNemesis?', content: 'Vyhledávání:\n\nNahoře najdete vyhledávací panel, kde můžete zadat jméno, e-mail, telefonní číslo a další identifikátory. Výsledky jsou zobrazeny podle skóre shody.\n\nNahlašování:\n\nPokud jste byli podvedeni, klikněte na Nahlásit podvod. Otevře se formulář — většina polí je volitelná, ale doporučujeme přidat co nejvíce detailů.\n\nInterpretace shod:\n\nPamatujte, že stejné jméno ≠ stejná osoba. Vyhodnoťte kontext (země, typ podvodu, čas, další identifikátory).', icon: Search, color: 'cyan' },
+      { id: '4', title: '4. Proč je to důležité?', content: 'Každý nenahlášený podvod pomáhá podvodníkům oslovit více obětí, způsobuje více zničených životů a vytváří více utrpení pro oběti a jejich rodiny. Chceme to zastavit.\n\nKdyž komunity sdílejí údaje napříč zeměmi, objevují se vzorce. Sdílená inteligence láme jejich největší výhodu — izolaci. Varování jedné osoby se stává ochranou pro všechny.', icon: Shield, color: 'emerald' },
+      { id: '5', title: '5. Proč jsme vytvořili tento projekt?', content: 'Projekt se zrodil z hněvu a frustrace z neefektivních policejních metod. Sami jsme se stali oběťmi podvodu a policie nemohla pomoci, protože byla přetížená a neměla nástroje ani odbornost na řešení moderních typů podvodů.\n\nJe čas jednat, proto jsme se rozhodli využít naše znalosti OSINT, hackingu a zpravodajství na pomoc lidem a vyšetřovacím týmům s prevencí a detekcí podvodů.', icon: Target, color: 'rose' },
+      { id: '6', title: '6. Co je ScamNemesis?', content: 'Komunitou řízená verifikační a zpravodajská platforma, která kombinuje databázi nahlášených podvodů, sledování blockchainu, monitorování napříč 130+ zdroji dat, ověřování telefonů a e-mailů, rozpoznávání tváří, forenzní analýzu dokumentů a mapování vztahů.', icon: Database, color: 'indigo' },
+      { id: '7', title: '7. Co zde najdete?', content: 'Vyhledávací systém pro více než 38 identifikátorů (např. jméno, e-mail, telefon atd.), který vám pomůže zjistit, zda máte co do činění s podvodníkem a ochránit vaše aktiva.\n\nKdyž existuje shoda, zobrazí se hlášení se všemi dostupnými detaily o podezřelém.', icon: FileSearch, color: 'purple' },
+      { id: '8', title: '8. Kdo stojí za tímto projektem?', content: 'Mezinárodní tým vyšetřovatelů a etických hackerů ze tří kontinentů a více než pěti zemí — experti na kybernetickou bezpečnost, analýzu dat a profesionálové se školením a zkušenostmi ve zpravodajském řemesle.\n\nNaším cílem je zůstat navždy bezplatní. Stavíme na transparentnosti, protože důvěra se musí zasloužit.', icon: Users, color: 'teal' },
+      { id: '9', title: '9. Co plánujeme do budoucna?', content: 'Níže si můžete prohlédnout tabulku, která přesně ukazuje, co budujeme dále a co jsme již spustili. ScamNemesis si klade za cíl stát se nejefektivnějším a nejrozšířenějším nástrojem pro aktivní narušení, prevenci a detekci podvodů.', icon: Sparkles, color: 'orange' },
+    ];
+  }
   if (locale === 'sk') {
     return [
       { id: '1', title: '1. Pre koho je táto platforma určená?', content: 'ScamNemesis je pre ľudí, ktorí chcú overiť osobu, firmu, telefónne číslo, e-mail alebo webovú stránku. Zoznam nájdete tu. Je tiež pre ľudí, ktorí už boli podvedení a chcú nahlásiť svoj prípad a spojiť sa s ďalšími obeťami toho istého páchateľa. Platforma pomáha bežným používateľom aj profesionálom — polícii, novinárom, právnikom, analytikom, bankám a burzám.\n\nRozlíšiť podvod od legitímnej služby je dnes ťažké — každý môže byť oklamaný. Ak sa vám to stalo, nie ste sami; sme tu, aby sme vám pomohli.', icon: Users, color: 'blue' },
@@ -365,6 +565,30 @@ const getFaqSections = (locale: Locale) => {
 
 // Training topics by locale
 const getTrainingTopics = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Wie man Betrug im Geschäft verhindert',
+      'Identitätsschutzversicherung',
+      'Experian Identitätsdiebstahlschutz',
+      'Sicherheit im Internet',
+      '10 Wege zur Prävention von Cyberkriminalität',
+      'Wie man einen Betrug erkennt',
+      'Betrugshilfe-Hotline',
+      'Cyberkriminalität bei der Polizei melden',
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      'Jak předcházet podvodům v podnikání',
+      'Pojištění ochrany identity',
+      'Experian ochrana proti krádeži identity',
+      'Bezpečnost na internetu',
+      '10 způsobů, jak předcházet kybernetické kriminalitě',
+      'Jak rozpoznat podvod',
+      'Linka pomoci pro oběti podvodů',
+      'Nahlášení kybernetické kriminality policii',
+    ];
+  }
   if (locale === 'sk') {
     return [
       'Ako predchádzať podvodom v podnikaní',
@@ -472,6 +696,52 @@ const serviceSchema = {
 
 // Locale-aware roadmap features
 const getRoadmapFeatures = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { name: 'API: Datenversand an Dritte', status: 'development', progress: 80, description: 'Mit einem einzigen Aufruf senden wir relevante Informationen an Bank/Zahlungsgateway und Behörden — das beschleunigt das Blockieren von Transaktionen und die Eskalation.' },
+      { name: 'Betrugssuche (38+ Identifikatoren)', status: 'functional', progress: 100, description: 'Suche nach E-Mail, Telefon, Name, IBAN, Domain, IP, Krypto-Wallet usw. in unserer Datenbank und externen Quellen.' },
+      { name: 'Fallverknüpfung (Ähnlichkeiten)', status: 'functional', progress: 100, description: 'Verknüpft automatisch verwandte Fälle durch Abgleich von Indikatoren und Mustern (E-Mail, Telefon, Domain, Wallet…).' },
+      { name: 'Medienverarbeitung + OCR', status: 'functional', progress: 80, description: 'Hochladen von Screenshots, Chats und Dokumenten → OCR extrahiert den Text und speichert ihn in der Datenbank für weitere Suchen.' },
+      { name: 'Website-Widget (Melden + Suchen)', status: 'development', progress: 24, description: 'Einfaches Einbetten für Partnerseiten — Menschen können direkt auf ihrer eigenen Website melden und suchen.' },
+      { name: 'Blockchain-Analyse', status: 'development', progress: 56, description: 'Kartierung des Flusses von Kryptowährungen, die on-chain als gestohlen oder mit kriminellen Aktivitäten verbunden markiert sind.' },
+      { name: 'CTI (Cyber Threat Intelligence)', status: 'development', progress: 52, description: 'Cyber-Bedrohungsintelligenz; das Ziel ist breite Sichtbarkeit und aktuelle Trends für Prävention, Erkennung und Reaktion — ohne Vendor-Lock-in.' },
+      { name: 'AI/NLP-Tool für OSINT-Sammlung', status: 'development', progress: 50, description: 'Überwacht kontinuierlich Dutzende von Online-Quellen und erstellt automatisch einen sauberen Nachrichtenfeed; NLP entfernt Duplikate, klassifiziert Inhalte nach Betrugsart und bereitet Kurzberichte vor.' },
+      { name: 'AI Bild- und Videoerkennung (Deepfake)', status: 'development', progress: 69, description: 'Erkennt KI-generierte Inhalte und Manipulationen; erklärt Signale und weist einen Risikoscore zu.' },
+      { name: 'Graph-Datenbank (Knoten & Beziehungen)', status: 'development', progress: 61, description: 'Netzwerkansichten von Verbindungen zwischen Personen, Unternehmen, Konten und Fällen; schnelles "wer mit wem" und "Geld wohin".' },
+      { name: 'Datenanreicherung aus 130+ externen Quellen', status: 'development', progress: 0, description: 'Integrationen für OSINT-, Reputations- und Sicherheits-Feeds für E-Mails, Telefone, IPs, Domains und Blockchain.' },
+      { name: 'E-Mail-Verifizierung (Existenz/Registrierungen/Alter*)', status: 'planned', progress: 50, description: 'Prüft Zustellbarkeit, wo die E-Mail verwendet/registriert ist, und wo möglich, Signale zum Kontoalter*.' },
+      { name: 'Personen- & Firmensuche', status: 'development', progress: 68, description: 'Mit einer einzigen Abfrage durchsucht offene Register, Amtsblätter und verfügbare Gerichtsentscheidungen; gibt eine Zusammenfassung mit Quellen zurück.' },
+      { name: 'Reverse-Gesichtssuche', status: 'planned', progress: 58, description: 'Laden Sie ein Foto hoch und das System findet Übereinstimmungen in der internen Datenbank und sozialen Netzwerken (mit Spoof-Schutz).' },
+      { name: 'Ähnliche Gesichtsabgleichung (Upload)', status: 'planned', progress: 52, description: 'Vergleicht und rankt die ähnlichsten Gesichter; unterstützt Batch-Abfragen.' },
+      { name: 'Medienforensik: Geolokation & Bearbeitungen', status: 'planned', progress: 57, description: 'EXIF/Metadaten, ELA, Manipulationserkennung, Geo-Hinweise, Audio-Video-Inkonsistenzen.' },
+      { name: 'AI-Bot "Ist das Betrug?"', status: 'planned', progress: 0, description: 'Ein Chat-Assistent, der schnell basierend auf Signalen berät: worauf zu achten ist, was zu überprüfen ist und welche Schritte zu unternehmen sind.' },
+      { name: 'Domain-Score & Reputation', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, Blacklists, Hosting, Technologie — ergibt einen Domain-Risikoscore.' },
+      { name: 'Medienforensik — erweiterte Module', status: 'planned', progress: 53, description: 'Erweiterte Tools für Bild, Video und Audio (Manipulationslokalisierung, Liveness, Chain of Custody).' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { name: 'API: odeslání dat třetím stranám', status: 'development', progress: 80, description: 'Jedním voláním odesíláme relevantní informace bance/platební bráně a úřadům — to urychluje blokování transakcí a eskalaci.' },
+      { name: 'Vyhledávání podvodů (38+ identifikátorů)', status: 'functional', progress: 100, description: 'Vyhledávání podle e-mailu, telefonu, jména, IBAN, domény, IP, krypto peněženky atd. v naší databázi a externích zdrojích.' },
+      { name: 'Propojování případů (podobnosti)', status: 'functional', progress: 100, description: 'Automaticky propojuje související případy porovnáváním indikátorů a vzorců (e-mail, telefon, doména, peněženka…).' },
+      { name: 'Zpracování médií + OCR', status: 'functional', progress: 80, description: 'Nahrání screenshotů, chatů a dokumentů → OCR extrahuje text a ukládá ho do databáze pro další vyhledávání.' },
+      { name: 'Widget pro webové stránky (hlášení + vyhledávání)', status: 'development', progress: 24, description: 'Jednoduchý embed pro partnerské stránky — lidé mohou hlásit a vyhledávat přímo na své webstránce.' },
+      { name: 'Blockchain analýza', status: 'development', progress: 56, description: 'Mapování toků kryptoměn označených na blockchainu jako ukradené nebo propojené s kriminální činností.' },
+      { name: 'CTI (Cyber Threat Intelligence)', status: 'development', progress: 52, description: 'Kybernetická zpravodajská analýza; cílem je široký přehled a aktuální trendy pro prevenci, detekci a reakci — bez vendor lock-in.' },
+      { name: 'AI/NLP nástroj na OSINT sběr', status: 'development', progress: 50, description: 'Nepřetržitě monitoruje desítky online zdrojů a automaticky vytváří čistý zpravodajský kanál; NLP odstraňuje duplikáty, klasifikuje obsah podle typu podvodu a připravuje krátké zprávy.' },
+      { name: 'AI detekce obrázků a videa (deepfake)', status: 'development', progress: 69, description: 'Detekuje AI-generovaný obsah a manipulace; vysvětluje signály a přiřazuje rizikové skóre.' },
+      { name: 'Grafová databáze (uzly a vztahy)', status: 'development', progress: 61, description: 'Síťová zobrazení propojení mezi lidmi, firmami, účty a případy; rychlé "kdo s kým" a "kam šly peníze".' },
+      { name: 'Obohacení dat ze 130+ externích zdrojů', status: 'development', progress: 0, description: 'Integrace pro OSINT, reputační a bezpečnostní feedy pro e-maily, telefony, IP, domény a blockchain.' },
+      { name: 'Ověření e-mailu (existence/registrace/stáří*)', status: 'planned', progress: 50, description: 'Kontroluje doručitelnost, kde je e-mail použit/registrován a kde je to možné, signály o stáří účtu*.' },
+      { name: 'Vyhledávání osob a firem', status: 'development', progress: 68, description: 'Jedním dotazem prohledá otevřené registry, věstníky a dostupná soudní rozhodnutí; vrací souhrn se zdroji.' },
+      { name: 'Reverzní vyhledávání tváří', status: 'planned', progress: 58, description: 'Nahrajte fotografii a systém najde shody v interní databázi a sociálních sítích (s ochranou proti podvrhu).' },
+      { name: 'Porovnávání podobných tváří (nahrání)', status: 'planned', progress: 52, description: 'Porovnává a řadí nejpodobnější tváře; podporuje dávkové dotazy.' },
+      { name: 'Forenzní analýza médií: geolokace a úpravy', status: 'planned', progress: 57, description: 'EXIF/metadata, ELA, detekce manipulací, geo-stopy, audio-video nesrovnalosti.' },
+      { name: 'AI bot "Je to podvod?"', status: 'planned', progress: 0, description: 'Chatový asistent, který rychle poradí na základě signálů: na co si dát pozor, co ověřit a jaké kroky podniknout.' },
+      { name: 'Skóre domény a reputace', status: 'development', progress: 59, description: 'WHOIS, DNS, SSL/TLS, blacklisty, hosting, technologie — výsledkem je rizikové skóre domény.' },
+      { name: 'Forenzní analýza médií — pokročilé moduly', status: 'planned', progress: 53, description: 'Pokročilé nástroje pro obraz, video a audio (lokalizace manipulací, liveness, chain of custody).' },
+    ];
+  }
   if (locale === 'sk') {
     return [
       { name: 'API: odoslanie dát tretím stranám', status: 'development', progress: 80, description: 'Jedným volaním odosielame relevantné informácie banke/platobnej bráne a úradom — urýchľuje to blokovanie transakcií a eskaláciu.' },
@@ -520,6 +790,206 @@ const getRoadmapFeatures = (locale: Locale) => {
 
 // Locale-aware database categories
 const getDatabaseCategories = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      {
+        title: 'Kryptowährungsbetrug',
+        icon: Coins,
+        color: 'orange',
+        stats: [
+          { label: 'Krypto-Adressen', value: '50,000+' },
+          { label: 'Betrugsprojekte', value: '9,221+' },
+          { label: 'Ransomware-Wallets', value: '11,186+' },
+          { label: 'Blockchain-Ketten', value: '16+' },
+        ],
+        sources: 'Chainabuse, CryptoScamDB, ScamSniffer, OpenSanctions Ransomwhere',
+      },
+      {
+        title: 'E-Mails & Domains',
+        icon: Mail,
+        color: 'blue',
+        stats: [
+          { label: 'Phishing-URLs', value: '9M+' },
+          { label: 'Bösartige Domains', value: '2.29M+' },
+          { label: 'Discord-Scam-Links', value: '30,000+' },
+          { label: 'Spam-Domains', value: 'Milliarden' },
+        ],
+        sources: 'PhishTank, URLhaus, OpenPhish, Google Safe Browsing, Spamhaus',
+      },
+      {
+        title: 'Telefonnummern',
+        icon: Phone,
+        color: 'purple',
+        stats: [
+          { label: 'Betrugsanrufe (US)', value: '2M+' },
+          { label: 'Robocall-Meldungen', value: '1.2M+' },
+          { label: 'Bekannte Betrüger', value: '4M+' },
+          { label: 'Tägliche Updates', value: '✓' },
+        ],
+        sources: 'FTC DNC API, ScamSearch.io, Community-Datenbanken',
+      },
+      {
+        title: 'IP-Adressen',
+        icon: Network,
+        color: 'green',
+        stats: [
+          { label: 'Bösartige IPs', value: '612M+' },
+          { label: 'Tor-Exit-Nodes', value: '2,000+' },
+          { label: 'Bedrohungsindikatoren', value: 'Millionen' },
+          { label: 'Netzwerkblöcke', value: 'Hunderte' },
+        ],
+        sources: 'AbuseIPDB, ThreatFox, FireHOL, AlienVault OTX, Spamhaus',
+      },
+      {
+        title: 'Sanktionen & Listen',
+        icon: AlertTriangle,
+        color: 'red',
+        stats: [
+          { label: 'OFAC SDN-Entitäten', value: '12,000+' },
+          { label: 'FBI Most Wanted', value: '1,000+' },
+          { label: 'UN-Einzelpersonen', value: '669' },
+          { label: 'Globale Quellen', value: '130+' },
+        ],
+        sources: 'OFAC, FBI, UN, EU, UK OFSI, OpenSanctions',
+      },
+      {
+        title: 'Soziale Medien',
+        icon: Users,
+        color: 'indigo',
+        stats: [
+          { label: 'Telegram-Kanäle', value: '120,979' },
+          { label: 'Twitter-Bot-Konten', value: '50,538+' },
+          { label: 'Instagram-Fakes', value: '3,600+' },
+          { label: 'LinkedIn-Profile', value: '3,600+' },
+        ],
+        sources: 'TGDataset, TwiBot-20, Discord AntiScam, InstaFake',
+      },
+      {
+        title: 'Finanzbetrug',
+        icon: CreditCard,
+        color: 'cyan',
+        stats: [
+          { label: 'CFPB-Beschwerden', value: '3M+' },
+          { label: 'IC3-Meldungen (2024)', value: '859,000' },
+          { label: 'Australien-Meldungen', value: '494,000' },
+          { label: 'Aufgelöste Unternehmen', value: '6.7M+' },
+        ],
+        sources: 'CFPB, FBI IC3, Scamwatch AU, Companies House UK',
+      },
+      {
+        title: 'Gestohlene Fahrzeuge',
+        icon: Car,
+        color: 'slate',
+        stats: [
+          { label: 'Interpol-Datenbank', value: '12M+' },
+          { label: 'US-Abdeckung', value: '87%' },
+          { label: 'NICB VINCheck', value: '5 Jahre' },
+          { label: 'Echtzeit-Updates', value: '✓' },
+        ],
+        sources: 'Interpol SMV, NICB VINCheck, NMVTIS',
+      },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      {
+        title: 'Kryptoměnové podvody',
+        icon: Coins,
+        color: 'orange',
+        stats: [
+          { label: 'Krypto adresy', value: '50,000+' },
+          { label: 'Podvodné projekty', value: '9,221+' },
+          { label: 'Ransomware peněženky', value: '11,186+' },
+          { label: 'Blockchain řetězce', value: '16+' },
+        ],
+        sources: 'Chainabuse, CryptoScamDB, ScamSniffer, OpenSanctions Ransomwhere',
+      },
+      {
+        title: 'E-maily a domény',
+        icon: Mail,
+        color: 'blue',
+        stats: [
+          { label: 'Phishing URL', value: '9M+' },
+          { label: 'Škodlivé domény', value: '2.29M+' },
+          { label: 'Discord scam odkazy', value: '30,000+' },
+          { label: 'Spam domény', value: 'Miliardy' },
+        ],
+        sources: 'PhishTank, URLhaus, OpenPhish, Google Safe Browsing, Spamhaus',
+      },
+      {
+        title: 'Telefonní čísla',
+        icon: Phone,
+        color: 'purple',
+        stats: [
+          { label: 'Podvodné hovory (US)', value: '2M+' },
+          { label: 'Robocall hlášení', value: '1.2M+' },
+          { label: 'Známí podvodníci', value: '4M+' },
+          { label: 'Denní aktualizace', value: '✓' },
+        ],
+        sources: 'FTC DNC API, ScamSearch.io, Komunitní databáze',
+      },
+      {
+        title: 'IP adresy',
+        icon: Network,
+        color: 'green',
+        stats: [
+          { label: 'Škodlivé IP', value: '612M+' },
+          { label: 'Tor Exit Nodes', value: '2,000+' },
+          { label: 'Indikátory hrozeb', value: 'Miliony' },
+          { label: 'Síťové bloky', value: 'Stovky' },
+        ],
+        sources: 'AbuseIPDB, ThreatFox, FireHOL, AlienVault OTX, Spamhaus',
+      },
+      {
+        title: 'Sankce a seznamy',
+        icon: AlertTriangle,
+        color: 'red',
+        stats: [
+          { label: 'OFAC SDN entity', value: '12,000+' },
+          { label: 'FBI Most Wanted', value: '1,000+' },
+          { label: 'OSN jednotlivci', value: '669' },
+          { label: 'Globální zdroje', value: '130+' },
+        ],
+        sources: 'OFAC, FBI, UN, EU, UK OFSI, OpenSanctions',
+      },
+      {
+        title: 'Sociální sítě',
+        icon: Users,
+        color: 'indigo',
+        stats: [
+          { label: 'Telegram kanály', value: '120,979' },
+          { label: 'Twitter bot účty', value: '50,538+' },
+          { label: 'Instagram falešné profily', value: '3,600+' },
+          { label: 'LinkedIn profily', value: '3,600+' },
+        ],
+        sources: 'TGDataset, TwiBot-20, Discord AntiScam, InstaFake',
+      },
+      {
+        title: 'Finanční podvody',
+        icon: CreditCard,
+        color: 'cyan',
+        stats: [
+          { label: 'CFPB stížnosti', value: '3M+' },
+          { label: 'IC3 hlášení (2024)', value: '859,000' },
+          { label: 'Austrálie hlášení', value: '494,000' },
+          { label: 'Zrušené firmy', value: '6.7M+' },
+        ],
+        sources: 'CFPB, FBI IC3, Scamwatch AU, Companies House UK',
+      },
+      {
+        title: 'Odcizená vozidla',
+        icon: Car,
+        color: 'slate',
+        stats: [
+          { label: 'Interpol databáze', value: '12M+' },
+          { label: 'US pokrytí', value: '87%' },
+          { label: 'NICB VINCheck', value: '5 let' },
+          { label: 'Aktualizace v reálném čase', value: '✓' },
+        ],
+        sources: 'Interpol SMV, NICB VINCheck, NMVTIS',
+      },
+    ];
+  }
   if (locale === 'sk') {
     return [
       {
@@ -720,42 +1190,307 @@ const getDatabaseCategories = (locale: Locale) => {
   ];
 };
 
-// Service features data
-const recoveryFeatures = [
-  { icon: FileSearch, text: 'Case analysis', desc: 'Assessment of the real chance of recovery, evidence collection and evaluation.' },
-  { icon: Database, text: 'Digital forensics', desc: 'Blockchain tracing, OSINT, communication and metadata analysis.' },
-  { icon: Lock, text: 'Asset freezing', desc: 'Contacting banks and exchanges, preparing and sending Freezing Letters.' },
-  { icon: Scale, text: 'Legal coordination', desc: 'Drafting orders and filings, coordination with attorneys and authorities.' },
-  { icon: FileText, text: 'Preparation of recovery documentation', desc: 'Arbitration, litigation, out-of-court settlement.' },
-  { icon: Users, text: 'Victim support', desc: 'Reporting, ongoing communication, recommendations and prevention.' },
-];
+// Service features data - locale-aware
+const getRecoveryFeatures = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { icon: FileSearch, text: 'Fallanalyse', desc: 'Bewertung der realen Wiederherstellungschance, Beweissammlung und -bewertung.' },
+      { icon: Database, text: 'Digitale Forensik', desc: 'Blockchain-Verfolgung, OSINT, Kommunikations- und Metadatenanalyse.' },
+      { icon: Lock, text: 'Vermögenseinfrierung', desc: 'Kontaktaufnahme mit Banken und Börsen, Vorbereitung und Versand von Einfrierungsschreiben.' },
+      { icon: Scale, text: 'Rechtliche Koordination', desc: 'Erstellung von Anordnungen und Anträgen, Koordination mit Anwälten und Behörden.' },
+      { icon: FileText, text: 'Vorbereitung der Wiederherstellungsdokumentation', desc: 'Schiedsverfahren, Rechtsstreitigkeiten, außergerichtliche Einigung.' },
+      { icon: Users, text: 'Opferunterstützung', desc: 'Meldung, laufende Kommunikation, Empfehlungen und Prävention.' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { icon: FileSearch, text: 'Analýza případu', desc: 'Posouzení reálné šance na vymáhání, sběr a vyhodnocení důkazů.' },
+      { icon: Database, text: 'Digitální forenzní analýza', desc: 'Sledování blockchainu, OSINT, analýza komunikace a metadat.' },
+      { icon: Lock, text: 'Zmrazení majetku', desc: 'Kontaktování bank a burz, příprava a odeslání zmrazovacích dopisů.' },
+      { icon: Scale, text: 'Právní koordinace', desc: 'Vypracování příkazů a podání, koordinace s právníky a úřady.' },
+      { icon: FileText, text: 'Příprava dokumentace pro vymáhání', desc: 'Arbitráž, soudní spory, mimosoudní vyrovnání.' },
+      { icon: Users, text: 'Podpora obětí', desc: 'Hlášení, průběžná komunikace, doporučení a prevence.' },
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      { icon: FileSearch, text: 'Analýza prípadu', desc: 'Posúdenie reálnej šance na vymáhanie, zber a vyhodnotenie dôkazov.' },
+      { icon: Database, text: 'Digitálna forenzná analýza', desc: 'Sledovanie blockchainu, OSINT, analýza komunikácie a metadát.' },
+      { icon: Lock, text: 'Zmrazenie majetku', desc: 'Kontaktovanie bánk a búrz, príprava a odoslanie zmrazovacích listov.' },
+      { icon: Scale, text: 'Právna koordinácia', desc: 'Vypracovanie príkazov a podaní, koordinácia s právnikmi a úradmi.' },
+      { icon: FileText, text: 'Príprava dokumentácie na vymáhanie', desc: 'Arbitráž, súdne spory, mimosúdne vyrovnanie.' },
+      { icon: Users, text: 'Podpora obetí', desc: 'Nahlasovanie, priebežná komunikácia, odporúčania a prevencia.' },
+    ];
+  }
+  return [
+    { icon: FileSearch, text: 'Case analysis', desc: 'Assessment of the real chance of recovery, evidence collection and evaluation.' },
+    { icon: Database, text: 'Digital forensics', desc: 'Blockchain tracing, OSINT, communication and metadata analysis.' },
+    { icon: Lock, text: 'Asset freezing', desc: 'Contacting banks and exchanges, preparing and sending Freezing Letters.' },
+    { icon: Scale, text: 'Legal coordination', desc: 'Drafting orders and filings, coordination with attorneys and authorities.' },
+    { icon: FileText, text: 'Preparation of recovery documentation', desc: 'Arbitration, litigation, out-of-court settlement.' },
+    { icon: Users, text: 'Victim support', desc: 'Reporting, ongoing communication, recommendations and prevention.' },
+  ];
+};
 
-const dueDiligenceFeatures = [
-  { icon: Building, text: 'Entity and UBO identification', desc: 'KYB/KYC, verification of registrations, ownership structure, PEP and sanctions checks.' },
-  { icon: Scale, text: 'Reputational and legal screening', desc: 'adverse media, litigation, insolvency registers, regulatory actions.' },
-  { icon: CreditCard, text: 'Financial and operational indicators', desc: 'baseline financial health, affiliations, red flags (debt, tax arrears).' },
-  { icon: Lock, text: 'Technical and security footprint', desc: 'domains, infrastructure, emails, data leaks, digital footprints of key people.' },
-  { icon: Network, text: 'Business ties and conflicts of interest', desc: 'network mapping of partners, risky connections, political exposure.' },
-  { icon: FileText, text: 'Deliverables', desc: 'risk summary (RAG), detailed report with evidence, red flags, and recommended actions (monitoring, contractual clauses).' },
-];
+const getDueDiligenceFeatures = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { icon: Building, text: 'Entitäts- und UBO-Identifizierung', desc: 'KYB/KYC, Verifizierung von Registrierungen, Eigentumsstruktur, PEP- und Sanktionsprüfungen.' },
+      { icon: Scale, text: 'Reputations- und Rechtsscreening', desc: 'Negative Medien, Rechtsstreitigkeiten, Insolvenzregister, regulatorische Maßnahmen.' },
+      { icon: CreditCard, text: 'Finanz- und Betriebsindikatoren', desc: 'Grundlegende finanzielle Gesundheit, Zugehörigkeiten, Warnsignale (Schulden, Steuerrückstände).' },
+      { icon: Lock, text: 'Technischer und Sicherheits-Fußabdruck', desc: 'Domains, Infrastruktur, E-Mails, Datenlecks, digitale Fußabdrücke von Schlüsselpersonen.' },
+      { icon: Network, text: 'Geschäftsbeziehungen und Interessenkonflikte', desc: 'Netzwerkkartierung von Partnern, riskante Verbindungen, politische Exposition.' },
+      { icon: FileText, text: 'Lieferumfang', desc: 'Risikozusammenfassung (RAG), detaillierter Bericht mit Beweisen, Warnsignalen und empfohlenen Maßnahmen.' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { icon: Building, text: 'Identifikace entity a UBO', desc: 'KYB/KYC, ověření registrací, vlastnická struktura, PEP a sankční kontroly.' },
+      { icon: Scale, text: 'Reputační a právní screening', desc: 'Negativní média, soudní spory, insolvenční registry, regulační opatření.' },
+      { icon: CreditCard, text: 'Finanční a provozní ukazatele', desc: 'Základní finanční zdraví, propojení, varovné signály (dluhy, daňové nedoplatky).' },
+      { icon: Lock, text: 'Technická a bezpečnostní stopa', desc: 'Domény, infrastruktura, e-maily, úniky dat, digitální stopy klíčových osob.' },
+      { icon: Network, text: 'Obchodní vazby a konflikty zájmů', desc: 'Mapování sítě partnerů, rizikové propojení, politická expozice.' },
+      { icon: FileText, text: 'Výstupy', desc: 'Souhrn rizik (RAG), podrobná zpráva s důkazy, varovnými signály a doporučenými opatřeními.' },
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      { icon: Building, text: 'Identifikácia entity a UBO', desc: 'KYB/KYC, overenie registrácií, vlastnícka štruktúra, PEP a sankčné kontroly.' },
+      { icon: Scale, text: 'Reputačný a právny skríning', desc: 'Negatívne médiá, súdne spory, insolvenčné registre, regulačné opatrenia.' },
+      { icon: CreditCard, text: 'Finančné a prevádzkové ukazovatele', desc: 'Základné finančné zdravie, prepojenia, varovné signály (dlhy, daňové nedoplatky).' },
+      { icon: Lock, text: 'Technická a bezpečnostná stopa', desc: 'Domény, infraštruktúra, e-maily, úniky dát, digitálne stopy kľúčových osôb.' },
+      { icon: Network, text: 'Obchodné väzby a konflikty záujmov', desc: 'Mapovanie siete partnerov, rizikové prepojenia, politická expozícia.' },
+      { icon: FileText, text: 'Výstupy', desc: 'Súhrn rizík (RAG), podrobná správa s dôkazmi, varovnými signálmi a odporúčanými opatreniami.' },
+    ];
+  }
+  return [
+    { icon: Building, text: 'Entity and UBO identification', desc: 'KYB/KYC, verification of registrations, ownership structure, PEP and sanctions checks.' },
+    { icon: Scale, text: 'Reputational and legal screening', desc: 'adverse media, litigation, insolvency registers, regulatory actions.' },
+    { icon: CreditCard, text: 'Financial and operational indicators', desc: 'baseline financial health, affiliations, red flags (debt, tax arrears).' },
+    { icon: Lock, text: 'Technical and security footprint', desc: 'domains, infrastructure, emails, data leaks, digital footprints of key people.' },
+    { icon: Network, text: 'Business ties and conflicts of interest', desc: 'network mapping of partners, risky connections, political exposure.' },
+    { icon: FileText, text: 'Deliverables', desc: 'risk summary (RAG), detailed report with evidence, red flags, and recommended actions (monitoring, contractual clauses).' },
+  ];
+};
 
-const investigationFeatures = [
-  { icon: Target, text: 'Scoping & preservation', desc: 'rapid hypotheses, evidence preservation.' },
-  { icon: Database, text: 'Digital forensics', desc: 'devices, email, logs, cloud.' },
-  { icon: Search, text: 'OSINT & reputational analysis', desc: 'mapping people/companies, links, adverse media.' },
-  { icon: CreditCard, text: 'Financial investigation', desc: 'flows (bank/crypto), fake invoices, kickbacks.' },
-  { icon: AlertTriangle, text: 'Incident response', desc: 'BEC/ransomware/insider, damage mitigation.' },
-  { icon: Scale, text: 'Legal coordination', desc: 'filings, communication with authorities.' },
-];
+const getInvestigationFeatures = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { icon: Target, text: 'Umfang & Sicherung', desc: 'Schnelle Hypothesen, Beweissicherung.' },
+      { icon: Database, text: 'Digitale Forensik', desc: 'Geräte, E-Mail, Logs, Cloud.' },
+      { icon: Search, text: 'OSINT & Reputationsanalyse', desc: 'Kartierung von Personen/Unternehmen, Verbindungen, negative Medien.' },
+      { icon: CreditCard, text: 'Finanzermittlung', desc: 'Geldflüsse (Bank/Krypto), gefälschte Rechnungen, Schmiergelder.' },
+      { icon: AlertTriangle, text: 'Incident Response', desc: 'BEC/Ransomware/Insider, Schadensbegrenzung.' },
+      { icon: Scale, text: 'Rechtliche Koordination', desc: 'Anträge, Kommunikation mit Behörden.' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { icon: Target, text: 'Rozsah a zajištění', desc: 'Rychlé hypotézy, zajištění důkazů.' },
+      { icon: Database, text: 'Digitální forenzní analýza', desc: 'Zařízení, e-mail, logy, cloud.' },
+      { icon: Search, text: 'OSINT a reputační analýza', desc: 'Mapování osob/firem, propojení, negativní média.' },
+      { icon: CreditCard, text: 'Finanční vyšetřování', desc: 'Toky peněz (banka/krypto), falešné faktury, úplatky.' },
+      { icon: AlertTriangle, text: 'Reakce na incidenty', desc: 'BEC/ransomware/insider, zmírnění škod.' },
+      { icon: Scale, text: 'Právní koordinace', desc: 'Podání, komunikace s úřady.' },
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      { icon: Target, text: 'Rozsah a zachovanie', desc: 'Rýchle hypotézy, zachovanie dôkazov.' },
+      { icon: Database, text: 'Digitálna forenzná analýza', desc: 'Zariadenia, e-mail, logy, cloud.' },
+      { icon: Search, text: 'OSINT a reputačná analýza', desc: 'Mapovanie osôb/firiem, prepojenia, negatívne médiá.' },
+      { icon: CreditCard, text: 'Finančné vyšetrovanie', desc: 'Toky peňazí (banka/krypto), falošné faktúry, úplatky.' },
+      { icon: AlertTriangle, text: 'Reakcia na incidenty', desc: 'BEC/ransomware/insider, zmiernenie škôd.' },
+      { icon: Scale, text: 'Právna koordinácia', desc: 'Podania, komunikácia s úradmi.' },
+    ];
+  }
+  return [
+    { icon: Target, text: 'Scoping & preservation', desc: 'rapid hypotheses, evidence preservation.' },
+    { icon: Database, text: 'Digital forensics', desc: 'devices, email, logs, cloud.' },
+    { icon: Search, text: 'OSINT & reputational analysis', desc: 'mapping people/companies, links, adverse media.' },
+    { icon: CreditCard, text: 'Financial investigation', desc: 'flows (bank/crypto), fake invoices, kickbacks.' },
+    { icon: AlertTriangle, text: 'Incident response', desc: 'BEC/ransomware/insider, damage mitigation.' },
+    { icon: Scale, text: 'Legal coordination', desc: 'filings, communication with authorities.' },
+  ];
+};
 
-const trainingFeatures = [
-  { icon: GraduationCap, text: 'Security awareness & anti-fraud program', desc: 'role-based, for finance/CS/support.' },
-  { icon: Mail, text: 'Phishing/smishing simulations', desc: '+ quick "fix-it" micro-lessons.' },
-  { icon: Target, text: 'Incident response tabletop exercises', desc: 'BEC, ransomware, data breach.' },
-  { icon: Lock, text: 'OSINT & privacy hygiene', desc: 'safe searching, identity and metadata protection.' },
-  { icon: BookOpen, text: 'Policy and playbook development', desc: 'IR runbooks, reporting flows, chain of custody.' },
-  { icon: Briefcase, text: 'Process consulting', desc: 'TPRM/AML/KYB and preparation of audit evidence.' },
-];
+const getTrainingFeatures = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      { icon: GraduationCap, text: 'Security Awareness & Anti-Betrugs-Programm', desc: 'Rollenbasiert, für Finanzen/Kundenservice/Support.' },
+      { icon: Mail, text: 'Phishing/Smishing-Simulationen', desc: '+ schnelle "Fix-it"-Mikrolektionen.' },
+      { icon: Target, text: 'Incident-Response-Tabletop-Übungen', desc: 'BEC, Ransomware, Datenleck.' },
+      { icon: Lock, text: 'OSINT & Datenschutz-Hygiene', desc: 'Sicheres Suchen, Identitäts- und Metadatenschutz.' },
+      { icon: BookOpen, text: 'Richtlinien- und Playbook-Entwicklung', desc: 'IR-Runbooks, Meldewege, Beweiskette.' },
+      { icon: Briefcase, text: 'Prozessberatung', desc: 'TPRM/AML/KYB und Vorbereitung von Prüfungsnachweisen.' },
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      { icon: GraduationCap, text: 'Bezpečnostní povědomí a anti-fraud program', desc: 'Podle rolí, pro finance/zákaznický servis/podporu.' },
+      { icon: Mail, text: 'Phishing/smishing simulace', desc: '+ rychlé "oprav to" mikrolekce.' },
+      { icon: Target, text: 'Tabletop cvičení reakce na incidenty', desc: 'BEC, ransomware, únik dat.' },
+      { icon: Lock, text: 'OSINT a hygiena soukromí', desc: 'Bezpečné vyhledávání, ochrana identity a metadat.' },
+      { icon: BookOpen, text: 'Vývoj politik a příruček', desc: 'IR runbooky, toky hlášení, chain of custody.' },
+      { icon: Briefcase, text: 'Procesní poradenství', desc: 'TPRM/AML/KYB a příprava auditních důkazů.' },
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      { icon: GraduationCap, text: 'Bezpečnostné povedomie a anti-fraud program', desc: 'Podľa rolí, pre financie/zákaznícky servis/podporu.' },
+      { icon: Mail, text: 'Phishing/smishing simulácie', desc: '+ rýchle "oprav to" mikrolekcie.' },
+      { icon: Target, text: 'Tabletop cvičenia reakcie na incidenty', desc: 'BEC, ransomware, únik dát.' },
+      { icon: Lock, text: 'OSINT a hygiena súkromia', desc: 'Bezpečné vyhľadávanie, ochrana identity a metadát.' },
+      { icon: BookOpen, text: 'Vývoj politík a príručiek', desc: 'IR runbooky, toky nahlasovania, reťazec úschovy.' },
+      { icon: Briefcase, text: 'Procesné poradenstvo', desc: 'TPRM/AML/KYB a príprava auditných dôkazov.' },
+    ];
+  }
+  return [
+    { icon: GraduationCap, text: 'Security awareness & anti-fraud program', desc: 'role-based, for finance/CS/support.' },
+    { icon: Mail, text: 'Phishing/smishing simulations', desc: '+ quick "fix-it" micro-lessons.' },
+    { icon: Target, text: 'Incident response tabletop exercises', desc: 'BEC, ransomware, data breach.' },
+    { icon: Lock, text: 'OSINT & privacy hygiene', desc: 'safe searching, identity and metadata protection.' },
+    { icon: BookOpen, text: 'Policy and playbook development', desc: 'IR runbooks, reporting flows, chain of custody.' },
+    { icon: Briefcase, text: 'Process consulting', desc: 'TPRM/AML/KYB and preparation of audit evidence.' },
+  ];
+};
+
+// When suitable texts - locale-aware
+const getRecoveryWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Wenn Sie Opfer von betrügerischen Überweisungen (Krypto/Fiat), Phishing, „Romance"- und Investitionsbetrug wurden.',
+      'Wenn Sie eine Kontoübernahme und verdächtige Abhebungen über eine Börse oder Bank erlebt haben.',
+      'Wenn Sie Vermögenswerte schnell blockieren und vertretbare Beweise vorlegen müssen.',
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      'Pokud jste se stali obětí podvodných převodů (krypto/fiat), phishingu, „romance" a investičních schémat.',
+      'Pokud jste zažili převzetí účtu a podezřelé výběry přes burzu nebo banku.',
+      'Pokud potřebujete rychle zablokovat aktiva a poskytnout obhajitelné důkazy.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Ak ste sa stali obeťou podvodných prevodov (krypto/fiat), phishingu, „romance" a investičných schém.',
+      'Ak ste zažili prevzatie účtu a podozrivé výbery cez burzu alebo banku.',
+      'Ak potrebujete rýchlo zablokovať aktíva a poskytnúť obhájiteľné dôkazy.',
+    ];
+  }
+  return [
+    'If you became a victim of fraudulent transfers (crypto/fiat), phishing, "romance," and investment schemes.',
+    'If you experienced account takeover and suspicious withdrawals via an exchange or bank.',
+    'If you need to quickly block assets and provide defensible evidence.',
+  ];
+};
+
+const getDueDiligenceWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Onboarding eines neuen Kunden/Lieferanten oder Drittpartei-Risikomanagement (TPRM).',
+      'M&A, Joint Venture, Investoreneintritt, Franchise/Lizenzierung.',
+      'Verdacht auf Verbindungen zu Betrug, sanktionierten Entitäten oder Geldwäsche.',
+      'Erfüllung von AML/CTF-Verpflichtungen oder Anforderungen einer Bank, eines Investors oder eines internen Compliance-Audits.',
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      'Onboarding nového klienta/dodavatele nebo řízení rizik třetích stran (TPRM).',
+      'M&A, joint venture, vstup investora, franšíza/licencování.',
+      'Podezření na propojení s podvodem, sankcionovanými entitami nebo praním špinavých peněz.',
+      'Plnění AML/CTF povinností nebo požadavků banky, investora nebo interního compliance auditu.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Onboarding nového klienta/dodávateľa alebo riadenie rizík tretích strán (TPRM).',
+      'M&A, joint venture, vstup investora, franšíza/licencovanie.',
+      'Podozrenie na prepojenie s podvodom, sankcionovanými entitami alebo praním špinavých peňazí.',
+      'Plnenie AML/CTF povinností alebo požiadaviek banky, investora alebo interného compliance auditu.',
+    ];
+  }
+  return [
+    'Onboarding a new client/vendor or third-party risk management (TPRM).',
+    'M&A, joint venture, investor entry, franchise/licensing.',
+    'Suspected links to fraud, sanctioned entities, or money laundering.',
+    'Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit.',
+  ];
+};
+
+const getInvestigationWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Verdacht auf internen Betrug oder Interessenkonflikt.',
+      'Datenschutzverletzung, kompromittierte Konten, Ransomware/BEC.',
+      'Rechnungsbetrug, „Geister"-Lieferanten, Absprachen.',
+      'Marken-/IP-Missbrauch: geklonte Websites, gefälschte Profile.',
+      'Vorprozess- oder Compliance-Phase, wenn Sie vertretbare Beweise für den Vorstand, die Bank oder den Prüfer benötigen.',
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      'Podezření na interní podvod nebo konflikt zájmů.',
+      'Únik dat, kompromitované účty, ransomware/BEC.',
+      'Fakturační podvod, „ghost" dodavatelé, tajné dohody.',
+      'Zneužití značky/IP: klonované webstránky, falešné profily.',
+      'Před-soudní nebo compliance fáze, když potřebujete obhajitelné důkazy pro představenstvo, banku nebo auditora.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Podozrenie na interný podvod alebo konflikt záujmov.',
+      'Únik dát, kompromitované účty, ransomware/BEC.',
+      'Faktúrový podvod, „ghost" dodávatelia, tajné dohody.',
+      'Zneužitie značky/IP: klonované webstránky, falošné profily.',
+      'Pred-súdna alebo compliance fáza, keď potrebujete obhájiteľné dôkazy pre predstavenstvo, banku alebo audítora.',
+    ];
+  }
+  return [
+    'Suspected internal fraud or conflict of interest.',
+    'Data breach, compromised accounts, ransomware/BEC.',
+    'Invoice fraud, "ghost" vendors, collusion.',
+    'Brand/IP abuse: cloned websites, fake profiles.',
+    'Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor.',
+  ];
+};
+
+const getTrainingWhenSuitable = (locale: Locale) => {
+  if (locale === 'de') {
+    return [
+      'Beim Onboarding neuer Mitarbeiter oder der Skalierung von Teams mit Zugang zu Geld/Daten.',
+      'Nach einem Vorfall, um das Wiederholungsrisiko zu reduzieren und die Reaktionszeit zu verkürzen.',
+      'Vor einem Audit oder einer Investition, oder beim Onboarding eines wichtigen Kunden (TPRM/AML-Anforderungen).',
+      'Wenn Sie mit Phishing, Markenmissbrauch oder betrügerischen Bestellungen konfrontiert sind.',
+      'Wenn Sie praktische Playbooks für den Vorstand, die Finanzabteilung und die Frontline-Teams benötigen.',
+    ];
+  }
+  if (locale === 'cs') {
+    return [
+      'Při onboardingu nových zaměstnanců nebo škálování týmů s přístupem k penězům/datům.',
+      'Po incidentu ke snížení rizika opakování a zkrácení reakční doby.',
+      'Před auditem nebo investicí, nebo při onboardingu významného klienta (TPRM/AML požadavky).',
+      'Pokud čelíte phishingu, zneužití značky nebo podvodným objednávkám.',
+      'Když potřebujete praktické příručky pro představenstvo, finance a frontline týmy.',
+    ];
+  }
+  if (locale === 'sk') {
+    return [
+      'Pri onboardingu nových zamestnancov alebo škálovaní tímov s prístupom k peniazom/dátam.',
+      'Po incidente na zníženie rizika opakovania a skrátenie reakčného času.',
+      'Pred auditom alebo investíciou, alebo pri onboardingu významného klienta (TPRM/AML požiadavky).',
+      'Ak čelíte phishingu, zneužitiu značky alebo podvodným objednávkam.',
+      'Keď potrebujete praktické príručky pre predstavenstvo, financie a frontline tímy.',
+    ];
+  }
+  return [
+    'When onboarding new hires or scaling teams with access to money/data.',
+    'After an incident to reduce repeat risk and shorten response time.',
+    'Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).',
+    'If you face phishing, brand abuse, or fraudulent orders.',
+    'When you need practical playbooks for the board, finance, and frontline teams.',
+  ];
+};
 
 export default function HomePage() {
   const params = useParams();
@@ -1554,7 +2289,7 @@ export default function HomePage() {
                 <div className="p-10 sm:p-12">
                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                    {recoveryFeatures.map((feature) => {
+                    {getRecoveryFeatures(locale).map((feature) => {
                       const Icon = feature.icon;
                       return (
                         <div key={feature.text} className="flex items-start gap-4">
@@ -1573,18 +2308,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-slate-900 dark:bg-slate-800">
                     <h4 className="text-lg font-bold text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you became a victim of fraudulent transfers (crypto/fiat), phishing, "romance," and investment schemes.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you experienced account takeover and suspicious withdrawals via an exchange or bank.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                        <span>If you need to quickly block assets and provide defensible evidence.</span>
-                      </li>
+                      {getRecoveryWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1620,7 +2349,7 @@ export default function HomePage() {
                 <div className="p-10 sm:p-12">
                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                    {dueDiligenceFeatures.map((feature) => {
+                    {getDueDiligenceFeatures(locale).map((feature) => {
                       const Icon = feature.icon;
                       return (
                         <div key={feature.text} className="flex items-start gap-4">
@@ -1639,22 +2368,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-blue-50 dark:bg-blue-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Onboarding a new client/vendor or third-party risk management (TPRM).</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>M&A, joint venture, investor entry, franchise/licensing.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Suspected links to fraud, sanctioned entities, or money laundering.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <span>Meeting AML/CTF obligations or requirements from a bank, investor, or internal compliance audit.</span>
-                      </li>
+                      {getDueDiligenceWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1683,7 +2402,7 @@ export default function HomePage() {
                 <div className="p-10 sm:p-12">
                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                    {investigationFeatures.map((feature) => {
+                    {getInvestigationFeatures(locale).map((feature) => {
                       const Icon = feature.icon;
                       return (
                         <div key={feature.text} className="flex items-start gap-4">
@@ -1702,26 +2421,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-purple-50 dark:bg-purple-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Suspected internal fraud or conflict of interest.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Data breach, compromised accounts, ransomware/BEC.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Invoice fraud, &quot;ghost&quot; vendors, collusion.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Brand/IP abuse: cloned websites, fake profiles.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                        <span>Pre-litigation or compliance phase when you need defensible evidence for the board, bank, or auditor.</span>
-                      </li>
+                      {getInvestigationWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
@@ -1750,7 +2455,7 @@ export default function HomePage() {
                 <div className="p-10 sm:p-12">
                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.services.included}</h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                    {trainingFeatures.map((feature) => {
+                    {getTrainingFeatures(locale).map((feature) => {
                       const Icon = feature.icon;
                       return (
                         <div key={feature.text} className="flex items-start gap-4">
@@ -1769,26 +2474,12 @@ export default function HomePage() {
                   <div className="mb-10 p-8 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30">
                     <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t.services.when}</h4>
                     <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>When onboarding new hires or scaling teams with access to money/data.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>After an incident to reduce repeat risk and shorten response time.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>Before an audit or investment, or when onboarding a major client (TPRM/AML requirements).</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>If you face phishing, brand abuse, or fraudulent orders.</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span>When you need practical playbooks for the board, finance, and frontline teams.</span>
-                      </li>
+                      {getTrainingWhenSuitable(locale).map((text, index) => (
+                        <li key={index} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
+                          <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
 
