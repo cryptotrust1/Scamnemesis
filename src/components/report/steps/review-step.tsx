@@ -191,7 +191,6 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
             <DataRow icon={User} label="Meno / Názov" value={data.name} />
             <DataRow icon={Phone} label="Telefón" value={data.phone} />
             <DataRow icon={Mail} label="Email" value={data.email} />
-            <DataRow icon={Globe} label="Webová stránka" value={data.website} />
             {data.socialMedia && (
               <DataRow label="Sociálne siete" value={data.socialMedia} />
             )}
@@ -200,7 +199,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
             )}
           </div>
 
-          {!data.name && !data.phone && !data.email && !data.website && (
+          {!data.name && !data.phone && !data.email && (
             <p className="text-muted-foreground italic">Žiadne údaje o páchateľovi neboli zadané</p>
           )}
         </div>
