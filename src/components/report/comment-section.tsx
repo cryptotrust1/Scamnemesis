@@ -1,15 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { MessageSquare, ThumbsUp, Flag, Send, Loader2, User, LogIn } from 'lucide-react';
+import { MessageSquare, ThumbsUp, Flag, Send, Loader2, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getInitials } from '@/lib/utils';
 import { RelativeTime } from '@/components/ui/relative-time';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 
 interface Comment {
   id: string;
@@ -39,9 +37,6 @@ interface ApiComment {
 }
 
 export function CommentSection({ reportId }: CommentSectionProps) {
-  const params = useParams();
-  const locale = (params?.locale as string) || 'en';
-
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
