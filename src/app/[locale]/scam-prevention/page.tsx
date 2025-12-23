@@ -203,11 +203,11 @@ export default function ScamPreventionPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8">
                 <Shield className="h-4 w-4 text-[#0E74FF]" />
-                <span className="text-sm font-semibold text-[#0E74FF]">{t('scamPrevention.hero.subtitle')}</span>
+                <span className="text-sm font-semibold text-[#0E74FF]">{t('scamPrevention.hero.badge')}</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
-                {t('scamPrevention.hero.title')} <span className="text-[#0E74FF]">{t('scamPrevention.hero.titleHighlight')}</span>
+                {t('scamPrevention.hero.title')}
               </h1>
 
               <p className="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8 leading-relaxed">
@@ -220,7 +220,7 @@ export default function ScamPreventionPage() {
                 asChild
               >
                 <Link href={`/${locale}/report/new`}>
-                  {t('scamPrevention.emergency.button')}
+                  {t('scamPrevention.emergency.fileReportButton')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -267,12 +267,12 @@ export default function ScamPreventionPage() {
                   <AlertCircle className="h-7 w-7 text-red-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-semibold text-red-600">{t('scamPrevention.emergency.badge')}</span>
+                  <span className="text-sm font-semibold text-red-600">{t('scamPrevention.riskAssessment.badge')}</span>
                   <h2 className="text-2xl md:text-3xl font-bold text-red-900 dark:text-red-100">{t('scamPrevention.emergency.title')}</h2>
                 </div>
               </div>
               <p className="text-red-800 dark:text-red-200 mb-8 text-lg">
-                {t('scamPrevention.emergency.description')}
+                {t('scamPrevention.emergency.subtitle')}
               </p>
 
               <div className="space-y-4">
@@ -294,7 +294,7 @@ export default function ScamPreventionPage() {
               <div className="mt-8 text-center">
                 <Button className="bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/30" asChild>
                   <Link href={`/${locale}/report/new`}>
-                    {t('scamPrevention.emergency.button')}
+                    {t('scamPrevention.emergency.fileReportButton')}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -314,7 +314,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.riskAssessment.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.riskAssessment.description')}
+                  {t('scamPrevention.riskAssessment.subtitle')}
                 </p>
               </div>
 
@@ -356,7 +356,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.understanding.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.understanding.description')}
+                  {t('scamPrevention.understanding.subtitle')}
                 </p>
               </div>
             </div>
@@ -374,7 +374,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.psychology.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.psychology.description')}
+                  {t('scamPrevention.psychology.subtitle')}
                 </p>
               </div>
 
@@ -414,7 +414,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.scamCategories.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.scamCategories.description')}
+                  {t('scamPrevention.scamCategories.subtitle')}
                 </p>
               </div>
 
@@ -463,7 +463,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.immediateAction.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.immediateAction.description')}
+                  {t('scamPrevention.immediateAction.subtitle')}
                 </p>
               </div>
 
@@ -501,7 +501,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.evidence.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.evidence.description')}
+                  {t('scamPrevention.evidence.subtitle')}
                 </p>
               </div>
 
@@ -566,7 +566,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.fundRecovery.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.fundRecovery.description')}
+                  {t('scamPrevention.fundRecovery.subtitle')}
                 </p>
               </div>
 
@@ -616,7 +616,7 @@ export default function ScamPreventionPage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('scamPrevention.supportResources.title')}</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('scamPrevention.supportResources.description')}
+                  {t('scamPrevention.supportResources.subtitle')}
                 </p>
               </div>
 
