@@ -341,13 +341,13 @@ export function Header() {
               <>
                 <Link
                   href="/auth/login"
-                  className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
                 >
                   {t.login}
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0E74FF] hover:bg-[#0a5fd6] rounded-lg transition-colors shadow-sm"
+                  className="px-4 py-2 text-sm font-semibold text-white bg-[#0E74FF] hover:bg-[#0a5fd6] rounded-lg transition-colors shadow-md hover:shadow-lg"
                 >
                   {t.register}
                 </Link>
@@ -418,14 +418,14 @@ export function Header() {
                   <div className="flex flex-col space-y-2">
                     <Link
                       href="/auth/login"
-                      className="block px-4 py-3 text-center text-base font-medium text-foreground border border-border rounded-lg hover:bg-muted"
+                      className="block px-4 py-3 text-center text-base font-semibold text-slate-700 border-2 border-slate-200 rounded-lg hover:bg-slate-100 hover:border-slate-300"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {t.login}
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="block px-4 py-3 text-center text-base font-medium text-white bg-[#0E74FF] hover:bg-[#0a5fd6] rounded-lg"
+                      className="block px-4 py-3 text-center text-base font-semibold text-white bg-[#0E74FF] hover:bg-[#0a5fd6] rounded-lg shadow-md"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {t.register}
