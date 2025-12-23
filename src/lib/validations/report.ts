@@ -123,34 +123,7 @@ export const perpetratorSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  website: z.string()
-    .url('Neplatná URL adresa')
-    .optional()
-    .or(z.literal('')),
-
   socialMedia: z.string()
-    .optional(),
-
-  // Additional social media platforms
-  signal: z.string()
-    .optional(),
-
-  tiktok: z.string()
-    .optional(),
-
-  twitter: z.string()
-    .optional(),
-
-  iban: z.string()
-    .optional()
-    .refine((val) => !val || val.length >= 15, {
-      message: 'IBAN musí mať aspoň 15 znakov',
-    }),
-
-  bankAccount: z.string()
-    .optional(),
-
-  cryptoWallet: z.string()
     .optional(),
 
   companyName: z.string()

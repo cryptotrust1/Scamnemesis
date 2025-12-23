@@ -120,6 +120,20 @@
       "reporterEmail": "Váš email",
       "reporterPhone": "Váš telefón"
     },
+    "placeholders": {
+      "title": "Stručný a výstižný nadpis (napr. 'Investičný podvod s Bitcoinom')",
+      "description": "Popíšte čo sa stalo, ako vás kontaktovali, aké sumy boli zahrnuté, atď...",
+      "city": "Napríklad Bratislava",
+      "postalCode": "Napríklad 82105",
+      "amount": "0.00",
+      "selectCountry": "Vyberte krajinu",
+      "selectCurrency": "Vyberte menu"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10,000 znakov (minimum 50)",
+      "allCountries": "Všetky krajiny",
+      "allCurrencies": "Všetky meny"
+    },
     "consent": {
       "terms": "Súhlasím s podmienkami používania",
       "gdpr": "Súhlasím so spracovaním osobných údajov",

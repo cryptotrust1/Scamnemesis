@@ -41,16 +41,18 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                   key={type.value}
                   type="button"
                   onClick={() => onChange('perpetratorType', type.value)}
+                  aria-pressed={isSelected}
                   className={cn(
                     'flex flex-col items-center p-4 rounded-lg border-2 transition-all text-center',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isSelected
                       ? 'border-primary bg-primary/5'
                       : 'border-muted hover:border-muted-foreground/50'
                   )}
                 >
-                  <Icon className={cn('h-8 w-8 mb-2', isSelected ? 'text-primary' : 'text-muted-foreground')} />
-                  <span className={cn('font-medium text-sm', isSelected && 'text-primary')}>{type.label}</span>
-                  <span className="text-xs text-muted-foreground mt-1">{type.description}</span>
+                  <Icon className={cn('h-8 w-8 mb-2 flex-shrink-0', isSelected ? 'text-primary' : 'text-muted-foreground')} />
+                  <span className={cn('font-medium text-sm break-words', isSelected && 'text-primary')}>{type.label}</span>
+                  <span className="text-xs text-muted-foreground mt-1 break-words leading-relaxed">{type.description}</span>
                 </button>
               );
             })}
@@ -217,21 +219,6 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
           </div>
 
           <div className="space-y-2 mt-4">
-            <label htmlFor="website" className="text-sm font-medium">
-              Webová stránka
-            </label>
-            <Input
-              id="website"
-              type="url"
-              placeholder="https://podvodna-stranka.sk"
-              value={data.website || ''}
-              onChange={(e) => onChange('website', e.target.value)}
-              className={errors.website ? 'border-destructive' : ''}
-            />
-            {errors.website && <p className="text-sm text-destructive">{errors.website}</p>}
-          </div>
-
-          <div className="space-y-2 mt-4">
             <label htmlFor="socialMedia" className="text-sm font-medium">
               Sociálne siete (Facebook, Instagram, WhatsApp)
             </label>
@@ -246,43 +233,6 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
             </p>
           </div>
 
-          {/* Additional Social Platforms */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div className="space-y-2">
-              <label htmlFor="signal" className="text-sm font-medium">
-                Signal
-              </label>
-              <Input
-                id="signal"
-                placeholder="+421 900 123 456"
-                value={data.signal || ''}
-                onChange={(e) => onChange('signal', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="tiktok" className="text-sm font-medium">
-                TikTok
-              </label>
-              <Input
-                id="tiktok"
-                placeholder="@username alebo URL"
-                value={data.tiktok || ''}
-                onChange={(e) => onChange('tiktok', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="twitter" className="text-sm font-medium">
-                Twitter / X
-              </label>
-              <Input
-                id="twitter"
-                placeholder="@username alebo URL"
-                value={data.twitter || ''}
-                onChange={(e) => onChange('twitter', e.target.value)}
-              />
-            </div>
-          </div>
-
           <div className="space-y-2 mt-4">
             <label htmlFor="address" className="text-sm font-medium">
               Adresa (ak je známa)
@@ -293,54 +243,6 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
               value={data.address || ''}
               onChange={(e) => onChange('address', e.target.value)}
             />
-          </div>
-        </div>
-
-        {/* Financial Information */}
-        <div className="border-t pt-6">
-          <h3 className="font-semibold mb-4">Finančné údaje</h3>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="iban" className="text-sm font-medium">
-                IBAN / Číslo účtu
-              </label>
-              <Input
-                id="iban"
-                placeholder="SK89 7500 0000 0000 1234 5678"
-                value={data.iban || ''}
-                onChange={(e) => onChange('iban', e.target.value)}
-                className={errors.iban ? 'border-destructive' : ''}
-              />
-              {errors.iban && <p className="text-sm text-destructive">{errors.iban}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="bankAccount" className="text-sm font-medium">
-                Názov banky / Ďalšie bankové údaje
-              </label>
-              <Input
-                id="bankAccount"
-                placeholder="Napríklad: Tatra banka"
-                value={data.bankAccount || ''}
-                onChange={(e) => onChange('bankAccount', e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="cryptoWallet" className="text-sm font-medium">
-                Crypto peňaženka
-              </label>
-              <Input
-                id="cryptoWallet"
-                placeholder="Bitcoin, Ethereum alebo iná adresa peňaženky"
-                value={data.cryptoWallet || ''}
-                onChange={(e) => onChange('cryptoWallet', e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">
-                Zadajte celú adresu crypto peňaženky kam ste posielali peniaze
-              </p>
-            </div>
           </div>
         </div>
 

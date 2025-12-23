@@ -120,6 +120,20 @@
       "reporterEmail": "Your Email",
       "reporterPhone": "Your Phone"
     },
+    "placeholders": {
+      "title": "Brief and descriptive title (e.g., 'Bitcoin Investment Scam')",
+      "description": "Describe what happened, how you were contacted, amounts involved, etc...",
+      "city": "For example London",
+      "postalCode": "For example SW1A 1AA",
+      "amount": "0.00",
+      "selectCountry": "Select country",
+      "selectCurrency": "Select currency"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10,000 characters (minimum 50)",
+      "allCountries": "All countries",
+      "allCurrencies": "All currencies"
+    },
     "consent": {
       "terms": "I agree to the Terms of Service",
       "gdpr": "I agree to data processing",

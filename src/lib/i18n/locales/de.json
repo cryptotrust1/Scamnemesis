@@ -120,6 +120,20 @@
       "reporterEmail": "Ihre E-Mail",
       "reporterPhone": "Ihre Telefonnummer"
     },
+    "placeholders": {
+      "title": "Kurzer und aussagekräftiger Titel (z.B. 'Bitcoin-Investitionsbetrug')",
+      "description": "Beschreiben Sie, was passiert ist, wie Sie kontaktiert wurden, welche Beträge involviert waren usw...",
+      "city": "Zum Beispiel Berlin",
+      "postalCode": "Zum Beispiel 10115",
+      "amount": "0.00",
+      "selectCountry": "Land auswählen",
+      "selectCurrency": "Währung auswählen"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10.000 Zeichen (mindestens 50)",
+      "allCountries": "Alle Länder",
+      "allCurrencies": "Alle Währungen"
+    },
     "consent": {
       "terms": "Ich stimme den Nutzungsbedingungen zu",
       "gdpr": "Ich stimme der Datenverarbeitung zu",

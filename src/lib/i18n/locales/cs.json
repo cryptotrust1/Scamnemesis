@@ -120,6 +120,20 @@
       "reporterEmail": "Váš email",
       "reporterPhone": "Váš telefon"
     },
+    "placeholders": {
+      "title": "Stručný a výstižný název (např. 'Investiční podvod s Bitcoinem')",
+      "description": "Popište, co se stalo, jak vás kontaktovali, jaké částky byly zahrnuty atd...",
+      "city": "Například Praha",
+      "postalCode": "Například 11000",
+      "amount": "0.00",
+      "selectCountry": "Vyberte zemi",
+      "selectCurrency": "Vyberte měnu"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10 000 znaků (minimum 50)",
+      "allCountries": "Všechny země",
+      "allCurrencies": "Všechny měny"
+    },
     "consent": {
       "terms": "Souhlasím s podmínkami používání",
       "gdpr": "Souhlasím se zpracováním osobních údajů",
