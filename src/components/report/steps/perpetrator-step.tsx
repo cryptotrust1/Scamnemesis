@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { PerpetratorForm } from '@/lib/validations/report';
 import { User, Building2, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface PerpetratorStepProps {
   data: Partial<PerpetratorForm>;
@@ -12,26 +13,28 @@ interface PerpetratorStepProps {
   onChange: (field: keyof PerpetratorForm, value: string) => void;
 }
 
-const perpetratorTypes = [
-  { value: 'INDIVIDUAL', label: 'Fyzická osoba', icon: User, description: 'Jednotlivec, ktorý sa dopustil podvodu' },
-  { value: 'COMPANY', label: 'Firma / Organizácia', icon: Building2, description: 'Spoločnosť alebo organizácia' },
-  { value: 'UNKNOWN', label: 'Neznámy', icon: HelpCircle, description: 'Nepodarilo sa identifikovať páchateľa' },
-];
-
 export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps) {
+  const { t } = useTranslation();
+
+  const perpetratorTypes = [
+    { value: 'INDIVIDUAL', label: t('report.perpetrator.types.individual'), icon: User, description: t('report.perpetrator.types.individualDesc') },
+    { value: 'COMPANY', label: t('report.perpetrator.types.company'), icon: Building2, description: t('report.perpetrator.types.companyDesc') },
+    { value: 'UNKNOWN', label: t('report.perpetrator.types.unknown'), icon: HelpCircle, description: t('report.perpetrator.types.unknownDesc') },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Informácie o páchateľovi</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.perpetrator.title')}</h2>
         <p className="text-muted-foreground">
-          Zadajte všetky dostupné informácie o osobe alebo firme, ktorá sa dopustila podvodu
+          {t('report.perpetrator.subtitle')}
         </p>
       </div>
 
       <div className="space-y-6 max-w-2xl mx-auto">
         {/* Perpetrator Type Selection */}
         <div className="space-y-3">
-          <label className="text-sm font-medium">Typ páchateľa</label>
+          <label className="text-sm font-medium">{t('report.perpetrator.typeLabel')}</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {perpetratorTypes.map((type) => {
               const Icon = type.icon;
@@ -65,11 +68,11 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
             {/* Name / Company Name */}
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium">
-                {data.perpetratorType === 'COMPANY' ? 'Názov firmy' : 'Meno a priezvisko'}
+                {data.perpetratorType === 'COMPANY' ? t('report.perpetrator.companyNameLabel') : t('report.perpetrator.nameLabel')}
               </label>
               <Input
                 id="name"
-                placeholder={data.perpetratorType === 'COMPANY' ? 'Napríklad: Scam Company s.r.o.' : 'Napríklad: Ján Podvodník'}
+                placeholder={data.perpetratorType === 'COMPANY' ? t('report.perpetrator.companyNamePlaceholder') : t('report.perpetrator.namePlaceholder')}
                 value={data.name || ''}
                 onChange={(e) => onChange('name', e.target.value)}
                 className={errors.name ? 'border-destructive' : ''}
@@ -81,22 +84,22 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
               <>
                 <div className="space-y-2">
                   <label htmlFor="companyName" className="text-sm font-medium">
-                    Obchodné meno (ak sa líši)
+                    {t('report.perpetrator.businessName')}
                   </label>
                   <Input
                     id="companyName"
-                    placeholder="Napríklad: Scam Trading"
+                    placeholder={t('report.perpetrator.businessNamePlaceholder')}
                     value={data.companyName || ''}
                     onChange={(e) => onChange('companyName', e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="companyId" className="text-sm font-medium">
-                    IČO (voliteľné)
+                    {t('report.perpetrator.companyId')}
                   </label>
                   <Input
                     id="companyId"
-                    placeholder="Napríklad: 12345678"
+                    placeholder={t('report.perpetrator.companyIdPlaceholder')}
                     value={data.companyId || ''}
                     onChange={(e) => onChange('companyId', e.target.value)}
                   />
@@ -110,22 +113,22 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="nickname" className="text-sm font-medium">
-                      Prezývka / Alias
+                      {t('report.perpetrator.nickname')}
                     </label>
                     <Input
                       id="nickname"
-                      placeholder="Prezývka alebo falošné meno"
+                      placeholder={t('report.perpetrator.nicknamePlaceholder')}
                       value={data.nickname || ''}
                       onChange={(e) => onChange('nickname', e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="username" className="text-sm font-medium">
-                      Užívateľské meno
+                      {t('report.perpetrator.username')}
                     </label>
                     <Input
                       id="username"
-                      placeholder="Používané na weboch/aplikáciách"
+                      placeholder={t('report.perpetrator.usernamePlaceholder')}
                       value={data.username || ''}
                       onChange={(e) => onChange('username', e.target.value)}
                     />
@@ -135,14 +138,14 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="approxAge" className="text-sm font-medium">
-                      Približný vek
+                      {t('report.perpetrator.approxAge')}
                     </label>
                     <Input
                       id="approxAge"
                       type="number"
                       min="0"
                       max="120"
-                      placeholder="Napríklad: 35"
+                      placeholder={t('report.perpetrator.approxAgePlaceholder')}
                       value={data.approxAge || ''}
                       onChange={(e) => onChange('approxAge', e.target.value)}
                       className={errors.approxAge ? 'border-destructive' : ''}
@@ -151,11 +154,11 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="nationality" className="text-sm font-medium">
-                      Národnosť
+                      {t('report.perpetrator.nationality')}
                     </label>
                     <Input
                       id="nationality"
-                      placeholder="Napríklad: Slovenská, Ukrajinská..."
+                      placeholder={t('report.perpetrator.nationalityPlaceholder')}
                       value={data.nationality || ''}
                       onChange={(e) => onChange('nationality', e.target.value)}
                     />
@@ -164,17 +167,17 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
                 <div className="space-y-2">
                   <label htmlFor="physicalDescription" className="text-sm font-medium">
-                    Fyzický popis
+                    {t('report.perpetrator.physicalDescription')}
                   </label>
                   <Textarea
                     id="physicalDescription"
-                    placeholder="Popíšte vzhľad páchateľa - výšku, postavu, farbu vlasov/očí, zvláštne znaky..."
+                    placeholder={t('report.perpetrator.physicalDescriptionPlaceholder')}
                     value={data.physicalDescription || ''}
                     onChange={(e) => onChange('physicalDescription', e.target.value)}
                     rows={3}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Ak ste páchateľa videli osobne alebo na videu, opíšte jeho vzhľad
+                    {t('report.perpetrator.physicalDescriptionHint')}
                   </p>
                 </div>
               </>
@@ -184,17 +187,17 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
         {/* Contact Information */}
         <div className="border-t pt-6">
-          <h3 className="font-semibold mb-4">Kontaktné údaje páchateľa</h3>
+          <h3 className="font-semibold mb-4">{t('report.perpetrator.contactInfo')}</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="phone" className="text-sm font-medium">
-                Telefónne číslo
+                {t('report.perpetrator.phone')}
               </label>
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+421 900 123 456"
+                placeholder={t('report.perpetrator.phonePlaceholder')}
                 value={data.phone || ''}
                 onChange={(e) => onChange('phone', e.target.value)}
                 className={errors.phone ? 'border-destructive' : ''}
@@ -204,12 +207,12 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                Email
+                {t('report.perpetrator.email')}
               </label>
               <Input
                 id="email"
                 type="email"
-                placeholder="podvodnik@example.com"
+                placeholder={t('report.perpetrator.emailPlaceholder')}
                 value={data.email || ''}
                 onChange={(e) => onChange('email', e.target.value)}
                 className={errors.email ? 'border-destructive' : ''}
@@ -220,26 +223,26 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
           <div className="space-y-2 mt-4">
             <label htmlFor="socialMedia" className="text-sm font-medium">
-              Sociálne siete (Facebook, Instagram, WhatsApp)
+              {t('report.perpetrator.socialMedia')}
             </label>
             <Input
               id="socialMedia"
-              placeholder="Facebook: xyz, Instagram: @handle, WhatsApp: +421..."
+              placeholder={t('report.perpetrator.socialMediaPlaceholder')}
               value={data.socialMedia || ''}
               onChange={(e) => onChange('socialMedia', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Zadajte odkazy na profily oddelené čiarkou (formát: Platforma: handle)
+              {t('report.perpetrator.socialMediaHint')}
             </p>
           </div>
 
           <div className="space-y-2 mt-4">
             <label htmlFor="address" className="text-sm font-medium">
-              Adresa (ak je známa)
+              {t('report.perpetrator.address')}
             </label>
             <Input
               id="address"
-              placeholder="Ulica, číslo, mesto, PSČ"
+              placeholder={t('report.perpetrator.addressPlaceholder')}
               value={data.address || ''}
               onChange={(e) => onChange('address', e.target.value)}
             />
@@ -248,8 +251,7 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
 
         <div className="bg-muted/50 rounded-lg p-4">
           <p className="text-sm text-muted-foreground">
-            <strong>Tip:</strong> Čím viac informácií poskytnete, tým lepšie budeme môcť varovať ostatných.
-            Všetky citlivé údaje sú chránené a maskované podľa vašej úrovne prístupu.
+            <strong>Tip:</strong> {t('report.perpetrator.tip')}
           </p>
         </div>
       </div>

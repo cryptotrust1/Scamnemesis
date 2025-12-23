@@ -19,6 +19,7 @@ import {
   Twitter
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface DigitalFootprintsStepProps {
   data: Partial<DigitalFootprintsForm>;
@@ -88,20 +89,22 @@ function CollapsibleSection({
 }
 
 export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootprintsStepProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Digitálne stopy</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.digitalFootprints.title')}</h2>
         <p className="text-muted-foreground">
-          Zadajte online profily a technické informácie o páchateľovi
+          {t('report.digitalFootprints.subtitle')}
         </p>
       </div>
 
       <div className="space-y-6 max-w-2xl mx-auto">
         {/* Social Media Accounts Section */}
         <CollapsibleSection
-          title="Účty na sociálnych sieťach"
-          description="Profily páchateľa na sociálnych platformách"
+          title={t('report.digitalFootprints.socialMedia.title')}
+          description={t('report.digitalFootprints.socialMedia.description')}
           icon={MessageCircle}
           defaultOpen={true}
         >
@@ -110,11 +113,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="telegram" className="text-sm font-medium flex items-center gap-2">
                 <Send className="h-4 w-4 text-muted-foreground" />
-                Telegram
+                {t('report.digitalFootprints.telegram')}
               </label>
               <Input
                 id="telegram"
-                placeholder="@username"
+                placeholder={t('report.digitalFootprints.usernamePlaceholder')}
                 value={data.telegram || ''}
                 onChange={(e) => onChange('telegram', e.target.value)}
                 className={errors.telegram ? 'border-destructive' : ''}
@@ -123,7 +126,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.telegram}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte používateľské meno začínajúce znakom @
+                {t('report.digitalFootprints.telegramHint')}
               </p>
             </div>
 
@@ -131,12 +134,12 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="whatsapp" className="text-sm font-medium flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                WhatsApp
+                {t('report.digitalFootprints.whatsapp')}
               </label>
               <Input
                 id="whatsapp"
                 type="tel"
-                placeholder="+1234567890"
+                placeholder={t('report.digitalFootprints.phonePlaceholder')}
                 value={data.whatsapp || ''}
                 onChange={(e) => onChange('whatsapp', e.target.value)}
                 className={errors.whatsapp ? 'border-destructive' : ''}
@@ -145,7 +148,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.whatsapp}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Telefónne číslo vrátane krajinného kódu
+                {t('report.digitalFootprints.whatsappHint')}
               </p>
             </div>
 
@@ -153,12 +156,12 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="signalNumber" className="text-sm font-medium flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                Signal
+                {t('report.digitalFootprints.signal')}
               </label>
               <Input
                 id="signalNumber"
                 type="tel"
-                placeholder="+1234567890"
+                placeholder={t('report.digitalFootprints.phonePlaceholder')}
                 value={data.signalNumber || ''}
                 onChange={(e) => onChange('signalNumber', e.target.value)}
                 className={errors.signalNumber ? 'border-destructive' : ''}
@@ -167,7 +170,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.signalNumber}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Telefónne číslo vrátane krajinného kódu
+                {t('report.digitalFootprints.signalHint')}
               </p>
             </div>
 
@@ -175,11 +178,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="instagram" className="text-sm font-medium flex items-center gap-2">
                 <Instagram className="h-4 w-4 text-muted-foreground" />
-                Instagram
+                {t('report.digitalFootprints.instagram')}
               </label>
               <Input
                 id="instagram"
-                placeholder="@username"
+                placeholder={t('report.digitalFootprints.usernamePlaceholder')}
                 value={data.instagram || ''}
                 onChange={(e) => onChange('instagram', e.target.value)}
                 className={errors.instagram ? 'border-destructive' : ''}
@@ -188,7 +191,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.instagram}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte používateľské meno začínajúce znakom @
+                {t('report.digitalFootprints.instagramHint')}
               </p>
             </div>
 
@@ -196,11 +199,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="facebook" className="text-sm font-medium flex items-center gap-2">
                 <Facebook className="h-4 w-4 text-muted-foreground" />
-                Facebook
+                {t('report.digitalFootprints.facebook')}
               </label>
               <Input
                 id="facebook"
-                placeholder="Meno profilu alebo URL"
+                placeholder={t('report.digitalFootprints.facebookPlaceholder')}
                 value={data.facebook || ''}
                 onChange={(e) => onChange('facebook', e.target.value)}
                 className={errors.facebook ? 'border-destructive' : ''}
@@ -209,7 +212,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.facebook}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte názov profilu alebo celú URL adresu
+                {t('report.digitalFootprints.facebookHint')}
               </p>
             </div>
 
@@ -217,11 +220,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="tiktokHandle" className="text-sm font-medium flex items-center gap-2">
                 <Video className="h-4 w-4 text-muted-foreground" />
-                TikTok
+                {t('report.digitalFootprints.tiktok')}
               </label>
               <Input
                 id="tiktokHandle"
-                placeholder="@username"
+                placeholder={t('report.digitalFootprints.usernamePlaceholder')}
                 value={data.tiktokHandle || ''}
                 onChange={(e) => onChange('tiktokHandle', e.target.value)}
                 className={errors.tiktokHandle ? 'border-destructive' : ''}
@@ -230,7 +233,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.tiktokHandle}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte používateľské meno začínajúce znakom @
+                {t('report.digitalFootprints.tiktokHint')}
               </p>
             </div>
 
@@ -238,11 +241,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             <div className="space-y-2">
               <label htmlFor="twitterHandle" className="text-sm font-medium flex items-center gap-2">
                 <Twitter className="h-4 w-4 text-muted-foreground" />
-                X / Twitter
+                {t('report.digitalFootprints.twitter')}
               </label>
               <Input
                 id="twitterHandle"
-                placeholder="@username"
+                placeholder={t('report.digitalFootprints.usernamePlaceholder')}
                 value={data.twitterHandle || ''}
                 onChange={(e) => onChange('twitterHandle', e.target.value)}
                 className={errors.twitterHandle ? 'border-destructive' : ''}
@@ -251,7 +254,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.twitterHandle}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte používateľské meno začínajúce znakom @
+                {t('report.digitalFootprints.twitterHint')}
               </p>
             </div>
           </div>
@@ -259,8 +262,8 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
 
         {/* Website & Domain Section */}
         <CollapsibleSection
-          title="Webová stránka a doména"
-          description="Informácie o webových stránkach používaných pri podvode"
+          title={t('report.digitalFootprints.website.title')}
+          description={t('report.digitalFootprints.website.description')}
           icon={Globe}
           defaultOpen={true}
         >
@@ -268,12 +271,12 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             {/* Website URL */}
             <div className="space-y-2">
               <label htmlFor="websiteUrl" className="text-sm font-medium">
-                URL webovej stránky
+                {t('report.digitalFootprints.websiteUrl')}
               </label>
               <Input
                 id="websiteUrl"
                 type="url"
-                placeholder="https://example.com"
+                placeholder={t('report.digitalFootprints.websiteUrlPlaceholder')}
                 value={data.websiteUrl || ''}
                 onChange={(e) => onChange('websiteUrl', e.target.value)}
                 className={errors.websiteUrl ? 'border-destructive' : ''}
@@ -282,7 +285,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                 <p className="text-sm text-destructive">{errors.websiteUrl}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte celú URL adresu vrátane https://
+                {t('report.digitalFootprints.websiteUrlHint')}
               </p>
             </div>
 
@@ -290,11 +293,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
               {/* Domain Name */}
               <div className="space-y-2">
                 <label htmlFor="domainName" className="text-sm font-medium">
-                  Názov domény
+                  {t('report.digitalFootprints.domainName')}
                 </label>
                 <Input
                   id="domainName"
-                  placeholder="example.com"
+                  placeholder={t('report.digitalFootprints.domainNamePlaceholder')}
                   value={data.domainName || ''}
                   onChange={(e) => onChange('domainName', e.target.value)}
                   className={errors.domainName ? 'border-destructive' : ''}
@@ -303,14 +306,14 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.domainName}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Len samotný názov domény bez http://
+                  {t('report.digitalFootprints.domainNameHint')}
                 </p>
               </div>
 
               {/* Domain Creation Date */}
               <div className="space-y-2">
                 <label htmlFor="domainCreationDate" className="text-sm font-medium">
-                  Dátum vytvorenia domény
+                  {t('report.digitalFootprints.domainCreationDate')}
                 </label>
                 <Input
                   id="domainCreationDate"
@@ -324,7 +327,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.domainCreationDate}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Kedy bola doména zaregistrovaná (ak je známe)
+                  {t('report.digitalFootprints.domainCreationDateHint')}
                 </p>
               </div>
             </div>
@@ -333,8 +336,8 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
 
         {/* IP Information Section */}
         <CollapsibleSection
-          title="Informácie o IP adrese"
-          description="Technické detaily o pôvode podvodu"
+          title={t('report.digitalFootprints.ip.title')}
+          description={t('report.digitalFootprints.ip.description')}
           icon={Network}
           defaultOpen={true}
         >
@@ -343,11 +346,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
               {/* IP Address */}
               <div className="space-y-2">
                 <label htmlFor="ipAddress" className="text-sm font-medium">
-                  IP adresa
+                  {t('report.digitalFootprints.ipAddress')}
                 </label>
                 <Input
                   id="ipAddress"
-                  placeholder="192.168.1.1"
+                  placeholder={t('report.digitalFootprints.ipAddressPlaceholder')}
                   value={data.ipAddress || ''}
                   onChange={(e) => onChange('ipAddress', e.target.value)}
                   className={errors.ipAddress ? 'border-destructive' : ''}
@@ -356,27 +359,27 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.ipAddress}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  IPv4 adresa vo formáte xxx.xxx.xxx.xxx
+                  {t('report.digitalFootprints.ipAddressHint')}
                 </p>
               </div>
 
               {/* IP Country */}
               <div className="space-y-2">
                 <label htmlFor="ipCountry" className="text-sm font-medium">
-                  Krajina IP adresy
+                  {t('report.digitalFootprints.ipCountry')}
                 </label>
                 <Select
                   value={data.ipCountry || ''}
                   onValueChange={(value) => onChange('ipCountry', value)}
                 >
                   <SelectTrigger className={`h-12 ${errors.ipCountry ? 'border-destructive' : ''}`}>
-                    <SelectValue placeholder="Vyberte krajinu" />
+                    <SelectValue placeholder={t('report.digitalFootprints.ipCountryPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     {countries.map((country) => (
                       country.value === 'SEPARATOR' ? (
                         <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
-                          Všetky krajiny
+                          {t('report.digitalFootprints.allCountries')}
                         </div>
                       ) : (
                         <SelectItem key={country.value} value={country.value}>
@@ -390,7 +393,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.ipCountry}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Z ktorej krajiny pochádzala IP adresa
+                  {t('report.digitalFootprints.ipCountryHint')}
                 </p>
               </div>
             </div>
@@ -399,11 +402,11 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
               {/* ISP Provider */}
               <div className="space-y-2">
                 <label htmlFor="ispProvider" className="text-sm font-medium">
-                  Poskytovateľ internetu (ISP)
+                  {t('report.digitalFootprints.ispProvider')}
                 </label>
                 <Input
                   id="ispProvider"
-                  placeholder="Napríklad: Comcast, Verizon, Deutsche Telekom..."
+                  placeholder={t('report.digitalFootprints.ispProviderPlaceholder')}
                   value={data.ispProvider || ''}
                   onChange={(e) => onChange('ispProvider', e.target.value)}
                   className={errors.ispProvider ? 'border-destructive' : ''}
@@ -412,14 +415,14 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.ispProvider}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Názov internetového poskytovateľa
+                  {t('report.digitalFootprints.ispProviderHint')}
                 </p>
               </div>
 
               {/* IP Abuse Score */}
               <div className="space-y-2">
                 <label htmlFor="ipAbuseScore" className="text-sm font-medium">
-                  IP skóre zneužitia (0-100)
+                  {t('report.digitalFootprints.ipAbuseScore')}
                 </label>
                 <div className="flex gap-2 items-center">
                   <Input
@@ -427,7 +430,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                     type="number"
                     min="0"
                     max="100"
-                    placeholder="50"
+                    placeholder={t('report.digitalFootprints.ipAbuseScorePlaceholder')}
                     value={data.ipAbuseScore || ''}
                     onChange={(e) => onChange('ipAbuseScore', e.target.value)}
                     className={errors.ipAbuseScore ? 'border-destructive' : ''}
@@ -438,7 +441,7 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
                   <p className="text-sm text-destructive">{errors.ipAbuseScore}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Hodnotenie rizika IP (vyššie = nebezpečnejšie)
+                  {t('report.digitalFootprints.ipAbuseScoreHint')}
                 </p>
               </div>
             </div>
@@ -455,12 +458,10 @@ export function DigitalFootprintsStep({ data, errors, onChange }: DigitalFootpri
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium">
-                Prečo sú digitálne stopy dôležité?
+                {t('report.digitalFootprints.infoTitle')}
               </p>
               <p className="text-sm text-muted-foreground">
-                Tieto informácie pomáhajú vytvoriť digitálny profil páchateľa a umožňujú orgánom činným
-                v trestnom konaní sledovať a identifikovať podvodníkov naprieč viacerými platformami.
-                Všetky citlivé údaje sú chránené a maskované podľa vašej úrovne prístupu.
+                {t('report.digitalFootprints.infoText')}
               </p>
             </div>
           </div>
