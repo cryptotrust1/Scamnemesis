@@ -787,5 +787,292 @@
       "expertInstructors": "Expertní instruktoři",
       "updatedContent": "Aktualizovaný obsah"
     }
+  },
+  "scamPrevention": {
+    "hero": {
+      "title": "Komplexní průvodce prevencí a",
+      "titleHighlight": "obnovou po podvodu",
+      "subtitle": "Krok za krokem",
+      "description": "Vaše kompletní příručka pro rozpoznávání podvodů, ochranu majetku a zotavení se z finančních podvodů. Chráníme vás s využitím expertních znalostí z praxe."
+    },
+    "toc": {
+      "title": "Obsah",
+      "items": [
+        "Nouzová reakce",
+        "Hodnocení rizik",
+        "Porozumění podvodům",
+        "Psychologie podvodníků",
+        "Kategorie podvodů",
+        "Okamžitá opatření",
+        "Shromažďování důkazů",
+        "Obnova prostředků",
+        "Podpůrné zdroje"
+      ]
+    },
+    "emergency": {
+      "badge": "Urgentní",
+      "title": "Nouzová reakce",
+      "description": "Myslíte si, že jste právě byli podvedeni? Jednejte okamžitě:",
+      "actions": [
+        "Zastavte veškerou komunikaci s podezřelým podvodníkem",
+        "Neposílejte žádné další peníze, bez ohledu na to, co tvrdí",
+        "Zdokumentujte vše – screenshoty, e-maily, transakce",
+        "Kontaktujte svou banku/krypto burzu",
+        "Nahlaste incident příslušným orgánům"
+      ],
+      "button": "Nahlásit podvod nyní"
+    },
+    "riskAssessment": {
+      "badge": "Diagnostika",
+      "title": "Hodnocení rizik",
+      "description": "Kontrolní seznam varovných signálů, které mohou naznačovat podvod:",
+      "warningSigns": [
+        { "title": "Nevyžádaný kontakt", "description": "Byli jste kontaktováni nečekaně – bez předchozího vztahu?" },
+        { "title": "Slíbené vysoké výnosy", "description": "Nabízí neobvykle vysoké zisky s minimálním rizikem?" },
+        { "title": "Časový nátlak", "description": "Tlačí vás k okamžitému rozhodnutí bez času na rozmyšlenou?" },
+        { "title": "Žádost o citlivé údaje", "description": "Žádají hesla, PIN kódy nebo jiné citlivé informace?" },
+        { "title": "Neobvyklé platební metody", "description": "Požadují platbu kryptoměnou, dárkovými kartami nebo bankovním převodem?" },
+        { "title": "Vyhýbání se ověření", "description": "Odmítají poskytnout ověřitelné kontaktní údaje nebo reference?" },
+        { "title": "Příliš dobré nabídky", "description": "Nabídka zní příliš dobře na to, aby byla pravdivá?" },
+        { "title": "Osobní příběhy a tlak", "description": "Vyvolávají emoce, sdílejí smutné příběhy, aby získali vaši důvěru?" }
+      ]
+    },
+    "understanding": {
+      "badge": "Znalosti",
+      "title": "Porozumění podvodům",
+      "description": "Poznání nepřítele je první obrannou linií. Podvodníci se neustále vyvíjejí, ale jejich základní taktiky zůstávají podobné. Zde je to, co potřebujete vědět:"
+    },
+    "psychology": {
+      "badge": "Taktiky",
+      "title": "Psychologie podvodníků",
+      "description": "Pochopení toho, jak podvodníci manipulují s obětmi, vám může pomoci rozpoznat a vyhnout se jejich taktikám:",
+      "tactics": [
+        { "title": "Budování důvěry", "description": "Podvodníci investují čas do budování vztahu a důvěryhodnosti, než požádají o peníze." },
+        { "title": "Vytváření naléhavosti", "description": "Vytvářejí umělou naléhavost, aby zabránili obětem pečlivě přemýšlet." },
+        { "title": "Manipulace se vzácností", "description": "Používají taktiky jako \"omezená nabídka\" nebo \"exkluzivní příležitost\"." },
+        { "title": "Zneužívání autority", "description": "Předstírají, že jsou důvěryhodné osoby – policisté, bankovní úředníci nebo úředníci." },
+        { "title": "Sociální důkaz", "description": "Ukazují falešné recenze, reference nebo testimonials." },
+        { "title": "Strach a zastrašování", "description": "Vyhrožují právními kroky, zatčením nebo ztrátou příležitosti." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Kategorie",
+      "title": "Nejčastější typy podvodů",
+      "description": "Rozpoznejte varovné signály u nejčastějších typů podvodů:",
+      "categories": [
+        {
+          "title": "Investiční podvody",
+          "description": "Falešné investiční příležitosti slibující vysoké výnosy, často zahrnující kryptoměny, forex nebo akcie.",
+          "tips": ["Ověřte licenci u regulátora", "Buďte opatrní u garantovaných výnosů", "Zkoumejte společnost a její historii"]
+        },
+        {
+          "title": "Romance scams",
+          "description": "Podvodníci předstírají romantický zájem za účelem získání peněz nebo osobních údajů.",
+          "tips": ["Nikdy neposílejte peníze někomu, koho jste nepotkali osobně", "Ověřte identitu videohovorem", "Dejte si pozor na rychle se rozvíjející vztahy"]
+        },
+        {
+          "title": "Phishing útoky",
+          "description": "Podvodné e-maily, SMS nebo webové stránky napodobující legitimní organizace.",
+          "tips": ["Kontrolujte URL adresu pečlivě", "Neklikejte na podezřelé odkazy", "Kontaktujte společnost přímo"]
+        },
+        {
+          "title": "Tech support podvody",
+          "description": "Podvodníci předstírají, že jsou technická podpora a tvrdí, že váš počítač má problémy.",
+          "tips": ["Microsoft/Apple vám nikdy nezavolá sami", "Nedávejte vzdálený přístup neznámým", "Ukončete hovor a kontaktujte oficiální podporu"]
+        },
+        {
+          "title": "Pracovní podvody",
+          "description": "Falešné pracovní nabídky vyžadující předem platbu nebo osobní údaje.",
+          "tips": ["Legitimní zaměstnavatelé nevyžadují platbu", "Ověřte společnost nezávisle", "Dejte si pozor na příliš vysoké platy"]
+        },
+        {
+          "title": "E-commerce podvody",
+          "description": "Falešné e-shopy nebo prodejci na tržištích, kteří nikdy nedoručí zboží.",
+          "tips": ["Nakupujte na ověřených platformách", "Používejte bezpečné platební metody", "Čtěte recenze a hodnocení"]
+        },
+        {
+          "title": "Podvody s pronájmem",
+          "description": "Falešné inzeráty na pronájem nemovitostí vyžadující zálohu předem.",
+          "tips": ["Prohlédněte si nemovitost osobně", "Nikdy neplaťte před podpisem smlouvy", "Ověřte vlastnictví nemovitosti"]
+        },
+        {
+          "title": "Loterijní podvody",
+          "description": "Oznámení o výhře v loterii, které jste si nikdy nehráli.",
+          "tips": ["Nemůžete vyhrát v loterii, které jste nehráli", "Legitimní loterie nevyžadují předem poplatky", "Ignorujte nevyžádaná oznámení o výhrách"]
+        },
+        {
+          "title": "Krypto podvody",
+          "description": "Podvody zahrnující kryptoměny – falešné burzy, pumpy a dumpy, podvodné ICO.",
+          "tips": ["Používejte pouze ověřené burzy", "Nikdy nesdílejte privátní klíče", "Buďte skeptičtí k zaručeným výnosům"]
+        },
+        {
+          "title": "Podvody s půjčkami",
+          "description": "Nabídky půjček vyžadující předem poplatky za zpracování.",
+          "tips": ["Legitimní věřitelé neúčtují poplatky předem", "Ověřte licenci poskytovatele", "Přečtěte si všechny podmínky"]
+        },
+        {
+          "title": "Charitativní podvody",
+          "description": "Falešné charity zneužívající tragédie nebo katastrofy.",
+          "tips": ["Ověřte charitu v registrech", "Darujte přímo na oficiální stránky", "Dejte si pozor na nátlak k okamžitému daru"]
+        },
+        {
+          "title": "Podvody na prarodiče",
+          "description": "Podvodníci předstírají, že jsou příbuzní v nouzi.",
+          "tips": ["Ověřte identitu volajícího", "Zavolejte příbuznému na známé číslo", "Nedůvěřujte urgentním žádostem o peníze"]
+        }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Akční plán",
+      "title": "Protokol okamžité akce",
+      "description": "Pokud jste byli podvedeni, postupujte podle těchto kroků:",
+      "steps": [
+        {
+          "title": "Zastavte komunikaci",
+          "description": "Okamžitě přestaňte komunikovat s podvodníkem. Neodpovídejte na další zprávy ani hovory.",
+          "actions": ["Zablokujte všechna telefonní čísla", "Zablokujte e-mailové adresy", "Nahlaste a zablokujte profily na sociálních sítích"]
+        },
+        {
+          "title": "Zabezpečte účty",
+          "description": "Změňte hesla a zabezpečte všechny potenciálně kompromitované účty.",
+          "actions": ["Změňte bankovní hesla", "Aktivujte dvoufaktorové ověření", "Zkontrolujte podezřelou aktivitu"]
+        },
+        {
+          "title": "Kontaktujte finanční instituce",
+          "description": "Informujte svou banku a další finanční instituce o podvodu.",
+          "actions": ["Nahlaste podvodné transakce", "Požádejte o zmrazení účtu", "Prozkoumejte možnosti vrácení peněz"]
+        },
+        {
+          "title": "Nahlaste úřadům",
+          "description": "Podejte oficiální hlášení příslušným orgánům.",
+          "actions": ["Policie České republiky", "Česká obchodní inspekce", "Česká národní banka"]
+        },
+        {
+          "title": "Zdokumentujte vše",
+          "description": "Uchovejte všechny důkazy pro vyšetřování a případné právní kroky.",
+          "actions": ["Screenshot konverzací", "Uložte e-maily a SMS", "Zaznamenejte data transakcí"]
+        }
+      ]
+    },
+    "evidence": {
+      "badge": "Dokumentace",
+      "title": "Příručka sběru důkazů",
+      "description": "Správná dokumentace je klíčová pro vyšetřování a možnou obnovu prostředků:",
+      "types": [
+        {
+          "title": "Digitální komunikace",
+          "items": ["Screenshoty všech konverzací", "E-mailové hlavičky a metadata", "Záznamy hovorů a SMS", "Zprávy na sociálních sítích"]
+        },
+        {
+          "title": "Finanční záznamy",
+          "items": ["Bankovní výpisy", "Potvrzení o transakcích", "Adresy krypto peněženek", "Platební příkazy"]
+        },
+        {
+          "title": "Identifikační údaje",
+          "items": ["Jména a aliasy podvodníků", "Telefonní čísla", "E-mailové adresy", "Webové stránky a domény"]
+        },
+        {
+          "title": "Podpůrné dokumenty",
+          "items": ["Smlouvy a dohody", "Propagační materiály", "Webové stránky (screenshots)", "Profily na sociálních sítích"]
+        }
+      ],
+      "bestPractices": {
+        "title": "Osvědčené postupy",
+        "items": [
+          "Zachovejte originální soubory – nekopírujte/nezměňte",
+          "Zaznamenejte data a časy",
+          "Použijte nástroje pro archivaci webových stránek",
+          "Uchovejte více kopií na různých místech"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Obnova",
+      "title": "Možnosti obnovy prostředků",
+      "description": "V závislosti na platební metodě existují různé možnosti obnovy:",
+      "methods": [
+        {
+          "title": "Bankovní převod",
+          "description": "Kontaktujte svou banku co nejdříve. Mnoho bank má týmy pro vyšetřování podvodů.",
+          "steps": ["Zavolejte na linku pro podvody vaší banky", "Poskytněte všechny detaily transakce", "Požádejte o zpětné zúčtování", "Podejte formální stížnost"],
+          "timeline": "Časový rámec: 24-72 hodin je kritických"
+        },
+        {
+          "title": "Kreditní/debetní karta",
+          "description": "Iniciujte chargeback prostřednictvím vydavatele karty.",
+          "steps": ["Kontaktujte vydavatele karty", "Požádejte o chargeback", "Poskytněte dokumentaci", "Sledujte stav případu"],
+          "timeline": "Časový rámec: Do 60-120 dnů od transakce"
+        },
+        {
+          "title": "Kryptoměna",
+          "description": "Obnova krypta je obtížná, ale existují možnosti.",
+          "steps": ["Nahlaste na příslušnou burzu", "Podejte hlášení na policii", "Kontaktujte specializované služby", "Sledujte adresy peněženek"],
+          "timeline": "Časový rámec: Čím dříve, tím lépe"
+        },
+        {
+          "title": "Převody peněz",
+          "description": "Kontaktujte službu pro převod peněz okamžitě.",
+          "steps": ["Zavolejte zákaznickou linku", "Poskytněte číslo transakce", "Požádejte o zrušení/vrácení", "Podejte stížnost"],
+          "timeline": "Časový rámec: Minuty až hodiny"
+        },
+        {
+          "title": "Dárkové karty",
+          "description": "Obnova je velmi obtížná, ale zkuste kontaktovat vydavatele.",
+          "steps": ["Kontaktujte vydavatele karty", "Nahlaste čísla karet", "Podejte policejní hlášení", "Uchovejte stvrzenky"],
+          "timeline": "Časový rámec: Okamžitě"
+        }
+      ]
+    },
+    "supportResources": {
+      "badge": "Pomoc",
+      "title": "Podpůrné zdroje",
+      "description": "Nejste sami. Tyto organizace mohou pomoci:",
+      "resources": [
+        {
+          "title": "Policie České republiky",
+          "description": "Podejte trestní oznámení na nejbližší policejní stanici nebo online.",
+          "contact": "158 (tísňová linka)",
+          "type": "Orgán činný v trestním řízení"
+        },
+        {
+          "title": "Česká obchodní inspekce",
+          "description": "Pro podvody související se spotřebiteli a e-commerce.",
+          "contact": "www.coi.cz",
+          "type": "Spotřebitelská ochrana"
+        },
+        {
+          "title": "Česká národní banka",
+          "description": "Pro podvody související s finančními službami a investicemi.",
+          "contact": "www.cnb.cz",
+          "type": "Finanční regulátor"
+        },
+        {
+          "title": "NÚKIB",
+          "description": "Národní úřad pro kybernetickou a informační bezpečnost pro kybernetické hrozby.",
+          "contact": "www.nukib.cz",
+          "type": "Kybernetická bezpečnost"
+        },
+        {
+          "title": "Sdružení obrany spotřebitelů",
+          "description": "Bezplatné poradenství pro spotřebitele.",
+          "contact": "www.asociace-sos.cz",
+          "type": "Spotřebitelská pomoc"
+        },
+        {
+          "title": "ScamNemesis",
+          "description": "Nahlaste podvodníky a pomozte chránit ostatní.",
+          "contact": "info@scamnemesis.com",
+          "type": "Komunita"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Zůstaňte informováni a chráněni",
+      "description": "Sdílejte tuto příručku s přáteli a rodinou. Společně můžeme vytvořit bezpečnější digitální svět.",
+      "buttons": {
+        "report": "Nahlásit podvod",
+        "share": "Sdílet průvodce"
+      }
+    }
   }
 }

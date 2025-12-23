@@ -896,5 +896,184 @@
       "expertInstructors": "Expert Instructors",
       "updatedContent": "Updated Content"
     }
+  },
+  "scamPrevention": {
+    "hero": {
+      "badge": "Complete Security Resource",
+      "title": "Comprehensive Anti-Scam Guide",
+      "description": "Your practical security guide to identifying threats, preventing financial losses, and responding effectively to fraud. Knowledge and preparation are your strongest defenses.",
+      "sections": "Sections",
+      "scamTypes": "Scam Types",
+      "warningSigns": "Warning Signs",
+      "actionSteps": "Action Steps",
+      "checkButton": "Check Someone Now"
+    },
+    "toc": {
+      "title": "Table of Contents",
+      "subtitle": "Jump to any section of this guide",
+      "items": [
+        "Emergency Response: File a ScamNemesis Report",
+        "60-Second Risk Assessment",
+        "Understanding Scams: Definition and Mechanics",
+        "Psychology of Scam Victimization",
+        "12 Most Prevalent Scam Categories",
+        "Immediate Action Protocol: First 24 Hours",
+        "Evidence Collection and Documentation Standards",
+        "Fund Recovery Procedures by Payment Method",
+        "Support Resources and Reporting Channels"
+      ]
+    },
+    "emergency": {
+      "title": "Emergency Response: File a ScamNemesis Report",
+      "subtitle": "If you suspect you are currently being scammed or have been victimized, take immediate action.",
+      "actions": [
+        { "title": "Stop All Communication Immediately", "description": "Cease contact with the suspected scammer. Do not respond to calls, emails, or messages." },
+        { "title": "Halt All Financial Transactions", "description": "Stop any pending transfers, payments, or shipments immediately. Contact your bank or payment provider." },
+        { "title": "File a ScamNemesis Report", "description": "Document the incident in our system to warn others and create an official record." }
+      ],
+      "fileReportButton": "File Report Now"
+    },
+    "riskAssessment": {
+      "badge": "Quick Assessment",
+      "title": "60-Second Risk Assessment",
+      "subtitle": "If you encounter any of these 8 warning signs, proceed with extreme caution or walk away completely. Trust your instincts.",
+      "signs": [
+        "Pressure to act quickly or maintain secrecy",
+        "Requests for unconventional payment methods",
+        "Unrealistic promises or guarantees",
+        "Missing regulatory verification or credentials",
+        "Communication red flags (grammar errors, suspicious domains)",
+        "Insistence on specific communication channels",
+        "Requests for sensitive information",
+        "Resistance to independent verification or third-party involvement"
+      ]
+    },
+    "understanding": {
+      "badge": "Knowledge is Power",
+      "title": "Understanding Scams: Definition and Mechanics",
+      "subtitle": "Understanding how scams work is the first step in protecting yourself and others.",
+      "whatIsScam": {
+        "title": "What is a Scam?",
+        "content1": "A scam is a fraudulent scheme designed to deceive individuals into parting with money, personal information, or assets through false promises, misrepresentation, or manipulation.",
+        "content2": "Scams exploit human psychology, trust, and emotional vulnerabilities to bypass rational decision-making."
+      },
+      "howScamsWork": {
+        "title": "How Scams Work",
+        "steps": [
+          { "step": "Contact", "desc": "Initial outreach via phone, email, social media, or in person" },
+          { "step": "Hook", "desc": "Offer something desirable or create fear/urgency" },
+          { "step": "Build Trust", "desc": "Establish credibility through fake credentials or emotional connection" },
+          { "step": "The Ask", "desc": "Request money, information, or access" },
+          { "step": "Disappear", "desc": "Cut contact after obtaining what they want" }
+        ]
+      }
+    },
+    "psychology": {
+      "badge": "Psychology",
+      "title": "Psychology of Scam Victimization",
+      "subtitle": "Scammers use 6 primary psychological manipulation methods to exploit human behavior and bypass critical thinking.",
+      "tactics": [
+        { "title": "Authority Impersonation", "description": "Pretending to be officials, banks, or experts to exploit trust in legitimate institutions." },
+        { "title": "Artificial Time Pressure", "description": "Creating false urgency to prevent careful thought and rational decision-making." },
+        { "title": "False Social Proof", "description": "Fabricating testimonials, reviews, and success stories to create illusion of legitimacy." },
+        { "title": "Emotional Manipulation", "description": "Exploiting fear, greed, loneliness, or compassion to override logical thinking." },
+        { "title": "Trust-Building Deception", "description": "Investing weeks or months building relationships before making fraudulent requests." },
+        { "title": "Information Asymmetry", "description": "Using technical jargon and complexity to confuse victims and discourage questions." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Know Your Enemy",
+      "title": "12 Most Prevalent Scam Categories",
+      "subtitle": "Familiarize yourself with these common fraud schemes to recognize and avoid them.",
+      "protectionTip": "Protection Tip:",
+      "types": [
+        { "name": "Investment Fraud", "description": "Fake investment opportunities promising guaranteed high returns with little to no risk.", "tip": "Verify all investments through official regulatory databases before committing funds." },
+        { "name": "Romance Scams", "description": "Criminals build fake romantic relationships over time to extract money from victims.", "tip": "Never send money to someone you have not met in person, regardless of the story." },
+        { "name": "Phishing Attacks", "description": "Fake emails, texts, or websites designed to steal login credentials and personal data.", "tip": "Always verify sender addresses and navigate directly to official websites, never via links." },
+        { "name": "E-commerce Fraud", "description": "Fake online stores, non-delivery of goods, or counterfeit product sales.", "tip": "Research sellers, check reviews from multiple sources, and use secure payment methods." },
+        { "name": "Technical Support Fraud", "description": "Scammers pose as tech support claiming your computer has problems requiring immediate fixes.", "tip": "Legitimate companies do not call unsolicited. Hang up and contact official support directly." },
+        { "name": "Employment Scams", "description": "Fake job offers requiring upfront payment for training, equipment, or background checks.", "tip": "Real employers never ask you to pay for the opportunity to work for them." },
+        { "name": "Rental Fraud", "description": "Fake property listings with below-market rates requiring deposits before viewing.", "tip": "Always view properties in person and verify ownership before transferring any money." },
+        { "name": "Lottery/Prize Scams", "description": "Notifications of fake winnings requiring fees or taxes to be paid before receiving the prize.", "tip": "Legitimate lotteries deduct fees from winnings. You cannot win contests you did not enter." },
+        { "name": "Charity Fraud", "description": "Fake charitable organizations exploiting disasters, holidays, or emotional causes.", "tip": "Research charities through official databases and donate directly through verified websites." },
+        { "name": "Government Impersonation", "description": "Criminals posing as IRS, Social Security, immigration, or law enforcement officials.", "tip": "Government agencies communicate via official mail, not threatening phone calls demanding immediate payment." },
+        { "name": "Healthcare Fraud", "description": "Fake medical treatments, miracle cures, or fraudulent health insurance schemes.", "tip": "Consult licensed healthcare providers and verify insurance through official company channels." },
+        { "name": "Home Service Scams", "description": "Fake contractors demanding large advance payments then disappearing without completing work.", "tip": "Verify licenses, check references, and never pay the full amount upfront." }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Act Fast",
+      "title": "Immediate Action Protocol: First 24 Hours",
+      "subtitle": "If you've been scammed, take these 5 critical steps within 24 hours to maximize recovery chances and prevent further damage.",
+      "steps": [
+        { "title": "Stop all communication and transfers immediately", "description": "Cease contact with the suspected scammer and halt any ongoing transactions." },
+        { "title": "Contact your financial institution within 24 hours", "description": "Report fraudulent transactions and request holds, reversals, or account freezes as needed." },
+        { "title": "Secure all accounts with new passwords", "description": "Change passwords for all potentially compromised accounts using strong, unique credentials." },
+        { "title": "Document everything comprehensively", "description": "Save all communications, receipts, screenshots, and transaction records before they disappear." },
+        { "title": "File official reports with authorities", "description": "Report to local police, FBI IC3, FTC, and relevant regulatory bodies to create official record." }
+      ],
+      "fileReportButton": "File a ScamNemesis Report"
+    },
+    "evidence": {
+      "badge": "Documentation",
+      "title": "Evidence Collection and Documentation Standards",
+      "subtitle": "Proper documentation is critical for law enforcement investigations and potential fund recovery. Preserve everything.",
+      "types": [
+        { "title": "All Communications", "items": ["Emails, texts, chat logs", "Phone call records", "Social media messages", "Voicemails (record/save)"] },
+        { "title": "Visual Documentation", "items": ["Screenshots of websites", "Photos of documents received", "Account statements", "Profile screenshots"] },
+        { "title": "Transaction Records", "items": ["Bank statements", "Wire transfer receipts", "Cryptocurrency transaction IDs", "Gift card receipts and codes"] },
+        { "title": "Identity Information", "items": ["Names used by scammer", "Phone numbers and email addresses", "Website URLs", "Social media profiles"] }
+      ],
+      "bestPractices": {
+        "title": "Documentation Best Practices",
+        "items": [
+          "Create timestamped backups of all evidence",
+          "Organize files by date and category",
+          "Keep both digital and physical copies",
+          "Do not edit original files (make copies for notes)",
+          "Store evidence securely with restricted access"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Recovery Guide",
+      "title": "Fund Recovery Procedures by Payment Method",
+      "subtitle": "Recovery success depends heavily on how you paid and how quickly you act. Time is critical.",
+      "methods": [
+        { "method": "Credit/Debit Cards", "timeline": "Act within 60 days", "steps": ["Contact card issuer immediately", "Dispute charges as unauthorized", "Request chargeback under Regulation Z", "File police report if required"] },
+        { "method": "Bank Transfers/Wire", "timeline": "Act within 24 hours", "steps": ["Contact sending and receiving banks", "Request wire recall", "File fraud claim with bank", "Contact SWIFT if international transfer"] },
+        { "method": "Cryptocurrency", "timeline": "Act immediately", "steps": ["Contact exchange/wallet provider", "Report transaction IDs", "File with FBI IC3 and FTC", "Monitor blockchain for fund movement"] },
+        { "method": "Gift Cards", "timeline": "Very limited recovery", "steps": ["Contact card issuer immediately", "Provide card numbers and receipts", "File police report", "Report to FTC (recovery unlikely)"] },
+        { "method": "Cash/Money Orders", "timeline": "Extremely difficult", "steps": ["Contact money transfer service", "File police report immediately", "Request investigation", "Recovery highly unlikely"] }
+      ]
+    },
+    "supportResources": {
+      "badge": "Get Help",
+      "title": "Support Resources and Reporting Channels",
+      "subtitle": "Report scams to multiple authorities to create an official record and contribute to investigations.",
+      "channels": [
+        { "name": "Federal Trade Commission (FTC)", "url": "ReportFraud.ftc.gov", "description": "Primary federal agency for fraud reporting" },
+        { "name": "FBI Internet Crime Complaint Center (IC3)", "url": "ic3.gov", "description": "For cybercrimes and online fraud" },
+        { "name": "Local Police Department", "url": "N/A", "description": "File official report for legal proceedings" },
+        { "name": "State Attorney General", "url": "Varies by state", "description": "State-level consumer protection" },
+        { "name": "AARP Fraud Watch Network", "url": "877-908-3360", "description": "Support for older adults" },
+        { "name": "Better Business Bureau Scam Tracker", "url": "bbb.org/scamtracker", "description": "Report and research scams" }
+      ],
+      "additionalSupport": {
+        "title": "Additional Support",
+        "items": [
+          "National Suicide Prevention Lifeline: 988 (if experiencing crisis)",
+          "Credit Bureaus: Place fraud alerts with Equifax, Experian, TransUnion",
+          "Identity Theft Resource Center: 888-400-5530",
+          "Elder Abuse Hotline: 1-800-677-1116"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Stay Vigilant, Stay Protected",
+      "description": "Use our free Scam Checker before engaging with anyone online. A few seconds of verification can save you thousands of dollars and immense emotional distress.",
+      "scamCheckerButton": "Use Scam Checker",
+      "freeTrainingButton": "Free Training"
+    }
   }
 }

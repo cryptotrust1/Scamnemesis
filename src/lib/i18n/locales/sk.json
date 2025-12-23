@@ -896,5 +896,184 @@
       "expertInstructors": "Expertní inštruktori",
       "updatedContent": "Aktualizovaný obsah"
     }
+  },
+  "scamPrevention": {
+    "hero": {
+      "badge": "Kompletný bezpečnostný zdroj",
+      "title": "Komplexný sprievodca proti podvodom",
+      "description": "Váš praktický bezpečnostný sprievodca na identifikáciu hrozieb, prevenciu finančných strát a efektívnu reakciu na podvody. Vedomosti a príprava sú vašou najsilnejšou obranou.",
+      "sections": "Sekcií",
+      "scamTypes": "Typov podvodov",
+      "warningSigns": "Varovných signálov",
+      "actionSteps": "Krokov",
+      "checkButton": "Skontrolovať niekoho teraz"
+    },
+    "toc": {
+      "title": "Obsah",
+      "subtitle": "Preskočte na ľubovoľnú sekciu tohto sprievodcu",
+      "items": [
+        "Núdzová reakcia: Podajte hlásenie ScamNemesis",
+        "60-sekundové hodnotenie rizika",
+        "Pochopenie podvodov: Definícia a mechanizmy",
+        "Psychológia obetí podvodov",
+        "12 najrozšírenejších kategórií podvodov",
+        "Protokol okamžitej akcie: Prvých 24 hodín",
+        "Štandardy zberu dôkazov a dokumentácie",
+        "Postupy vymáhania prostriedkov podľa spôsobu platby",
+        "Podporné zdroje a kanály nahlasovania"
+      ]
+    },
+    "emergency": {
+      "title": "Núdzová reakcia: Podajte hlásenie ScamNemesis",
+      "subtitle": "Ak máte podozrenie, že ste práve podvádzaní alebo ste sa stali obeťou, konajte okamžite.",
+      "actions": [
+        { "title": "Okamžite zastavte všetku komunikáciu", "description": "Prerušte kontakt s podozrivým podvodníkom. Neodpovedajte na hovory, e-maily ani správy." },
+        { "title": "Zastavte všetky finančné transakcie", "description": "Okamžite zastavte všetky čakajúce prevody, platby alebo zásielky. Kontaktujte svoju banku alebo poskytovateľa platobných služieb." },
+        { "title": "Podajte hlásenie ScamNemesis", "description": "Zdokumentujte incident v našom systéme, aby ste varovali ostatných a vytvorili oficiálny záznam." }
+      ],
+      "fileReportButton": "Podať hlásenie teraz"
+    },
+    "riskAssessment": {
+      "badge": "Rýchle hodnotenie",
+      "title": "60-sekundové hodnotenie rizika",
+      "subtitle": "Ak narazíte na niektorý z týchto 8 varovných signálov, postupujte s mimoriadnou opatrnosťou alebo úplne odíďte. Dôverujte svojim inštinktom.",
+      "signs": [
+        "Tlak na rýchle konanie alebo zachovanie tajomstva",
+        "Požiadavky na nekonvenčné platobné metódy",
+        "Nerealistické sľuby alebo záruky",
+        "Chýbajúce regulačné overenie alebo poverenia",
+        "Varovné signály v komunikácii (gramatické chyby, podozrivé domény)",
+        "Trvanie na konkrétnych komunikačných kanáloch",
+        "Požiadavky na citlivé informácie",
+        "Odpor voči nezávislému overeniu alebo zapojeniu tretej strany"
+      ]
+    },
+    "understanding": {
+      "badge": "Vedomosti sú sila",
+      "title": "Pochopenie podvodov: Definícia a mechanizmy",
+      "subtitle": "Pochopenie fungovania podvodov je prvým krokom k ochrane seba a ostatných.",
+      "whatIsScam": {
+        "title": "Čo je podvod?",
+        "content1": "Podvod je podvodná schéma určená na oklamanie jednotlivcov, aby sa vzdali peňazí, osobných informácií alebo majetku prostredníctvom falošných sľubov, zavádzania alebo manipulácie.",
+        "content2": "Podvody zneužívajú ľudskú psychológiu, dôveru a emocionálne zraniteľnosti na obídenie racionálneho rozhodovania."
+      },
+      "howScamsWork": {
+        "title": "Ako fungujú podvody",
+        "steps": [
+          { "step": "Kontakt", "desc": "Prvotné oslovenie cez telefón, e-mail, sociálne médiá alebo osobne" },
+          { "step": "Háčik", "desc": "Ponuka niečoho žiadúceho alebo vytvorenie strachu/naliehavosti" },
+          { "step": "Budovanie dôvery", "desc": "Vytvorenie dôveryhodnosti prostredníctvom falošných poverení alebo emocionálneho spojenia" },
+          { "step": "Požiadavka", "desc": "Žiadosť o peniaze, informácie alebo prístup" },
+          { "step": "Zmiznutie", "desc": "Prerušenie kontaktu po získaní toho, čo chceli" }
+        ]
+      }
+    },
+    "psychology": {
+      "badge": "Psychológia",
+      "title": "Psychológia obetí podvodov",
+      "subtitle": "Podvodníci používajú 6 primárnych psychologických manipulačných metód na zneužitie ľudského správania a obídenie kritického myslenia.",
+      "tactics": [
+        { "title": "Vydávanie sa za autoritu", "description": "Predstieranie, že sú úradníci, banky alebo odborníci, aby zneužili dôveru v legitímne inštitúcie." },
+        { "title": "Umelý časový tlak", "description": "Vytváranie falošnej naliehavosti na zabránenie starostlivému premýšľaniu a racionálnemu rozhodovaniu." },
+        { "title": "Falošný sociálny dôkaz", "description": "Vymýšľanie referencií, recenzií a príbehov o úspechoch na vytvorenie ilúzie legitimity." },
+        { "title": "Emocionálna manipulácia", "description": "Zneužívanie strachu, chamtivosti, osamelosti alebo súcitu na prekonanie logického myslenia." },
+        { "title": "Klamstvo budovania dôvery", "description": "Investovanie týždňov alebo mesiacov do budovania vzťahov pred podaním podvodných požiadaviek." },
+        { "title": "Informačná asymetria", "description": "Používanie technického žargónu a zložitosti na zmätenie obetí a odrádzanie od otázok." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Poznaj svojho nepriateľa",
+      "title": "12 najrozšírenejších kategórií podvodov",
+      "subtitle": "Oboznámte sa s týmito bežnými podvodnými schémami, aby ste ich rozpoznali a vyhli sa im.",
+      "protectionTip": "Tip na ochranu:",
+      "types": [
+        { "name": "Investičný podvod", "description": "Falošné investičné príležitosti sľubujúce garantované vysoké výnosy s malým alebo žiadnym rizikom.", "tip": "Overte všetky investície cez oficiálne regulačné databázy pred investovaním prostriedkov." },
+        { "name": "Romantické podvody", "description": "Zločinci budujú falošné romantické vzťahy v čase, aby z obetí vytiahli peniaze.", "tip": "Nikdy neposielajte peniaze niekomu, koho ste osobne nestretli, bez ohľadu na príbeh." },
+        { "name": "Phishingové útoky", "description": "Falošné e-maily, textové správy alebo webové stránky určené na krádež prihlasovacích údajov a osobných údajov.", "tip": "Vždy overte adresy odosielateľov a navigujte priamo na oficiálne webové stránky, nikdy cez odkazy." },
+        { "name": "Podvody v e-commerce", "description": "Falošné online obchody, nedoručenie tovaru alebo predaj falšovaných produktov.", "tip": "Preskúmajte predajcov, skontrolujte recenzie z viacerých zdrojov a použite bezpečné platobné metódy." },
+        { "name": "Podvody s technickou podporou", "description": "Podvodníci sa vydávajú za technickú podporu a tvrdia, že váš počítač má problémy vyžadujúce okamžitú opravu.", "tip": "Legitímne spoločnosti nevolajú nevyžiadane. Zaveste a kontaktujte oficiálnu podporu priamo." },
+        { "name": "Pracovné podvody", "description": "Falošné pracovné ponuky vyžadujúce platbu vopred za školenie, vybavenie alebo previerku.", "tip": "Skutoční zamestnávatelia nikdy nežiadajú, aby ste platili za príležitosť pre nich pracovať." },
+        { "name": "Podvody s prenájmom", "description": "Falošné inzeráty na nehnuteľnosti s cenami pod trhovými sadzbami vyžadujúce zálohy pred obhliadkou.", "tip": "Vždy si prezrite nehnuteľnosti osobne a overte vlastníctvo pred prevodom akýchkoľvek peňazí." },
+        { "name": "Lotériové/výherné podvody", "description": "Oznámenia o falošných výhrach vyžadujúce poplatky alebo dane pred prijatím ceny.", "tip": "Legitímne lotérie odpočítavajú poplatky z výhier. Nemôžete vyhrať súťaže, do ktorých ste sa neprihlásili." },
+        { "name": "Charitatívne podvody", "description": "Falošné charitatívne organizácie zneužívajúce katastrofy, sviatky alebo emocionálne príčiny.", "tip": "Preskúmajte charity cez oficiálne databázy a prispievajte priamo cez overené webové stránky." },
+        { "name": "Vydávanie sa za vládu", "description": "Zločinci sa vydávajú za daňový úrad, sociálnu poisťovňu, imigračný úrad alebo políciu.", "tip": "Vládne agentúry komunikujú prostredníctvom oficiálnej pošty, nie výhražnými telefonátmi požadujúcimi okamžitú platbu." },
+        { "name": "Zdravotnícke podvody", "description": "Falošné liečebné postupy, zázračné lieky alebo podvodné systémy zdravotného poistenia.", "tip": "Konzultujte s licencovanými poskytovateľmi zdravotnej starostlivosti a overte poistenie cez oficiálne kanály spoločnosti." },
+        { "name": "Podvody s domácimi službami", "description": "Falošní dodávatelia požadujúci veľké zálohy a potom miznúci bez dokončenia práce.", "tip": "Overte licencie, skontrolujte referencie a nikdy neplaťte celú sumu vopred." }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Konajte rýchlo",
+      "title": "Protokol okamžitej akcie: Prvých 24 hodín",
+      "subtitle": "Ak ste boli podvedení, vykonajte týchto 5 kritických krokov do 24 hodín na maximalizáciu šancí na vymoženie a zabránenie ďalším škodám.",
+      "steps": [
+        { "title": "Okamžite zastavte všetku komunikáciu a prevody", "description": "Prerušte kontakt s podozrivým podvodníkom a zastavte všetky prebiehajúce transakcie." },
+        { "title": "Kontaktujte svoju finančnú inštitúciu do 24 hodín", "description": "Nahláste podvodné transakcie a požiadajte o pozastavenie, zrušenie alebo zmrazenie účtu podľa potreby." },
+        { "title": "Zabezpečte všetky účty novými heslami", "description": "Zmeňte heslá pre všetky potenciálne kompromitované účty pomocou silných, jedinečných prihlasovacích údajov." },
+        { "title": "Komplexne zdokumentujte všetko", "description": "Uložte všetku komunikáciu, potvrdenky, snímky obrazovky a záznamy transakcií predtým, ako zmiznú." },
+        { "title": "Podajte oficiálne hlásenia úradom", "description": "Nahláste miestnej polícii a príslušným regulačným orgánom na vytvorenie oficiálneho záznamu." }
+      ],
+      "fileReportButton": "Podať hlásenie ScamNemesis"
+    },
+    "evidence": {
+      "badge": "Dokumentácia",
+      "title": "Štandardy zberu dôkazov a dokumentácie",
+      "subtitle": "Správna dokumentácia je kritická pre vyšetrovanie orgánov činných v trestnom konaní a potenciálne vymáhanie prostriedkov. Uchovajte všetko.",
+      "types": [
+        { "title": "Všetka komunikácia", "items": ["E-maily, textové správy, záznamy chatov", "Záznamy telefonátov", "Správy na sociálnych sieťach", "Hlasové správy (nahrať/uložiť)"] },
+        { "title": "Vizuálna dokumentácia", "items": ["Snímky obrazovky webových stránok", "Fotografie prijatých dokumentov", "Výpisy z účtov", "Snímky profilov"] },
+        { "title": "Záznamy transakcií", "items": ["Bankové výpisy", "Potvrdenia o bankových prevodoch", "ID kryptomenových transakcií", "Potvrdenia a kódy darčekových kariet"] },
+        { "title": "Informácie o identite", "items": ["Mená použité podvodníkom", "Telefónne čísla a e-mailové adresy", "URL adresy webových stránok", "Profily na sociálnych sieťach"] }
+      ],
+      "bestPractices": {
+        "title": "Osvedčené postupy dokumentácie",
+        "items": [
+          "Vytvorte zálohy všetkých dôkazov s časovou pečiatkou",
+          "Organizujte súbory podľa dátumu a kategórie",
+          "Uchovávajte digitálne aj fyzické kópie",
+          "Neupravujte pôvodné súbory (robte kópie pre poznámky)",
+          "Ukladajte dôkazy bezpečne s obmedzeným prístupom"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Sprievodca vymáhaním",
+      "title": "Postupy vymáhania prostriedkov podľa spôsobu platby",
+      "subtitle": "Úspech vymáhania závisí veľmi od toho, ako ste platili a ako rýchlo konáte. Čas je kritický.",
+      "methods": [
+        { "method": "Kreditné/debetné karty", "timeline": "Konajte do 60 dní", "steps": ["Okamžite kontaktujte vydavateľa karty", "Napadnite poplatky ako neoprávnené", "Požiadajte o chargeback", "V prípade potreby podajte policajné hlásenie"] },
+        { "method": "Bankové prevody", "timeline": "Konajte do 24 hodín", "steps": ["Kontaktujte odosielajúcu aj prijímajúcu banku", "Požiadajte o stiahnutie prevodu", "Podajte reklamáciu na podvod v banke", "Pri medzinárodnom prevode kontaktujte SWIFT"] },
+        { "method": "Kryptomeny", "timeline": "Konajte okamžite", "steps": ["Kontaktujte burzu/poskytovateľa peňaženky", "Nahláste ID transakcií", "Podajte hlásenie políci", "Monitorujte blockchain pre pohyb prostriedkov"] },
+        { "method": "Darčekové karty", "timeline": "Veľmi obmedzené vymáhanie", "steps": ["Okamžite kontaktujte vydavateľa karty", "Poskytnite čísla kariet a potvrdenia", "Podajte policajné hlásenie", "Nahláste (vymáhanie nepravdepodobné)"] },
+        { "method": "Hotovosť/peňažné poukážky", "timeline": "Mimoriadne ťažké", "steps": ["Kontaktujte službu prevodu peňazí", "Okamžite podajte policajné hlásenie", "Požiadajte o vyšetrovanie", "Vymáhanie veľmi nepravdepodobné"] }
+      ]
+    },
+    "supportResources": {
+      "badge": "Získajte pomoc",
+      "title": "Podporné zdroje a kanály nahlasovania",
+      "subtitle": "Nahláste podvody viacerým orgánom na vytvorenie oficiálneho záznamu a prispenie k vyšetrovaniam.",
+      "channels": [
+        { "name": "Slovenská obchodná inšpekcia", "url": "soi.sk", "description": "Hlavný orgán pre hlásenie podvodov" },
+        { "name": "Polícia SR - Kybernetická kriminalita", "url": "minv.sk", "description": "Pre počítačovú kriminalitu a online podvody" },
+        { "name": "Miestne policajné oddelenie", "url": "N/A", "description": "Podajte oficiálne hlásenie pre právne konanie" },
+        { "name": "Národná banka Slovenska", "url": "nbs.sk", "description": "Pre finančné podvody" },
+        { "name": "Linka dôvery", "url": "116 111", "description": "Podpora pre obete" },
+        { "name": "Európske spotrebiteľské centrum", "url": "esc-sr.sk", "description": "Pre cezhraničné podvody v EÚ" }
+      ],
+      "additionalSupport": {
+        "title": "Ďalšia podpora",
+        "items": [
+          "Linka dôvery: 116 111 (ak prežívate krízu)",
+          "Úverové registre: Umiestnite upozornenia na podvod",
+          "Centrum právnej pomoci: 0800 100 950",
+          "Linka pomoci seniorom: 0800 172 500"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Zostaňte ostražití, zostaňte chránení",
+      "description": "Použite náš bezplatný Kontrolór podvodov pred zapojením sa s kýmkoľvek online. Niekoľko sekúnd overenia vám môže ušetriť tisíce eur a obrovské emocionálne trápenie.",
+      "scamCheckerButton": "Použiť kontrolór podvodov",
+      "freeTrainingButton": "Bezplatné školenie"
+    }
   }
 }

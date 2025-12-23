@@ -787,5 +787,292 @@
       "expertInstructors": "Experten-Ausbilder",
       "updatedContent": "Aktualisierte Inhalte"
     }
+  },
+  "scamPrevention": {
+    "hero": {
+      "title": "Umfassender Leitfaden zur Betrugsprävention und",
+      "titleHighlight": "Wiederherstellung",
+      "subtitle": "Schritt für Schritt",
+      "description": "Ihr komplettes Handbuch zur Erkennung von Betrug, zum Schutz Ihres Vermögens und zur Erholung von Finanzbetrug. Wir schützen Sie mit Expertenwissen aus der Praxis."
+    },
+    "toc": {
+      "title": "Inhaltsverzeichnis",
+      "items": [
+        "Notfallreaktion",
+        "Risikobewertung",
+        "Betrug verstehen",
+        "Psychologie der Betrüger",
+        "Betrugskategorien",
+        "Sofortmaßnahmen",
+        "Beweissammlung",
+        "Fondsrückgewinnung",
+        "Unterstützungsressourcen"
+      ]
+    },
+    "emergency": {
+      "badge": "Dringend",
+      "title": "Notfallreaktion",
+      "description": "Glauben Sie, gerade betrogen worden zu sein? Handeln Sie sofort:",
+      "actions": [
+        "Stoppen Sie jegliche Kommunikation mit dem verdächtigen Betrüger",
+        "Senden Sie kein weiteres Geld, egal was sie behaupten",
+        "Dokumentieren Sie alles – Screenshots, E-Mails, Transaktionen",
+        "Kontaktieren Sie Ihre Bank/Krypto-Börse",
+        "Melden Sie den Vorfall den zuständigen Behörden"
+      ],
+      "button": "Betrug jetzt melden"
+    },
+    "riskAssessment": {
+      "badge": "Diagnose",
+      "title": "Risikobewertung",
+      "description": "Checkliste von Warnsignalen, die auf Betrug hinweisen können:",
+      "warningSigns": [
+        { "title": "Unaufgeforderter Kontakt", "description": "Wurden Sie unerwartet kontaktiert – ohne vorherige Beziehung?" },
+        { "title": "Versprochene hohe Renditen", "description": "Bieten sie ungewöhnlich hohe Gewinne mit minimalem Risiko?" },
+        { "title": "Zeitdruck", "description": "Drängen sie Sie zu einer sofortigen Entscheidung ohne Zeit zum Nachdenken?" },
+        { "title": "Anfrage sensibler Daten", "description": "Fragen sie nach Passwörtern, PINs oder anderen sensiblen Informationen?" },
+        { "title": "Ungewöhnliche Zahlungsmethoden", "description": "Verlangen sie Zahlung per Kryptowährung, Geschenkkarten oder Überweisung?" },
+        { "title": "Vermeidung von Verifizierung", "description": "Weigern sie sich, überprüfbare Kontaktdaten oder Referenzen anzugeben?" },
+        { "title": "Zu gute Angebote", "description": "Klingt das Angebot zu gut, um wahr zu sein?" },
+        { "title": "Persönliche Geschichten und Druck", "description": "Wecken sie Emotionen, teilen traurige Geschichten, um Ihr Vertrauen zu gewinnen?" }
+      ]
+    },
+    "understanding": {
+      "badge": "Wissen",
+      "title": "Betrug verstehen",
+      "description": "Den Feind zu kennen ist die erste Verteidigungslinie. Betrüger entwickeln sich ständig weiter, aber ihre grundlegenden Taktiken bleiben ähnlich. Hier ist, was Sie wissen müssen:"
+    },
+    "psychology": {
+      "badge": "Taktiken",
+      "title": "Psychologie der Betrüger",
+      "description": "Das Verständnis, wie Betrüger Opfer manipulieren, kann Ihnen helfen, ihre Taktiken zu erkennen und zu vermeiden:",
+      "tactics": [
+        { "title": "Vertrauensaufbau", "description": "Betrüger investieren Zeit in den Aufbau von Beziehungen und Glaubwürdigkeit, bevor sie um Geld bitten." },
+        { "title": "Dringlichkeit erzeugen", "description": "Sie schaffen künstliche Dringlichkeit, um Opfer am sorgfältigen Nachdenken zu hindern." },
+        { "title": "Knappheitsmanipulation", "description": "Sie verwenden Taktiken wie \"begrenztes Angebot\" oder \"exklusive Gelegenheit\"." },
+        { "title": "Autoritätsmissbrauch", "description": "Sie geben sich als Vertrauenspersonen aus – Polizisten, Bankangestellte oder Beamte." },
+        { "title": "Sozialer Beweis", "description": "Sie zeigen gefälschte Bewertungen, Referenzen oder Testimonials." },
+        { "title": "Angst und Einschüchterung", "description": "Sie drohen mit rechtlichen Schritten, Verhaftung oder Verlust von Möglichkeiten." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Kategorien",
+      "title": "Häufigste Betrugsarten",
+      "description": "Erkennen Sie die Warnsignale bei den häufigsten Betrugsarten:",
+      "categories": [
+        {
+          "title": "Anlagebetrug",
+          "description": "Gefälschte Investitionsmöglichkeiten, die hohe Renditen versprechen, oft mit Kryptowährungen, Forex oder Aktien.",
+          "tips": ["Überprüfen Sie die Lizenz bei der Aufsichtsbehörde", "Seien Sie vorsichtig bei garantierten Renditen", "Recherchieren Sie das Unternehmen und seine Geschichte"]
+        },
+        {
+          "title": "Romance Scams",
+          "description": "Betrüger täuschen romantisches Interesse vor, um Geld oder persönliche Daten zu erlangen.",
+          "tips": ["Senden Sie niemals Geld an jemanden, den Sie nicht persönlich getroffen haben", "Verifizieren Sie die Identität per Videoanruf", "Achten Sie auf sich schnell entwickelnde Beziehungen"]
+        },
+        {
+          "title": "Phishing-Angriffe",
+          "description": "Betrügerische E-Mails, SMS oder Websites, die legitime Organisationen nachahmen.",
+          "tips": ["Überprüfen Sie die URL sorgfältig", "Klicken Sie nicht auf verdächtige Links", "Kontaktieren Sie das Unternehmen direkt"]
+        },
+        {
+          "title": "Tech-Support-Betrug",
+          "description": "Betrüger geben sich als technischer Support aus und behaupten, Ihr Computer habe Probleme.",
+          "tips": ["Microsoft/Apple ruft Sie niemals von selbst an", "Geben Sie Unbekannten keinen Fernzugriff", "Beenden Sie das Gespräch und kontaktieren Sie den offiziellen Support"]
+        },
+        {
+          "title": "Jobbetrug",
+          "description": "Gefälschte Stellenangebote, die Vorauszahlung oder persönliche Daten verlangen.",
+          "tips": ["Seriöse Arbeitgeber verlangen keine Vorauszahlung", "Überprüfen Sie das Unternehmen unabhängig", "Achten Sie auf zu hohe Gehälter"]
+        },
+        {
+          "title": "E-Commerce-Betrug",
+          "description": "Gefälschte Online-Shops oder Verkäufer auf Marktplätzen, die Waren nie liefern.",
+          "tips": ["Kaufen Sie auf verifizierten Plattformen", "Verwenden Sie sichere Zahlungsmethoden", "Lesen Sie Bewertungen und Rezensionen"]
+        },
+        {
+          "title": "Mietbetrug",
+          "description": "Gefälschte Mietanzeigen für Immobilien, die Vorauszahlung verlangen.",
+          "tips": ["Besichtigen Sie die Immobilie persönlich", "Zahlen Sie niemals vor Vertragsunterzeichnung", "Überprüfen Sie das Eigentum der Immobilie"]
+        },
+        {
+          "title": "Lotteriebetrug",
+          "description": "Benachrichtigung über einen Lotteriegewinn, an dem Sie nie teilgenommen haben.",
+          "tips": ["Sie können nicht in einer Lotterie gewinnen, an der Sie nicht teilgenommen haben", "Seriöse Lotterien verlangen keine Vorabgebühren", "Ignorieren Sie unaufgeforderte Gewinnbenachrichtigungen"]
+        },
+        {
+          "title": "Krypto-Betrug",
+          "description": "Betrug mit Kryptowährungen – gefälschte Börsen, Pump and Dump, betrügerische ICOs.",
+          "tips": ["Verwenden Sie nur verifizierte Börsen", "Teilen Sie niemals private Schlüssel", "Seien Sie skeptisch bei garantierten Renditen"]
+        },
+        {
+          "title": "Kreditbetrug",
+          "description": "Kreditangebote, die Vorabgebühren für die Bearbeitung verlangen.",
+          "tips": ["Seriöse Kreditgeber erheben keine Vorabgebühren", "Überprüfen Sie die Lizenz des Anbieters", "Lesen Sie alle Bedingungen"]
+        },
+        {
+          "title": "Wohltätigkeitsbetrug",
+          "description": "Gefälschte Wohltätigkeitsorganisationen, die Tragödien oder Katastrophen ausnutzen.",
+          "tips": ["Überprüfen Sie die Wohltätigkeitsorganisation in Registern", "Spenden Sie direkt auf offiziellen Websites", "Achten Sie auf Druck für sofortige Spenden"]
+        },
+        {
+          "title": "Enkeltrick",
+          "description": "Betrüger geben sich als Verwandte in Not aus.",
+          "tips": ["Überprüfen Sie die Identität des Anrufers", "Rufen Sie den Verwandten unter einer bekannten Nummer an", "Vertrauen Sie keinen dringenden Geldanfragen"]
+        }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Aktionsplan",
+      "title": "Protokoll für Sofortmaßnahmen",
+      "description": "Wenn Sie betrogen wurden, befolgen Sie diese Schritte:",
+      "steps": [
+        {
+          "title": "Kommunikation stoppen",
+          "description": "Beenden Sie sofort die Kommunikation mit dem Betrüger. Antworten Sie nicht auf weitere Nachrichten oder Anrufe.",
+          "actions": ["Alle Telefonnummern blockieren", "E-Mail-Adressen blockieren", "Social-Media-Profile melden und blockieren"]
+        },
+        {
+          "title": "Konten sichern",
+          "description": "Ändern Sie Passwörter und sichern Sie alle potenziell kompromittierten Konten.",
+          "actions": ["Bankpasswörter ändern", "Zwei-Faktor-Authentifizierung aktivieren", "Auf verdächtige Aktivitäten prüfen"]
+        },
+        {
+          "title": "Finanzinstitute kontaktieren",
+          "description": "Informieren Sie Ihre Bank und andere Finanzinstitute über den Betrug.",
+          "actions": ["Betrügerische Transaktionen melden", "Kontosperrung anfordern", "Rückbuchungsoptionen erkunden"]
+        },
+        {
+          "title": "Bei Behörden melden",
+          "description": "Erstatten Sie eine offizielle Anzeige bei den zuständigen Behörden.",
+          "actions": ["Polizei (110)", "Bundeskriminalamt", "Verbraucherzentrale"]
+        },
+        {
+          "title": "Alles dokumentieren",
+          "description": "Bewahren Sie alle Beweise für Ermittlungen und mögliche rechtliche Schritte auf.",
+          "actions": ["Screenshots von Gesprächen", "E-Mails und SMS speichern", "Transaktionsdaten aufzeichnen"]
+        }
+      ]
+    },
+    "evidence": {
+      "badge": "Dokumentation",
+      "title": "Leitfaden zur Beweissammlung",
+      "description": "Ordnungsgemäße Dokumentation ist entscheidend für Ermittlungen und mögliche Fondsrückgewinnung:",
+      "types": [
+        {
+          "title": "Digitale Kommunikation",
+          "items": ["Screenshots aller Gespräche", "E-Mail-Header und Metadaten", "Anruf- und SMS-Aufzeichnungen", "Social-Media-Nachrichten"]
+        },
+        {
+          "title": "Finanzunterlagen",
+          "items": ["Kontoauszüge", "Transaktionsbestätigungen", "Krypto-Wallet-Adressen", "Zahlungsanweisungen"]
+        },
+        {
+          "title": "Identifikationsdaten",
+          "items": ["Namen und Aliase der Betrüger", "Telefonnummern", "E-Mail-Adressen", "Websites und Domains"]
+        },
+        {
+          "title": "Unterstützende Dokumente",
+          "items": ["Verträge und Vereinbarungen", "Werbematerialien", "Websites (Screenshots)", "Social-Media-Profile"]
+        }
+      ],
+      "bestPractices": {
+        "title": "Best Practices",
+        "items": [
+          "Originaldateien aufbewahren – nicht kopieren/ändern",
+          "Daten und Zeiten notieren",
+          "Web-Archivierungstools verwenden",
+          "Mehrere Kopien an verschiedenen Orten aufbewahren"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Wiederherstellung",
+      "title": "Optionen zur Fondsrückgewinnung",
+      "description": "Je nach Zahlungsmethode gibt es verschiedene Rückgewinnungsoptionen:",
+      "methods": [
+        {
+          "title": "Banküberweisung",
+          "description": "Kontaktieren Sie Ihre Bank so schnell wie möglich. Viele Banken haben Betrugsteams.",
+          "steps": ["Rufen Sie die Betrugshotline Ihrer Bank an", "Geben Sie alle Transaktionsdetails an", "Fordern Sie eine Rückbuchung an", "Reichen Sie eine formelle Beschwerde ein"],
+          "timeline": "Zeitrahmen: 24-72 Stunden sind kritisch"
+        },
+        {
+          "title": "Kredit-/Debitkarte",
+          "description": "Initiieren Sie ein Chargeback über Ihren Kartenaussteller.",
+          "steps": ["Kontaktieren Sie den Kartenaussteller", "Beantragen Sie ein Chargeback", "Stellen Sie Dokumentation bereit", "Verfolgen Sie den Fallstatus"],
+          "timeline": "Zeitrahmen: Bis zu 60-120 Tage nach der Transaktion"
+        },
+        {
+          "title": "Kryptowährung",
+          "description": "Krypto-Wiederherstellung ist schwierig, aber es gibt Optionen.",
+          "steps": ["Bei der betreffenden Börse melden", "Polizeianzeige erstatten", "Spezialisierte Dienste kontaktieren", "Wallet-Adressen verfolgen"],
+          "timeline": "Zeitrahmen: Je früher, desto besser"
+        },
+        {
+          "title": "Geldüberweisungen",
+          "description": "Kontaktieren Sie den Geldtransferdienst sofort.",
+          "steps": ["Kundenservice anrufen", "Transaktionsnummer angeben", "Stornierung/Rückerstattung anfordern", "Beschwerde einreichen"],
+          "timeline": "Zeitrahmen: Minuten bis Stunden"
+        },
+        {
+          "title": "Geschenkkarten",
+          "description": "Wiederherstellung ist sehr schwierig, aber versuchen Sie, den Aussteller zu kontaktieren.",
+          "steps": ["Kartenaussteller kontaktieren", "Kartennummern melden", "Polizeianzeige erstatten", "Quittungen aufbewahren"],
+          "timeline": "Zeitrahmen: Sofort"
+        }
+      ]
+    },
+    "supportResources": {
+      "badge": "Hilfe",
+      "title": "Unterstützungsressourcen",
+      "description": "Sie sind nicht allein. Diese Organisationen können helfen:",
+      "resources": [
+        {
+          "title": "Polizei",
+          "description": "Erstatten Sie Anzeige bei der nächsten Polizeiwache oder online.",
+          "contact": "110 (Notruf)",
+          "type": "Strafverfolgung"
+        },
+        {
+          "title": "Verbraucherzentrale",
+          "description": "Für verbraucher- und E-Commerce-bezogene Betrugsfälle.",
+          "contact": "www.verbraucherzentrale.de",
+          "type": "Verbraucherschutz"
+        },
+        {
+          "title": "BaFin",
+          "description": "Für Betrug im Zusammenhang mit Finanzdienstleistungen und Investitionen.",
+          "contact": "www.bafin.de",
+          "type": "Finanzregulator"
+        },
+        {
+          "title": "BSI",
+          "description": "Bundesamt für Sicherheit in der Informationstechnik für Cyberbedrohungen.",
+          "contact": "www.bsi.bund.de",
+          "type": "Cybersicherheit"
+        },
+        {
+          "title": "Opferhilfe Deutschland",
+          "description": "Kostenlose Beratung und Unterstützung für Betrugsopfer.",
+          "contact": "www.odv.de",
+          "type": "Opferhilfe"
+        },
+        {
+          "title": "ScamNemesis",
+          "description": "Melden Sie Betrüger und helfen Sie, andere zu schützen.",
+          "contact": "info@scamnemesis.com",
+          "type": "Community"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Bleiben Sie informiert und geschützt",
+      "description": "Teilen Sie diesen Leitfaden mit Freunden und Familie. Gemeinsam können wir eine sicherere digitale Welt schaffen.",
+      "buttons": {
+        "report": "Betrug melden",
+        "share": "Leitfaden teilen"
+      }
+    }
   }
 }
