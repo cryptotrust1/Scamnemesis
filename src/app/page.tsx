@@ -482,8 +482,8 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
-  // Search filters state
-  const [showFilters, setShowFilters] = useState(false);
+  // Search filters state - visible by default for better UX
+  const [showFilters, setShowFilters] = useState(true);
   const [fraudType, setFraudType] = useState('');
   const [country, setCountry] = useState('');
   const [searchMode, setSearchMode] = useState<'auto' | 'fuzzy' | 'exact'>('auto');
