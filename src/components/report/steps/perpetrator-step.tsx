@@ -41,16 +41,18 @@ export function PerpetratorStep({ data, errors, onChange }: PerpetratorStepProps
                   key={type.value}
                   type="button"
                   onClick={() => onChange('perpetratorType', type.value)}
+                  aria-pressed={isSelected}
                   className={cn(
                     'flex flex-col items-center p-4 rounded-lg border-2 transition-all text-center',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isSelected
                       ? 'border-primary bg-primary/5'
                       : 'border-muted hover:border-muted-foreground/50'
                   )}
                 >
-                  <Icon className={cn('h-8 w-8 mb-2', isSelected ? 'text-primary' : 'text-muted-foreground')} />
-                  <span className={cn('font-medium text-sm', isSelected && 'text-primary')}>{type.label}</span>
-                  <span className="text-xs text-muted-foreground mt-1">{type.description}</span>
+                  <Icon className={cn('h-8 w-8 mb-2 flex-shrink-0', isSelected ? 'text-primary' : 'text-muted-foreground')} />
+                  <span className={cn('font-medium text-sm break-words', isSelected && 'text-primary')}>{type.label}</span>
+                  <span className="text-xs text-muted-foreground mt-1 break-words leading-relaxed">{type.description}</span>
                 </button>
               );
             })}

@@ -86,12 +86,12 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
             Notifikácie
           </h3>
 
-          <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+          <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
             <input
               type="checkbox"
               checked={data.wantUpdates || false}
               onChange={(e) => onChange('wantUpdates', e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-0 focus:ring-offset-0"
             />
             <div className="flex-1">
               <span className="font-medium">Chcem dostávať aktualizácie</span>
@@ -113,6 +113,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
             <label
               className={cn(
                 'flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors',
+                'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
                 errors.agreeToTerms ? 'border-destructive bg-destructive/5' : 'hover:bg-muted/50'
               )}
             >
@@ -120,7 +121,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
                 type="checkbox"
                 checked={data.agreeToTerms || false}
                 onChange={(e) => onChange('agreeToTerms', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-0 focus:ring-offset-0"
               />
               <div className="flex-1">
                 <span className="font-medium">
@@ -141,6 +142,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
             <label
               className={cn(
                 'flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors',
+                'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
                 errors.agreeToGDPR ? 'border-destructive bg-destructive/5' : 'hover:bg-muted/50'
               )}
             >
@@ -148,7 +150,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
                 type="checkbox"
                 checked={data.agreeToGDPR || false}
                 onChange={(e) => onChange('agreeToGDPR', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-0 focus:ring-offset-0"
               />
               <div className="flex-1">
                 <span className="font-medium">

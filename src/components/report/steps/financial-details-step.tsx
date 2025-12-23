@@ -121,9 +121,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
           <button
             type="button"
             onClick={() => toggleSection('banking')}
+            aria-expanded={expandedSections.banking}
             className={cn(
               'w-full flex items-center justify-between p-4 transition-colors',
               'hover:bg-muted/50',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               hasBankingData && 'bg-primary/5 border-l-4 border-l-primary'
             )}
           >
@@ -368,9 +370,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
           <button
             type="button"
             onClick={() => toggleSection('crypto')}
+            aria-expanded={expandedSections.crypto}
             className={cn(
               'w-full flex items-center justify-between p-4 transition-colors',
               'hover:bg-muted/50',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               hasCryptoData && 'bg-primary/5 border-l-4 border-l-primary'
             )}
           >
@@ -484,9 +488,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
           <button
             type="button"
             onClick={() => toggleSection('paypal')}
+            aria-expanded={expandedSections.paypal}
             className={cn(
               'w-full flex items-center justify-between p-4 transition-colors',
               'hover:bg-muted/50',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               hasPaypalData && 'bg-primary/5 border-l-4 border-l-primary'
             )}
           >
