@@ -30,13 +30,21 @@ test.describe('Authentication', () => {
     });
 
     test('should have link to register page', async ({ page }) => {
-      // Check for register link within the main content area (not header which is hidden on mobile)
-      // The login page has a register link in CardFooter
-      const mainContent = page.locator('main, .container, [class*="Card"]');
-      const registerLink = mainContent.locator('a[href*="register"], a[href*="signup"]').first();
-      if (await registerLink.count() > 0) {
-        await expect(registerLink).toBeVisible();
+      // Check that at least one register link is visible on the page
+      // On desktop: header link visible, on mobile: card footer link visible
+      const registerLinks = page.locator('a[href*="register"], a[href*="signup"]');
+      const count = await registerLinks.count();
+      expect(count).toBeGreaterThan(0);
+
+      // Check if at least one register link is visible
+      let hasVisibleLink = false;
+      for (let i = 0; i < count; i++) {
+        if (await registerLinks.nth(i).isVisible()) {
+          hasVisibleLink = true;
+          break;
+        }
       }
+      expect(hasVisibleLink).toBe(true);
     });
 
     test('should have forgot password link', async ({ page }) => {
@@ -79,12 +87,20 @@ test.describe('Authentication', () => {
     });
 
     test('should have link to login page', async ({ page }) => {
-      // Check for login link within the main content area (not header which may be hidden on mobile)
-      const mainContent = page.locator('main, .container, [class*="Card"]');
-      const loginLink = mainContent.locator('a[href*="login"], a[href*="signin"]').first();
-      if (await loginLink.count() > 0) {
-        await expect(loginLink).toBeVisible();
+      // Check that at least one login link is visible on the page
+      const loginLinks = page.locator('a[href*="login"], a[href*="signin"]');
+      const count = await loginLinks.count();
+      expect(count).toBeGreaterThan(0);
+
+      // Check if at least one login link is visible
+      let hasVisibleLink = false;
+      for (let i = 0; i < count; i++) {
+        if (await loginLinks.nth(i).isVisible()) {
+          hasVisibleLink = true;
+          break;
+        }
       }
+      expect(hasVisibleLink).toBe(true);
     });
 
     test('should validate password requirements', async ({ page }) => {
