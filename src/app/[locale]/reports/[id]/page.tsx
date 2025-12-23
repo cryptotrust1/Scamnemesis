@@ -385,15 +385,29 @@ export default function ReportDetailPage() {
     fetchReport();
   }, [reportId]);
 
+  const [isSharing, setIsSharing] = useState(false);
+
   const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: report?.title,
-        url: window.location.href,
-      });
-    } else {
-      await navigator.clipboard.writeText(window.location.href);
-      alert('Link skopírovaný do schránky');
+    if (isSharing) return; // Prevent double-clicks
+    setIsSharing(true);
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: report?.title,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link skopírovaný do schránky');
+      }
+    } catch (error) {
+      // User cancelled share or error occurred - ignore AbortError
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share failed:', error);
+      }
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -569,7 +583,7 @@ export default function ReportDetailPage() {
                   <Download className="h-4 w-4 mr-2" />
                   {isDownloading ? 'Generujem...' : 'Stiahnuť PDF'}
                 </Button>
-                <Button variant="outline" onClick={handleShare} className="border-slate-200 hover:bg-slate-50">
+                <Button variant="outline" onClick={handleShare} disabled={isSharing} className="border-slate-200 hover:bg-slate-50">
                   <Share2 className="h-4 w-4 mr-2" />
                   Zdieľať
                 </Button>
