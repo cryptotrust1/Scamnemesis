@@ -6,7 +6,7 @@ import { requireAuth } from '@/lib/middleware/auth';
 export const dynamic = 'force-dynamic';
 
 const CommentCreateSchema = z.object({
-  content: z.string().min(10, 'Comment must be at least 10 characters').max(2000, 'Comment must not exceed 2000 characters'),
+  content: z.string().min(10, 'Comment must be at least 10 characters').max(3000, 'Comment must not exceed 3000 characters'),
 });
 
 const CommentQuerySchema = z.object({
