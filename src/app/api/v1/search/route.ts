@@ -6,9 +6,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 import { generateSearchEmbedding, isEmbeddingServiceAvailable } from '@/lib/services/embeddings';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -521,6 +523,9 @@ async function semanticSearch(
  * GET /api/v1/search - Search for fraud reports
  */
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'SearchAPI');
+
   try {
     // Rate limiting
     const rateLimitError = await requireRateLimit(request, 100);
@@ -730,11 +735,21 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Search error:', error);
+    log.error('Search error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    Sentry.captureException(error, {
+      tags: { api: 'search', method: 'GET' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
       },
       { status: 500 }
     );

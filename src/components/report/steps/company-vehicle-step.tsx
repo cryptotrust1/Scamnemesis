@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Building2, Car } from 'lucide-react';
 import { getCountriesWithPriority } from '@/lib/constants/countries';
 import { CompanyVehicleForm } from '@/lib/validations/report';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface CompanyVehicleStepProps {
   data: Partial<CompanyVehicleForm>;
@@ -16,12 +17,14 @@ interface CompanyVehicleStepProps {
 const countries = getCountriesWithPriority();
 
 export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleStepProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Informácie o firme a vozidle</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.companyVehicle.title')}</h2>
         <p className="text-muted-foreground">
-          Zadajte údaje o firme a vozidle súvisiacich s podvodom
+          {t('report.companyVehicle.subtitle')}
         </p>
       </div>
 
@@ -30,17 +33,17 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
         <div className="space-y-4">
           <h3 className="font-semibold flex items-center gap-2 text-lg">
             <Building2 className="h-5 w-5 text-primary" />
-            Informácie o firme
+            {t('report.companyVehicle.companySection.title')}
           </h3>
 
           {/* Company Name */}
           <div className="space-y-2">
             <label htmlFor="companyName" className="text-sm font-medium">
-              Názov firmy <span className="text-destructive">*</span>
+              {t('report.companyVehicle.companyName')} <span className="text-destructive">*</span>
             </label>
             <Input
               id="companyName"
-              placeholder="Napríklad: Example Trading s.r.o."
+              placeholder={t('report.companyVehicle.companyNamePlaceholder')}
               value={data.companyName || ''}
               onChange={(e) => onChange('companyName', e.target.value)}
               className={errors.companyName ? 'border-destructive' : ''}
@@ -53,11 +56,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
           {/* VAT/Tax ID */}
           <div className="space-y-2">
             <label htmlFor="vatTaxId" className="text-sm font-medium">
-              IČO / DIČ / VAT ID <span className="text-destructive">*</span>
+              {t('report.companyVehicle.vatTaxId')} <span className="text-destructive">*</span>
             </label>
             <Input
               id="vatTaxId"
-              placeholder="Napríklad: SK2021234567 alebo 12345678"
+              placeholder={t('report.companyVehicle.vatTaxIdPlaceholder')}
               value={data.vatTaxId || ''}
               onChange={(e) => onChange('vatTaxId', e.target.value)}
               className={errors.vatTaxId ? 'border-destructive' : ''}
@@ -66,23 +69,23 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
               <p className="text-sm text-destructive">{errors.vatTaxId}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              Identifikačné číslo organizácie alebo daňové identifikačné číslo
+              {t('report.companyVehicle.vatTaxIdHint')}
             </p>
           </div>
 
           {/* Company Address */}
           <div className="space-y-4 border-l-2 border-primary/20 pl-4">
             <h4 className="text-sm font-semibold text-muted-foreground">
-              Adresa firmy
+              {t('report.companyVehicle.companyAddress.title')}
             </h4>
 
             <div className="space-y-2">
               <label htmlFor="companyStreet" className="text-sm font-medium">
-                Ulica a číslo <span className="text-destructive">*</span>
+                {t('report.companyVehicle.street')} <span className="text-destructive">*</span>
               </label>
               <Input
                 id="companyStreet"
-                placeholder="Napríklad: Hlavná 123"
+                placeholder={t('report.companyVehicle.streetPlaceholder')}
                 value={data.companyStreet || ''}
                 onChange={(e) => onChange('companyStreet', e.target.value)}
                 className={errors.companyStreet ? 'border-destructive' : ''}
@@ -95,11 +98,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label htmlFor="companyCity" className="text-sm font-medium">
-                  Mesto <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.city')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="companyCity"
-                  placeholder="Napríklad: Bratislava"
+                  placeholder={t('report.companyVehicle.cityPlaceholder')}
                   value={data.companyCity || ''}
                   onChange={(e) => onChange('companyCity', e.target.value)}
                   className={errors.companyCity ? 'border-destructive' : ''}
@@ -111,11 +114,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
 
               <div className="space-y-2">
                 <label htmlFor="companyPostalCode" className="text-sm font-medium">
-                  PSČ <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.postalCode')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="companyPostalCode"
-                  placeholder="Napríklad: 82105"
+                  placeholder={t('report.companyVehicle.postalCodePlaceholder')}
                   value={data.companyPostalCode || ''}
                   onChange={(e) => onChange('companyPostalCode', e.target.value)}
                   className={errors.companyPostalCode ? 'border-destructive' : ''}
@@ -128,20 +131,20 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
 
             <div className="space-y-2">
               <label htmlFor="companyCountry" className="text-sm font-medium">
-                Krajina <span className="text-destructive">*</span>
+                {t('report.companyVehicle.country')} <span className="text-destructive">*</span>
               </label>
               <Select
                 value={data.companyCountry || ''}
                 onValueChange={(value) => onChange('companyCountry', value)}
               >
                 <SelectTrigger className={`h-12 ${errors.companyCountry ? 'border-destructive' : ''}`}>
-                  <SelectValue placeholder="Vyberte krajinu" />
+                  <SelectValue placeholder={t('report.companyVehicle.countryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent className="max-h-[300px]">
                   {countries.map((country) => (
                     country.value === 'SEPARATOR' ? (
                       <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
-                        Všetky krajiny
+                        {t('report.companyVehicle.allCountries')}
                       </div>
                     ) : (
                       <SelectItem key={country.value} value={country.value}>
@@ -163,18 +166,18 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
           <div className="space-y-4">
             <h3 className="font-semibold flex items-center gap-2 text-lg">
               <Car className="h-5 w-5 text-primary" />
-              Informácie o vozidle
+              {t('report.companyVehicle.vehicleSection.title')}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Vehicle Make */}
               <div className="space-y-2">
                 <label htmlFor="vehicleMake" className="text-sm font-medium">
-                  Značka <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.vehicleMake')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="vehicleMake"
-                  placeholder="Napríklad: Toyota, BMW, Škoda"
+                  placeholder={t('report.companyVehicle.vehicleMakePlaceholder')}
                   value={data.vehicleMake || ''}
                   onChange={(e) => onChange('vehicleMake', e.target.value)}
                   className={errors.vehicleMake ? 'border-destructive' : ''}
@@ -187,11 +190,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
               {/* Vehicle Model */}
               <div className="space-y-2">
                 <label htmlFor="vehicleModel" className="text-sm font-medium">
-                  Model <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.vehicleModel')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="vehicleModel"
-                  placeholder="Napríklad: Camry, X5, Octavia"
+                  placeholder={t('report.companyVehicle.vehicleModelPlaceholder')}
                   value={data.vehicleModel || ''}
                   onChange={(e) => onChange('vehicleModel', e.target.value)}
                   className={errors.vehicleModel ? 'border-destructive' : ''}
@@ -204,11 +207,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
               {/* Vehicle Color */}
               <div className="space-y-2">
                 <label htmlFor="vehicleColor" className="text-sm font-medium">
-                  Farba <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.vehicleColor')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="vehicleColor"
-                  placeholder="Napríklad: Strieborná, Čierna, Biela"
+                  placeholder={t('report.companyVehicle.vehicleColorPlaceholder')}
                   value={data.vehicleColor || ''}
                   onChange={(e) => onChange('vehicleColor', e.target.value)}
                   className={errors.vehicleColor ? 'border-destructive' : ''}
@@ -221,11 +224,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
               {/* License Plate */}
               <div className="space-y-2">
                 <label htmlFor="vehicleLicensePlate" className="text-sm font-medium">
-                  EČV (Evidenčné číslo vozidla) <span className="text-destructive">*</span>
+                  {t('report.companyVehicle.licensePlate')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="vehicleLicensePlate"
-                  placeholder="Napríklad: BA-123AB"
+                  placeholder={t('report.companyVehicle.licensePlatePlaceholder')}
                   value={data.vehicleLicensePlate || ''}
                   onChange={(e) => onChange('vehicleLicensePlate', e.target.value)}
                   className={errors.vehicleLicensePlate ? 'border-destructive' : ''}
@@ -239,11 +242,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
             {/* VIN Number - Full Width */}
             <div className="space-y-2">
               <label htmlFor="vehicleVin" className="text-sm font-medium">
-                VIN číslo (Vehicle Identification Number) <span className="text-destructive">*</span>
+                {t('report.companyVehicle.vin')} <span className="text-destructive">*</span>
               </label>
               <Input
                 id="vehicleVin"
-                placeholder="17-znakový identifikátor vozidla"
+                placeholder={t('report.companyVehicle.vinPlaceholder')}
                 value={data.vehicleVin || ''}
                 onChange={(e) => onChange('vehicleVin', e.target.value.toUpperCase())}
                 maxLength={17}
@@ -253,18 +256,18 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
                 <p className="text-sm text-destructive">{errors.vehicleVin}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                VIN musí obsahovať presne 17 znakov (písmená a čísla). Napríklad: 1HGBH41JXMN109186
+                {t('report.companyVehicle.vinError')}
               </p>
             </div>
 
             {/* Registered Owner */}
             <div className="space-y-2">
               <label htmlFor="registeredOwner" className="text-sm font-medium">
-                Registrovaný vlastník <span className="text-destructive">*</span>
+                {t('report.companyVehicle.registeredOwner')} <span className="text-destructive">*</span>
               </label>
               <Input
                 id="registeredOwner"
-                placeholder="Meno a priezvisko alebo názov firmy"
+                placeholder={t('report.companyVehicle.registeredOwnerPlaceholder')}
                 value={data.registeredOwner || ''}
                 onChange={(e) => onChange('registeredOwner', e.target.value)}
                 className={errors.registeredOwner ? 'border-destructive' : ''}
@@ -273,7 +276,7 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
                 <p className="text-sm text-destructive">{errors.registeredOwner}</p>
               )}
               <p className="text-xs text-muted-foreground">
-                Zadajte meno vlastníka podľa technického preukazu vozidla
+                {t('report.companyVehicle.registeredOwnerHint')}
               </p>
             </div>
           </div>
@@ -282,12 +285,11 @@ export function CompanyVehicleStep({ data, errors, onChange }: CompanyVehicleSte
         {/* Info Box */}
         <div className="bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
           <div className="text-sm text-blue-800 dark:text-blue-200">
-            <p className="font-medium mb-2">Dôležité informácie:</p>
+            <p className="font-medium mb-2">{t('report.companyVehicle.importantInfo.title')}</p>
             <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
-              <li>Všetky údaje budú overené pred zverejnením</li>
-              <li>VIN číslo nájdete v technickom preukaze vozidla alebo na ráme vozidla</li>
-              <li>Citlivé údaje budú maskované na ochranu vášho súkromia</li>
-              <li>Tieto informácie pomôžu identifikovať a varovať ostatných pred podvodom</li>
+              {(t('report.companyVehicle.importantInfo.items') as unknown as string[]).map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>

@@ -40,59 +40,6 @@ interface ReviewStepProps {
   onEdit: (step: number) => void;
 }
 
-// Labels must match Prisma FraudType enum values exactly
-const fraudTypeLabels: Record<string, string> = {
-  ROMANCE_SCAM: 'Romance scam',
-  INVESTMENT_FRAUD: 'Investičný podvod',
-  PHISHING: 'Phishing',
-  IDENTITY_THEFT: 'Krádež identity',
-  ONLINE_SHOPPING_FRAUD: 'E-commerce podvod',
-  TECH_SUPPORT_SCAM: 'Tech support scam',
-  LOTTERY_PRIZE_SCAM: 'Loterný podvod',
-  EMPLOYMENT_SCAM: 'Pracovný podvod',
-  RENTAL_SCAM: 'Podvod s prenájmom',
-  CRYPTOCURRENCY_SCAM: 'Crypto podvod',
-  PYRAMID_MLM_SCHEME: 'Pyramídová/MLM schéma',
-  INSURANCE_FRAUD: 'Poistný podvod',
-  CREDIT_CARD_FRAUD: 'Podvod s platobnou kartou',
-  WIRE_FRAUD: 'Telegrafický podvod',
-  MONEY_MULE: 'Peňažný mulica',
-  ADVANCE_FEE_FRAUD: 'Podvod s pôžičkou',
-  BUSINESS_EMAIL_COMPROMISE: 'Kompromitácia firemného emailu',
-  SOCIAL_ENGINEERING: 'Sociálne inžinierstvo',
-  FAKE_CHARITY: 'Falošná charita',
-  GOVERNMENT_IMPERSONATION: 'Napodobenie úradu',
-  UTILITY_SCAM: 'Podvod s energiami',
-  GRANDPARENT_SCAM: 'Podvod na starých rodičov',
-  SEXTORTION: 'Sexuálne vydieranie',
-  RANSOMWARE: 'Ransomware',
-  ACCOUNT_TAKEOVER: 'Prevzatie účtu',
-  SIM_SWAPPING: 'SIM swapping',
-  CATFISHING: 'Catfishing',
-  PONZI_SCHEME: 'Ponziho schéma',
-  OTHER: 'Iný typ',
-};
-
-const perpetratorTypeLabels: Record<string, string> = {
-  INDIVIDUAL: 'Fyzická osoba',
-  COMPANY: 'Firma / Organizácia',
-  UNKNOWN: 'Neznámy',
-};
-
-const blockchainLabels: Record<string, string> = {
-  BITCOIN: 'Bitcoin (BTC)',
-  ETHEREUM: 'Ethereum (ETH)',
-  TRON: 'Tron (TRX)',
-  SOLANA: 'Solana (SOL)',
-  BINANCE_SMART_CHAIN: 'Binance Smart Chain (BSC)',
-  POLYGON: 'Polygon (MATIC)',
-  CARDANO: 'Cardano (ADA)',
-  RIPPLE: 'Ripple (XRP)',
-  LITECOIN: 'Litecoin (LTC)',
-  POLKADOT: 'Polkadot (DOT)',
-  OTHER: 'Iný blockchain',
-};
-
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -126,7 +73,11 @@ function DataRow({ icon: Icon, label, value }: { icon?: React.ElementType; label
 }
 
 export function ReviewStep({ data, onEdit }: ReviewStepProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+
+  const getFraudTypeLabel = (type: string) => t(`search.fraudTypes.${type}`) || type;
+  const getPerpetratorTypeLabel = (type: string) => t(`search.perpetratorTypes.${type}`) || type;
+  const getBlockchainLabel = (type: string) => t(`search.blockchainLabels.${type}`) || type;
 
   return (
     <div className="space-y-6">
@@ -146,7 +97,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
           <SectionHeader title={t('report.review.fraudType')} step={1} onEdit={onEdit} editLabel={t('report.review.edit')} />
           <Badge variant="secondary" className="text-base py-1.5 px-4">
             <AlertTriangle className="h-4 w-4 mr-2" />
-            {data.fraudType ? fraudTypeLabels[data.fraudType] || data.fraudType : t('report.review.notSelected')}
+            {data.fraudType ? getFraudTypeLabel(data.fraudType) : t('report.review.notSelected')}
           </Badge>
         </div>
 
@@ -165,7 +116,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
             <DataRow
               icon={Calendar}
               label={t('report.review.incidentDate')}
-              value={data.incidentDate ? new Date(data.incidentDate).toLocaleDateString('sk-SK') : null}
+              value={data.incidentDate ? new Date(data.incidentDate).toLocaleDateString(locale === 'sk' ? 'sk-SK' : locale === 'cs' ? 'cs-CZ' : locale === 'de' ? 'de-DE' : 'en-US') : null}
             />
             <DataRow
               icon={MapPin}
@@ -176,7 +127,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
               <DataRow
                 icon={DollarSign}
                 label={t('report.review.damageAmount')}
-                value={`${parseFloat(data.amount).toLocaleString('sk-SK')} ${data.currency || 'EUR'}`}
+                value={`${parseFloat(data.amount).toLocaleString(locale === 'sk' ? 'sk-SK' : locale === 'cs' ? 'cs-CZ' : locale === 'de' ? 'de-DE' : 'en-US')} ${data.currency || 'EUR'}`}
               />
             )}
           </div>
@@ -187,7 +138,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
           <SectionHeader title={t('report.review.perpetratorInfo')} step={3} onEdit={onEdit} editLabel={t('report.review.edit')} />
 
           <Badge variant="outline" className="mb-4">
-            {data.perpetratorType ? perpetratorTypeLabels[data.perpetratorType] : t('report.review.unknown')}
+            {data.perpetratorType ? getPerpetratorTypeLabel(data.perpetratorType) : t('report.review.unknown')}
           </Badge>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -263,7 +214,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
                   {t('report.review.cryptoData')}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
-                  <DataRow label="Blockchain" value={data.blockchain ? blockchainLabels[data.blockchain] : null} />
+                  <DataRow label="Blockchain" value={data.blockchain ? getBlockchainLabel(data.blockchain) : null} />
                   <DataRow label={t('report.review.walletAddress')} value={data.walletAddress} />
                   <DataRow label={t('report.review.exchange')} value={data.exchangeName} />
                   <DataRow label={t('report.review.transactionHash')} value={data.transactionHash} />

@@ -59,6 +59,101 @@
       "oldest": "Oldest",
       "amountHigh": "Highest Amount",
       "amountLow": "Lowest Amount"
+    },
+    "filtersPanel": {
+      "title": "Search & Filters",
+      "reset": "Reset",
+      "searchPlaceholder": "Name, phone, email, IBAN, website...",
+      "searchButton": "Search",
+      "searchMode": "Search Mode",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Exact",
+      "modeAutoDesc": "Automatically selects the best mode for your query",
+      "modeFuzzyDesc": "Tolerates typos and similar terms",
+      "modeExactDesc": "Searches for exact matches",
+      "selectFraudType": "Select type",
+      "selectCountry": "Select country",
+      "selectStatus": "Select status",
+      "countryLocation": "Country / Location",
+      "showAdvanced": "Date & Amount",
+      "hideAdvanced": "Hide advanced filters",
+      "amountFrom": "Amount from (EUR)",
+      "amountTo": "Amount to (EUR)",
+      "activeFilters": "Active filters:",
+      "from": "From:",
+      "to": "To:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "All types",
+      "INVESTMENT_FRAUD": "Investment Fraud",
+      "ROMANCE_SCAM": "Romance Scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Identity Theft",
+      "ONLINE_SHOPPING_FRAUD": "E-commerce Fraud",
+      "CRYPTOCURRENCY_SCAM": "Crypto Scam",
+      "EMPLOYMENT_SCAM": "Employment Scam",
+      "RENTAL_SCAM": "Rental Scam",
+      "ADVANCE_FEE_FRAUD": "Advance Fee Fraud",
+      "FAKE_CHARITY": "Fake Charity",
+      "TECH_SUPPORT_SCAM": "Tech Support Scam",
+      "LOTTERY_PRIZE_SCAM": "Lottery Scam",
+      "PYRAMID_MLM_SCHEME": "Pyramid/MLM Scheme",
+      "INSURANCE_FRAUD": "Insurance Fraud",
+      "CREDIT_CARD_FRAUD": "Credit Card Fraud",
+      "WIRE_FRAUD": "Wire Fraud",
+      "MONEY_MULE": "Money Mule",
+      "BUSINESS_EMAIL_COMPROMISE": "Business Email Compromise",
+      "SOCIAL_ENGINEERING": "Social Engineering",
+      "GOVERNMENT_IMPERSONATION": "Government Impersonation",
+      "UTILITY_SCAM": "Utility Scam",
+      "GRANDPARENT_SCAM": "Grandparent Scam",
+      "SEXTORTION": "Sextortion",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Account Takeover",
+      "SIM_SWAPPING": "SIM Swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Ponzi Scheme",
+      "OTHER": "Other"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Individual",
+      "COMPANY": "Company / Organization",
+      "UNKNOWN": "Unknown"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Other blockchain"
+    },
+    "countries": {
+      "all": "All countries",
+      "SK": "Slovakia",
+      "CZ": "Czech Republic",
+      "PL": "Poland",
+      "HU": "Hungary",
+      "AT": "Austria",
+      "DE": "Germany",
+      "OTHER": "Other"
+    },
+    "statuses": {
+      "all": "All statuses",
+      "PENDING": "Pending approval",
+      "UNDER_REVIEW": "Under review",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "MERGED": "Merged",
+      "ARCHIVED": "Archived"
     }
   },
   "report": {
@@ -414,6 +509,55 @@
       "address": "Address (if known)",
       "addressPlaceholder": "Street, number, city, postal code",
       "tip": "The more information you provide, the better we can warn others. All sensitive data is protected and masked according to your access level."
+    },
+    "companyVehicle": {
+      "title": "Company & Vehicle Information",
+      "subtitle": "Enter details about the company and vehicle related to the fraud",
+      "companySection": {
+        "title": "Company Information"
+      },
+      "companyName": "Company Name",
+      "companyNamePlaceholder": "For example: Example Trading Ltd.",
+      "vatTaxId": "VAT / Tax ID / Company Number",
+      "vatTaxIdPlaceholder": "For example: GB123456789 or 12345678",
+      "vatTaxIdHint": "Organization identification number or tax identification number",
+      "companyAddress": {
+        "title": "Company Address"
+      },
+      "street": "Street and Number",
+      "streetPlaceholder": "For example: 123 Main Street",
+      "city": "City",
+      "cityPlaceholder": "For example: London",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "For example: SW1A 1AA",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "allCountries": "All countries",
+      "vehicleSection": {
+        "title": "Vehicle Information"
+      },
+      "vehicleMake": "Make",
+      "vehicleMakePlaceholder": "For example: Toyota, BMW, Ford",
+      "vehicleModel": "Model",
+      "vehicleModelPlaceholder": "For example: Camry, X5, Focus",
+      "vehicleColor": "Color",
+      "vehicleColorPlaceholder": "For example: Silver, Black, White",
+      "licensePlate": "License Plate Number",
+      "licensePlatePlaceholder": "For example: AB12 CDE",
+      "vin": "VIN (Vehicle Identification Number)",
+      "vinPlaceholder": "17-character vehicle identifier",
+      "vinError": "VIN must contain exactly 17 characters (letters A-Z except I, O, Q and numbers 0-9)",
+      "registeredOwner": "Registered Owner",
+      "registeredOwnerPlaceholder": "Full name or company name",
+      "registeredOwnerHint": "Enter the owner's name as shown on vehicle registration",
+      "importantInfo": {
+        "title": "Important Information:",
+        "items": [
+          "Company and vehicle details are optional but can significantly help identify the scammer",
+          "All sensitive data is protected and only shown to authorized persons",
+          "If you have documents (invoices, contracts), add them in the Evidence section"
+        ]
+      }
     },
     "evidence": {
       "title": "Evidence & Attachments",

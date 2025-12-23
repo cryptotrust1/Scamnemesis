@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useTranslation } from '@/lib/i18n/context';
 
 export interface SearchFilters {
   query: string;
@@ -34,42 +35,25 @@ interface SearchFiltersProps {
 }
 
 // Fraud types matching Prisma FraudType enum
-const fraudTypes = [
-  { value: 'all', label: 'Všetky typy' },
-  { value: 'INVESTMENT_FRAUD', label: 'Investičný podvod' },
-  { value: 'ROMANCE_SCAM', label: 'Romance scam' },
-  { value: 'PHISHING', label: 'Phishing' },
-  { value: 'IDENTITY_THEFT', label: 'Krádež identity' },
-  { value: 'ONLINE_SHOPPING_FRAUD', label: 'E-commerce podvod' },
-  { value: 'CRYPTOCURRENCY_SCAM', label: 'Crypto podvod' },
-  { value: 'EMPLOYMENT_SCAM', label: 'Pracovný podvod' },
-  { value: 'RENTAL_SCAM', label: 'Podvod s prenájmom' },
-  { value: 'ADVANCE_FEE_FRAUD', label: 'Podvod s pôžičkou' },
-  { value: 'FAKE_CHARITY', label: 'Falošná charita' },
-  { value: 'TECH_SUPPORT_SCAM', label: 'Tech support scam' },
-  { value: 'LOTTERY_PRIZE_SCAM', label: 'Loterný podvod' },
+const fraudTypeValues = [
+  'all',
+  'INVESTMENT_FRAUD',
+  'ROMANCE_SCAM',
+  'PHISHING',
+  'IDENTITY_THEFT',
+  'ONLINE_SHOPPING_FRAUD',
+  'CRYPTOCURRENCY_SCAM',
+  'EMPLOYMENT_SCAM',
+  'RENTAL_SCAM',
+  'ADVANCE_FEE_FRAUD',
+  'FAKE_CHARITY',
+  'TECH_SUPPORT_SCAM',
+  'LOTTERY_PRIZE_SCAM',
 ];
 
-const countries = [
-  { value: 'all', label: 'Všetky krajiny' },
-  { value: 'SK', label: 'Slovensko' },
-  { value: 'CZ', label: 'Česká republika' },
-  { value: 'PL', label: 'Poľsko' },
-  { value: 'HU', label: 'Maďarsko' },
-  { value: 'AT', label: 'Rakúsko' },
-  { value: 'DE', label: 'Nemecko' },
-  { value: 'OTHER', label: 'Iné' },
-];
+const countryValues = ['all', 'SK', 'CZ', 'PL', 'HU', 'AT', 'DE', 'OTHER'];
 
-const statuses = [
-  { value: 'all', label: 'Všetky stavy' },
-  { value: 'PENDING', label: 'Čaká na schválenie' },
-  { value: 'UNDER_REVIEW', label: 'V procese schvaľovania' },
-  { value: 'APPROVED', label: 'Schválené' },
-  { value: 'REJECTED', label: 'Zamietnuté' },
-  { value: 'MERGED', label: 'Zlúčené' },
-  { value: 'ARCHIVED', label: 'Archivované' },
-];
+const statusValues = ['all', 'PENDING', 'UNDER_REVIEW', 'APPROVED', 'REJECTED', 'MERGED', 'ARCHIVED'];
 
 export function SearchFiltersComponent({
   filters,
@@ -78,6 +62,7 @@ export function SearchFiltersComponent({
   onReset,
 }: SearchFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const { t } = useTranslation();
 
   const updateFilter = (key: keyof SearchFilters, value: string) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -125,18 +110,22 @@ export function SearchFiltersComponent({
     updateFilter(key, defaultValues[key] || '');
   };
 
+  const getFraudTypeLabel = (value: string) => t(`search.fraudTypes.${value}`);
+  const getCountryLabel = (value: string) => t(`search.countries.${value}`);
+  const getStatusLabel = (value: string) => t(`search.statuses.${value}`);
+
   return (
     <Card className="shadow-lg border-slate-200">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Filter className="h-5 w-5 text-[#0E74FF]" />
-            Vyhľadávanie a filtre
+            {t('search.filtersPanel.title')}
           </CardTitle>
           {hasActiveFilters() && (
             <Button variant="ghost" size="sm" onClick={handleReset} className="text-red-600 hover:text-red-700 hover:bg-red-50">
               <X className="h-4 w-4 mr-1" />
-              Zrušiť ({getActiveFilterCount()})
+              {t('search.filtersPanel.reset')} ({getActiveFilterCount()})
             </Button>
           )}
         </div>
@@ -148,7 +137,7 @@ export function SearchFiltersComponent({
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Meno, telefón, email, IBAN, web..."
+                placeholder={t('search.filtersPanel.searchPlaceholder')}
                 value={filters.query}
                 onChange={(e) => updateFilter('query', e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && onSearch()}
@@ -163,13 +152,13 @@ export function SearchFiltersComponent({
             className="w-full h-12 bg-[#0E74FF] hover:bg-[#0a5ed4] text-base font-semibold shadow-md hover:shadow-lg transition-all"
           >
             <Search className="h-5 w-5 mr-2" />
-            Vyhľadať
+            {t('search.filtersPanel.searchButton')}
           </Button>
         </div>
 
         {/* Search Mode Toggle */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">Režim vyhľadávania</label>
+          <label className="text-sm font-medium text-slate-700">{t('search.filtersPanel.searchMode')}</label>
           <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
@@ -181,7 +170,7 @@ export function SearchFiltersComponent({
               }`}
             >
               <Sparkles className="h-4 w-4" />
-              Auto
+              {t('search.filtersPanel.modeAuto')}
             </button>
             <button
               type="button"
@@ -193,7 +182,7 @@ export function SearchFiltersComponent({
               }`}
             >
               <Sparkles className="h-4 w-4" />
-              Fuzzy
+              {t('search.filtersPanel.modeFuzzy')}
             </button>
             <button
               type="button"
@@ -205,28 +194,28 @@ export function SearchFiltersComponent({
               }`}
             >
               <Target className="h-4 w-4" />
-              Presné
+              {t('search.filtersPanel.modeExact')}
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
-            {filters.searchMode === 'auto' && 'Automaticky zvolí najlepší režim pre váš dotaz'}
-            {filters.searchMode === 'fuzzy' && 'Toleruje preklepy a podobné výrazy'}
-            {filters.searchMode === 'exact' && 'Hľadá presné zhody'}
+            {filters.searchMode === 'auto' && t('search.filtersPanel.modeAutoDesc')}
+            {filters.searchMode === 'fuzzy' && t('search.filtersPanel.modeFuzzyDesc')}
+            {filters.searchMode === 'exact' && t('search.filtersPanel.modeExactDesc')}
           </p>
         </div>
 
         {/* Quick Filters */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Typ podvodu</label>
+            <label className="text-sm font-medium text-slate-700">{t('search.filters.fraudType')}</label>
             <Select value={filters.fraudType} onValueChange={(value) => updateFilter('fraudType', value)}>
               <SelectTrigger className="h-11 border-2 focus:border-[#0E74FF]">
-                <SelectValue placeholder="Vyberte typ" />
+                <SelectValue placeholder={t('search.filtersPanel.selectFraudType')} />
               </SelectTrigger>
               <SelectContent>
-                {fraudTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
+                {fraudTypeValues.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {getFraudTypeLabel(value)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -234,15 +223,15 @@ export function SearchFiltersComponent({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Krajina / Lokalita</label>
+            <label className="text-sm font-medium text-slate-700">{t('search.filtersPanel.countryLocation')}</label>
             <Select value={filters.country} onValueChange={(value) => updateFilter('country', value)}>
               <SelectTrigger className="h-11 border-2 focus:border-[#0E74FF]">
-                <SelectValue placeholder="Vyberte krajinu" />
+                <SelectValue placeholder={t('search.filtersPanel.selectCountry')} />
               </SelectTrigger>
               <SelectContent>
-                {countries.map((country) => (
-                  <SelectItem key={country.value} value={country.value}>
-                    {country.label}
+                {countryValues.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {getCountryLabel(value)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -250,15 +239,15 @@ export function SearchFiltersComponent({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Status</label>
+            <label className="text-sm font-medium text-slate-700">{t('search.filters.status')}</label>
             <Select value={filters.status} onValueChange={(value) => updateFilter('status', value)}>
               <SelectTrigger className="h-11 border-2 focus:border-[#0E74FF]">
-                <SelectValue placeholder="Vyberte status" />
+                <SelectValue placeholder={t('search.filtersPanel.selectStatus')} />
               </SelectTrigger>
               <SelectContent>
-                {statuses.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
+                {statusValues.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {getStatusLabel(value)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -274,7 +263,7 @@ export function SearchFiltersComponent({
           className="w-full text-slate-600 hover:text-slate-900 hover:bg-slate-100"
         >
           <Calendar className="h-4 w-4 mr-2" />
-          {showAdvanced ? 'Skryť pokročilé filtre' : 'Dátum a suma'}
+          {showAdvanced ? t('search.filtersPanel.hideAdvanced') : t('search.filtersPanel.showAdvanced')}
           {showAdvanced ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
         </Button>
 
@@ -283,7 +272,7 @@ export function SearchFiltersComponent({
           <div className="space-y-4 pt-4 border-t border-slate-200">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Dátum od</label>
+                <label className="text-sm font-medium text-slate-700">{t('search.filters.dateFrom')}</label>
                 <Input
                   type="date"
                   value={filters.dateFrom}
@@ -293,7 +282,7 @@ export function SearchFiltersComponent({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Dátum do</label>
+                <label className="text-sm font-medium text-slate-700">{t('search.filters.dateTo')}</label>
                 <Input
                   type="date"
                   value={filters.dateTo}
@@ -305,7 +294,7 @@ export function SearchFiltersComponent({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Suma od (EUR)</label>
+                <label className="text-sm font-medium text-slate-700">{t('search.filtersPanel.amountFrom')}</label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -316,7 +305,7 @@ export function SearchFiltersComponent({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Suma do (EUR)</label>
+                <label className="text-sm font-medium text-slate-700">{t('search.filtersPanel.amountTo')}</label>
                 <Input
                   type="number"
                   placeholder="100 000"
@@ -333,7 +322,7 @@ export function SearchFiltersComponent({
         {hasActiveFilters() && (
           <div className="pt-4 border-t border-slate-200">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-medium text-slate-700">Aktívne filtre:</span>
+              <span className="text-sm font-medium text-slate-700">{t('search.filtersPanel.activeFilters')}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {filters.fraudType !== 'all' && (
@@ -342,7 +331,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-[#0E74FF]/10 text-[#0E74FF] border border-[#0E74FF]/20 hover:bg-[#0E74FF]/20 cursor-pointer"
                   onClick={() => removeFilter('fraudType')}
                 >
-                  {fraudTypes.find((t) => t.value === filters.fraudType)?.label}
+                  {getFraudTypeLabel(filters.fraudType)}
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -352,7 +341,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-green-100 text-green-700 border border-green-200 hover:bg-green-200 cursor-pointer"
                   onClick={() => removeFilter('country')}
                 >
-                  {countries.find((c) => c.value === filters.country)?.label}
+                  {getCountryLabel(filters.country)}
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -362,7 +351,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-amber-100 text-amber-700 border border-amber-200 hover:bg-amber-200 cursor-pointer"
                   onClick={() => removeFilter('status')}
                 >
-                  {statuses.find((s) => s.value === filters.status)?.label}
+                  {getStatusLabel(filters.status)}
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -372,7 +361,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200 cursor-pointer"
                   onClick={() => removeFilter('dateFrom')}
                 >
-                  Od: {filters.dateFrom}
+                  {t('search.filtersPanel.from')} {filters.dateFrom}
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -382,7 +371,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200 cursor-pointer"
                   onClick={() => removeFilter('dateTo')}
                 >
-                  Do: {filters.dateTo}
+                  {t('search.filtersPanel.to')} {filters.dateTo}
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -392,7 +381,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-rose-100 text-rose-700 border border-rose-200 hover:bg-rose-200 cursor-pointer"
                   onClick={() => removeFilter('amountMin')}
                 >
-                  Min: {filters.amountMin} €
+                  {t('search.filtersPanel.min')} {filters.amountMin} €
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
@@ -402,7 +391,7 @@ export function SearchFiltersComponent({
                   className="pl-3 pr-1.5 py-1.5 bg-rose-100 text-rose-700 border border-rose-200 hover:bg-rose-200 cursor-pointer"
                   onClick={() => removeFilter('amountMax')}
                 >
-                  Max: {filters.amountMax} €
+                  {t('search.filtersPanel.max')} {filters.amountMax} €
                   <X className="h-3.5 w-3.5 ml-1.5" />
                 </Badge>
               )}
