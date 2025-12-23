@@ -42,7 +42,7 @@ const sectionTitles = {
 const descriptions: Record<string, string> = {
   en: 'We help victims of crypto scams and investment frauds. Our team of lawyers, forensic analysts, and ethical hackers provides rapid fraud assistance, scammer investigations, and money recovery support.',
   sk: 'Pomáhame obetiam crypto podvodov a investičných podvodov. Náš tím právnikov, forenzných analytikov a etických hackerov poskytuje rýchlu pomoc pri podvodoch, vyšetrovanie podvodníkov a podporu pri vymáhaní peňazí.',
-  cs: 'Pomáháme obětem krypto podvodů a investičních podvodů. Náš tým právníků, forenzních analytiků a etických hackerů poskytuje rychlou pomoc při podvodech, vyšetřování podvodníků a podporu při vymáhání peněz.',
+  cs: 'Pomáháme obětem krypto podvodů a investičních podvodů. Náš tím právníků, forenzních analytiků a etických hackerů poskytuje rychlou pomoc při podvodech, vyšetřování podvodníků a podporu při vymáhání peněz.',
   de: 'Wir helfen Opfern von Krypto-Betrug und Investitionsbetrug. Unser Team aus Anwälten, forensischen Analysten und ethischen Hackern bietet schnelle Betrugshilfe, Betrügerermittlungen und Unterstützung bei der Geldrückgewinnung.',
 };
 
