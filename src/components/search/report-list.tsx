@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { MapPin, Calendar, DollarSign, AlertTriangle, Users, Phone, Mail, User, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatCurrency } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/context';
 
 export interface Report {
   id: string;
@@ -72,6 +74,10 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 };
 
 export function ReportList({ reports, isLoading }: ReportListProps) {
+  const params = useParams();
+  const { t } = useTranslation();
+  const locale = (params?.locale as string) || 'en';
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -136,7 +142,7 @@ export function ReportList({ reports, isLoading }: ReportListProps) {
         const fraudLabel = fraudTypeLabels[report.fraudType?.toUpperCase()] || report.fraudType || 'Neznámy typ';
 
         return (
-          <Link key={report.id} href={`/reports/${report.id}`} className="block group">
+          <Link key={report.id} href={`/${locale}/reports/${report.id}`} className="block group">
             <Card className="overflow-hidden border-2 border-slate-100 hover:border-[#0E74FF]/30 hover:shadow-lg transition-all duration-300 bg-white">
               <CardContent className="p-0">
                 {/* Top colored bar */}
