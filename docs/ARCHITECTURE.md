@@ -2861,6 +2861,108 @@ Features:
 
 ---
 
+## 10. FRONTEND AUTHENTICATION SYSTEM
+
+### Overview
+
+Frontend autentifikácia je implementovaná pomocou React Context API s nasledujúcou architektúrou:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      UserAuthProvider                            │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  State:                                                  │   │
+│  │  - user: User | null                                     │   │
+│  │  - isLoading: boolean                                    │   │
+│  │  - isAuthenticated: boolean                              │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Methods:                                                │   │
+│  │  - login(email, password, captchaToken?)                 │   │
+│  │  - register(email, password, name, captchaToken?)        │   │
+│  │  - logout()                                              │   │
+│  │  - refreshUser()                                         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        Header Component                          │
+│  - Desktop: Login/Register buttons OR User menu dropdown        │
+│  - Mobile: Same in hamburger menu                               │
+│  - Avatar with initials + dropdown menu                         │
+│  - Links: Dashboard, Profile, Settings, Logout                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/auth/user-context.tsx` | UserAuthProvider, useUser hook |
+| `src/components/header.tsx` | Header with auth integration |
+| `src/components/providers.tsx` | Root provider wrapper |
+| `src/app/profile/page.tsx` | User profile page |
+| `src/app/auth/login/page.tsx` | Login page |
+| `src/app/auth/register/page.tsx` | Registration page |
+
+### Authentication Flow
+
+```
+1. User visits site
+   └── UserAuthProvider checks for session (cookie-based)
+       ├── If valid cookie → Fetch /api/v1/auth/me → Set user state
+       └── If no cookie → User is logged out
+
+2. User logs in
+   └── POST /api/v1/auth/token (credentials in body)
+       ├── Success → HttpOnly cookies set + user state updated
+       └── Failure → Error toast shown
+
+3. User logs out
+   └── POST /api/v1/auth/logout
+       └── Cookies cleared + redirect to home
+
+4. Session refresh
+   └── useUser().refreshUser() → Re-fetch /api/v1/auth/me
+```
+
+### API Endpoints Used
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/v1/auth/token` | POST | Login, get access token |
+| `/api/v1/auth/register` | POST | Register new user |
+| `/api/v1/auth/logout` | POST | Logout, clear cookies |
+| `/api/v1/auth/me` | GET | Get current user info |
+| `/api/v1/auth/me` | PATCH | Update user profile |
+| `/api/v1/auth/verify-email` | POST | Verify email token |
+| `/api/v1/auth/verify-email` | PUT | Resend verification email |
+
+### Token Storage
+
+- **Access Token**: HttpOnly cookie (1 hour expiry)
+- **Refresh Token**: HttpOnly cookie (7 days expiry)
+- **User Cache**: localStorage (non-sensitive data only, for faster hydration)
+
+### i18n Support
+
+Auth translations are available in 4 languages:
+- 🇬🇧 English (en)
+- 🇸🇰 Slovenčina (sk)
+- 🇨🇿 Čeština (cs)
+- 🇩🇪 Deutsch (de)
+
+### Security Features
+
+1. **HttpOnly Cookies** - Tokens not accessible via JavaScript (XSS protection)
+2. **CSRF Protection** - Credentials include cookies
+3. **Rate Limiting** - API endpoints have rate limits
+4. **Brute Force Protection** - Account lockout after failed attempts
+5. **CAPTCHA** - Cloudflare Turnstile on login/register forms
+
+---
+
 ## ZÁVER
 
 Tento dokument poskytuje kompletnú analýzu technických možností pre Scamnemesis fraud-report systém. Hlavné odporúčania:
