@@ -29,7 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Script from 'next/script';
 
-type Locale = 'en' | 'sk';
+type Locale = 'en' | 'sk' | 'cs' | 'de';
 
 // Translations
 const getTranslations = (locale: Locale) => {
@@ -212,6 +212,186 @@ const getTranslations = (locale: Locale) => {
         secure: 'Bezpečné a dôverné',
         pricing: 'Transparentná cena 600 €',
         responseTime: 'Odpoveď do 24 hodín',
+      },
+    },
+    cs: {
+      hero: {
+        title: 'Co dělat, když jste byli podvedeni?',
+        titleHighlight: 'Získejte rychlou a efektivní pomoc',
+        description: 'ScamNemesis vám umožňuje reagovat na podvod rychle a efektivně. Jsme služba, která klientům skutečně pomáhá – provádíme zpravodajskou práci, shromažďujeme důkazy a předáváme je, což je klíčové pro úspěch v soudním řízení. Zároveň poskytujeme základní právní analýzu vašeho případu včetně posouzení vašich možností a pravděpodobnosti vrácení peněz.',
+        cta: 'Objednat službu vrácení peněz',
+      },
+      value: {
+        ourApproach: 'Náš přístup',
+        approach1: 'Naše úvodní služba je transparentní a dostupná. Důkladně prozkoumáme váš případ, představíme vyšetřovací techniky, které používáme, a jasně vysvětlíme vaše právní možnosti. Po konzultaci a předání zprávy budete přesně vědět, zda se vyplatí pokračovat v dalších krocích.',
+        approach2: 'U nás nenajdete prázdné sliby – služby, které garantují 100% vrácení peněz, i když to může být těžké slyšet, jsou ve skutečnosti podvody. Jejich přístup ke klientům je vysoce neetický a netransparentní.',
+        whyDifferent: 'Proč jsme jiní',
+        different1: 'Typické služby na "vymáhání peněz" často jen pomáhají s podáním hlášení o podvodu a posílají e-maily vaším jménem – neprovádějí hloubkovou analýzu, zpravodajskou práci ani právní posouzení, a jejich poplatky se pohybují od 3 000 do 10 000 dolarů.',
+        oneTimeFee: 'jednorázový poplatek',
+        priceDesc: 'Naše analýza stojí pouze 600 €, a důkazy a zpráva, které obdržíte, budou cenným právním aktivem v jakémkoliv sporu.',
+      },
+      process: {
+        badge: 'Náš proces',
+        title: 'Jak funguje proces vymáhání peněz?',
+        steps: [
+          {
+            title: 'Zpravodajská analýza a mapování podvodu',
+            description: 'Naši analytici shromažďují všechna dostupná data – transakce, krypto adresy, IP stopy, e-maily, telefonní čísla a identifikátory jednotlivců či společností. Tyto informace jsou zpracovány do forenzní zprávy, která jasně ukazuje strukturu podvodu, zapojené entity a tok finančních prostředků.',
+          },
+          {
+            title: 'Forenzní sledování a shromažďování důkazů',
+            description: 'Používáme pokročilé nástroje pro analýzu blockchainu a OSINT (open-source intelligence) pro sledování pohybu vašich prostředků. Pokud identifikujeme propojení na burzy, poskytovatele služeb nebo banky, připravíme právní dokumentaci pro jejich oslovení s cílem zmrazení aktiv nebo získání údajů o pachatelích.',
+          },
+          {
+            title: 'Právní posouzení a doporučení',
+            description: 'Naši právníci připraví základní právní analýzu případu – včetně klasifikace trestného činu, určení jurisdikce a doporučení pro další postup. Zpráva obsahuje také hodnocení pravděpodobnosti úspěšného vymožení prostředků a návrh konkrétních kroků (např. podání trestního oznámení, občanskoprávní žaloba nebo přímá komunikace s finančními institucemi).',
+          },
+          {
+            title: 'Spolupráce s orgány a podpora v dalších fázích',
+            description: 'Na základě připravených důkazů poskytujeme materiály, které mohou být použity v trestním řízení, a pokud se dohodneme, můžeme také koordinovat komunikaci s policií, prokurátory nebo mezinárodními partnery. Tím se zajistí, že orgány činné v trestním řízení mají od samého začátku úplné a relevantní informace, což výrazně urychluje vyšetřování.',
+          },
+        ],
+      },
+      important: {
+        title: 'Důležité informace – prosím přečtěte',
+        text1: 'Podívejte se na příklad toho, jak vyšetřujeme případy, a můžete si také prohlédnout ukázku naší zprávy.',
+        text2: 'Poznámka: toto je pouze ukázka — rozsah se může lišit v závislosti na typu podvodu. Nicméně při každém vyšetřování klademe velký důraz na detaily a důkladnost.',
+      },
+      sample: {
+        title: 'Ukázková vyšetřovací zpráva',
+        description: 'Zde si můžete stáhnout ukázkovou zprávu podobnou té, kterou obdržíte. Každá zpráva je však jiná a závisí na typu podvodu. Naše zpravodajská práce je vždy rozsáhlá a detailní.',
+        download: 'Stáhnout zde',
+      },
+      access: {
+        badge: 'Začínáme',
+        title: 'Jak mohu získat přístup ke službě vymáhání peněz?',
+        step: 'Krok',
+        steps: [
+          {
+            title: 'Vyplňte formulář',
+            description: 'Vyplňte náš formulář co nejpodrobněji — pomůže nám to lépe pochopit váš případ.',
+            cta: 'Klikněte zde',
+          },
+          {
+            title: 'Kontaktujte nás a zaplaťte',
+            description: 'Kontaktujte nás pomocí tlačítka vpravo. Zadejte svůj e-mail a číslo případu a poté dokončete platbu (poplatek je 600 €). Náš specialista okamžitě začne zkoumat váš případ. Krok 1 je nahlášení případu příslušným institucím. Poté začneme připravovat balík důkazů a vést vyšetřování, následované krokem 3.',
+            cta: 'Klikněte zde',
+          },
+          {
+            title: 'Vyšetřování začíná',
+            description: 'Budeme vás kontaktovat s dalšími otázkami, informujeme vás o tom, jak dlouho bude proces trvat, a požádáme o jakékoliv konkrétní doplňující informace, pokud budou potřeba.',
+            cta: null,
+          },
+        ],
+      },
+      trust: {
+        ssl: '256-bit SSL',
+        sslDesc: 'Šifrování vojenské úrovně',
+        privacy: 'Ochrana dat',
+        privacyDesc: 'V souladu s GDPR',
+        team: 'Expertní tým',
+        teamDesc: 'Právně a blockchain certifikovaní',
+        response: 'Odpověď do 24h',
+        responseDesc: 'Rychlý začátek vyšetřování',
+      },
+      cta: {
+        title: 'Připraveni začít vaše vyšetřování?',
+        description: 'Nenechte podvodníky uniknout s vašimi penězi. Náš profesionální tým je připraven pomoci vám shromáždit důkazy a usilovat o vrácení peněz.',
+        orderBtn: 'Objednat službu vymáhání',
+        contactBtn: 'Kontaktujte nás',
+        secure: 'Bezpečné a důvěrné',
+        pricing: 'Transparentní cena 600 €',
+        responseTime: 'Odpověď do 24 hodin',
+      },
+    },
+    de: {
+      hero: {
+        title: 'Was tun, wenn Sie betrogen wurden?',
+        titleHighlight: 'Erhalten Sie schnelle und effektive Hilfe',
+        description: 'ScamNemesis ermöglicht es Ihnen, schnell und effektiv auf Betrug zu reagieren. Wir sind ein Dienst, der Kunden wirklich hilft – wir führen Nachrichtenarbeit durch, sammeln Beweise und liefern sie, was für den Erfolg in Gerichtsverfahren entscheidend ist. Gleichzeitig bieten wir eine grundlegende rechtliche Analyse Ihres Falles, einschließlich einer Bewertung Ihrer Optionen und der Wahrscheinlichkeit der Rückgewinnung von Geldern.',
+        cta: 'Rückgewinnungsdienst bestellen',
+      },
+      value: {
+        ourApproach: 'Unser Ansatz',
+        approach1: 'Unser Einstiegsdienst ist transparent und erschwinglich. Wir untersuchen Ihren Fall gründlich, stellen die von uns verwendeten Ermittlungstechniken vor und erklären Ihre rechtlichen Möglichkeiten klar. Nach der Beratung und Lieferung des Berichts wissen Sie genau, ob es sich lohnt, weitere Maßnahmen zu ergreifen.',
+        approach2: 'Bei uns finden Sie keine leeren Versprechen – Dienste, die eine 100%ige Rückerstattung garantieren, sind, auch wenn es schwer zu hören sein mag, in Wirklichkeit Betrug. Ihr Umgang mit Kunden ist höchst unethisch und intransparent.',
+        whyDifferent: 'Warum wir anders sind',
+        different1: 'Typische "Geldwiederherstellungs"-Dienste helfen oft nur beim Einreichen von Betrugsberichten und senden E-Mails in Ihrem Namen – sie führen keine tiefgehende Analyse, Nachrichtenarbeit oder rechtliche Bewertung durch, und ihre Gebühren liegen zwischen 3.000 und 10.000 US-Dollar.',
+        oneTimeFee: 'einmalige Gebühr',
+        priceDesc: 'Unsere Analyse kostet nur 600 €, und die Beweise und der Bericht, die Sie erhalten, werden ein wertvolles rechtliches Gut in jedem Streit sein.',
+      },
+      process: {
+        badge: 'Unser Prozess',
+        title: 'Wie funktioniert der Geldwiederherstellungsprozess?',
+        steps: [
+          {
+            title: 'Nachrichtenanalyse und Betrugskartierung',
+            description: 'Unsere Analysten sammeln alle verfügbaren Daten – Transaktionen, Krypto-Adressen, IP-Spuren, E-Mails, Telefonnummern und Identifikatoren von Einzelpersonen oder Unternehmen. Diese Informationen werden in einen forensischen Bericht verarbeitet, der die Struktur des Betrugs, die beteiligten Entitäten und den Geldfluss klar zeigt.',
+          },
+          {
+            title: 'Forensische Verfolgung und Beweissammlung',
+            description: 'Wir verwenden fortschrittliche Blockchain-Analysetools und OSINT (Open-Source-Intelligence), um die Bewegung Ihrer Gelder zu verfolgen. Wenn wir Verbindungen zu Börsen, Dienstleistern oder Banken identifizieren, bereiten wir rechtliche Dokumentation vor, um sie mit dem Ziel der Vermögenssperre oder der Beschaffung von Daten über die Täter anzusprechen.',
+          },
+          {
+            title: 'Rechtliche Bewertung und Empfehlungen',
+            description: 'Unsere Anwälte erstellen eine grundlegende rechtliche Analyse des Falles – einschließlich der Klassifizierung der Straftat, der Bestimmung der Zuständigkeit und Empfehlungen für weitere Maßnahmen. Der Bericht enthält auch eine Bewertung der Wahrscheinlichkeit einer erfolgreichen Rückgewinnung von Geldern und einen Vorschlag für konkrete Schritte (z.B. Erstattung einer Strafanzeige, Zivilklage oder direkte Kommunikation mit Finanzinstituten).',
+          },
+          {
+            title: 'Zusammenarbeit mit Behörden und Unterstützung in weiteren Phasen',
+            description: 'Auf Grundlage der vorbereiteten Beweise stellen wir Materialien zur Verfügung, die in Strafverfahren verwendet werden können, und falls vereinbart, können wir auch die Kommunikation mit der Polizei, Staatsanwälten oder internationalen Partnern koordinieren. Dies stellt sicher, dass die Strafverfolgungsbehörden von Anfang an vollständige und relevante Informationen haben, was die Ermittlungen erheblich beschleunigt.',
+          },
+        ],
+      },
+      important: {
+        title: 'Wichtige Informationen – Bitte lesen',
+        text1: 'Sehen Sie sich ein Beispiel an, wie wir Fälle untersuchen, und Sie können auch eine Musterversion unseres Berichts einsehen.',
+        text2: 'Hinweis: Dies ist nur ein Muster — der Umfang kann je nach Art des Betrugs variieren. Wir legen jedoch bei jeder Ermittlung großen Wert auf Details und Gründlichkeit.',
+      },
+      sample: {
+        title: 'Muster-Ermittlungsbericht',
+        description: 'Hier können Sie einen Musterbericht herunterladen, ähnlich dem, den Sie erhalten werden. Jeder Bericht ist jedoch anders und hängt von der Art des Betrugs ab. Unsere Nachrichtenarbeit ist immer umfassend und detailliert.',
+        download: 'Hier herunterladen',
+      },
+      access: {
+        badge: 'Erste Schritte',
+        title: 'Wie kann ich auf den Geldwiederherstellungsdienst zugreifen?',
+        step: 'Schritt',
+        steps: [
+          {
+            title: 'Formular ausfüllen',
+            description: 'Füllen Sie unser Formular so detailliert wie möglich aus — es hilft uns, Ihren Fall besser zu verstehen.',
+            cta: 'Hier klicken',
+          },
+          {
+            title: 'Kontaktieren Sie uns und bezahlen Sie',
+            description: 'Kontaktieren Sie uns über die Schaltfläche rechts. Geben Sie Ihre E-Mail und Fallnummer ein und schließen Sie dann die Zahlung ab (die Gebühr beträgt 600 €). Unser Spezialist wird sofort mit der Prüfung Ihres Falles beginnen. Schritt 1 ist die Meldung des Falles an die zuständigen Institutionen. Dann beginnen wir mit der Vorbereitung des Beweispakets und der Durchführung der Ermittlung, gefolgt von Schritt 3.',
+            cta: 'Hier klicken',
+          },
+          {
+            title: 'Ermittlung beginnt',
+            description: 'Wir werden Sie mit zusätzlichen Fragen kontaktieren, Sie über die Dauer des Prozesses informieren und bei Bedarf nach spezifischen ergänzenden Informationen fragen.',
+            cta: null,
+          },
+        ],
+      },
+      trust: {
+        ssl: '256-bit SSL',
+        sslDesc: 'Militärische Verschlüsselung',
+        privacy: 'Datenschutz',
+        privacyDesc: 'DSGVO-konform',
+        team: 'Expertenteam',
+        teamDesc: 'Rechts- und Blockchain-zertifiziert',
+        response: 'Antwort in 24h',
+        responseDesc: 'Schneller Ermittlungsstart',
+      },
+      cta: {
+        title: 'Bereit, Ihre Ermittlung zu starten?',
+        description: 'Lassen Sie Betrüger nicht mit Ihrem Geld davonkommen. Unser professionelles Team ist bereit, Ihnen beim Sammeln von Beweisen und bei der Verfolgung der Rückgewinnung zu helfen.',
+        orderBtn: 'Wiederherstellungsdienst bestellen',
+        contactBtn: 'Kontaktieren Sie uns',
+        secure: 'Sicher & Vertraulich',
+        pricing: 'Transparente Preisgestaltung 600 €',
+        responseTime: 'Antwortzeit 24h',
       },
     },
   };
