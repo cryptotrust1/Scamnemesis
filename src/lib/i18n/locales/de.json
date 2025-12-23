@@ -719,5 +719,73 @@
       "quote": "Die Vergangenheit ist Ihre Lektion. Die Gegenwart ist Ihr Geschenk. Die Zukunft ist Ihre Motivation.",
       "message": "Jeder verdient eine zweite Chance."
     }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Erstklassige, von Experten geleitete Cybersicherheitsschulungen von den weltweit",
+      "titleHighlight": "führenden Sicherheitsexperten.",
+      "description": "Verhindern Sie Betrug und Angriffe — sichern Sie Ihre Umgebung und stärken Sie die Cyberresilienz mit Scamnemesis.",
+      "comingSoon": "Demnächst verfügbar",
+      "comingSoonText": "Unsere Schulungskurse befinden sich derzeit in der Entwicklung. Kontaktieren Sie uns unter",
+      "comingSoonTextEnd": "um benachrichtigt zu werden, wenn sie starten."
+    },
+    "programs": {
+      "badge": "Unsere Programme",
+      "title": "Cybersicherheitskurse",
+      "description": "Wir bieten Schulungen und Bildungsinhalte, die auf verschiedene Zielgruppen zugeschnitten sind — von der allgemeinen Öffentlichkeit, die grundlegenden Schutz sucht, bis hin zu spezialisierten Fachleuten und Organisationen, die fortgeschrittene Anleitungen benötigen."
+    },
+    "freeCourses": {
+      "badge": "KOSTENLOS",
+      "title": "Kostenlose Kurse für die Öffentlichkeit",
+      "description": "Kurze, praktische Lektionen zum Schutz von sich selbst und Ihren Lieben online:",
+      "items": [
+        "Wie man einen Betrug erkennt — wichtige Warnsignale und rote Flaggen",
+        "Was tun, wenn Sie betrogen wurden — ein schneller, effektiver Reaktionsleitfaden",
+        "Wie Sie Ihr Telefon und Ihren Computer sicher einrichten",
+        "Wie man sich online sicher verhält — praktische Gewohnheiten und Richtlinien",
+        "Wie Sie Ihre Kinder online schützen"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONELL",
+      "title": "Professionelle Videos",
+      "description": "OPSEC und Cybersicherheit für Profis — Schulungen für Spezialisten, die Bedrohungen erkennen, verhindern und darauf reagieren müssen:",
+      "audiences": [
+        { "title": "AML-Spezialisten", "description": "Tiefgehende Module zur Transaktionsüberwachung, roten Flaggen und Ermittlungstechniken." },
+        { "title": "Polizeibeamte", "description": "Fokussiert auf Ermittlungsmethodik, Beweissammlung und Reaktion auf cyber-gestützte Kriminalität." },
+        { "title": "Buchhalter", "description": "Betrugsindika​toren in Finanzunterlagen, interne Kontrollen und Best Practices für Whistleblower." },
+        { "title": "IT- und Sicherheitspersonal", "description": "Netzwerkverteidigung, Phishing-Simulationen, sichere Infrastrukturkonfiguration." },
+        { "title": "Ermittler", "description": "OSINT-Techniken, Grundlagen der digitalen Forensik und Falldokumentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "INDIVIDUELL",
+      "title": "Unternehmensschulungen und Sicherheitsmethodik",
+      "description1": "Wir schulen Mitarbeiter und helfen bei der Implementierung einer vollständigen Sicherheitsmethodik — damit jedes Teammitglied weiß, was zu tun ist und wen es im Falle einer Bedrohung kontaktieren soll.",
+      "description2": "Unsere Unternehmensprogramme umfassen Richtlinienimplementierung, Rollenklärug, Verfahren zur Reaktion auf Vorfälle und laufende Unterstützung.",
+      "button": "Individuelle Schulung anfordern"
+    },
+    "differentiators": {
+      "badge": "Warum uns wählen",
+      "title": "Was macht unsere Schulungen einzigartig?",
+      "items": [
+        { "emoji": "📡", "title": "Live-Bedrohungsintelligenz", "description": "Wir arbeiten täglich an aktiven Krypto- und Investitionsbetrugsfällen, sodass unsere Inhalte immer die neuesten von Kriminellen verwendeten Taktiken widerspiegeln." },
+        { "emoji": "🔄", "title": "Kontinuierlich aktualisierter Lehrplan", "description": "Wenn neue Betrugsmethoden auftauchen, entwickeln sich unsere Kurse weiter und stellen sicher, dass Sie nie ins Hintertreffen geraten." },
+        { "emoji": "🛡️", "title": "Praktisch, nicht nur theoretisch", "description": "Wir lehren tatsächliche Schutzstrategien, nicht nur abstrakte Konzepte." },
+        { "emoji": "💡", "title": "Von Opfern zu Experten", "description": "Unsere Perspektive umfasst tiefe Einblicke sowohl in die Psychologie der Opfer als auch in das Verhalten der Betrüger, was Ihnen ein 360°-Verständnis gibt." }
+      ]
+    },
+    "certifications": {
+      "title": "Zertifizierungen und Berechtigungsnachweise",
+      "description": "Unsere Ausbilder und Inhaltsersteller verfügen über anerkannte Zertifizierungen in Cybersicherheit, Betrugsermittlung und Compliance — und bringen Glaubwürdigkeit und Fachwissen in jede Lektion ein."
+    },
+    "cta": {
+      "title": "Buchen Sie eine kostenlose Beratung",
+      "description": "Ob Sie eine Einzelperson sind, die lernen möchte, ein Fachmann, der eine Schulung mit Zertifizierungspfad sucht, oder eine Organisation, die an einem maßgeschneiderten Sicherheitsprogramm interessiert ist — wir sind hier, um zu helfen.",
+      "button": "Kostenlose Beratung buchen",
+      "freeConsultation": "Kostenlose Beratung",
+      "expertInstructors": "Experten-Ausbilder",
+      "updatedContent": "Aktualisierte Inhalte"
+    }
   }
 }

@@ -828,5 +828,73 @@
       "quote": "Minulosť je vaša lekcia. Prítomnosť je váš dar. Budúcnosť je vaša motivácia.",
       "message": "Každý si zaslúži druhú šancu."
     }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Svetová trieda, odborné školenia kybernetickej bezpečnosti od svetových",
+      "titleHighlight": "špičkových bezpečnostných profesionálov.",
+      "description": "Predchádzajte podvodom a útokom — zabezpečte svoje prostredie a posilnite kybernetickú odolnosť so Scamnemesis.",
+      "comingSoon": "Už čoskoro",
+      "comingSoonText": "Naše školiace kurzy sú momentálne vo vývoji. Kontaktujte nás na",
+      "comingSoonTextEnd": "a budete informovaní o ich spustení."
+    },
+    "programs": {
+      "badge": "Naše programy",
+      "title": "Kurzy kybernetickej bezpečnosti",
+      "description": "Ponúkame školenia a vzdelávací obsah prispôsobený rôznym cieľovým skupinám — od širokej verejnosti hľadajúcej základnú ochranu po špecializovaných profesionálov a organizácie vyžadujúce pokročilé inštrukcie."
+    },
+    "freeCourses": {
+      "badge": "ZADARMO",
+      "title": "Bezplatné kurzy pre verejnosť",
+      "description": "Krátke, praktické lekcie na ochranu seba a svojich blízkych online:",
+      "items": [
+        "Ako rozpoznať podvod — kľúčové varovné signály a červené vlajky",
+        "Čo robiť, keď ste boli podvedení — rýchly a efektívny sprievodca reakciou",
+        "Ako bezpečne nastaviť telefón a počítač",
+        "Ako sa bezpečne správať online — praktické návyky a usmernenia",
+        "Ako chrániť svoje deti online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESIONÁLNE",
+      "title": "Profesionálne videá",
+      "description": "OPSEC a kybernetická bezpečnosť pre profesionálov — školenie pre špecialistov, ktorí potrebujú rozpoznať, predchádzať a reagovať na hrozby:",
+      "audiences": [
+        { "title": "AML špecialisti", "description": "Hĺbkové moduly o monitorovaní transakcií, červených vlajkách a vyšetrovacích technikách." },
+        { "title": "Policajti", "description": "Zamerané na metodológiu vyšetrovania, zhromažďovanie dôkazov a reakciu na kyberneticky podporovanú trestnú činnosť." },
+        { "title": "Účtovníci", "description": "Indikátory podvodov vo finančných záznamoch, interné kontroly a najlepšie postupy pre whistleblowerov." },
+        { "title": "IT a bezpečnostný personál", "description": "Obrana siete, simulácie phishingu, bezpečná konfigurácia infraštruktúry." },
+        { "title": "Vyšetrovatelia", "description": "OSINT techniky, základy digitálnej forenziky a dokumentácia prípadov." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "VLASTNÉ",
+      "title": "Firemné školenia a bezpečnostná metodológia",
+      "description1": "Školíme zamestnancov a pomáhame implementovať kompletnú bezpečnostnú metodológiu — aby každý člen tímu vedel, čo má robiť a koho kontaktovať v prípade hrozby.",
+      "description2": "Naše firemné programy zahŕňajú implementáciu politík, objasnenie rolí, postupy reakcie na incidenty a priebežnú podporu.",
+      "button": "Požiadať o vlastné školenie"
+    },
+    "differentiators": {
+      "badge": "Prečo si vybrať nás",
+      "title": "Čím sú naše školenia jedinečné?",
+      "items": [
+        { "emoji": "📡", "title": "Živé spravodajstvo o hrozbách", "description": "Denne pracujeme na aktívnych prípadoch krypto a investičných podvodov, takže náš obsah vždy odráža najnovšie taktiky používané zločincami." },
+        { "emoji": "🔄", "title": "Priebežne aktualizovaný učebný plán", "description": "Ako sa objavujú nové metódy podvodov, naše kurzy sa vyvíjajú, čím zaistíme, že nikdy nezaostanete." },
+        { "emoji": "🛡️", "title": "Praktické, nie len teoretické", "description": "Učíme skutočné ochranné stratégie, nie len abstraktné koncepty." },
+        { "emoji": "💡", "title": "Od obetí k expertom", "description": "Naša perspektíva zahŕňa hlboký vhľad do psychológie obetí aj správania podvodníkov, čo vám dáva 360° porozumenie." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifikácie a poverenia",
+      "description": "Naši inštruktori a tvorcovia obsahu majú uznávané certifikácie v oblasti kybernetickej bezpečnosti, vyšetrovania podvodov a compliance — prinášajúc dôveryhodnosť a odbornosť do každej lekcie."
+    },
+    "cta": {
+      "title": "Rezervujte si bezplatnú konzultáciu",
+      "description": "Či už ste jednotlivec, ktorý sa chce učiť, profesionál hľadajúci školenie s certifikáciou, alebo organizácia so záujmom o prispôsobený bezpečnostný program, sme tu, aby sme vám pomohli.",
+      "button": "Rezervovať bezplatnú konzultáciu",
+      "freeConsultation": "Bezplatná konzultácia",
+      "expertInstructors": "Expertní inštruktori",
+      "updatedContent": "Aktualizovaný obsah"
+    }
   }
 }

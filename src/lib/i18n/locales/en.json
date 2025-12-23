@@ -828,5 +828,73 @@
       "quote": "The past is your lesson. The present is your gift. The future is your motivation.",
       "message": "Everyone deserves a second chance."
     }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "World-class, expert-led cybersecurity training from the world's",
+      "titleHighlight": "top security professionals.",
+      "description": "Prevent fraud and attacks—secure your environment and strengthen cyber resilience with Scamnemesis.",
+      "comingSoon": "Coming Soon",
+      "comingSoonText": "Our training courses are currently in development. Contact us at",
+      "comingSoonTextEnd": "to be notified when they launch."
+    },
+    "programs": {
+      "badge": "Our Programs",
+      "title": "Cybersecurity Courses",
+      "description": "We offer training and educational content tailored for different audiences — from the general public seeking basic protection to specialized professionals and organizations requiring advanced instruction."
+    },
+    "freeCourses": {
+      "badge": "FREE",
+      "title": "Free Courses for the Public",
+      "description": "Short, practical lessons to protect yourself and your loved ones online:",
+      "items": [
+        "How to recognize a scam — key red flags and warning signals",
+        "What to do if you've been scammed — a quick, effective response guide",
+        "How to set up your phone and computer securely",
+        "How to behave safely online — practical habits and guidelines",
+        "How to protect your children online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONAL",
+      "title": "Professional Videos",
+      "description": "OPSEC and cybersecurity for professionals — training for specialists who need to recognize, prevent, and respond to threats:",
+      "audiences": [
+        { "title": "AML Specialists", "description": "In-depth modules on transaction monitoring, red flags, and investigative techniques." },
+        { "title": "Police Officers", "description": "Focused on investigation methodology, evidence collection, and cyber-enabled crime response." },
+        { "title": "Accountants", "description": "Fraud indicators in financial records, internal controls, and whistleblower best practices." },
+        { "title": "IT and Security Personnel", "description": "Network defense, phishing simulations, secure infrastructure configuration." },
+        { "title": "Investigators", "description": "OSINT techniques, digital forensics fundamentals, and case documentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "CUSTOM",
+      "title": "Company Training and Security Methodology",
+      "description1": "We train staff and help implement a complete security methodology — so every team member knows what to do and who to contact in case of a threat.",
+      "description2": "Our corporate programs include policy implementation, role clarification, incident response procedures, and ongoing support.",
+      "button": "Request Custom Training"
+    },
+    "differentiators": {
+      "badge": "Why Choose Us",
+      "title": "What makes our training unique?",
+      "items": [
+        { "emoji": "📡", "title": "Live threat intelligence", "description": "We work daily on active crypto and investment fraud cases, so our content always reflects the latest tactics used by criminals." },
+        { "emoji": "🔄", "title": "Continuously updated curriculum", "description": "As new scam methods emerge, our courses evolve, ensuring you're never behind." },
+        { "emoji": "🛡️", "title": "Practical, not just theoretical", "description": "We teach actual protection strategies, not just abstract concepts." },
+        { "emoji": "💡", "title": "From victims to experts", "description": "Our perspective includes deep insight into both victim psychology and scammer behavior, giving you a 360° understanding." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifications and Credentials",
+      "description": "Our instructors and content creators hold recognized certifications in cybersecurity, fraud investigation, and compliance — bringing credibility and expertise to every lesson."
+    },
+    "cta": {
+      "title": "Book a Free Consultation",
+      "description": "Whether you're an individual looking to learn, a professional seeking certification-track training, or an organization interested in a tailored security program, we're here to help.",
+      "button": "Book a Free Consultation",
+      "freeConsultation": "Free Consultation",
+      "expertInstructors": "Expert Instructors",
+      "updatedContent": "Updated Content"
+    }
   }
 }
