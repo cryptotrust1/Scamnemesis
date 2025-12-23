@@ -153,12 +153,12 @@ const itemListSchema = {
 };
 
 export default function TrainingCoursesPage() {
-  const { t, locale } = useTranslation();
+  const { t, tv, locale } = useTranslation();
 
-  // Get translations as arrays
-  const freeCourseItems = (t('trainingCourses.freeCourses.items') as unknown as string[]) || [];
-  const professionalAudiences = (t('trainingCourses.professionalVideos.audiences') as unknown as { title: string; description: string }[]) || [];
-  const differentiators = (t('trainingCourses.differentiators.items') as unknown as { emoji: string; title: string; description: string }[]) || [];
+  // Get translations as arrays - use tv() for arrays
+  const freeCourseItems = tv<string[]>('trainingCourses.freeCourses.items') || [];
+  const professionalAudiences = tv<{ title: string; description: string }[]>('trainingCourses.professionalVideos.audiences') || [];
+  const differentiators = tv<{ emoji: string; title: string; description: string }[]>('trainingCourses.differentiators.items') || [];
 
   return (
     <>

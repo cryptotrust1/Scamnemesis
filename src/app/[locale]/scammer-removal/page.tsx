@@ -150,14 +150,14 @@ const breadcrumbSchema = {
 };
 
 export default function ScammerRemovalPage() {
-  const { t, locale } = useTranslation();
+  const { t, tv, locale } = useTranslation();
 
-  // Get translations as arrays
-  const basicRequirements = (t('scammerRemoval.terms.basicRequirements.items') as unknown as string[]) || [];
-  const importantNotices = (t('scammerRemoval.terms.importantNotices.items') as unknown as string[]) || [];
-  const requestSteps = (t('scammerRemoval.howToRequest.steps') as unknown as { title: string; description: string }[]) || [];
-  const pdfFeatures = (t('scammerRemoval.pdfGuide.features') as unknown as string[]) || [];
-  const visionInitiatives = (t('scammerRemoval.vision.initiatives') as unknown as { title: string; description: string }[]) || [];
+  // Get translations as arrays - use tv() for arrays
+  const basicRequirements = tv<string[]>('scammerRemoval.terms.basicRequirements.items') || [];
+  const importantNotices = tv<string[]>('scammerRemoval.terms.importantNotices.items') || [];
+  const requestSteps = tv<{ title: string; description: string }[]>('scammerRemoval.howToRequest.steps') || [];
+  const pdfFeatures = tv<string[]>('scammerRemoval.pdfGuide.features') || [];
+  const visionInitiatives = tv<{ title: string; description: string }[]>('scammerRemoval.vision.initiatives') || [];
 
   return (
     <>

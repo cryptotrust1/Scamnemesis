@@ -108,17 +108,17 @@ interface LawyerExample {
 }
 
 export default function IWasScammedPage() {
-  const { t, locale } = useTranslation();
+  const { t, tv, locale } = useTranslation();
 
-  // Get translations
-  const step1Actions = (t('iWasScammed.steps.step1.actions') as unknown as StepAction[]) || [];
-  const step2Actions = (t('iWasScammed.steps.step2.actions') as unknown as StepAction[]) || [];
-  const step3Actions = (t('iWasScammed.steps.step3.actions') as unknown as StepAction[]) || [];
-  const step4EvidenceItems = (t('iWasScammed.steps.step4.evidenceItems') as unknown as EvidenceItem[]) || [];
-  const step5Paragraphs = (t('iWasScammed.steps.step5.paragraphs') as unknown as string[]) || [];
-  const step6Paragraphs = (t('iWasScammed.steps.step6.paragraphs') as unknown as string[]) || [];
-  const step7Paragraphs = (t('iWasScammed.steps.step7.paragraphs') as unknown as string[]) || [];
-  const lawyerExamples = (t('iWasScammed.whatElse.lawyerTips.examples') as unknown as LawyerExample[]) || [];
+  // Get translations - use tv() for arrays
+  const step1Actions = tv<StepAction[]>('iWasScammed.steps.step1.actions') || [];
+  const step2Actions = tv<StepAction[]>('iWasScammed.steps.step2.actions') || [];
+  const step3Actions = tv<StepAction[]>('iWasScammed.steps.step3.actions') || [];
+  const step4EvidenceItems = tv<EvidenceItem[]>('iWasScammed.steps.step4.evidenceItems') || [];
+  const step5Paragraphs = tv<string[]>('iWasScammed.steps.step5.paragraphs') || [];
+  const step6Paragraphs = tv<string[]>('iWasScammed.steps.step6.paragraphs') || [];
+  const step7Paragraphs = tv<string[]>('iWasScammed.steps.step7.paragraphs') || [];
+  const lawyerExamples = tv<LawyerExample[]>('iWasScammed.whatElse.lawyerTips.examples') || [];
 
   return (
     <>

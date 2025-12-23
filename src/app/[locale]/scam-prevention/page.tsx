@@ -169,19 +169,19 @@ interface SupportResource {
 }
 
 export default function ScamPreventionPage() {
-  const { t, locale } = useTranslation();
+  const { t, tv, locale } = useTranslation();
 
-  // Get translations
-  const tocItems = (t('scamPrevention.toc.items') as unknown as string[]) || [];
-  const emergencyActions = (t('scamPrevention.emergency.actions') as unknown as string[]) || [];
-  const warningSigns = (t('scamPrevention.riskAssessment.warningSigns') as unknown as WarningSign[]) || [];
-  const tactics = (t('scamPrevention.psychology.tactics') as unknown as Tactic[]) || [];
-  const scamCategories = (t('scamPrevention.scamCategories.categories') as unknown as ScamCategory[]) || [];
-  const actionSteps = (t('scamPrevention.immediateAction.steps') as unknown as ActionStep[]) || [];
-  const evidenceTypes = (t('scamPrevention.evidence.types') as unknown as EvidenceType[]) || [];
-  const bestPracticesItems = (t('scamPrevention.evidence.bestPractices.items') as unknown as string[]) || [];
-  const recoveryMethods = (t('scamPrevention.fundRecovery.methods') as unknown as RecoveryMethod[]) || [];
-  const supportResources = (t('scamPrevention.supportResources.resources') as unknown as SupportResource[]) || [];
+  // Get translations - use tv() for arrays (keys must match JSON structure)
+  const tocItems = tv<string[]>('scamPrevention.toc.items') || [];
+  const emergencyActions = tv<{ title: string; description: string }[]>('scamPrevention.emergency.actions') || [];
+  const warningSigns = tv<string[]>('scamPrevention.riskAssessment.signs') || [];
+  const tactics = tv<Tactic[]>('scamPrevention.psychology.tactics') || [];
+  const scamTypes = tv<{ name: string; description: string; tip: string }[]>('scamPrevention.scamCategories.types') || [];
+  const actionSteps = tv<{ title: string; description: string }[]>('scamPrevention.immediateAction.steps') || [];
+  const evidenceTypes = tv<EvidenceType[]>('scamPrevention.evidence.types') || [];
+  const bestPracticesItems = tv<string[]>('scamPrevention.evidence.bestPractices.items') || [];
+  const recoveryMethods = tv<{ method: string; timeline: string; steps: string[] }[]>('scamPrevention.fundRecovery.methods') || [];
+  const supportChannels = tv<{ name: string; url: string; description: string }[]>('scamPrevention.supportResources.channels') || [];
 
   return (
     <>
@@ -282,7 +282,10 @@ export default function ScamPreventionPage() {
                       <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
                         <CheckCircle2 className="h-6 w-6 text-red-600 dark:text-red-400" />
                       </div>
-                      <p className="text-foreground font-medium pt-3">{action}</p>
+                      <div className="pt-2">
+                        <h3 className="text-foreground font-semibold mb-1">{action.title}</h3>
+                        <p className="text-muted-foreground">{action.description}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -330,9 +333,8 @@ export default function ScamPreventionPage() {
                         <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
                           <Icon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                         </div>
-                        <div>
-                          <h3 className="font-bold text-foreground mb-1">{sign.title}</h3>
-                          <p className="text-sm text-muted-foreground">{sign.description}</p>
+                        <div className="flex-1">
+                          <p className="font-medium text-foreground">{sign}</p>
                         </div>
                       </div>
                     </div>
@@ -417,7 +419,7 @@ export default function ScamPreventionPage() {
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {scamCategories.map((category, index) => {
+                {scamTypes.map((scamType, index) => {
                   const Icon = scamTypeIcons[index % scamTypeIcons.length];
                   return (
                     <Card
@@ -429,21 +431,17 @@ export default function ScamPreventionPage() {
                           <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#0E74FF]/20 transition-all duration-300">
                             <Icon className="h-5 w-5 text-[#0E74FF]" />
                           </div>
-                          <span className="group-hover:text-[#0E74FF] transition-colors">{category.title}</span>
+                          <span className="group-hover:text-[#0E74FF] transition-colors">{scamType.name}</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <p className="text-sm text-muted-foreground leading-relaxed">{category.description}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{scamType.description}</p>
                         <div className="pt-3 border-t border-dashed">
                           <p className="text-xs font-semibold text-[#0E74FF] mb-1 flex items-center gap-1">
                             <Shield className="h-3 w-3" />
-                            Tips:
+                            {t('scamPrevention.scamCategories.protectionTip')}
                           </p>
-                          <ul className="text-xs text-muted-foreground space-y-1">
-                            {Array.isArray(category.tips) && category.tips.map((tip, tipIdx) => (
-                              <li key={tipIdx}>• {tip}</li>
-                            ))}
-                          </ul>
+                          <p className="text-xs text-muted-foreground">{scamType.tip}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -481,17 +479,7 @@ export default function ScamPreventionPage() {
                       <Card className="flex-1 border-l-4 border-l-[#0E74FF] hover:shadow-lg transition-shadow">
                         <CardContent className="p-6">
                           <h3 className="font-bold text-lg mb-2">{step.title}</h3>
-                          <p className="text-muted-foreground mb-4">{step.description}</p>
-                          {Array.isArray(step.actions) && (
-                            <ul className="space-y-1">
-                              {step.actions.map((action, actionIdx) => (
-                                <li key={actionIdx} className="text-sm text-muted-foreground flex items-center gap-2">
-                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                  {action}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                          <p className="text-muted-foreground">{step.description}</p>
                         </CardContent>
                       </Card>
                     </div>
@@ -591,7 +579,7 @@ export default function ScamPreventionPage() {
                           <div className="w-10 h-10 rounded-lg bg-[#0E74FF]/10 flex items-center justify-center">
                             <DollarSign className="h-5 w-5 text-[#0E74FF]" />
                           </div>
-                          {method.title}
+                          {method.method}
                         </CardTitle>
                         <span className="text-xs font-bold px-4 py-2 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
                           {method.timeline}
@@ -599,7 +587,6 @@ export default function ScamPreventionPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <p className="text-muted-foreground mb-4">{method.description}</p>
                       <ol className="space-y-3">
                         {Array.isArray(method.steps) && method.steps.map((step, stepIdx) => (
                           <li key={stepIdx} className="flex items-start gap-3">
@@ -634,7 +621,7 @@ export default function ScamPreventionPage() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-5 mb-8">
-                {supportResources.map((resource, index) => (
+                {supportChannels.map((channel, index) => (
                   <Card key={index} className="hover:shadow-lg transition-shadow border-2 hover:border-indigo-200 dark:hover:border-indigo-800">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
@@ -642,12 +629,13 @@ export default function ScamPreventionPage() {
                           <LifeBuoy className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold mb-1">{resource.title}</h3>
-                          <p className="text-sm text-[#0E74FF] font-medium mb-2">{resource.contact}</p>
-                          <p className="text-sm text-muted-foreground">{resource.description}</p>
-                          <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">
-                            {resource.type}
-                          </span>
+                          <h3 className="font-bold mb-1">{channel.name}</h3>
+                          {channel.url && (
+                            <a href={channel.url} target="_blank" rel="noopener noreferrer" className="text-sm text-[#0E74FF] font-medium mb-2 block hover:underline">
+                              {channel.url}
+                            </a>
+                          )}
+                          <p className="text-sm text-muted-foreground">{channel.description}</p>
                         </div>
                       </div>
                     </CardContent>
