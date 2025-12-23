@@ -1075,5 +1075,153 @@
       "scamCheckerButton": "Použiť kontrolór podvodov",
       "freeTrainingButton": "Bezplatné školenie"
     }
+  },
+  "iWasScammed": {
+    "hero": {
+      "badges": {
+        "urgent": "Urgentná pomoc",
+        "expert": "Expertné poradenstvo",
+        "timeCritical": "Časovo kritické kroky"
+      },
+      "title": "Bol som podvedený: Získajte peniaze späť.",
+      "titleHighlight": "Nahláste podvod teraz.",
+      "description": "Ak ste sa stali obeťou online podvodu, investičného podvodu alebo akejkoľvek formy podvodu, nie ste sami. Prvé momenty po zistení, že ste boli podvedení, sú kritické. Náš systém bol vytvorený špeciálne pre takéto prípady, aby vám poskytol efektívnu pomoc.",
+      "followGuide": "Najprv prosím postupujte podľa nižšie uvedeného sprievodcu krok za krokom a až potom nás kontaktujte.",
+      "contactButton": "Kontaktujte nás",
+      "fillFormButton": "Vyplňte formulár",
+      "stats": {
+        "steps": { "value": "7", "label": "Kritických krokov" },
+        "time": { "value": "24h", "label": "Časovo kritické" },
+        "report": { "value": "Zdarma", "label": "PDF správa" },
+        "database": { "value": "612M+", "label": "Databáza" }
+      }
+    },
+    "intro": {
+      "title": "Čo robiť po podvode? Praktický sprievodca",
+      "description": "Ak ste sa stali obeťou podvodu, je dôležité konať rýchlo a systematicky. Nižšie nájdete presný postup krok za krokom, ktorý by ste mali dodržať — bol špeciálne vyvinutý odborníkmi a každý krok má svoj účel a je kľúčový.",
+      "findBelow": "— nájdete ho nižšie."
+    },
+    "steps": {
+      "step1": {
+        "label": "Krok 1",
+        "title": "Okamžite zablokujte podvodníkovi prístup k vašim peniazom",
+        "description": "Prvý a najdôležitejší krok je čo najrýchlejšie zastaviť ďalšie straty.",
+        "actions": [
+          { "icon": "card", "text": "Ak boli odcudzené údaje vašej karty, okamžite kartu zablokujte — cez mobilnú aplikáciu banky alebo zavolaním na infolinku." },
+          { "icon": "lock", "text": "Ak bol napadnutý váš krypto účet, ihneď kontaktujte burzu e-mailom a požiadajte o zmrazenie účtu." },
+          { "icon": "shield", "text": "Urobte všetko možné, aby podvodník už nemal prístup k vašim finančným prostriedkom." }
+        ],
+        "tip": {
+          "title": "⚠️ Dôležitý tip:",
+          "text": "Ak ste stále v kontakte s podvodníkom, neprezrádzajte, že viete, že ste boli podvedení. Predstierajte, že nerozumiete, prečo niečo nefunguje (napr. pokus o platbu). Tým podvodníka udržíte v kontakte a získate viac času na konanie."
+        },
+        "imageAlt": "Bol som podvedený – Okamžitá akcia a zablokovanie podvodníka",
+        "imageCaption": "Rýchlosť je všetko, keď ide o zotavenie sa z podvodu. Čím rýchlejšie konáte, tým vyššie sú vaše šance na zastavenie ďalších škôd a prípadné získanie peňazí späť."
+      },
+      "step2": {
+        "label": "Krok 2",
+        "title": "Vytvorte si sústredenú atmosféru na riešenie problému",
+        "description": "Riešenie podvodu vyžaduje vašu plnú pozornosť a jasnú myseľ.",
+        "actions": [
+          { "icon": "users", "text": "Ak máte deti, požiadajte príbuzných alebo priateľov, aby sa o ne niekoľko hodín postarali" },
+          { "icon": "clock", "text": "Ak ste v práci, porozprávajte sa so zamestnávateľom a požiadajte o skorší odchod alebo krátke voľno." }
+        ],
+        "note": "Čím menej rušivých vplyvov máte, tým rýchlejšie a efektívnejšie môžete konať. V takýchto prípadoch počíta každá minúta — čím skôr zareagujete, tým vyššia je šanca na zablokovanie prevodov a zastavenie podvodníka.",
+        "imageCaption": "Ako sa sústrediť a efektívne konať po podvode"
+      },
+      "step3": {
+        "label": "Krok 3",
+        "title": "Oficiálne nahláste incident",
+        "description": "Aj keď ste už zablokovali kartu alebo účet cez aplikáciu, musíte incident nahlásiť aj oficiálne:",
+        "actions": [
+          { "icon": "phone", "text": "Kontaktujte banku alebo burzu priamo telefonicky alebo e-mailom" },
+          { "icon": "file", "text": "Opíšte celú situáciu podrobne" },
+          { "icon": "check", "text": "Vyžiadajte si písomné potvrdenie vášho hlásenia" }
+        ],
+        "important": "Tento krok dokončite, aj keď podvodník už má vaše peniaze, ale ešte ste to nenahlásili.",
+        "imageCaption": "Oficiálne nahlásenie podvodu polícii a banke"
+      },
+      "step4": {
+        "label": "KROK 4",
+        "title": "Začnite zbierať dôkazy a vyplňte náš formulár",
+        "description": "Keď ste zastavili ďalšie platby, začnite systematicky zhromažďovať všetky dostupné dôkazy — to výrazne zvýši vaše šance na identifikáciu podvodníka a získanie peňazí späť. Postupujte nasledovne:",
+        "evidenceItems": [
+          { "icon": "file", "title": "Vyplňte náš formulár čo najpodrobnejšie.", "text": "Slúži ako praktický sprievodca, ktorý vám pomôže zachytiť všetky podstatné informácie a automaticky vygeneruje kompletnú PDF správu, ktorú môžete poskytnúť polícii alebo iným príslušným orgánom." },
+          { "icon": "camera", "title": "Uchovajte všetky konverzácie:", "text": "urobte snímky obrazovky chatov, e-mailov (nezabudnite zahrnúť celú hlavičku e-mailu) a ďalších textových správ vrátane dátumov a časov komunikácie." },
+          { "icon": "card", "title": "Zabezpečte bankové záznamy:", "text": "archivujte všetky relevantné bankové výpisy, potvrdenia o platbách a detaily transakcií." },
+          { "icon": "phone", "title": "Zdokumentujte telefónne hovory:", "text": "zaznamenajte dátum, čas a stručný súhrn rozhovoru. (Poznámka: pred nahrávaním hovorov si vždy overte miestne zákony.)" },
+          { "icon": "video", "title": "Zhromaždite video dôkazy v pôvodnej kvalite.", "text": "Ak ste sa s podvodníkom stretli osobne a je to bezpečné, vytvorte videozáznam stretnutia. Ak ste sa stretli na verejnom mieste s kamerami, požiadajte prevádzkovateľa o archiváciu záznamu. Aj keď vám ho priamo neposkytne, polícia si ho môže oficiálne vyžiadať po nahlásení prípadu." },
+          { "icon": "fingerprint", "title": "Zaznamenajte identifikátory podvodníka:", "text": "uložte všetky dostupné údaje ako domény, e-mailové adresy, telefónne čísla, profily na sociálnych sieťach, IP adresy (ak sú známe) a akékoľvek ďalšie relevantné informácie." },
+          { "icon": "ban", "title": "Neprezrádzajte podvodníkovi, že viete o podvode.", "text": "Kontakt udržujte iba ak je to strategicky nevyhnutné a bezpečné. Nikdy mu neposkytujte informácie, ktoré by mu mohli pomôcť ujsť s vašimi peniazmi, a nezverejňujte osobné údaje — ako adresu bydliska alebo polohu." },
+          { "icon": "harddrive", "title": "Uchovajte metadáta:", "text": "pri ukladaní snímok obrazovky a súborov si ponechajte originály, aby ste zachovali časové pečiatky a ďalšie forenzné detaily. Ak potrebujete niečo zvýrazniť alebo upraviť, urobte kópiu a upravte kópiu — inak môžete prepísať kritické metadáta." },
+          { "icon": "filecheck", "title": "So všetkými dôkazmi zaobchádzajte maximálne opatrne:", "text": "každý prípad môže zahŕňať rôzne typy dôkazov — digitálne (snímky obrazovky, e-maily, logy, IP údaje, videá) a fyzické (dokumenty, papierové potvrdenia, SIM karty, hardvérové peňaženky). Všetko dôkladne zdokumentujte pri zachovaní integrity pôvodných materiálov." },
+          { "icon": "scale", "title": "Právna a bezpečnostná poznámka:", "text": "ak narazíte na citlivé alebo potenciálne nebezpečné informácie, konzultujte so skúseným právnikom alebo vyšetrovateľmi, aby ste minimalizovali riziko ďalších problémov." }
+        ],
+        "whyUseForm": {
+          "title": "Prečo použiť formulár ScamNemesis?",
+          "text": "Náš formulár zhromažďuje vaše údaje do prehľadnej, stiahnuteľnej PDF správy a súčasne prehľadáva našu databázu podobných prípadov. Ak sa nájdu spojenia, váš prípad je prepojený s inými záznamami a vygeneruje sa analytická správa — úplne zadarmo. Kompletná správa pomáha polícii, bankám a vyšetrovateľom konať rýchlejšie, cieľavedomejšie a efektívnejšie.",
+          "button": "Vyplniť formulár teraz"
+        },
+        "imageCaption": "Zhromažďovanie dôkazov a vyplnenie formulára ScamNemesis"
+      },
+      "step5": {
+        "label": "Krok 5",
+        "title": "Nahláste podvod polícii a získajte oficiálne dokumenty",
+        "paragraphs": [
+          "Okamžite navštívte políciu a prineste všetky dokumenty a dôkazy, ktoré ste doteraz zhromaždili. Pri nahlásení incidentu požiadajte o potvrdenie o podaní hlásenia a kópiu úradného záznamu — tieto dokumenty budete potrebovať v ďalších krokoch.",
+          "Ak je potrebná komunikácia v angličtine (napríklad ak podvod zahŕňal zahraničnú banku), nechajte policajnú správu oficiálne preložiť do angličtiny. Väčšina bánk, krypto búrz a inštitúcií akceptuje iba certifikované preklady, preto je najlepšie to zariadiť čo najskôr."
+        ],
+        "note": "Majte na pamäti, že polícia, najmä v krajinách EÚ a v USA, je často zahltená prípadmi podvodov. Preto môže byť potrebné byť vytrvalý a aktívne žiadať, aby bol váš prípad riešený dôkladnejšie."
+      },
+      "step6": {
+        "label": "Krok 6",
+        "title": "Pokračujte v cielených akciách a zbieraní dôkazov",
+        "paragraphs": [
+          "Ďalšie kroky sú špecifickejšie pre váš individuálny prípad a závisia od vašich možností, situácie a dostupných zdrojov. Jedno vždy platí: pokračujte v zbieraní dôkazov a pozorne sledujte aktivity podvodníka.",
+          "Ak podvodník vie, že mu už nepošlete žiadne peniaze a že viete o podvode, môžete zvážiť zdieľanie svojho príbehu na online fórach a pokúsiť sa nájsť verejne dostupné informácie o ňom. Robte to však iba ak už nie ste v kontakte s podvodníkom.",
+          "Ak s vami podvodník stále komunikuje, skúste udržať konverzáciu a využite ju ako príležitosť získať viac informácií — napríklad o jeho identite, polohe alebo metódach."
+        ],
+        "platformNote": "Na platforme ScamNemesis je váš prípad automaticky prepojený s inými obeťami rovnakého podvodníka a dôkazy sa priebežne aktualizujú — môžete dokonca komunikovať s inými obeťami. Čím viac obetí je prepojených a čím väčší a podrobnejší je prípad, tým vyššiu prioritu mu polícia pravdepodobne priradí.",
+        "imageCaption": "Profesionálna pomoc pri získavaní peňazí po podvode"
+      },
+      "step7": {
+        "label": "Krok 7",
+        "title": "Pravda o službách \"vrátenia peňazí\" – Potrebujete profesionálnu pomoc?",
+        "paragraphs": [
+          "Realita takzvaných služieb \"vrátenia peňazí\" – spoločností, ktoré sľubujú, že vám pomôžu získať ukradnuté peniaze späť – je často veľmi odlišná od ich marketingových tvrdení. Na základe našich skúseností s najväčšími poskytovateľmi a analýzy spätnej väzby od klientov môžeme jasne povedať: vo väčšine prípadov ide o podvody alebo vysoko neetické praktiky.",
+          "Pravdou je, že žiadna služba vám nemôže dať 100% záruku, že vaše peniaze budú vrátené — či už ide o tradičný podvod alebo podvod s kryptomenami. Čo môžete ovplyvniť, je pravdepodobnosť úspechu. Dôkladná analýza, zhromaždené dôkazy a správne právne a technické kroky môžu túto pravdepodobnosť výrazne zvýšiť.",
+          "V reakcii na zneužívanie obetí týmito spoločnosťami sme vytvorili vlastnú službu Money Recovery, ktorá je etická, založená na skutočných právnych a vyšetrovacích postupoch a predovšetkým cenovo dostupná — nie je postavená na prázdnych sľuboch."
+        ],
+        "warning": "Tieto spoločnosti si zvyčajne účtujú 3 000 až 10 000 dolárov, no ich \"práca\" často pozostáva iba zo základnej pomoci s nahlásením podvodu — niečo, čo zvládnete sami. Väčšina neanalyzuje dôkazy, nepoužíva spravodajské techniky alebo OSINT kritické pre vyšetrovanie a neprepája súvisiace prípady ani obete. Často dokonca vedia alebo tušia, že váš prípad je neobnoviteľný, a napriek tomu si berú vaše peniaze a robia falošné sľuby o vrátení — čo nikto nemôže skutočne zaručiť.",
+        "readMore": "Prečítajte si viac o našom prístupe"
+      }
+    },
+    "whatElse": {
+      "title": "Čo ešte môžem urobiť?",
+      "optionA": {
+        "title": "Použite službu Kontrolór podvodov",
+        "description": "Skúste identifikovať podvodníka pomocou nášho Kontrolóra podvodov. Môže vám to pomôcť získať informácie a spojiť sa s inými obeťami.",
+        "button": "Otvoriť Kontrolór podvodov"
+      },
+      "optionB": {
+        "title": "Konzultujte s kvalifikovaným právnikom",
+        "description": "Kontaktujte skúseného právnika vo vašej krajine a požiadajte o úvodnú konzultáciu. Pomôže vám to určiť, či je právne konanie možné a akú úroveň pomoci môžete očakávať."
+      },
+      "lawyerTips": {
+        "title": "Dôležité tipy o právnikoch:",
+        "intro": "Buďte opatrní a vyberte si skutočne skúseného odborníka. Kompetentný právnik preskúma všetky právne možnosti na získanie vašich prostriedkov späť vrátane prispôsobených prístupov v závislosti od vašej konkrétnej situácie.",
+        "examples": [
+          { "type": "info", "title": "Príklad 1:", "text": "Ak bola vaša kreditná karta odcudzená, ale SMS overovací kód nebol použitý, banka vám peniaze s najväčšou pravdepodobnosťou vráti." },
+          { "type": "warning", "title": "Príklad 2:", "text": "Ak podvodník získal vašu kartu a nalomil vás na poskytnutie overovacieho kódu (phishing), budú potrebné alternatívne metódy vrátenia, pretože banka alebo vydavateľ karty môže odmietnuť vrátenie." },
+          { "type": "error", "title": "Príklad 3:", "text": "Ak ste urobili štandardný bankový prevod do internetového obchodu, ale nedostali ste tovar alebo služby, banka to môže považovať za obchodný spor a odmietnuť vám vrátenie. V takýchto prípadoch sú potrebné iné metódy vrátenia." }
+        ]
+      }
+    },
+    "cta": {
+      "title": "Dodržiavaním týchto krokov môžete maximalizovať svoje šance na získanie ukradnutých peňazí.",
+      "description": "Začnite vyplnením nášho komplexného formulára na nahlásenie. Je zadarmo, pomôže vám usporiadať dôkazy a vygeneruje profesionálnu PDF správu, ktorú môžete použiť s políciou a bankami.",
+      "fillFormButton": "Vyplniť formulár hlásenia",
+      "contactButton": "Kontaktujte nás pre pomoc"
+    }
   }
 }

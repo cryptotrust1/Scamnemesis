@@ -1075,5 +1075,153 @@
       "scamCheckerButton": "Use Scam Checker",
       "freeTrainingButton": "Free Training"
     }
+  },
+  "iWasScammed": {
+    "hero": {
+      "badges": {
+        "urgent": "Urgent Help",
+        "expert": "Expert Guidance",
+        "timeCritical": "Time-Critical Steps"
+      },
+      "title": "Was Scammed: Get Your Money Back.",
+      "titleHighlight": "Report Fraud Now.",
+      "description": "If you've become a victim of an online scam, investment fraud, or any form of deception, you're not alone. The first moments after realizing you've been scammed are critical. Our system was created specifically for such cases to provide you with effective help.",
+      "followGuide": "Please follow the step-by-step guide below first, and only then contact us.",
+      "contactButton": "Contact Us",
+      "fillFormButton": "Fill out the form",
+      "stats": {
+        "steps": { "value": "7", "label": "Critical Steps" },
+        "time": { "value": "24h", "label": "Time-Critical" },
+        "report": { "value": "Free", "label": "PDF Report" },
+        "database": { "value": "612M+", "label": "Database" }
+      }
+    },
+    "intro": {
+      "title": "What to Do After a Scam? A Practical Guide",
+      "description": "If you've become a victim of a scam, it's important to act quickly and systematically. Below, you'll find the exact step-by-step procedure you should follow — it was specifically developed by experts, and every step has a purpose and is crucial.",
+      "findBelow": "— find it below."
+    },
+    "steps": {
+      "step1": {
+        "label": "Step 1",
+        "title": "Immediately Block the Scammer's Access to Your Money",
+        "description": "The first and most crucial step is to stop further losses as quickly as possible.",
+        "actions": [
+          { "icon": "card", "text": "If your card details were stolen, block the card immediately — through your bank's mobile app or by calling their hotline." },
+          { "icon": "lock", "text": "If your crypto account was hacked, contact the exchange right away via email and ask them to freeze your account." },
+          { "icon": "shield", "text": "Take every possible action to ensure the scammer can no longer access your funds." }
+        ],
+        "tip": {
+          "title": "⚠️ Important tip:",
+          "text": "If you are still in contact with the scammer, do not reveal that you know you've been scammed. Pretend you don't understand why something isn't working (e.g., a payment attempt). This keeps the scammer engaged and gives you more time to act."
+        },
+        "imageAlt": "I Was Scammed – Immediate Action and Blocking the Scammer",
+        "imageCaption": "Speed is everything when it comes to fraud recovery. The faster you act, the higher your chances of stopping further damage and potentially recovering your funds."
+      },
+      "step2": {
+        "label": "Step 2",
+        "title": "Create a Focused Environment to Solve the Problem",
+        "description": "Dealing with a scam requires your full attention and a clear mind.",
+        "actions": [
+          { "icon": "users", "text": "If you have children, ask relatives or friends to look after them for a few hours" },
+          { "icon": "clock", "text": "If you are at work, talk to your employer and request to leave early or take a short leave." }
+        ],
+        "note": "The fewer distractions you have, the faster and more effectively you can act. In cases like this, every minute counts — the sooner you respond, the higher the chance of blocking transfers and stopping the scammer.",
+        "imageCaption": "How to Focus and Act Effectively After a Scam"
+      },
+      "step3": {
+        "label": "Step 3",
+        "title": "Officially Report the Incident",
+        "description": "Even if you have already blocked your card or account via the app, you must also report the incident officially:",
+        "actions": [
+          { "icon": "phone", "text": "Contact your bank or exchange directly by phone or email" },
+          { "icon": "file", "text": "Describe the entire situation in detail" },
+          { "icon": "check", "text": "Request written confirmation of your report" }
+        ],
+        "important": "Complete this step even if the scammer already has your money, but you haven't reported it yet.",
+        "imageCaption": "Officially Reporting a Scam to the Police and Bank"
+      },
+      "step4": {
+        "label": "STEP 4",
+        "title": "Start Collecting Evidence and Fill Out Our Form",
+        "description": "Once you have stopped further payments, start systematically gathering all available evidence — this will significantly increase your chances of identifying the scammer and recovering your money. Follow these steps:",
+        "evidenceItems": [
+          { "icon": "file", "title": "Fill out our form as thoroughly as possible.", "text": "It serves as a practical guide to help you capture all essential information and automatically generates a complete PDF report, which can be provided to the police or other relevant authorities." },
+          { "icon": "camera", "title": "Preserve all conversations:", "text": "take screenshots of chats, emails (remember to include the full email header), and other text messages, including dates and times of communication." },
+          { "icon": "card", "title": "Secure bank records:", "text": "archive all relevant bank statements, payment confirmations, and transaction details." },
+          { "icon": "phone", "title": "Document phone calls or app calls:", "text": "record the date, time, and a brief summary of the conversation. (Note: always check local laws before recording calls.)" },
+          { "icon": "video", "title": "Collect video evidence in original quality.", "text": "If you met the scammer in person and it is safe, create a video record of the meeting. If you met in a public place with cameras, request the operator to archive the footage. Even if they do not provide it directly, the police can officially request it after you report the case." },
+          { "icon": "fingerprint", "title": "Record the scammer's identifiers:", "text": "save all available data such as domains, email addresses, phone numbers, social media profiles, IP addresses (if known), and any other relevant information." },
+          { "icon": "ban", "title": "Do not reveal to the scammer that you are aware of the fraud.", "text": "Maintain contact only if strategically necessary and safe. Never give them information that could help them escape with your money, and do not disclose any personal details — such as your home address or location." },
+          { "icon": "harddrive", "title": "Preserve metadata:", "text": "when saving screenshots and files, keep the originals to retain timestamps and other forensic details. If you need to highlight or edit something (e.g., mark important details), make a copy and edit the copy — otherwise, you may overwrite critical metadata that is essential for forensic analysis." },
+          { "icon": "filecheck", "title": "Handle all evidence with maximum care:", "text": "each case may involve different types of evidence — digital (screenshots, emails, logs, IP data, videos) and physical (documents, paper confirmations, SIM cards, hardware wallets). Document everything thoroughly while preserving the integrity of the original materials. If any handling occurs, record who handled it and when (chain of custody principle)." },
+          { "icon": "scale", "title": "Legal and security note:", "text": "if you encounter sensitive or potentially dangerous information, consult an experienced lawyer or investigators to minimize the risk of further issues." }
+        ],
+        "whyUseForm": {
+          "title": "Why use the ScamNemesis form?",
+          "text": "Our form collects your data into a clear, downloadable PDF report and simultaneously scans our database for similar cases. If connections are found, your case is linked with other records and an analytical report is generated — completely free of charge. The complete report helps police, banks, and investigators act faster, more purposefully, and more effectively.",
+          "button": "Fill Out the Form Now"
+        },
+        "imageCaption": "Collecting Evidence and Filling Out the ScamNemesis Form"
+      },
+      "step5": {
+        "label": "Step 5",
+        "title": "Report the Fraud to the Police and Obtain Official Documents",
+        "paragraphs": [
+          "Visit the police immediately and bring all the documents and evidence you have collected so far. When reporting the incident, request a confirmation of the report and a copy of the official record – you will need these documents in the next steps.",
+          "If communication in English is required (for example, if the fraud involved a foreign bank), have the police report officially translated into English. Most banks, crypto exchanges, and institutions accept only certified translations, so it is best to arrange this as early as possible. Once you have the translation, send it to all involved parties – the bank, crypto exchange, and any other relevant institutions."
+        ],
+        "note": "Keep in mind that the police, especially in EU countries and the United States, are often overwhelmed with fraud cases. Therefore, it may be necessary to be persistent and actively request that your case be handled more thoroughly."
+      },
+      "step6": {
+        "label": "Step 6",
+        "title": "Continue Targeted Actions and Evidence Collection",
+        "paragraphs": [
+          "The next steps are more specific to your individual case and depend on your options, situation, and available resources. One thing always applies: keep collecting evidence and closely monitor the scammer's activities.",
+          "If the scammer knows that you will not send any more money and that you are aware of the fraud, you may consider sharing your story on online forums and trying to find publicly available information about them. However, do this only if you are no longer in contact with the scammer.",
+          "If the scammer is still communicating with you, try to maintain the conversation and use it as an opportunity to gather more information — for example, about their identity, location, or methods. In more complex cases, consider working with professionals who can help uncover the scammer's identity, obtain a confession, or secure additional evidence."
+        ],
+        "platformNote": "On the ScamNemesis platform, your case is automatically linked with other victims of the same scammer, and the evidence is continuously updated — you can even communicate with other victims. The more victims are connected and the larger and more detailed the case becomes, the higher priority the police are likely to assign to it.",
+        "imageCaption": "Professional Assistance for Recovering Money After a Scam"
+      },
+      "step7": {
+        "label": "Step 7",
+        "title": "The Truth About \"Money Recovery\" Services – Do You Need Professional Help?",
+        "paragraphs": [
+          "The reality of so-called \"money recovery\" services – companies that promise to help you get your stolen money back – is often very different from their marketing claims. Based on our experience with the largest providers and analysis of client feedback, we can say clearly: in most cases, these are scams or highly unethical practices.",
+          "The truth is that no service can give you a 100% guarantee that your money will be returned – whether it's a traditional scam or cryptocurrency fraud. What you can influence is the likelihood of success. Thorough analysis, collected evidence, and proper legal and technical steps can significantly increase this probability.",
+          "In response to the exploitation of victims by these companies, we created our own Money Recovery service, which is ethical, based on real legal and investigative procedures, and most importantly, affordable – not built on empty promises."
+        ],
+        "warning": "These companies typically charge $3,000 to $10,000, yet their \"work\" often consists only of basic assistance with reporting the fraud – something you can handle yourself. Most do not analyze evidence, use intelligence or OSINT techniques critical for investigations, and do not link related cases or victims. Often, they even know or suspect that your case is unrecoverable, yet they still take your money and make false promises of refunds – which no one can truly guarantee.",
+        "readMore": "Read more about our approach"
+      }
+    },
+    "whatElse": {
+      "title": "What else can I do?",
+      "optionA": {
+        "title": "Use the Scam Checker service",
+        "description": "Try to identify the scammer using our Scam Checker. This can help you gather intelligence and connect with other victims.",
+        "button": "Open Scam Checker"
+      },
+      "optionB": {
+        "title": "Consult a qualified lawyer",
+        "description": "Contact an experienced attorney in your home country and request an initial consultation. This will help you determine whether legal action is possible and what level of assistance to expect."
+      },
+      "lawyerTips": {
+        "title": "Important tips about lawyers:",
+        "intro": "Be cautious and choose a truly experienced professional. A competent lawyer will review all legal options to recover your funds, including tailored approaches depending on your specific situation.",
+        "examples": [
+          { "type": "info", "title": "Example 1:", "text": "If your credit card was stolen but the SMS verification code was not used, the bank will most likely refund your money." },
+          { "type": "warning", "title": "Example 2:", "text": "If the scammer obtained your card and tricked you into giving the verification code (phishing), alternative recovery methods will be required, because the bank or card issuer may refuse a refund." },
+          { "type": "error", "title": "Example 3:", "text": "If you made a standard bank transfer to an online shop but did not receive the goods or services, the bank may treat this as a commercial dispute and refuse to refund you. In such cases, other recovery methods are necessary." }
+        ]
+      }
+    },
+    "cta": {
+      "title": "By following these steps, you can maximize your chances of recovering stolen funds.",
+      "description": "Start by filling out our comprehensive reporting form. It's free, it will help you organize your evidence, and it generates a professional PDF report you can use with police and banks.",
+      "fillFormButton": "Fill Out Report Form",
+      "contactButton": "Contact Us for Help"
+    }
   }
 }
