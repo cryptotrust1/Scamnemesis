@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { i18n, type Locale } from '@/i18n/config';
 import '../globals.css';
 import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Footer } from '@/components/layout';
 import { I18nProvider } from '@/lib/i18n/context';
 
 // Use system font stack for reliability - avoids build failures due to font fetch issues
