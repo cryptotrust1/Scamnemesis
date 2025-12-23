@@ -14,6 +14,7 @@ import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
 import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
 import { emailService } from '@/lib/services/email';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 /**
  * Generate a unique case number in format: SN-YYYYMMDD-XXXX
@@ -262,39 +263,40 @@ const createReportSchema = z.object({
  * POST /api/v1/reports - Create a new fraud report
  */
 export async function POST(request: NextRequest) {
-  const requestId = Math.random().toString(36).substring(7);
-  console.log(`[Reports API][${requestId}] ========== NEW REQUEST ==========`);
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'ReportsAPI');
+  log.info('New report submission request');
 
   try {
     // Rate limiting - wrapped in try-catch to prevent unhandled errors
-    console.log(`[Reports API][${requestId}] Step 1: Checking rate limit...`);
+    log.debug('Step 1: Checking rate limit');
     let rateLimitError: Response | null = null;
     try {
       rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
     } catch (rateLimitException) {
-      console.error(`[Reports API][${requestId}] Rate limit check failed:`, rateLimitException);
+      log.error('Rate limit check failed', { error: rateLimitException instanceof Error ? rateLimitException.message : String(rateLimitException) });
       // Continue without rate limiting if the check fails (fail-open for UX)
       // This could happen if Redis is down or rate limit table doesn't exist
     }
     if (rateLimitError) {
-      console.log(`[Reports API][${requestId}] Rate limited - returning 429`);
+      log.warn('Rate limited - returning 429');
       return rateLimitError;
     }
-    console.log(`[Reports API][${requestId}] Rate limit OK`);
+    log.debug('Rate limit OK');
 
     // Authentication (optional - allows anonymous submissions)
-    console.log(`[Reports API][${requestId}] Step 2: Checking authentication...`);
+    log.debug('Step 2: Checking authentication');
     const auth = await optionalAuth(request);
-    console.log(`[Reports API][${requestId}] Auth result: user=${auth.user?.sub || 'none'}, apiKey=${auth.apiKey?.id || 'none'}`);
+    log.debug('Auth result', { user: auth.user?.sub || 'none', apiKey: auth.apiKey?.id || 'none' });
 
     // Parse and validate body
-    console.log(`[Reports API][${requestId}] Step 3: Parsing JSON body...`);
+    log.debug('Step 3: Parsing JSON body');
     let body;
     try {
       body = await request.json();
-      console.log(`[Reports API][${requestId}] JSON parsed successfully`);
+      log.debug('JSON parsed successfully');
     } catch (parseError) {
-      console.error(`[Reports API][${requestId}] JSON parse error:`, parseError);
+      log.error('JSON parse error', { error: parseError instanceof Error ? parseError.message : String(parseError) });
       return NextResponse.json(
         { error: 'parse_error', message: 'Invalid JSON in request body' },
         { status: 400 }
@@ -302,33 +304,29 @@ export async function POST(request: NextRequest) {
     }
 
     // Log incoming request for debugging (sanitized - no sensitive data in logs)
-    console.log(`[Reports API][${requestId}] Incoming report:`, JSON.stringify({
-      incident: { fraud_type: body.incident?.fraud_type, date: body.incident?.date },
-      has_perpetrator: !!body.perpetrator,
-      has_digital_footprints: !!body.digital_footprints,
-      has_financial: !!body.financial,
-      has_crypto: !!body.crypto,
-      has_company: !!body.company,
-      has_vehicle: !!body.vehicle,
-      evidence_count: body.evidence?.length || 0,
-      reporter_email: body.reporter?.email ? '***@***' : 'none',
-    }));
+    log.info('Incoming report', {
+      fraudType: body.incident?.fraud_type,
+      date: body.incident?.date,
+      hasPerpetrator: !!body.perpetrator,
+      hasDigitalFootprints: !!body.digital_footprints,
+      hasFinancial: !!body.financial,
+      hasCrypto: !!body.crypto,
+      hasCompany: !!body.company,
+      hasVehicle: !!body.vehicle,
+      evidenceCount: body.evidence?.length || 0,
+      hasReporterEmail: !!body.reporter?.email,
+    });
 
-    console.log(`[Reports API][${requestId}] Step 4: Validating with Zod schema...`);
+    log.debug('Step 4: Validating with Zod schema');
     const parsed = createReportSchema.safeParse(body);
 
     if (!parsed.success) {
       const flattenedErrors = parsed.error.flatten();
-      console.error(`[Reports API][${requestId}] Validation failed:`, JSON.stringify({
+      log.warn('Validation failed', {
         fieldErrors: flattenedErrors.fieldErrors,
         formErrors: flattenedErrors.formErrors,
-        issues: parsed.error.issues.map(i => ({
-          path: i.path.join('.'),
-          code: i.code,
-          message: i.message,
-          received: 'received' in i ? i.received : undefined,
-        })),
-      }, null, 2));
+        issueCount: parsed.error.issues.length,
+      });
       return NextResponse.json(
         {
           error: 'validation_error',
@@ -343,30 +341,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Reports API][${requestId}] Validation passed`);
+    log.debug('Validation passed');
     const data = parsed.data;
     let userId = auth.user?.sub || auth.apiKey?.userId;
 
     // Handle anonymous submissions - create or get anonymous user
-    console.log(`[Reports API][${requestId}] Step 5: Processing user (current userId=${userId || 'none'})...`);
+    log.debug('Step 5: Processing user', { currentUserId: userId || 'none' });
     if (!userId) {
       // Find or create anonymous user for this session based on email
       const reporterEmail = data.reporter.email || 'anonymous@scamnemesis.com';
-      console.log(`[Reports API][${requestId}] Reporter data:`, JSON.stringify({
-        email: reporterEmail ? `${reporterEmail.substring(0, 3)}***` : 'none',
-        name: data.reporter.name ? `${data.reporter.name.substring(0, 3)}***` : 'none',
+      log.debug('Processing anonymous reporter', {
+        hasEmail: !!reporterEmail,
+        hasName: !!data.reporter.name,
         hasPhone: !!data.reporter.phone,
-      }));
-      console.log(`[Reports API][${requestId}] Creating/finding anonymous user for email: ${reporterEmail ? '***@***' : 'anonymous'}`);
+      });
 
       try {
         // First, test database connection
-        console.log(`[Reports API][${requestId}] Testing database connection...`);
+        log.debug('Testing database connection');
         const dbTest = await prisma.$queryRaw`SELECT 1 as test`;
-        console.log(`[Reports API][${requestId}] Database connection OK:`, dbTest);
+        log.debug('Database connection OK', { result: dbTest });
 
         // Check if user already exists
-        console.log(`[Reports API][${requestId}] Checking if user exists...`);
+        log.debug('Checking if user exists');
         const existingUser = await prisma.user.findUnique({
           where: { email: reporterEmail },
           select: { id: true, email: true },
@@ -374,10 +371,10 @@ export async function POST(request: NextRequest) {
 
         if (existingUser) {
           userId = existingUser.id;
-          console.log(`[Reports API][${requestId}] Found existing user: ${userId}`);
+          log.debug('Found existing user', { userId });
         } else {
           // Create new user
-          console.log(`[Reports API][${requestId}] Creating new user...`);
+          log.debug('Creating new user');
           const randomPasswordHash = randomBytes(32).toString('hex');
           const newUser = await prisma.user.create({
             data: {
@@ -390,10 +387,10 @@ export async function POST(request: NextRequest) {
             },
           });
           userId = newUser.id;
-          console.log(`[Reports API][${requestId}] Created new user: ${userId}`);
+          log.info('Created new anonymous user', { userId });
         }
 
-        console.log(`[Reports API][${requestId}] User processing complete: ${userId}`);
+        log.debug('User processing complete', { userId });
       } catch (userError) {
         // Enhanced error logging for debugging
         const userErrorDetails = {
@@ -402,7 +399,7 @@ export async function POST(request: NextRequest) {
           code: userError && typeof userError === 'object' && 'code' in userError ? (userError as { code: string }).code : undefined,
           meta: userError && typeof userError === 'object' && 'meta' in userError ? (userError as { meta: unknown }).meta : undefined,
         };
-        console.error(`[Reports API][${requestId}] Failed to create/find anonymous user:`, JSON.stringify(userErrorDetails, null, 2));
+        log.error('Failed to create/find anonymous user', userErrorDetails);
         return NextResponse.json(
           {
             error: 'user_error',
@@ -421,12 +418,12 @@ export async function POST(request: NextRequest) {
     // Generate tracking token and case number
     const trackingToken = generateTrackingToken();
     const caseNumber = generateCaseNumber();
-    console.log(`[Reports API][${requestId}] Generated caseNumber=${caseNumber}, trackingToken=${trackingToken.substring(0, 8)}...`);
+    log.info('Generated tracking identifiers', { caseNumber, trackingTokenPrefix: trackingToken.substring(0, 8) });
 
     // Create report with relations
-    console.log(`[Reports API][${requestId}] Step 6: Creating report in database transaction...`);
+    log.debug('Step 6: Creating report in database transaction');
     const report = await prisma.$transaction(async (tx) => {
-      console.log(`[Reports API][${requestId}] Transaction: Creating main report...`);
+      log.debug('Transaction: Creating main report');
       // Create main report
       const newReport = await tx.report.create({
         data: {
@@ -456,11 +453,11 @@ export async function POST(request: NextRequest) {
           caseNumber,
         },
       });
-      console.log(`[Reports API][${requestId}] Transaction: Main report created id=${newReport.id}`);
+      log.debug('Transaction: Main report created', { reportId: newReport.id });
 
       // Create perpetrator if provided
       if (data.perpetrator) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating perpetrator...`);
+        log.debug('Transaction: Creating perpetrator');
         await tx.perpetrator.create({
           data: {
             reportId: newReport.id,
@@ -486,7 +483,7 @@ export async function POST(request: NextRequest) {
 
       // Create digital footprint if provided
       if (data.digital_footprints) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating digital footprint...`);
+        log.debug('Transaction: Creating digital footprint');
         await tx.digitalFootprint.create({
           data: {
             reportId: newReport.id,
@@ -512,7 +509,7 @@ export async function POST(request: NextRequest) {
 
       // Create financial info if provided
       if (data.financial) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating financial info...`);
+        log.debug('Transaction: Creating financial info');
         await tx.financialInfo.create({
           data: {
             reportId: newReport.id,
@@ -535,7 +532,7 @@ export async function POST(request: NextRequest) {
 
       // Create crypto info if provided
       if (data.crypto) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating crypto info...`);
+        log.debug('Transaction: Creating crypto info');
         await tx.cryptoInfo.create({
           data: {
             reportId: newReport.id,
@@ -551,7 +548,7 @@ export async function POST(request: NextRequest) {
 
       // Create company info if provided
       if (data.company) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating company info...`);
+        log.debug('Transaction: Creating company info');
         await tx.companyInfo.create({
           data: {
             reportId: newReport.id,
@@ -567,7 +564,7 @@ export async function POST(request: NextRequest) {
 
       // Create vehicle info if provided
       if (data.vehicle) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating vehicle info...`);
+        log.debug('Transaction: Creating vehicle info');
         await tx.vehicleInfo.create({
           data: {
             reportId: newReport.id,
@@ -583,7 +580,7 @@ export async function POST(request: NextRequest) {
 
       // Create evidence items
       if (data.evidence && data.evidence.length > 0) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating ${data.evidence.length} evidence items...`);
+        log.debug('Transaction: Creating evidence items', { count: data.evidence.length });
         await tx.evidence.createMany({
           data: data.evidence.map((e) => ({
             reportId: newReport.id,
@@ -596,7 +593,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Create audit log
-      console.log(`[Reports API][${requestId}] Transaction: Creating audit log...`);
+      log.debug('Transaction: Creating audit log');
       await tx.auditLog.create({
         data: {
           userId,
@@ -608,13 +605,13 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      console.log(`[Reports API][${requestId}] Transaction: Complete, returning report`);
+      log.debug('Transaction: Complete');
       return newReport;
     });
-    console.log(`[Reports API][${requestId}] Step 6 complete: Report created id=${report.id}`);
+    log.info('Report created successfully', { reportId: report.id });
 
     // Run duplicate detection (async, non-blocking)
-    console.log(`[Reports API][${requestId}] Step 7: Running duplicate detection...`);
+    log.debug('Step 7: Running duplicate detection');
     let duplicateResult = {
       hasDuplicates: false,
       clusterId: null as string | null,
@@ -624,20 +621,20 @@ export async function POST(request: NextRequest) {
 
     try {
       duplicateResult = await runDuplicateDetection(report.id);
-      console.log(`[Reports API][${requestId}] Duplicate detection complete: ${duplicateResult.totalMatches} matches`);
+      log.info('Duplicate detection complete', { matches: duplicateResult.totalMatches });
     } catch (duplicateError) {
       // Log but don't fail the request - duplicate detection is not critical
-      console.error(`[Reports API][${requestId}] Duplicate detection error (non-fatal):`, duplicateError);
+      log.warn('Duplicate detection error (non-fatal)', { error: duplicateError instanceof Error ? duplicateError.message : String(duplicateError) });
     }
 
     // Send confirmation email if reporter provided a valid email (not anonymous)
-    console.log(`[Reports API][${requestId}] Step 8: Processing email...`);
+    log.debug('Step 8: Processing email');
     const reporterEmail = data.reporter.email;
     let emailSentSuccessfully = false;
     let emailError: string | undefined;
 
     if (reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com' && reporterEmail.includes('@')) {
-      console.log(`[Reports API][${requestId}] Sending confirmation email...`);
+      log.debug('Sending confirmation email');
       try {
         const emailResult = await emailService.sendReportConfirmation({
           reporterName: data.reporter.name || 'Reporter',
@@ -657,23 +654,23 @@ export async function POST(request: NextRequest) {
         });
 
         if (emailResult.success) {
-          console.log(`[Reports API][${requestId}] Confirmation email sent successfully`);
+          log.info('Confirmation email sent successfully');
           emailSentSuccessfully = true;
         } else {
-          console.warn(`[Reports API][${requestId}] Failed to send confirmation email: ${emailResult.error}`);
+          log.warn('Failed to send confirmation email', { error: emailResult.error });
           emailError = emailResult.error;
         }
       } catch (emailException) {
         // Log but don't fail the request - email is not critical
-        console.error(`[Reports API][${requestId}] Email sending error (non-fatal):`, emailException);
+        log.warn('Email sending error (non-fatal)', { error: emailException instanceof Error ? emailException.message : String(emailException) });
         emailError = emailException instanceof Error ? emailException.message : 'Unknown error';
       }
     } else {
-      console.log(`[Reports API][${requestId}] Skipping email (anonymous or no email)`);
+      log.debug('Skipping email (anonymous or no email)');
     }
 
     // Send notification to admin users about new report
-    console.log(`[Reports API][${requestId}] Step 8b: Sending admin notifications...`);
+    log.debug('Step 8b: Sending admin notifications');
     try {
       // Get all admin and super admin users
       const adminUsers = await prisma.user.findMany({
@@ -686,7 +683,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (adminUsers.length > 0) {
-        console.log(`[Reports API][${requestId}] Notifying ${adminUsers.length} admin(s)...`);
+        log.debug('Notifying admins', { count: adminUsers.length });
 
         // Send notification to each admin (non-blocking)
         const adminNotifications = adminUsers.map(admin =>
@@ -696,7 +693,7 @@ export async function POST(request: NextRequest) {
             data.incident.summary.substring(0, 100),
             data.incident.fraud_type
           ).catch(err => {
-            console.error(`[Reports API][${requestId}] Failed to notify admin ${admin.email}:`, err);
+            log.warn('Failed to notify admin', { email: admin.email, error: err.message });
             return { success: false, error: err.message };
           })
         );
@@ -704,16 +701,16 @@ export async function POST(request: NextRequest) {
         // Wait for all notifications (but don't fail if some fail)
         const results = await Promise.allSettled(adminNotifications);
         const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as { success: boolean }).success).length;
-        console.log(`[Reports API][${requestId}] Admin notifications sent: ${successCount}/${adminUsers.length}`);
+        log.info('Admin notifications sent', { success: successCount, total: adminUsers.length });
       } else {
-        console.log(`[Reports API][${requestId}] No active admin users to notify`);
+        log.debug('No active admin users to notify');
       }
     } catch (adminNotifyError) {
       // Log but don't fail - admin notification is not critical
-      console.error(`[Reports API][${requestId}] Admin notification error (non-fatal):`, adminNotifyError);
+      log.warn('Admin notification error (non-fatal)', { error: adminNotifyError instanceof Error ? adminNotifyError.message : String(adminNotifyError) });
     }
 
-    console.log(`[Reports API][${requestId}] Step 9: Returning success response`);
+    log.info('Request completed successfully');
     return NextResponse.json(
       {
         id: report.id,
@@ -747,13 +744,12 @@ export async function POST(request: NextRequest) {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    console.error(`[Reports API][${requestId}] ========== ERROR ==========`);
-    console.error(`[Reports API][${requestId}] Create report error:`, JSON.stringify(errorDetails, null, 2));
+    log.error('Create report error', errorDetails);
 
     // Prisma-specific error handling
     if (error && typeof error === 'object' && 'code' in error) {
       const prismaError = error as { code: string; meta?: unknown };
-      console.error(`[Reports API][${requestId}] Prisma error code:`, prismaError.code, 'meta:', prismaError.meta);
+      log.error('Prisma error', { code: prismaError.code, meta: prismaError.meta });
 
       // Handle specific Prisma errors
       if (prismaError.code === 'P2002') {
@@ -794,6 +790,9 @@ export async function POST(request: NextRequest) {
  * GET /api/v1/reports - List reports
  */
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'ReportsAPI');
+
   try {
     // Rate limiting
     const rateLimitError = await requireRateLimit(request, 100);
@@ -884,11 +883,18 @@ export async function GET(request: NextRequest) {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    console.error('[Reports API] List reports error:', JSON.stringify(errorDetails, null, 2));
+    log.error('List reports error', errorDetails);
+
+    Sentry.captureException(error, {
+      tags: { api: 'reports', method: 'GET' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
       },
       { status: 500 }
     );
