@@ -110,9 +110,15 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
             <div className="text-sm text-blue-800 dark:text-blue-200">
               <p className="font-medium mb-1">{t('report.financialDetails.infoTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
-                {(t('report.financialDetails.infoItems') as unknown as string[]).map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
+                {(() => {
+                  const items = t('report.financialDetails.infoItems');
+                  if (Array.isArray(items)) {
+                    return items.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ));
+                  }
+                  return null;
+                })()}
               </ul>
             </div>
           </div>
