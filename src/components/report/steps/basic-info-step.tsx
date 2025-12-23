@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BasicInfoForm } from '@/lib/validations/report';
 import { getCountriesWithPriority } from '@/lib/constants/countries';
 import { getCurrenciesWithPriority } from '@/lib/constants/currencies';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface BasicInfoStepProps {
   data: Partial<BasicInfoForm>;
@@ -21,12 +22,15 @@ const currencies = getCurrenciesWithPriority();
 const MAX_DATE = '2099-12-31';
 
 export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
+  const { t, translations } = useTranslation();
+  const fields = translations.report?.fields || {};
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Základné informácie</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.steps.basicInfo.title')}</h2>
         <p className="text-muted-foreground">
-          Zadajte základné údaje o incidente
+          {t('report.steps.basicInfo.description')}
         </p>
       </div>
 
@@ -34,11 +38,11 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         {/* Title */}
         <div className="space-y-2">
           <label htmlFor="title" className="text-sm font-medium">
-            Nadpis hlásenia <span className="text-destructive">*</span>
+            {fields.title || 'Nadpis hlásenia'} <span className="text-destructive">*</span>
           </label>
           <Input
             id="title"
-            placeholder="Stručný a výstižný nadpis (napr. 'Investičný podvod s Bitcoinom')"
+            placeholder={t('report.placeholders.title')}
             value={data.title || ''}
             onChange={(e) => onChange('title', e.target.value)}
             className={errors.title ? 'border-destructive' : ''}
@@ -51,7 +55,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         {/* Description */}
         <div className="space-y-2">
           <label htmlFor="description" className="text-sm font-medium">
-            Podrobný popis <span className="text-destructive">*</span>
+            {fields.description || 'Podrobný popis'} <span className="text-destructive">*</span>
           </label>
           <textarea
             id="description"
