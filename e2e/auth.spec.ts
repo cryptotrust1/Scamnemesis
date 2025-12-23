@@ -30,8 +30,10 @@ test.describe('Authentication', () => {
     });
 
     test('should have link to register page', async ({ page }) => {
-      // Check for register link - look for any link containing register/signup related text or href
-      const registerLink = page.locator('a[href*="register"], a[href*="signup"]').first();
+      // Check for register link within the main content area (not header which is hidden on mobile)
+      // The login page has a register link in CardFooter
+      const mainContent = page.locator('main, .container, [class*="Card"]');
+      const registerLink = mainContent.locator('a[href*="register"], a[href*="signup"]').first();
       if (await registerLink.count() > 0) {
         await expect(registerLink).toBeVisible();
       }
@@ -77,7 +79,9 @@ test.describe('Authentication', () => {
     });
 
     test('should have link to login page', async ({ page }) => {
-      const loginLink = page.locator('a[href*="login"], a[href*="signin"]').first();
+      // Check for login link within the main content area (not header which may be hidden on mobile)
+      const mainContent = page.locator('main, .container, [class*="Card"]');
+      const loginLink = mainContent.locator('a[href*="login"], a[href*="signin"]').first();
       if (await loginLink.count() > 0) {
         await expect(loginLink).toBeVisible();
       }

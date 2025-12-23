@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { User, Mail, Shield, Calendar, CheckCircle, AlertCircle, Save, Loader2 } from 'lucide-react';
 import { useUser, useRequireAuth } from '@/lib/auth/user-context';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
-  const router = useRouter();
   const { user, isLoading: authLoading, refreshUser } = useUser();
   const { isLoading: authCheckLoading } = useRequireAuth('/auth/login');
 
@@ -77,16 +75,6 @@ export default function ProfilePage() {
     } finally {
       setIsResendingVerification(false);
     }
-  };
-
-  // Format date
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('sk-SK', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
   };
 
   // Get role display name
