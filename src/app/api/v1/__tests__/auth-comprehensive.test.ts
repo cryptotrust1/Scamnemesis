@@ -89,7 +89,7 @@ import { emailService } from '@/lib/services/email';
 import { verifyCaptcha, isCaptchaEnabled } from '@/lib/captcha';
 
 // Helper to create mock NextRequest
-function createMockRequest(options: {
+function _createMockRequest(options: {
   method?: string;
   body?: Record<string, unknown>;
   headers?: Record<string, string>;
@@ -628,7 +628,8 @@ describe('Security Edge Cases', () => {
 
   it('should handle unicode in passwords', () => {
     const unicodePassword = 'Passwörd123!';
-    const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
+    // PASSWORD_REGEX pattern used for validation reference
+    const _PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
 
     // Unicode characters should be handled correctly
     expect(unicodePassword.length).toBeGreaterThanOrEqual(9);

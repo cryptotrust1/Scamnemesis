@@ -272,7 +272,7 @@ describe('Search API - Search Modes', () => {
 
   describe('Auto Search Mode', () => {
     it('should use exact mode for emails', () => {
-      const query = 'scammer@example.com';
+      const _query = 'scammer@example.com';
       const detectedType = 'email';
       const expectedMode = detectedType === 'name' ? 'fuzzy' : 'exact';
 
@@ -280,7 +280,7 @@ describe('Search API - Search Modes', () => {
     });
 
     it('should use fuzzy mode for names', () => {
-      const query = 'John Smith';
+      const _query = 'John Smith';
       const detectedType = 'name';
       const expectedMode = detectedType === 'name' ? 'fuzzy' : 'exact';
 
@@ -465,7 +465,7 @@ describe('Search API - Pagination', () => {
       { id: 'report-12' },
     ]);
 
-    const reports = await prisma.report.findMany({ skip: 10, take: 10 });
+    const _reports = await prisma.report.findMany({ skip: 10, take: 10 });
 
     expect(prisma.report.findMany).toHaveBeenCalledWith({ skip: 10, take: 10 });
   });
