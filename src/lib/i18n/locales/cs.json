@@ -553,7 +553,17 @@
     "notFound": "Stránka nebyla nalezena",
     "serverError": "Chyba serveru",
     "unauthorized": "Neautorizovaný přístup",
-    "forbidden": "Přístup odepřen"
+    "forbidden": "Přístup odepřen",
+    "errorPage": {
+      "title": "Něco se pokazilo",
+      "description": "Nastala neočekávaná chyba. Zkuste to prosím znovu.",
+      "tryAgain": "Zkusit znovu"
+    },
+    "notFoundPage": {
+      "title": "Stránka nebyla nalezena",
+      "description": "Stránka, kterou hledáte, neexistuje.",
+      "goHome": "Zpět domů"
+    }
   },
   "footer": {
     "about": "O nás",

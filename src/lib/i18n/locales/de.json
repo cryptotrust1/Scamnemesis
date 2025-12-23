@@ -553,7 +553,17 @@
     "notFound": "Seite nicht gefunden",
     "serverError": "Serverfehler",
     "unauthorized": "Nicht autorisiert",
-    "forbidden": "Zugriff verweigert"
+    "forbidden": "Zugriff verweigert",
+    "errorPage": {
+      "title": "Etwas ist schief gelaufen",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "tryAgain": "Erneut versuchen"
+    },
+    "notFoundPage": {
+      "title": "Seite nicht gefunden",
+      "description": "Die Seite, die Sie suchen, existiert nicht.",
+      "goHome": "Zur Startseite"
+    }
   },
   "footer": {
     "about": "Über uns",

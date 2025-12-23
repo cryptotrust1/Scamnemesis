@@ -662,7 +662,17 @@
     "notFound": "Stránka nebola nájdená",
     "serverError": "Chyba servera",
     "unauthorized": "Neautorizovaný prístup",
-    "forbidden": "Prístup zamietnutý"
+    "forbidden": "Prístup zamietnutý",
+    "errorPage": {
+      "title": "Niečo sa pokazilo",
+      "description": "Nastala neočakávaná chyba. Skúste to prosím znova.",
+      "tryAgain": "Skúsiť znova"
+    },
+    "notFoundPage": {
+      "title": "Stránka nebola nájdená",
+      "description": "Stránka, ktorú hľadáte, neexistuje.",
+      "goHome": "Späť domov"
+    }
   },
   "footer": {
     "about": "O nás",
