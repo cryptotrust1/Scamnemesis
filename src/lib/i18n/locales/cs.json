@@ -571,5 +571,53 @@
     "terms": "Podmínky používání",
     "contact": "Kontakt",
     "copyright": "Všechna práva vyhrazena"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Podpořte naši misi –",
+      "titleHighlight": "Pomozte nám přinést spravedlnost a bezpečnost pro všechny",
+      "description": "Naší vizí je, že spravedlnost a bezpečnost by neměly být vyhrazeny pouze těm, kteří si je mohou finančně dovolit. Chceme, aby naše služby byly dostupné zdarma pro každého – protože každý člověk si zaslouží ochranu, šanci na nový začátek a spravedlivé zacházení.",
+      "subdescription": "Abychom zůstali nezávislí a udržitelní, některé naše služby musí být placené. Děláme však vše pro to, aby většina našich aktivit zůstala zcela bezplatná pro oběti podvodů a pro ty, kteří hledají druhou šanci."
+    },
+    "howToHelp": {
+      "badge": "Jak můžete pomoci",
+      "title": "Váš příspěvek nám umožňuje pokračovat v práci, která má",
+      "titleHighlight": "skutečný dopad",
+      "description": "Můžete nás podpořit jednorázovým nebo pravidelným darem – kreditní kartou nebo kryptoměnou – a vybrat si, který z našich dvou programů chcete podpořit:"
+    },
+    "program1": {
+      "badge": "PROGRAM 1",
+      "title": "Ochrana veřejnosti a boj proti podvodníkům",
+      "features": [
+        "Vývoj a zlepšování našeho bezplatného systému detekce podvodů",
+        "Marketingové a osvětové kampaně k oslovení co největšího počtu lidí",
+        "Právní služby, které nám pomáhají vytvářet bezpečné a efektivní prostředí"
+      ],
+      "impact": "Vaše podpora v tomto fondu znamená méně obětí podvodů a silnější ochranu veřejnosti."
+    },
+    "program2": {
+      "badge": "PROGRAM 2",
+      "title": "Druhá šance pro lidi, kteří chtějí zanechat kriminality",
+      "features": [
+        "Rekvalifikační kurzy a vzdělávací programy pro lidi propuštěné z vězení",
+        "Finanční podpora pro pomoc při hledání práce a opětovném začlenění do společnosti",
+        "Pomoc se základními potřebami při začátku nového života"
+      ],
+      "impact": "Vaše podpora zde mění životy – dává šanci těm, kteří chtějí opustit kriminální prostředí a žít poctivě."
+    },
+    "buttons": {
+      "payByCard": "Zaplatit kartou",
+      "payWithCrypto": "Zaplatit kryptoměnou"
+    },
+    "cta": {
+      "title": "Podpořte nás ještě dnes a staňte se součástí změny.",
+      "description": "Váš příspěvek – bez ohledu na to, jak je velký nebo malý – znamená více, než si dokážete představit. Společně můžeme vybudovat svět, kde je spravedlnost dostupná pro každého.",
+      "transparent": "100% Transparentní",
+      "securePayments": "Bezpečné platby",
+      "everyDonationCounts": "Každý dar se počítá",
+      "haveQuestions": "Máte otázky?",
+      "contactUs": "Kontaktujte nás",
+      "learnMore": "a dozvíte se více o naší práci."
+    }
   }
 }

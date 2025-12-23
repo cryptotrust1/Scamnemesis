@@ -571,5 +571,53 @@
     "terms": "Nutzungsbedingungen",
     "contact": "Kontakt",
     "copyright": "Alle Rechte vorbehalten"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Unterstützen Sie unsere Mission –",
+      "titleHighlight": "Helfen Sie uns, Gerechtigkeit und Sicherheit für alle zu bringen",
+      "description": "Unsere Vision ist, dass Gerechtigkeit und Sicherheit nicht nur denjenigen vorbehalten sein sollten, die sie sich finanziell leisten können. Wir möchten, dass unsere Dienste für alle kostenlos verfügbar sind – denn jeder Mensch verdient Schutz, eine Chance auf einen Neuanfang und faire Behandlung.",
+      "subdescription": "Um unabhängig und nachhaltig zu bleiben, müssen einige unserer Dienste kostenpflichtig sein. Wir tun jedoch alles, damit die Mehrheit unserer Aktivitäten für Betrugsopfer und für diejenigen, die eine zweite Chance suchen, völlig kostenlos bleibt."
+    },
+    "howToHelp": {
+      "badge": "Wie Sie helfen können",
+      "title": "Ihr Beitrag ermöglicht es uns, die Arbeit fortzusetzen, die",
+      "titleHighlight": "echte Wirkung zeigt",
+      "description": "Sie können uns mit einer einmaligen oder wiederkehrenden Spende unterstützen – per Kreditkarte oder Kryptowährung – und wählen, welches unserer beiden Programme Sie unterstützen möchten:"
+    },
+    "program1": {
+      "badge": "PROGRAMM 1",
+      "title": "Öffentlicher Schutz und Bekämpfung von Betrügern",
+      "features": [
+        "Entwicklung und Verbesserung unseres kostenlosen Betrugserkennungssystems",
+        "Marketing- und Aufklärungskampagnen, um so viele Menschen wie möglich zu erreichen",
+        "Rechtsdienstleistungen, die uns helfen, eine sichere und effektive Umgebung zu schaffen"
+      ],
+      "impact": "Ihre Unterstützung in diesem Fonds bedeutet weniger Betrugsopfer und stärkeren öffentlichen Schutz."
+    },
+    "program2": {
+      "badge": "PROGRAMM 2",
+      "title": "Eine zweite Chance für Menschen, die die Kriminalität hinter sich lassen wollen",
+      "features": [
+        "Umschulungskurse und Bildungsprogramme für aus dem Gefängnis entlassene Personen",
+        "Finanzielle Unterstützung bei der Jobsuche und Wiedereingliederung in die Gesellschaft",
+        "Hilfe bei grundlegenden Bedürfnissen beim Start in ein neues Leben"
+      ],
+      "impact": "Ihre Unterstützung hier verändert Leben – sie gibt denjenigen eine Chance, die kriminelle Umgebungen verlassen und ehrlich leben wollen."
+    },
+    "buttons": {
+      "payByCard": "Mit Karte bezahlen",
+      "payWithCrypto": "Mit Krypto bezahlen"
+    },
+    "cta": {
+      "title": "Unterstützen Sie uns noch heute und werden Sie Teil der Veränderung.",
+      "description": "Ihr Beitrag – egal wie groß oder klein – bedeutet mehr, als Sie sich vorstellen können. Gemeinsam können wir eine Welt aufbauen, in der Gerechtigkeit für alle zugänglich ist.",
+      "transparent": "100% Transparent",
+      "securePayments": "Sichere Zahlungen",
+      "everyDonationCounts": "Jede Spende zählt",
+      "haveQuestions": "Haben Sie Fragen?",
+      "contactUs": "Kontaktieren Sie uns",
+      "learnMore": "um mehr über unsere Arbeit zu erfahren."
+    }
   }
 }

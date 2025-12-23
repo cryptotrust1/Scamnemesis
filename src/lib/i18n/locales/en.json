@@ -680,5 +680,53 @@
     "terms": "Terms of Service",
     "contact": "Contact",
     "copyright": "All rights reserved"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Support Our Mission –",
+      "titleHighlight": "Help Us Bring Justice and Safety to Everyone",
+      "description": "Our vision is that justice and safety should not be reserved only for those who can afford them financially. We want our services to be available free of charge to everyone – because every person deserves protection, a chance for a new beginning, and fair treatment.",
+      "subdescription": "To remain independent and sustainable, some of our services must be paid. However, we do everything possible to ensure that the majority of our activities remain completely free for victims of fraud and for those seeking a second chance."
+    },
+    "howToHelp": {
+      "badge": "How You Can Help",
+      "title": "Your contribution allows us to continue work that makes a",
+      "titleHighlight": "real impact",
+      "description": "You can support us with a one-time or recurring donation – by credit card or cryptocurrency – and choose which of our two programs you would like to support:"
+    },
+    "program1": {
+      "badge": "PROGRAM 1",
+      "title": "Public Protection and Fighting Fraudsters",
+      "features": [
+        "Development and improvement of our free fraud detection system",
+        "Marketing and awareness campaigns to reach as many people as possible",
+        "Legal services that help us create a safe and effective environment"
+      ],
+      "impact": "Your support in this fund means fewer victims of fraud and stronger public protection."
+    },
+    "program2": {
+      "badge": "PROGRAM 2",
+      "title": "A Second Chance for People Who Want to Leave Crime Behind",
+      "features": [
+        "Retraining courses and educational programs for people released from prison",
+        "Financial support to help them find jobs and reintegrate into society",
+        "Assistance with basic needs when starting a new life"
+      ],
+      "impact": "Your support here changes lives – giving a chance to those who want to leave criminal environments and live honestly."
+    },
+    "buttons": {
+      "payByCard": "Pay by Card",
+      "payWithCrypto": "Pay with Crypto"
+    },
+    "cta": {
+      "title": "Support us today and become part of the change.",
+      "description": "Your contribution – no matter how big or small – means more than you can imagine. Together we can build a world where justice is accessible to everyone.",
+      "transparent": "100% Transparent",
+      "securePayments": "Secure Payments",
+      "everyDonationCounts": "Every Donation Counts",
+      "haveQuestions": "Have questions?",
+      "contactUs": "Contact us",
+      "learnMore": "to learn more about our work."
+    }
   }
 }
