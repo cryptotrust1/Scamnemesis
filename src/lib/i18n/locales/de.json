@@ -59,6 +59,66 @@
       "oldest": "Älteste",
       "amountHigh": "Höchster Betrag",
       "amountLow": "Niedrigster Betrag"
+    },
+    "filtersPanel": {
+      "title": "Suche & Filter",
+      "reset": "Zurücksetzen",
+      "searchPlaceholder": "Name, Telefon, E-Mail, IBAN, Website...",
+      "searchButton": "Suchen",
+      "searchMode": "Suchmodus",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Exakt",
+      "modeAutoDesc": "Wählt automatisch den besten Modus für Ihre Anfrage",
+      "modeFuzzyDesc": "Toleriert Tippfehler und ähnliche Begriffe",
+      "modeExactDesc": "Sucht nach exakten Übereinstimmungen",
+      "selectFraudType": "Typ auswählen",
+      "selectCountry": "Land auswählen",
+      "selectStatus": "Status auswählen",
+      "countryLocation": "Land / Standort",
+      "showAdvanced": "Datum & Betrag",
+      "hideAdvanced": "Erweiterte Filter ausblenden",
+      "amountFrom": "Betrag ab (EUR)",
+      "amountTo": "Betrag bis (EUR)",
+      "activeFilters": "Aktive Filter:",
+      "from": "Von:",
+      "to": "Bis:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "Alle Typen",
+      "INVESTMENT_FRAUD": "Anlagebetrug",
+      "ROMANCE_SCAM": "Romance Scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Identitätsdiebstahl",
+      "ONLINE_SHOPPING_FRAUD": "E-Commerce-Betrug",
+      "CRYPTOCURRENCY_SCAM": "Krypto-Betrug",
+      "EMPLOYMENT_SCAM": "Jobbetrug",
+      "RENTAL_SCAM": "Mietbetrug",
+      "ADVANCE_FEE_FRAUD": "Vorschussbetrug",
+      "FAKE_CHARITY": "Falsche Wohltätigkeit",
+      "TECH_SUPPORT_SCAM": "Tech-Support-Betrug",
+      "LOTTERY_PRIZE_SCAM": "Lotteriebetrug"
+    },
+    "countries": {
+      "all": "Alle Länder",
+      "SK": "Slowakei",
+      "CZ": "Tschechien",
+      "PL": "Polen",
+      "HU": "Ungarn",
+      "AT": "Österreich",
+      "DE": "Deutschland",
+      "OTHER": "Andere"
+    },
+    "statuses": {
+      "all": "Alle Status",
+      "PENDING": "Ausstehend",
+      "UNDER_REVIEW": "In Prüfung",
+      "APPROVED": "Genehmigt",
+      "REJECTED": "Abgelehnt",
+      "MERGED": "Zusammengeführt",
+      "ARCHIVED": "Archiviert"
     }
   },
   "report": {
@@ -305,6 +365,55 @@
       "address": "Adresse (falls bekannt)",
       "addressPlaceholder": "Straße, Hausnummer, Stadt, PLZ",
       "tip": "Je mehr Informationen Sie angeben, desto besser können wir andere warnen. Alle sensiblen Daten sind geschützt und entsprechend Ihrer Zugriffsebene maskiert."
+    },
+    "companyVehicle": {
+      "title": "Firmen- und Fahrzeuginformationen",
+      "subtitle": "Geben Sie Informationen über die Firma und das Fahrzeug im Zusammenhang mit dem Betrug ein",
+      "companySection": {
+        "title": "Firmeninformationen"
+      },
+      "companyName": "Firmenname",
+      "companyNamePlaceholder": "Zum Beispiel: Example Trading GmbH",
+      "vatTaxId": "USt-IdNr. / Steuernummer / HRB",
+      "vatTaxIdPlaceholder": "Zum Beispiel: DE123456789 oder HRB 12345",
+      "vatTaxIdHint": "Umsatzsteuer-Identifikationsnummer oder Handelsregisternummer",
+      "companyAddress": {
+        "title": "Firmenadresse"
+      },
+      "street": "Straße und Hausnummer",
+      "streetPlaceholder": "Zum Beispiel: Hauptstraße 123",
+      "city": "Stadt",
+      "cityPlaceholder": "Zum Beispiel: Berlin",
+      "postalCode": "PLZ",
+      "postalCodePlaceholder": "Zum Beispiel: 10115",
+      "country": "Land",
+      "countryPlaceholder": "Land auswählen",
+      "allCountries": "Alle Länder",
+      "vehicleSection": {
+        "title": "Fahrzeuginformationen"
+      },
+      "vehicleMake": "Marke",
+      "vehicleMakePlaceholder": "Zum Beispiel: Toyota, BMW, Mercedes",
+      "vehicleModel": "Modell",
+      "vehicleModelPlaceholder": "Zum Beispiel: Camry, X5, C-Klasse",
+      "vehicleColor": "Farbe",
+      "vehicleColorPlaceholder": "Zum Beispiel: Silber, Schwarz, Weiß",
+      "licensePlate": "Kennzeichen",
+      "licensePlatePlaceholder": "Zum Beispiel: B-AB 1234",
+      "vin": "FIN (Fahrzeug-Identifizierungsnummer)",
+      "vinPlaceholder": "17-stellige Fahrzeugkennung",
+      "vinError": "FIN muss genau 17 Zeichen enthalten (Buchstaben A-Z außer I, O, Q und Ziffern 0-9)",
+      "registeredOwner": "Halter",
+      "registeredOwnerPlaceholder": "Vollständiger Name oder Firmenname",
+      "registeredOwnerHint": "Geben Sie den Namen des Halters wie im Fahrzeugschein angegeben ein",
+      "importantInfo": {
+        "title": "Wichtige Informationen:",
+        "items": [
+          "Firmen- und Fahrzeugdaten sind optional, können aber erheblich bei der Identifizierung des Betrügers helfen",
+          "Alle sensiblen Daten sind geschützt und werden nur autorisierten Personen angezeigt",
+          "Wenn Sie Dokumente (Rechnungen, Verträge) haben, fügen Sie diese im Abschnitt Beweise hinzu"
+        ]
+      }
     },
     "evidence": {
       "title": "Beweise & Anhänge",

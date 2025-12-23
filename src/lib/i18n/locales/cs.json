@@ -59,6 +59,66 @@
       "oldest": "Nejstarší",
       "amountHigh": "Nejvyšší částka",
       "amountLow": "Nejnižší částka"
+    },
+    "filtersPanel": {
+      "title": "Vyhledávání a filtry",
+      "reset": "Zrušit",
+      "searchPlaceholder": "Jméno, telefon, email, IBAN, web...",
+      "searchButton": "Vyhledat",
+      "searchMode": "Režim vyhledávání",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Přesné",
+      "modeAutoDesc": "Automaticky zvolí nejlepší režim pro váš dotaz",
+      "modeFuzzyDesc": "Toleruje překlepy a podobné výrazy",
+      "modeExactDesc": "Hledá přesné shody",
+      "selectFraudType": "Vyberte typ",
+      "selectCountry": "Vyberte zemi",
+      "selectStatus": "Vyberte status",
+      "countryLocation": "Země / Lokalita",
+      "showAdvanced": "Datum a částka",
+      "hideAdvanced": "Skrýt pokročilé filtry",
+      "amountFrom": "Částka od (EUR)",
+      "amountTo": "Částka do (EUR)",
+      "activeFilters": "Aktivní filtry:",
+      "from": "Od:",
+      "to": "Do:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "Všechny typy",
+      "INVESTMENT_FRAUD": "Investiční podvod",
+      "ROMANCE_SCAM": "Romance scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Krádež identity",
+      "ONLINE_SHOPPING_FRAUD": "E-commerce podvod",
+      "CRYPTOCURRENCY_SCAM": "Krypto podvod",
+      "EMPLOYMENT_SCAM": "Pracovní podvod",
+      "RENTAL_SCAM": "Podvod s pronájmem",
+      "ADVANCE_FEE_FRAUD": "Podvod s půjčkou",
+      "FAKE_CHARITY": "Falešná charita",
+      "TECH_SUPPORT_SCAM": "Tech support scam",
+      "LOTTERY_PRIZE_SCAM": "Loterijní podvod"
+    },
+    "countries": {
+      "all": "Všechny země",
+      "SK": "Slovensko",
+      "CZ": "Česká republika",
+      "PL": "Polsko",
+      "HU": "Maďarsko",
+      "AT": "Rakousko",
+      "DE": "Německo",
+      "OTHER": "Jiné"
+    },
+    "statuses": {
+      "all": "Všechny stavy",
+      "PENDING": "Čeká na schválení",
+      "UNDER_REVIEW": "V procesu schvalování",
+      "APPROVED": "Schváleno",
+      "REJECTED": "Zamítnuto",
+      "MERGED": "Sloučeno",
+      "ARCHIVED": "Archivováno"
     }
   },
   "report": {
@@ -305,6 +365,55 @@
       "address": "Adresa (pokud je známá)",
       "addressPlaceholder": "Ulice, číslo, město, PSČ",
       "tip": "Čím více informací poskytnete, tím lépe budeme moci varovat ostatní. Všechny citlivé údaje jsou chráněné a maskované podle vaší úrovně přístupu."
+    },
+    "companyVehicle": {
+      "title": "Informace o firmě a vozidle",
+      "subtitle": "Zadejte údaje o firmě a vozidle souvisejících s podvodem",
+      "companySection": {
+        "title": "Informace o firmě"
+      },
+      "companyName": "Název firmy",
+      "companyNamePlaceholder": "Například: Example Trading s.r.o.",
+      "vatTaxId": "IČO / DIČ / VAT ID",
+      "vatTaxIdPlaceholder": "Například: CZ12345678 nebo 12345678",
+      "vatTaxIdHint": "Identifikační číslo organizace nebo daňové identifikační číslo",
+      "companyAddress": {
+        "title": "Adresa firmy"
+      },
+      "street": "Ulice a číslo",
+      "streetPlaceholder": "Například: Hlavní 123",
+      "city": "Město",
+      "cityPlaceholder": "Například: Praha",
+      "postalCode": "PSČ",
+      "postalCodePlaceholder": "Například: 11000",
+      "country": "Země",
+      "countryPlaceholder": "Vyberte zemi",
+      "allCountries": "Všechny země",
+      "vehicleSection": {
+        "title": "Informace o vozidle"
+      },
+      "vehicleMake": "Značka",
+      "vehicleMakePlaceholder": "Například: Toyota, BMW, Škoda",
+      "vehicleModel": "Model",
+      "vehicleModelPlaceholder": "Například: Camry, X5, Octavia",
+      "vehicleColor": "Barva",
+      "vehicleColorPlaceholder": "Například: Stříbrná, Černá, Bílá",
+      "licensePlate": "SPZ (Státní poznávací značka)",
+      "licensePlatePlaceholder": "Například: 1A2 3456",
+      "vin": "VIN číslo (Vehicle Identification Number)",
+      "vinPlaceholder": "17znakový identifikátor vozidla",
+      "vinError": "VIN musí obsahovat přesně 17 znaků (písmena A-Z kromě I, O, Q a číslice 0-9)",
+      "registeredOwner": "Registrovaný vlastník",
+      "registeredOwnerPlaceholder": "Jméno a příjmení nebo název firmy",
+      "registeredOwnerHint": "Zadejte jméno vlastníka podle technického průkazu vozidla",
+      "importantInfo": {
+        "title": "Důležité informace:",
+        "items": [
+          "Údaje o firmě a vozidle jsou volitelné, ale mohou výrazně pomoci při identifikaci podvodníka",
+          "Všechny citlivé údaje jsou chráněné a zobrazované pouze oprávněným osobám",
+          "Pokud máte dokumenty (faktury, smlouvy), přidejte je v sekci Důkazy"
+        ]
+      }
     },
     "evidence": {
       "title": "Důkazy a přílohy",
