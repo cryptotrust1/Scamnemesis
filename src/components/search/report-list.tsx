@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import { MapPin, Calendar, DollarSign, AlertTriangle, Users, Phone, Mail, User, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatCurrency } from '@/lib/utils';
-import { useTranslation } from '@/lib/i18n/context';
 
 export interface Report {
   id: string;
@@ -75,7 +74,6 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 
 export function ReportList({ reports, isLoading }: ReportListProps) {
   const params = useParams();
-  const { t } = useTranslation();
   const locale = (params?.locale as string) || 'en';
 
   if (isLoading) {

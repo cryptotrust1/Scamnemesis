@@ -126,8 +126,8 @@ const breadcrumbSchema = {
   ],
 };
 
-// Types for translations
-interface WarningSign {
+// Types for translations (prefixed with _ as they're used implicitly via tv() typed arrays)
+interface _WarningSign {
   title: string;
   description: string;
 }
@@ -137,13 +137,13 @@ interface Tactic {
   description: string;
 }
 
-interface ScamCategory {
+interface _ScamCategory {
   title: string;
   description: string;
   tips: string[];
 }
 
-interface ActionStep {
+interface _ActionStep {
   title: string;
   description: string;
   actions: string[];
@@ -154,14 +154,14 @@ interface EvidenceType {
   items: string[];
 }
 
-interface RecoveryMethod {
+interface _RecoveryMethod {
   title: string;
   description: string;
   steps: string[];
   timeline: string;
 }
 
-interface SupportResource {
+interface _SupportResource {
   title: string;
   description: string;
   contact: string;
