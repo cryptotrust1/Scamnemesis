@@ -7,6 +7,7 @@ import {
   getInitialLocale,
   setStoredLocale,
   getTranslation,
+  getTranslationValue,
   getTranslations,
 } from './index';
 
@@ -14,6 +15,7 @@ interface I18nContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: (path: string, params?: Record<string, string | number>) => string;
+  tv: <T = unknown>(path: string) => T;
   translations: ReturnType<typeof getTranslations>;
 }
 
@@ -65,6 +67,14 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
     [locale]
   );
 
+  // Translation value function - returns arrays, objects, or any type
+  const tv = useCallback(
+    <T = unknown>(path: string): T => {
+      return getTranslationValue(locale, path) as T;
+    },
+    [locale]
+  );
+
   const translations = useMemo(() => getTranslations(locale), [locale]);
 
   const value = useMemo(
@@ -72,9 +82,10 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
       locale,
       setLocale,
       t,
+      tv,
       translations,
     }),
-    [locale, setLocale, t, translations]
+    [locale, setLocale, t, tv, translations]
   );
 
   // Prevent flash of wrong locale during hydration
@@ -106,6 +117,6 @@ export function useI18n(): I18nContextValue {
  * Use this when you don't need locale switching capabilities
  */
 export function useTranslation() {
-  const { t, locale, translations } = useI18n();
-  return { t, locale, translations };
+  const { t, tv, locale, translations } = useI18n();
+  return { t, tv, locale, translations };
 }
