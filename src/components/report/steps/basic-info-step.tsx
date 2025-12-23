@@ -22,8 +22,7 @@ const currencies = getCurrenciesWithPriority();
 const MAX_DATE = '2099-12-31';
 
 export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
-  const { t, translations } = useTranslation();
-  const fields = translations.report?.fields || {};
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
@@ -38,7 +37,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         {/* Title */}
         <div className="space-y-2">
           <label htmlFor="title" className="text-sm font-medium">
-            {fields.title || 'Nadpis hlásenia'} <span className="text-destructive">*</span>
+            {t('report.fields.title')} <span className="text-destructive">*</span>
           </label>
           <Input
             id="title"
@@ -55,11 +54,11 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         {/* Description */}
         <div className="space-y-2">
           <label htmlFor="description" className="text-sm font-medium">
-            {fields.description || 'Podrobný popis'} <span className="text-destructive">*</span>
+            {t('report.fields.description')} <span className="text-destructive">*</span>
           </label>
           <textarea
             id="description"
-            placeholder="Popíšte čo sa stalo, ako vás kontaktovali, aké sumy boli zahrnuté, atď..."
+            placeholder={t('report.placeholders.description')}
             value={data.description || ''}
             onChange={(e) => onChange('description', e.target.value)}
             className={`w-full min-h-[200px] px-3 py-2 rounded-md border ${
@@ -70,14 +69,14 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
             <p className="text-sm text-destructive">{errors.description}</p>
           )}
           <p className="text-xs text-muted-foreground">
-            {data.description?.length || 0} / 10,000 znakov (minimum 50)
+            {t('report.hints.descriptionCount', { count: data.description?.length || 0 })}
           </p>
         </div>
 
         {/* Incident Date */}
         <div className="space-y-2">
           <label htmlFor="incidentDate" className="text-sm font-medium">
-            Dátum incidentu <span className="text-destructive">*</span>
+            {t('report.fields.incidentDate')} <span className="text-destructive">*</span>
           </label>
           <Input
             id="incidentDate"
@@ -96,17 +95,17 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label htmlFor="country" className="text-sm font-medium">
-              Krajina <span className="text-destructive">*</span>
+              {t('report.fields.country')} <span className="text-destructive">*</span>
             </label>
             <Select value={data.country || ''} onValueChange={(value) => onChange('country', value)}>
               <SelectTrigger className={`h-12 ${errors.country ? 'border-destructive' : ''}`}>
-                <SelectValue placeholder="Vyberte krajinu" />
+                <SelectValue placeholder={t('report.placeholders.selectCountry')} />
               </SelectTrigger>
               <SelectContent className="max-h-[300px]">
                 {countries.map((country) => (
                   country.value === 'SEPARATOR' ? (
                     <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
-                      Všetky krajiny
+                      {t('report.hints.allCountries')}
                     </div>
                   ) : (
                     <SelectItem key={country.value} value={country.value}>
@@ -123,11 +122,11 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
 
           <div className="space-y-2">
             <label htmlFor="city" className="text-sm font-medium">
-              Mesto <span className="text-destructive">*</span>
+              {t('report.fields.city')} <span className="text-destructive">*</span>
             </label>
             <Input
               id="city"
-              placeholder="Napríklad Bratislava"
+              placeholder={t('report.placeholders.city')}
               value={data.city || ''}
               onChange={(e) => onChange('city', e.target.value)}
               className={errors.city ? 'border-destructive' : ''}
@@ -140,11 +139,11 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
 
         <div className="space-y-2">
           <label htmlFor="postalCode" className="text-sm font-medium">
-            PSČ (voliteľné)
+            {t('report.fields.postalCode')} ({t('common.optional')})
           </label>
           <Input
             id="postalCode"
-            placeholder="Napríklad 82105"
+            placeholder={t('report.placeholders.postalCode')}
             value={data.postalCode || ''}
             onChange={(e) => onChange('postalCode', e.target.value)}
           />
@@ -154,12 +153,12 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2 md:col-span-2">
             <label htmlFor="amount" className="text-sm font-medium">
-              Výška škody (voliteľné)
+              {t('report.fields.amount')} ({t('common.optional')})
             </label>
             <Input
               id="amount"
               type="number"
-              placeholder="0.00"
+              placeholder={t('report.placeholders.amount')}
               min="0"
               step="0.01"
               value={data.amount || ''}
@@ -173,7 +172,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
 
           <div className="space-y-2">
             <label htmlFor="currency" className="text-sm font-medium">
-              Mena
+              {t('report.fields.currency')}
             </label>
             <Select value={data.currency || 'EUR'} onValueChange={(value) => onChange('currency', value)}>
               <SelectTrigger className="h-12">
@@ -183,7 +182,7 @@ export function BasicInfoStep({ data, errors, onChange }: BasicInfoStepProps) {
                 {currencies.map((currency) => (
                   currency.value === 'SEPARATOR' ? (
                     <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
-                      Všetky meny
+                      {t('report.hints.allCurrencies')}
                     </div>
                   ) : (
                     <SelectItem key={currency.value} value={currency.value}>

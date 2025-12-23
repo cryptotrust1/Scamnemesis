@@ -99,7 +99,42 @@
       "ADVANCE_FEE_FRAUD": "Vorschussbetrug",
       "FAKE_CHARITY": "Falsche Wohltätigkeit",
       "TECH_SUPPORT_SCAM": "Tech-Support-Betrug",
-      "LOTTERY_PRIZE_SCAM": "Lotteriebetrug"
+      "LOTTERY_PRIZE_SCAM": "Lotteriebetrug",
+      "PYRAMID_MLM_SCHEME": "Pyramiden-/MLM-Schema",
+      "INSURANCE_FRAUD": "Versicherungsbetrug",
+      "CREDIT_CARD_FRAUD": "Kreditkartenbetrug",
+      "WIRE_FRAUD": "Überweisungsbetrug",
+      "MONEY_MULE": "Finanzagent",
+      "BUSINESS_EMAIL_COMPROMISE": "Geschäfts-E-Mail-Kompromittierung",
+      "SOCIAL_ENGINEERING": "Social Engineering",
+      "GOVERNMENT_IMPERSONATION": "Behörden-Nachahmung",
+      "UTILITY_SCAM": "Energiebetrug",
+      "GRANDPARENT_SCAM": "Enkeltrick",
+      "SEXTORTION": "Sextortion",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Kontoübernahme",
+      "SIM_SWAPPING": "SIM-Swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Schneeballsystem",
+      "OTHER": "Andere"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Einzelperson",
+      "COMPANY": "Firma / Organisation",
+      "UNKNOWN": "Unbekannt"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Andere Blockchain"
     },
     "countries": {
       "all": "Alle Länder",

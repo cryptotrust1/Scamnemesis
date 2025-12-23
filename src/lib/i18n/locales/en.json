@@ -99,7 +99,42 @@
       "ADVANCE_FEE_FRAUD": "Advance Fee Fraud",
       "FAKE_CHARITY": "Fake Charity",
       "TECH_SUPPORT_SCAM": "Tech Support Scam",
-      "LOTTERY_PRIZE_SCAM": "Lottery Scam"
+      "LOTTERY_PRIZE_SCAM": "Lottery Scam",
+      "PYRAMID_MLM_SCHEME": "Pyramid/MLM Scheme",
+      "INSURANCE_FRAUD": "Insurance Fraud",
+      "CREDIT_CARD_FRAUD": "Credit Card Fraud",
+      "WIRE_FRAUD": "Wire Fraud",
+      "MONEY_MULE": "Money Mule",
+      "BUSINESS_EMAIL_COMPROMISE": "Business Email Compromise",
+      "SOCIAL_ENGINEERING": "Social Engineering",
+      "GOVERNMENT_IMPERSONATION": "Government Impersonation",
+      "UTILITY_SCAM": "Utility Scam",
+      "GRANDPARENT_SCAM": "Grandparent Scam",
+      "SEXTORTION": "Sextortion",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Account Takeover",
+      "SIM_SWAPPING": "SIM Swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Ponzi Scheme",
+      "OTHER": "Other"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Individual",
+      "COMPANY": "Company / Organization",
+      "UNKNOWN": "Unknown"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Other blockchain"
     },
     "countries": {
       "all": "All countries",

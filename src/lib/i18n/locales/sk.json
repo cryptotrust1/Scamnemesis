@@ -99,7 +99,42 @@
       "ADVANCE_FEE_FRAUD": "Podvod s pôžičkou",
       "FAKE_CHARITY": "Falošná charita",
       "TECH_SUPPORT_SCAM": "Tech support scam",
-      "LOTTERY_PRIZE_SCAM": "Loterný podvod"
+      "LOTTERY_PRIZE_SCAM": "Loterný podvod",
+      "PYRAMID_MLM_SCHEME": "Pyramídová/MLM schéma",
+      "INSURANCE_FRAUD": "Poistný podvod",
+      "CREDIT_CARD_FRAUD": "Podvod s platobnou kartou",
+      "WIRE_FRAUD": "Telegrafický podvod",
+      "MONEY_MULE": "Peňažný mulica",
+      "BUSINESS_EMAIL_COMPROMISE": "Kompromitácia firemného emailu",
+      "SOCIAL_ENGINEERING": "Sociálne inžinierstvo",
+      "GOVERNMENT_IMPERSONATION": "Napodobenie úradu",
+      "UTILITY_SCAM": "Podvod s energiami",
+      "GRANDPARENT_SCAM": "Podvod na starých rodičov",
+      "SEXTORTION": "Sexuálne vydieranie",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Prevzatie účtu",
+      "SIM_SWAPPING": "SIM swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Ponziho schéma",
+      "OTHER": "Iný typ"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Fyzická osoba",
+      "COMPANY": "Firma / Organizácia",
+      "UNKNOWN": "Neznámy"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Iný blockchain"
     },
     "countries": {
       "all": "Všetky krajiny",
