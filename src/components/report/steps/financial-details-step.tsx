@@ -16,6 +16,7 @@ import {
   Banknote
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface FinancialDetailsStepProps {
   data: Partial<FinancialDetailsForm>;
@@ -58,6 +59,7 @@ const WALLET_ADDRESS_HINTS = {
 };
 
 export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetailsStepProps) {
+  const { t } = useTranslation();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     banking: true,
     crypto: false,
@@ -94,9 +96,9 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Finančné údaje</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.financialDetails.title')}</h2>
         <p className="text-muted-foreground">
-          Zadajte podrobnosti o finančných účtoch, kam ste posielali peniaze
+          {t('report.financialDetails.subtitle')}
         </p>
       </div>
 
@@ -106,11 +108,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
           <div className="flex gap-3">
             <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-800 dark:text-blue-200">
-              <p className="font-medium mb-1">Dôležité informácie</p>
+              <p className="font-medium mb-1">{t('report.financialDetails.infoTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
-                <li>Vyplňte aspoň jednu sekciu (bankovú, krypto, alebo PayPal)</li>
-                <li>Tieto údaje pomôžu identifikovať podvodníkov</li>
-                <li>Všetky citlivé informácie sú šifrované a maskované</li>
+                {(t('report.financialDetails.infoItems') as unknown as string[]).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -135,9 +137,9 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                 hasBankingData ? 'text-primary' : 'text-muted-foreground'
               )} />
               <div className="text-left">
-                <h3 className="font-semibold">Bankové informácie</h3>
+                <h3 className="font-semibold">{t('report.financialDetails.banking.title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  IBAN, číslo účtu, SWIFT/BIC kód a ďalšie bankové údaje
+                  {t('report.financialDetails.banking.description')}
                 </p>
               </div>
             </div>
@@ -153,7 +155,7 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* IBAN */}
               <div className="space-y-2">
                 <label htmlFor="iban" className="text-sm font-medium">
-                  IBAN (International Bank Account Number)
+                  {t('report.financialDetails.iban')}
                 </label>
                 <Input
                   id="iban"
@@ -166,18 +168,18 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <p className="text-sm text-destructive">{errors.iban}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  IBAN začína kódom krajiny (napr. SK, CZ, PL) a obsahuje 15-34 znakov
+                  {t('report.financialDetails.ibanHint')}
                 </p>
               </div>
 
               {/* Account Holder Name */}
               <div className="space-y-2">
                 <label htmlFor="accountHolderName" className="text-sm font-medium">
-                  Meno majiteľa účtu
+                  {t('report.financialDetails.accountHolder')}
                 </label>
                 <Input
                   id="accountHolderName"
-                  placeholder="Napríklad: Ján Podvodník"
+                  placeholder={t('report.financialDetails.accountHolderPlaceholder')}
                   value={data.accountHolderName || ''}
                   onChange={(e) => onChange('accountHolderName', e.target.value)}
                   className={errors.accountHolderName ? 'border-destructive' : ''}
@@ -191,26 +193,26 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label htmlFor="accountNumber" className="text-sm font-medium">
-                    Číslo účtu
+                    {t('report.financialDetails.accountNumber')}
                   </label>
                   <Input
                     id="accountNumber"
-                    placeholder="Napríklad: 1234567890/1100"
+                    placeholder={t('report.financialDetails.accountNumberPlaceholder')}
                     value={data.accountNumber || ''}
                     onChange={(e) => onChange('accountNumber', e.target.value)}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Pre slovenské účty: číslo/kód banky
+                    {t('report.financialDetails.accountNumberHint')}
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="bankName" className="text-sm font-medium">
-                    Názov banky
+                    {t('report.financialDetails.bankName')}
                   </label>
                   <Input
                     id="bankName"
-                    placeholder="Napríklad: Tatra banka"
+                    placeholder={t('report.financialDetails.bankNamePlaceholder')}
                     value={data.bankName || ''}
                     onChange={(e) => onChange('bankName', e.target.value)}
                   />
@@ -220,20 +222,20 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* Bank Country */}
               <div className="space-y-2">
                 <label htmlFor="bankCountry" className="text-sm font-medium">
-                  Krajina banky
+                  {t('report.financialDetails.bankCountry')}
                 </label>
                 <Select
                   value={data.bankCountry || ''}
                   onValueChange={(value) => onChange('bankCountry', value)}
                 >
                   <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Vyberte krajinu banky" />
+                    <SelectValue placeholder={t('report.financialDetails.bankCountryPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     {countries.map((country) => (
                       country.value === 'SEPARATOR' ? (
                         <div key="separator" className="px-2 py-1 text-xs text-muted-foreground border-t my-1">
-                          Všetky krajiny
+                          {t('report.financialDetails.allCountries')}
                         </div>
                       ) : (
                         <SelectItem key={country.value} value={country.value}>
@@ -248,11 +250,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* SWIFT/BIC Code */}
               <div className="space-y-2">
                 <label htmlFor="swiftBic" className="text-sm font-medium">
-                  SWIFT/BIC kód
+                  {t('report.financialDetails.swiftBic')}
                 </label>
                 <Input
                   id="swiftBic"
-                  placeholder="Napríklad: TATRSKBX"
+                  placeholder={t('report.financialDetails.swiftBicPlaceholder')}
                   value={data.swiftBic || ''}
                   onChange={(e) => onChange('swiftBic', e.target.value)}
                   maxLength={11}
@@ -262,24 +264,24 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <p className="text-sm text-destructive">{errors.swiftBic}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  8 alebo 11 znakov (napr. TATRSKBX alebo TATRSKBXXXX)
+                  {t('report.financialDetails.swiftBicHint')}
                 </p>
               </div>
 
               {/* Region-Specific Banking Codes */}
               <div className="border-t pt-4 mt-4">
-                <h4 className="font-medium text-sm mb-3">Regionálne bankové kódy (voliteľné)</h4>
+                <h4 className="font-medium text-sm mb-3">{t('report.financialDetails.regionalCodes')}</h4>
 
                 <div className="space-y-4">
                   {/* USA - Routing Number */}
                   <div className="space-y-2">
                     <label htmlFor="routingNumber" className="text-sm font-medium flex items-center gap-2">
                       <span className="text-xs bg-muted px-2 py-0.5 rounded">USA</span>
-                      Routing Number (ABA)
+                      {t('report.financialDetails.routingNumber')}
                     </label>
                     <Input
                       id="routingNumber"
-                      placeholder="9-miestne číslo (napr. 021000021)"
+                      placeholder={t('report.financialDetails.routingNumberPlaceholder')}
                       value={data.routingNumber || ''}
                       onChange={(e) => onChange('routingNumber', e.target.value)}
                       maxLength={9}
@@ -290,11 +292,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <div className="space-y-2">
                     <label htmlFor="bsbCode" className="text-sm font-medium flex items-center gap-2">
                       <span className="text-xs bg-muted px-2 py-0.5 rounded">AUS</span>
-                      BSB Code
+                      {t('report.financialDetails.bsbCode')}
                     </label>
                     <Input
                       id="bsbCode"
-                      placeholder="6-miestny kód (napr. 123-456)"
+                      placeholder={t('report.financialDetails.bsbCodePlaceholder')}
                       value={data.bsbCode || ''}
                       onChange={(e) => onChange('bsbCode', e.target.value)}
                       maxLength={7}
@@ -305,11 +307,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <div className="space-y-2">
                     <label htmlFor="sortCode" className="text-sm font-medium flex items-center gap-2">
                       <span className="text-xs bg-muted px-2 py-0.5 rounded">UK</span>
-                      Sort Code
+                      {t('report.financialDetails.sortCode')}
                     </label>
                     <Input
                       id="sortCode"
-                      placeholder="6-miestny kód (napr. 12-34-56)"
+                      placeholder={t('report.financialDetails.sortCodePlaceholder')}
                       value={data.sortCode || ''}
                       onChange={(e) => onChange('sortCode', e.target.value)}
                       maxLength={8}
@@ -320,11 +322,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <div className="space-y-2">
                     <label htmlFor="ifscCode" className="text-sm font-medium flex items-center gap-2">
                       <span className="text-xs bg-muted px-2 py-0.5 rounded">IND</span>
-                      IFSC Code
+                      {t('report.financialDetails.ifscCode')}
                     </label>
                     <Input
                       id="ifscCode"
-                      placeholder="11-miestny kód (napr. SBIN0001234)"
+                      placeholder={t('report.financialDetails.ifscCodePlaceholder')}
                       value={data.ifscCode || ''}
                       onChange={(e) => onChange('ifscCode', e.target.value)}
                       maxLength={11}
@@ -335,11 +337,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <div className="space-y-2">
                     <label htmlFor="cnapsCode" className="text-sm font-medium flex items-center gap-2">
                       <span className="text-xs bg-muted px-2 py-0.5 rounded">CHN</span>
-                      CNAPS Code
+                      {t('report.financialDetails.cnapsCode')}
                     </label>
                     <Input
                       id="cnapsCode"
-                      placeholder="12-miestny kód čínskej centrálnej banky"
+                      placeholder={t('report.financialDetails.cnapsCodePlaceholder')}
                       value={data.cnapsCode || ''}
                       onChange={(e) => onChange('cnapsCode', e.target.value)}
                       maxLength={12}
@@ -351,11 +353,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* Other Banking Details */}
               <div className="space-y-2">
                 <label htmlFor="otherBankingDetails" className="text-sm font-medium">
-                  Ďalšie bankové údaje
+                  {t('report.financialDetails.otherBankingDetails')}
                 </label>
                 <Textarea
                   id="otherBankingDetails"
-                  placeholder="Ďalšie poznámky alebo bankové informácie, ktoré môžu byť užitočné..."
+                  placeholder={t('report.financialDetails.otherBankingDetailsPlaceholder')}
                   value={data.otherBankingDetails || ''}
                   onChange={(e) => onChange('otherBankingDetails', e.target.value)}
                   rows={3}
@@ -384,9 +386,9 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                 hasCryptoData ? 'text-primary' : 'text-muted-foreground'
               )} />
               <div className="text-left">
-                <h3 className="font-semibold">Kryptomenové údaje</h3>
+                <h3 className="font-semibold">{t('report.financialDetails.crypto.title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Adresy peňaženiek, blockchain, burzy a transakcie
+                  {t('report.financialDetails.crypto.description')}
                 </p>
               </div>
             </div>
@@ -402,14 +404,14 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* Blockchain Selection */}
               <div className="space-y-2">
                 <label htmlFor="blockchain" className="text-sm font-medium">
-                  Blockchain / Kryptomena
+                  {t('report.financialDetails.blockchain')}
                 </label>
                 <Select
                   value={data.blockchain || ''}
                   onValueChange={(value) => onChange('blockchain', value)}
                 >
                   <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Vyberte blockchain" />
+                    <SelectValue placeholder={t('report.financialDetails.blockchainPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     {blockchainOptions.map((blockchain) => (
@@ -420,21 +422,21 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  Vyberte blockchain, na ktorom sa nachádza peňaženka
+                  {t('report.financialDetails.blockchainHint')}
                 </p>
               </div>
 
               {/* Wallet Address */}
               <div className="space-y-2">
                 <label htmlFor="walletAddress" className="text-sm font-medium">
-                  Adresa peňaženky <span className="text-destructive">*</span>
+                  {t('report.financialDetails.walletAddress')} <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="walletAddress"
                   placeholder={
                     data.blockchain === 'BITCOIN' ? '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa' :
                     data.blockchain === 'ETHEREUM' ? '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb' :
-                    'Adresa peňaženky'
+                    t('report.financialDetails.walletAddressPlaceholder')
                   }
                   value={data.walletAddress || ''}
                   onChange={(e) => onChange('walletAddress', e.target.value)}
@@ -451,32 +453,32 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               {/* Exchange/Wallet Name */}
               <div className="space-y-2">
                 <label htmlFor="exchangeName" className="text-sm font-medium">
-                  Burza / Názov peňaženky
+                  {t('report.financialDetails.exchangeName')}
                 </label>
                 <Input
                   id="exchangeName"
-                  placeholder="Napríklad: Binance, Coinbase, Trust Wallet, MetaMask"
+                  placeholder={t('report.financialDetails.exchangeNamePlaceholder')}
                   value={data.exchangeName || ''}
                   onChange={(e) => onChange('exchangeName', e.target.value)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Ak bola použitá burza alebo známa peňaženka
+                  {t('report.financialDetails.exchangeNameHint')}
                 </p>
               </div>
 
               {/* Transaction Hash */}
               <div className="space-y-2">
                 <label htmlFor="transactionHash" className="text-sm font-medium">
-                  Hash transakcie (TX ID)
+                  {t('report.financialDetails.transactionHash')}
                 </label>
                 <Input
                   id="transactionHash"
-                  placeholder="0x1234567890abcdef..."
+                  placeholder={t('report.financialDetails.transactionHashPlaceholder')}
                   value={data.transactionHash || ''}
                   onChange={(e) => onChange('transactionHash', e.target.value)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Jedinečný identifikátor transakcie v blockchaine (ak je k dispozícii)
+                  {t('report.financialDetails.transactionHashHint')}
                 </p>
               </div>
             </div>
@@ -502,9 +504,9 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                 hasPaypalData ? 'text-primary' : 'text-muted-foreground'
               )} />
               <div className="text-left">
-                <h3 className="font-semibold">PayPal</h3>
+                <h3 className="font-semibold">{t('report.financialDetails.paypal.title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  PayPal účet alebo email
+                  {t('report.financialDetails.paypal.description')}
                 </p>
               </div>
             </div>
@@ -519,12 +521,12 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
             <div className="p-4 border-t space-y-4">
               <div className="space-y-2">
                 <label htmlFor="paypalAccount" className="text-sm font-medium">
-                  PayPal účet / Email
+                  {t('report.financialDetails.paypalAccount')}
                 </label>
                 <Input
                   id="paypalAccount"
                   type="email"
-                  placeholder="podvodnik@example.com"
+                  placeholder={t('report.financialDetails.paypalAccountPlaceholder')}
                   value={data.paypalAccount || ''}
                   onChange={(e) => onChange('paypalAccount', e.target.value)}
                   className={errors.paypalAccount ? 'border-destructive' : ''}
@@ -533,7 +535,7 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
                   <p className="text-sm text-destructive">{errors.paypalAccount}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Email adresa alebo užívateľské meno PayPal účtu
+                  {t('report.financialDetails.paypalAccountHint')}
                 </p>
               </div>
             </div>
@@ -545,12 +547,11 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
           <div className="flex gap-3">
             <Banknote className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
             <div className="text-sm text-muted-foreground">
-              <p className="font-medium mb-1">Tip: Ako získať tieto údaje?</p>
+              <p className="font-medium mb-1">{t('report.financialDetails.tipTitle')}</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>Skontrolujte históriu transakcií vo vašej banke alebo peňaženke</li>
-                <li>Pre krypto transakcie použite block explorer (napr. etherscan.io)</li>
-                <li>Pozrite sa do emailov s potvrdeniami platieb</li>
-                <li>Každý detail môže pomôcť identifikovať podvodníka</li>
+                {(t('report.financialDetails.tipItems') as unknown as string[]).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>

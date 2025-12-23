@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { ContactInfoForm } from '@/lib/validations/report';
 import { cn } from '@/lib/utils';
 import { Shield, Mail, Bell, Info } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface ContactStepProps {
   data: Partial<ContactInfoForm>;
@@ -12,12 +13,14 @@ interface ContactStepProps {
 }
 
 export function ContactStep({ data, errors, onChange }: ContactStepProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Kontaktné údaje a súhlasy</h2>
+        <h2 className="text-2xl font-bold mb-2">{t('report.contact.title')}</h2>
         <p className="text-muted-foreground">
-          Vaše údaje sú voliteľné, ale pomôžu nám kontaktovať vás v prípade potreby
+          {t('report.contact.subtitle')}
         </p>
       </div>
 
@@ -26,16 +29,16 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
         <div className="space-y-4">
           <h3 className="font-semibold flex items-center gap-2">
             <Mail className="h-5 w-5 text-primary" />
-            Kontaktné údaje (voliteľné)
+            {t('report.contact.contactInfo')}
           </h3>
 
           <div className="space-y-2">
             <label htmlFor="reporterName" className="text-sm font-medium">
-              Vaše meno
+              {t('report.contact.yourName')}
             </label>
             <Input
               id="reporterName"
-              placeholder="Meno a priezvisko"
+              placeholder={t('report.contact.yourNamePlaceholder')}
               value={data.reporterName || ''}
               onChange={(e) => onChange('reporterName', e.target.value)}
               className={errors.reporterName ? 'border-destructive' : ''}
@@ -44,18 +47,18 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
               <p className="text-sm text-destructive">{errors.reporterName}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              Vaše meno nebude zverejnené a bude použité len pre internú komunikáciu
+              {t('report.contact.yourNameHint')}
             </p>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="reporterEmail" className="text-sm font-medium">
-              Email
+              {t('report.contact.yourEmail')}
             </label>
             <Input
               id="reporterEmail"
               type="email"
-              placeholder="vas@email.sk"
+              placeholder={t('report.contact.yourEmailPlaceholder')}
               value={data.reporterEmail || ''}
               onChange={(e) => onChange('reporterEmail', e.target.value)}
               className={errors.reporterEmail ? 'border-destructive' : ''}
@@ -67,12 +70,12 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
 
           <div className="space-y-2">
             <label htmlFor="reporterPhone" className="text-sm font-medium">
-              Telefón
+              {t('report.contact.yourPhone')}
             </label>
             <Input
               id="reporterPhone"
               type="tel"
-              placeholder="+421 900 123 456"
+              placeholder={t('report.contact.yourPhonePlaceholder')}
               value={data.reporterPhone || ''}
               onChange={(e) => onChange('reporterPhone', e.target.value)}
             />
@@ -83,7 +86,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
         <div className="border-t pt-6">
           <h3 className="font-semibold flex items-center gap-2 mb-4">
             <Bell className="h-5 w-5 text-primary" />
-            Notifikácie
+            {t('report.contact.notifications')}
           </h3>
 
           <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -94,9 +97,9 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
               className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-0 focus:ring-offset-0"
             />
             <div className="flex-1">
-              <span className="font-medium">Chcem dostávať aktualizácie</span>
+              <span className="font-medium">{t('report.contact.wantUpdates')}</span>
               <p className="text-sm text-muted-foreground mt-1">
-                Budeme vás informovať o stave vášho hlásenia a prípadných podobných podvodoch
+                {t('report.contact.wantUpdatesDesc')}
               </p>
             </div>
           </label>
@@ -106,7 +109,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
         <div className="border-t pt-6">
           <h3 className="font-semibold flex items-center gap-2 mb-4">
             <Shield className="h-5 w-5 text-primary" />
-            Povinné súhlasy
+            {t('report.contact.consents')}
           </h3>
 
           <div className="space-y-3">
@@ -125,12 +128,12 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
               />
               <div className="flex-1">
                 <span className="font-medium">
-                  Súhlasím s podmienkami používania <span className="text-destructive">*</span>
+                  {t('report.contact.agreeToTerms')} <span className="text-destructive">*</span>
                 </span>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Potvrdzujem, že informácie uvedené v hlásení sú pravdivé a že som si prečítal/a{' '}
+                  {t('report.contact.agreeToTermsDesc')}{' '}
                   <a href="/terms" className="text-primary hover:underline" target="_blank">
-                    podmienky používania
+                    {t('report.contact.termsLink')}
                   </a>
                 </p>
               </div>
@@ -154,12 +157,12 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
               />
               <div className="flex-1">
                 <span className="font-medium">
-                  Súhlasím so spracovaním osobných údajov <span className="text-destructive">*</span>
+                  {t('report.contact.agreeToGDPR')} <span className="text-destructive">*</span>
                 </span>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Súhlasím so spracovaním mojich osobných údajov v súlade s{' '}
+                  {t('report.contact.agreeToGDPRDesc')}{' '}
                   <a href="/privacy" className="text-primary hover:underline" target="_blank">
-                    ochranou osobných údajov (GDPR)
+                    {t('report.contact.gdprLink')}
                   </a>
                 </p>
               </div>
@@ -175,12 +178,11 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
           <div className="flex gap-3">
             <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-800 dark:text-blue-200">
-              <p className="font-medium mb-1">Čo sa stane po odoslaní?</p>
+              <p className="font-medium mb-1">{t('report.contact.infoTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
-                <li>Vaše hlásenie bude skontrolované administrátorom</li>
-                <li>Po schválení bude zverejnené s maskovanými údajmi</li>
-                <li>Pomôže varovať ostatných pred podobným podvodom</li>
-                <li>Ak poskytnete email, dostanete potvrdenie</li>
+                {(t('report.contact.infoItems') as unknown as string[]).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>
