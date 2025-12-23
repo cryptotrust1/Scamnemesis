@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Shield, Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
 
 const passwordRequirements = [
   { label: 'Aspoň 9 znakov', test: (pwd: string) => pwd.length >= 9 },
@@ -24,6 +25,8 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<TurnstileRef>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -63,6 +66,7 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          captchaToken: captchaToken,
         }),
       });
 
@@ -72,9 +76,15 @@ export default function RegisterPage() {
       } else {
         const error = await response.json();
         toast.error(error.message || 'Chyba pri registrácii');
+        // Reset CAPTCHA on error
+        captchaRef.current?.reset();
+        setCaptchaToken(null);
       }
-    } catch (error) {
+    } catch {
       toast.error('Chyba pri registrácii. Skúste to znova.');
+      // Reset CAPTCHA on error
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -226,6 +236,14 @@ export default function RegisterPage() {
                 </Link>
               </label>
             </div>
+
+            {/* CAPTCHA */}
+            <TurnstileCaptcha
+              ref={captchaRef}
+              onSuccess={(token) => setCaptchaToken(token)}
+              onError={() => setCaptchaToken(null)}
+              onExpire={() => setCaptchaToken(null)}
+            />
 
             {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={isLoading || !agreedToTerms}>

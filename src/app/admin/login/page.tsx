@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert } from '@/components/ui/alert';
 import { useAdminAuth } from '@/lib/admin/auth-context';
+import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -17,6 +18,8 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<TurnstileRef>(null);
 
   const { login, isAuthenticated, isLoading } = useAdminAuth();
   const router = useRouter();
@@ -33,7 +36,7 @@ export default function AdminLoginPage() {
     setError('');
     setIsSubmitting(true);
 
-    const result = await login(email, password);
+    const result = await login(email, password, captchaToken || undefined);
 
     if (result.success) {
       // Note: useEffect will handle redirect when isAuthenticated changes
@@ -41,6 +44,9 @@ export default function AdminLoginPage() {
     } else {
       setError(result.error || 'Prihlásenie zlyhalo');
       setIsSubmitting(false);
+      // Reset CAPTCHA on error
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   };
 
@@ -121,6 +127,14 @@ export default function AdminLoginPage() {
                 </Button>
               </div>
             </div>
+
+            {/* CAPTCHA */}
+            <TurnstileCaptcha
+              ref={captchaRef}
+              onSuccess={(token) => setCaptchaToken(token)}
+              onError={() => setCaptchaToken(null)}
+              onExpire={() => setCaptchaToken(null)}
+            />
 
             <Button
               type="submit"

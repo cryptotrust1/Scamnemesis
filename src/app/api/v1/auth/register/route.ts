@@ -16,6 +16,7 @@ import {
 } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
+import { verifyCaptcha, isCaptchaEnabled } from '@/lib/captcha';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,6 +81,7 @@ const registerSchema = z.object({
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
     ),
   name: z.string().optional(),
+  captchaToken: z.string().optional(), // Turnstile CAPTCHA token
 });
 
 export async function POST(request: NextRequest) {
@@ -128,7 +130,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, password, name } = parsed.data;
+    const { email, password, name, captchaToken } = parsed.data;
+
+    // Verify CAPTCHA if enabled
+    if (isCaptchaEnabled()) {
+      const captchaResult = await verifyCaptcha(captchaToken, ip);
+      if (!captchaResult.success) {
+        return NextResponse.json(
+          {
+            error: 'captcha_failed',
+            message: 'CAPTCHA verification failed. Please try again.',
+            errors: captchaResult.errors,
+          },
+          { status: 400 }
+        );
+      }
+    }
 
     // Check if email already exists
     const existingUser = await prisma.user.findUnique({

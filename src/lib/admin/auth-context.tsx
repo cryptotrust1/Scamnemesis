@@ -14,7 +14,7 @@ interface AuthContextType {
   user: AdminUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string, captchaToken?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   hasScope: (scope: string) => boolean;
 }
@@ -60,7 +60,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string, captchaToken?: string) => {
     try {
       const response = await fetch('/api/v1/auth/token', {
         method: 'POST',
@@ -72,6 +72,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           grant_type: 'password',
           email,
           password,
+          captchaToken,
         }),
       });
 

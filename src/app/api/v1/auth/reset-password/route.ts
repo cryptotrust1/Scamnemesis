@@ -4,6 +4,7 @@ import { jwtVerify } from 'jose';
 import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import { emailService } from '@/lib/services/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest) {
     // Find user and verify they exist and are active
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, isActive: true },
+      select: { id: true, email: true, name: true, isActive: true },
     });
 
     if (!user) {
@@ -154,6 +155,11 @@ export async function POST(request: NextRequest) {
         },
       }),
     ]);
+
+    // Send confirmation email (async, don't wait)
+    emailService.sendPasswordResetConfirmation(user.email, user.name || 'User').catch((error) => {
+      console.error('Failed to send password reset confirmation email:', error);
+    });
 
     return NextResponse.json({
       success: true,

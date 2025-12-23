@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,6 +19,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<TurnstileRef>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,6 +36,7 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
+        captchaToken: captchaToken,
         redirect: false,
       });
 
@@ -42,7 +46,10 @@ export default function LoginPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...formData,
+            captchaToken: captchaToken,
+          }),
         });
 
         if (response.ok) {
@@ -51,6 +58,9 @@ export default function LoginPage() {
         } else {
           const error = await response.json();
           toast.error(error.message || 'Nesprávne prihlasovacie údaje');
+          // Reset CAPTCHA on error
+          captchaRef.current?.reset();
+          setCaptchaToken(null);
         }
       } else if (result?.ok) {
         toast.success('Prihlásenie úspešné!');
@@ -59,6 +69,9 @@ export default function LoginPage() {
     } catch (error) {
       console.error('[Login] Error:', error);
       toast.error('Chyba pri prihlasovaní. Skúste to znova.');
+      // Reset CAPTCHA on error
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -139,6 +152,14 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+
+            {/* CAPTCHA */}
+            <TurnstileCaptcha
+              ref={captchaRef}
+              onSuccess={(token) => setCaptchaToken(token)}
+              onError={() => setCaptchaToken(null)}
+              onExpire={() => setCaptchaToken(null)}
+            />
 
             {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={isLoading}>
