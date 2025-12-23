@@ -662,7 +662,17 @@
     "notFound": "Stránka nebola nájdená",
     "serverError": "Chyba servera",
     "unauthorized": "Neautorizovaný prístup",
-    "forbidden": "Prístup zamietnutý"
+    "forbidden": "Prístup zamietnutý",
+    "errorPage": {
+      "title": "Niečo sa pokazilo",
+      "description": "Nastala neočakávaná chyba. Skúste to prosím znova.",
+      "tryAgain": "Skúsiť znova"
+    },
+    "notFoundPage": {
+      "title": "Stránka nebola nájdená",
+      "description": "Stránka, ktorú hľadáte, neexistuje.",
+      "goHome": "Späť domov"
+    }
   },
   "footer": {
     "about": "O nás",
@@ -670,5 +680,53 @@
     "terms": "Podmienky používania",
     "contact": "Kontakt",
     "copyright": "Všetky práva vyhradené"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Podporte našu misiu –",
+      "titleHighlight": "Pomôžte nám priniesť spravodlivosť a bezpečnosť pre všetkých",
+      "description": "Našou víziou je, že spravodlivosť a bezpečnosť by nemali byť vyhradené len pre tých, ktorí si ich môžu finančne dovoliť. Chceme, aby naše služby boli dostupné zadarmo pre každého – pretože každý človek si zaslúži ochranu, šancu na nový začiatok a spravodlivé zaobchádzanie.",
+      "subdescription": "Aby sme zostali nezávislí a udržateľní, niektoré naše služby musia byť platené. Robíme však všetko pre to, aby väčšina našich aktivít zostala úplne bezplatná pre obete podvodov a pre tých, ktorí hľadajú druhú šancu."
+    },
+    "howToHelp": {
+      "badge": "Ako môžete pomôcť",
+      "title": "Váš príspevok nám umožňuje pokračovať v práci, ktorá má",
+      "titleHighlight": "skutočný dopad",
+      "description": "Môžete nás podporiť jednorazovým alebo pravidelným darom – kreditnou kartou alebo kryptomenou – a vybrať si, ktorý z našich dvoch programov chcete podporiť:"
+    },
+    "program1": {
+      "badge": "PROGRAM 1",
+      "title": "Ochrana verejnosti a boj proti podvodníkom",
+      "features": [
+        "Vývoj a zlepšovanie nášho bezplatného systému detekcie podvodov",
+        "Marketingové a osvetové kampane na oslovenie čo najväčšieho počtu ľudí",
+        "Právne služby, ktoré nám pomáhajú vytvárať bezpečné a efektívne prostredie"
+      ],
+      "impact": "Vaša podpora v tomto fonde znamená menej obetí podvodov a silnejšiu ochranu verejnosti."
+    },
+    "program2": {
+      "badge": "PROGRAM 2",
+      "title": "Druhá šanca pre ľudí, ktorí chcú zanechať kriminalitu",
+      "features": [
+        "Rekvalifikačné kurzy a vzdelávacie programy pre ľudí prepustených z väzenia",
+        "Finančná podpora na pomoc pri hľadaní práce a opätovnom začlenení do spoločnosti",
+        "Pomoc so základnými potrebami pri začatí nového života"
+      ],
+      "impact": "Vaša podpora tu mení životy – dáva šancu tým, ktorí chcú opustiť kriminálne prostredie a žiť poctivo."
+    },
+    "buttons": {
+      "payByCard": "Zaplatiť kartou",
+      "payWithCrypto": "Zaplatiť kryptomenou"
+    },
+    "cta": {
+      "title": "Podporte nás ešte dnes a staňte sa súčasťou zmeny.",
+      "description": "Váš príspevok – bez ohľadu na to, aký je veľký alebo malý – znamená viac, než si dokážete predstaviť. Spoločne môžeme vybudovať svet, kde je spravodlivosť dostupná pre každého.",
+      "transparent": "100% Transparentné",
+      "securePayments": "Bezpečné platby",
+      "everyDonationCounts": "Každý dar sa počíta",
+      "haveQuestions": "Máte otázky?",
+      "contactUs": "Kontaktujte nás",
+      "learnMore": "a dozviete sa viac o našej práci."
+    }
   }
 }

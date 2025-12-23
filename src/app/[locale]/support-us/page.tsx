@@ -15,41 +15,15 @@ import {
   BookOpen,
   Briefcase,
   Home,
+  type LucideIcon,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Script from 'next/script';
+import { useTranslation } from '@/lib/i18n/context';
 
-// Program 1 Features - Public Protection
-const program1Features = [
-  {
-    text: 'Development and improvement of our free fraud detection system',
-    icon: Target,
-  },
-  {
-    text: 'Marketing and awareness campaigns to reach as many people as possible',
-    icon: Users,
-  },
-  {
-    text: 'Legal services that help us create a safe and effective environment',
-    icon: Shield,
-  },
-];
-
-// Program 2 Features - Second Chance
-const program2Features = [
-  {
-    text: 'Retraining courses and educational programs for people released from prison',
-    icon: BookOpen,
-  },
-  {
-    text: 'Financial support to help them find jobs and reintegrate into society',
-    icon: Briefcase,
-  },
-  {
-    text: 'Assistance with basic needs when starting a new life',
-    icon: Home,
-  },
-];
+// Program feature icons
+const program1Icons: LucideIcon[] = [Target, Users, Shield];
+const program2Icons: LucideIcon[] = [BookOpen, Briefcase, Home];
 
 // JSON-LD Schemas
 const organizationSchema = {
@@ -130,6 +104,12 @@ const breadcrumbSchema = {
 };
 
 export default function SupportUsPage() {
+  const { t, locale } = useTranslation();
+
+  // Get translated features
+  const program1Features = (t('supportUs.program1.features') as unknown as string[]) || [];
+  const program2Features = (t('supportUs.program2.features') as unknown as string[]) || [];
+
   return (
     <>
       {/* JSON-LD Schemas */}
@@ -178,18 +158,18 @@ export default function SupportUsPage() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-10 leading-tight tracking-tight">
-                Support Our Mission –{' '}
+                {t('supportUs.hero.title')}{' '}
                 <span className="bg-gradient-to-r from-rose-400 via-pink-400 to-rose-400 bg-clip-text text-transparent">
-                  Help Us Bring Justice and Safety to Everyone
+                  {t('supportUs.hero.titleHighlight')}
                 </span>
               </h1>
 
               <p className="text-lg md:text-xl lg:text-2xl text-slate-300/90 max-w-4xl mx-auto mb-10 leading-relaxed">
-                Our vision is that justice and safety should not be reserved only for those who can afford them financially. We want our services to be available free of charge to everyone – because every person deserves protection, a chance for a new beginning, and fair treatment.
+                {t('supportUs.hero.description')}
               </p>
 
               <p className="text-base md:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                To remain independent and sustainable, some of our services must be paid. However, we do everything possible to ensure that the majority of our activities remain completely free for victims of fraud and for those seeking a second chance.
+                {t('supportUs.hero.subdescription')}
               </p>
             </div>
           </div>
@@ -203,18 +183,18 @@ export default function SupportUsPage() {
               <div className="text-center mb-20 md:mb-24">
                 <div className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-base font-medium mb-10">
                   <Sparkles className="h-5 w-5" />
-                  How You Can Help
+                  {t('supportUs.howToHelp.badge')}
                 </div>
 
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-10 leading-tight">
-                  Your contribution allows us to continue work that makes a{' '}
+                  {t('supportUs.howToHelp.title')}{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-600 dark:from-rose-400 dark:to-pink-400">
-                    real impact
+                    {t('supportUs.howToHelp.titleHighlight')}
                   </span>
                 </h2>
 
                 <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-4xl mx-auto">
-                  You can support us with a one-time or recurring donation – by credit card or cryptocurrency – and choose which of our two programs you would like to support:
+                  {t('supportUs.howToHelp.description')}
                 </p>
               </div>
 
@@ -232,10 +212,10 @@ export default function SupportUsPage() {
                       </div>
                       <div>
                         <div className="inline-flex px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-3">
-                          PROGRAM 1
+                          {t('supportUs.program1.badge')}
                         </div>
                         <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
-                          Public Protection and Fighting Fraudsters
+                          {t('supportUs.program1.title')}
                         </h3>
                       </div>
                     </div>
@@ -243,15 +223,15 @@ export default function SupportUsPage() {
                     {/* Features */}
                     <div className="mb-10 p-8 md:p-10 bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/30 rounded-2xl">
                       <ul className="space-y-6">
-                        {program1Features.map((feature, index) => {
-                          const Icon = feature.icon;
+                        {Array.isArray(program1Features) && program1Features.map((feature, index) => {
+                          const Icon = program1Icons[index] || Target;
                           return (
                             <li key={index} className="flex items-start gap-5">
                               <div className="flex-shrink-0 p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30">
                                 <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed pt-2">
-                                {feature.text}
+                                {feature}
                               </span>
                             </li>
                           );
@@ -263,7 +243,7 @@ export default function SupportUsPage() {
                     <div className="mb-12 p-6 border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 rounded-r-xl">
                       <p className="text-lg text-blue-800 dark:text-blue-200 font-medium flex items-start gap-3">
                         <span className="text-2xl">👉</span>
-                        <span>Your support in this fund means fewer victims of fraud and stronger public protection.</span>
+                        <span>{t('supportUs.program1.impact')}</span>
                       </p>
                     </div>
 
@@ -276,7 +256,7 @@ export default function SupportUsPage() {
                         className="flex-1 flex items-center justify-center gap-3 px-10 py-5 md:py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-lg rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30 group"
                       >
                         <CreditCard className="h-6 w-6" />
-                        <span>Pay by Card</span>
+                        <span>{t('supportUs.buttons.payByCard')}</span>
                         <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                       </Link>
                       <Link
@@ -286,7 +266,7 @@ export default function SupportUsPage() {
                         className="flex-1 flex items-center justify-center gap-3 px-10 py-5 md:py-6 border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 font-semibold text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group"
                       >
                         <Bitcoin className="h-6 w-6" />
-                        <span>Pay with Crypto</span>
+                        <span>{t('supportUs.buttons.payWithCrypto')}</span>
                         <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </div>
@@ -305,10 +285,10 @@ export default function SupportUsPage() {
                       </div>
                       <div>
                         <div className="inline-flex px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-semibold mb-3">
-                          PROGRAM 2
+                          {t('supportUs.program2.badge')}
                         </div>
                         <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
-                          A Second Chance for People Who Want to Leave Crime Behind
+                          {t('supportUs.program2.title')}
                         </h3>
                       </div>
                     </div>
@@ -316,15 +296,15 @@ export default function SupportUsPage() {
                     {/* Features */}
                     <div className="mb-10 p-8 md:p-10 bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/30 rounded-2xl">
                       <ul className="space-y-6">
-                        {program2Features.map((feature, index) => {
-                          const Icon = feature.icon;
+                        {Array.isArray(program2Features) && program2Features.map((feature, index) => {
+                          const Icon = program2Icons[index] || BookOpen;
                           return (
                             <li key={index} className="flex items-start gap-5">
                               <div className="flex-shrink-0 p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
                                 <Icon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                               </div>
                               <span className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed pt-2">
-                                {feature.text}
+                                {feature}
                               </span>
                             </li>
                           );
@@ -336,7 +316,7 @@ export default function SupportUsPage() {
                     <div className="mb-12 p-6 border-l-4 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-r-xl">
                       <p className="text-lg text-emerald-800 dark:text-emerald-200 font-medium flex items-start gap-3">
                         <span className="text-2xl">👉</span>
-                        <span>Your support here changes lives – giving a chance to those who want to leave criminal environments and live honestly.</span>
+                        <span>{t('supportUs.program2.impact')}</span>
                       </p>
                     </div>
 
@@ -349,7 +329,7 @@ export default function SupportUsPage() {
                         className="flex-1 flex items-center justify-center gap-3 px-10 py-5 md:py-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold text-lg rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/30 group"
                       >
                         <CreditCard className="h-6 w-6" />
-                        <span>Pay by Card</span>
+                        <span>{t('supportUs.buttons.payByCard')}</span>
                         <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                       </Link>
                       <Link
@@ -359,7 +339,7 @@ export default function SupportUsPage() {
                         className="flex-1 flex items-center justify-center gap-3 px-10 py-5 md:py-6 border-2 border-emerald-600 text-emerald-600 dark:text-emerald-400 dark:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 font-semibold text-lg rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg group"
                       >
                         <Bitcoin className="h-6 w-6" />
-                        <span>Pay with Crypto</span>
+                        <span>{t('supportUs.buttons.payWithCrypto')}</span>
                         <ExternalLink className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </div>
@@ -391,11 +371,11 @@ export default function SupportUsPage() {
               <div className="space-y-8">
                 <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight flex items-center justify-center gap-4">
                   <span className="text-4xl md:text-5xl">💙</span>
-                  <span>Support us today and become part of the change.</span>
+                  <span>{t('supportUs.cta.title')}</span>
                 </p>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                  Your contribution – no matter how big or small – means more than you can imagine. Together we can build a world where justice is accessible to everyone.
+                  {t('supportUs.cta.description')}
                 </p>
               </div>
 
@@ -403,26 +383,26 @@ export default function SupportUsPage() {
               <div className="flex flex-wrap justify-center gap-10 pt-10 text-slate-400">
                 <div className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5" />
-                  <span className="text-base">100% Transparent</span>
+                  <span className="text-base">{t('supportUs.cta.transparent')}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="h-5 w-5" />
-                  <span className="text-base">Secure Payments</span>
+                  <span className="text-base">{t('supportUs.cta.securePayments')}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Heart className="h-5 w-5" />
-                  <span className="text-base">Every Donation Counts</span>
+                  <span className="text-base">{t('supportUs.cta.everyDonationCounts')}</span>
                 </div>
               </div>
 
               {/* Contact Link */}
               <div className="pt-8">
                 <p className="text-slate-400">
-                  Have questions?{' '}
-                  <Link href="/contact-us" className="text-rose-400 hover:text-rose-300 underline underline-offset-4 font-semibold transition-colors">
-                    Contact us
+                  {t('supportUs.cta.haveQuestions')}{' '}
+                  <Link href={`/${locale}/contact-us`} className="text-rose-400 hover:text-rose-300 underline underline-offset-4 font-semibold transition-colors">
+                    {t('supportUs.cta.contactUs')}
                   </Link>{' '}
-                  to learn more about our work.
+                  {t('supportUs.cta.learnMore')}
                 </p>
               </div>
             </div>
