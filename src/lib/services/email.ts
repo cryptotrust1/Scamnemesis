@@ -604,6 +604,71 @@ Pre podporu: support@scamnemesis.com
   },
 
   /**
+   * Password reset confirmation email
+   */
+  passwordResetConfirmation: (userName: string) => {
+    const safeUserName = escapeHtml(userName);
+    return {
+      subject: `Heslo bolo úspešne zmenené - ${SITE_NAME}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #16a34a; color: white; padding: 20px; text-align: center; }
+            .content { padding: 30px; background: #f9fafb; }
+            .success-box { background: #dcfce7; border: 1px solid #22c55e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin: 20px 0; }
+            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>✅ Heslo zmenené</h1>
+            </div>
+            <div class="content">
+              <p>Dobrý deň ${safeUserName},</p>
+              <div class="success-box">
+                <p><strong>Vaše heslo bolo úspešne zmenené.</strong></p>
+                <p>Teraz sa môžete prihlásiť do svojho účtu s novým heslom.</p>
+              </div>
+              <div class="warning">
+                <strong>⚠️ Bezpečnostné upozornenie:</strong>
+                <p>Ak ste túto zmenu nevykonali vy, okamžite nás kontaktujte na <a href="mailto:support@scamnemesis.com">support@scamnemesis.com</a>.</p>
+                <p>Všetky vaše predchádzajúce prihlásenia boli z bezpečnostných dôvodov odhlásené.</p>
+              </div>
+              <p>Pre prihlásenie navštívte: <a href="${SITE_URL}/auth/login">${SITE_URL}/auth/login</a></p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+Heslo bolo úspešne zmenené
+
+Dobrý deň ${userName},
+
+Vaše heslo bolo úspešne zmenené. Teraz sa môžete prihlásiť do svojho účtu s novým heslom.
+
+BEZPEČNOSTNÉ UPOZORNENIE:
+Ak ste túto zmenu nevykonali vy, okamžite nás kontaktujte na support@scamnemesis.com.
+Všetky vaše predchádzajúce prihlásenia boli z bezpečnostných dôvodov odhlásené.
+
+Pre prihlásenie navštívte: ${SITE_URL}/auth/login
+
+${SITE_NAME}
+      `.trim(),
+    };
+  },
+
+  /**
    * Report status update (for reporter)
    */
   reportStatusUpdate: (userName: string, reportTitle: string, status: 'approved' | 'rejected', reason?: string) => {
@@ -685,6 +750,11 @@ export const emailService = {
 
   async sendPasswordReset(email: string, userName: string, resetUrl: string): Promise<SendResult> {
     const template = emailTemplates.passwordReset(userName, resetUrl);
+    return sendEmail({ to: email, ...template });
+  },
+
+  async sendPasswordResetConfirmation(email: string, userName: string): Promise<SendResult> {
+    const template = emailTemplates.passwordResetConfirmation(userName);
     return sendEmail({ to: email, ...template });
   },
 
