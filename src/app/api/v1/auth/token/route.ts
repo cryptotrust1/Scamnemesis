@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import {
   verifyPassword,
@@ -20,6 +21,7 @@ import {
   recordFailedAttempt,
   clearFailedAttempts,
 } from '@/lib/services/brute-force';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,6 +79,9 @@ const apiKeyLoginSchema = z.object({
 const loginSchema = z.union([passwordLoginSchema, apiKeyLoginSchema]);
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'AuthToken');
+
   try {
     // Rate limiting to prevent brute force attacks
     const ip = getClientIp(request);
@@ -376,11 +381,21 @@ export async function POST(request: NextRequest) {
       return response;
     }
   } catch (error) {
-    console.error('Auth error:', error);
+    log.error('Auth error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    Sentry.captureException(error, {
+      tags: { api: 'auth', method: 'POST', endpoint: 'token' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
       },
       { status: 500 }
     );

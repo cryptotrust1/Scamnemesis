@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, type ZodIssue } from 'zod';
 import { SignJWT } from 'jose';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import {
   hashPassword,
@@ -17,6 +18,7 @@ import {
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
 import { verifyCaptcha, isCaptchaEnabled } from '@/lib/captcha';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,6 +87,9 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'AuthRegister');
+
   try {
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
@@ -262,11 +267,21 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Registration error:', error);
+    log.error('Registration error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    Sentry.captureException(error, {
+      tags: { api: 'auth', method: 'POST', endpoint: 'register' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred during registration',
+        request_id: requestId,
       },
       { status: 500 }
     );
