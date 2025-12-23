@@ -28,9 +28,13 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale || defaultLocale);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Hydrate with stored/browser locale on client
+  // Hydrate with stored/browser locale on client, and sync with URL locale changes
   useEffect(() => {
-    if (!initialLocale) {
+    if (initialLocale) {
+      // URL locale takes priority - sync state with URL
+      setLocaleState(initialLocale);
+    } else {
+      // No URL locale - use stored/browser preference
       setLocaleState(getInitialLocale());
     }
     setIsHydrated(true);
