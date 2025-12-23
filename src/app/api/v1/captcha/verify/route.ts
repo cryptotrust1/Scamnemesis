@@ -79,38 +79,5 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * Server-side CAPTCHA verification helper
- * Use this in other API routes to verify tokens
- */
-export async function verifyCaptcha(token: string, ip?: string): Promise<boolean> {
-  if (!token) return false;
-
-  // In development/test, accept test tokens
-  if (process.env.NODE_ENV === 'development' && token.startsWith('test_')) {
-    return true;
-  }
-
-  try {
-    const formData = new URLSearchParams();
-    formData.append('secret', TURNSTILE_SECRET_KEY);
-    formData.append('response', token);
-    if (ip) formData.append('remoteip', ip);
-
-    const response = await fetch(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData.toString(),
-      }
-    );
-
-    const result: TurnstileResponse = await response.json();
-    return result.success;
-  } catch {
-    return false;
-  }
-}
+// Note: For server-side CAPTCHA verification in other API routes,
+// import { verifyCaptcha } from '@/lib/captcha' instead
