@@ -3,6 +3,7 @@ import { Prisma, CommentStatus } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { parsePagination } from '@/lib/utils/pagination';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Fetch comments and count
+    // Fetch comments and count (including attachments)
     const [comments, total] = await Promise.all([
       prisma.comment.findMany({
         where,
@@ -80,12 +81,25 @@ export async function GET(request: NextRequest) {
               summary: true,
             },
           },
+          attachments: {
+            select: {
+              id: true,
+              fileKey: true,
+              fileName: true,
+              fileSize: true,
+              mimeType: true,
+              uploadedAt: true,
+            },
+          },
         },
       }),
       prisma.comment.count({ where }),
     ]);
 
-    // Format response
+    // Generate URLs for attachments
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+
+    // Format response with attachments
     const formattedComments = comments.map((comment) => ({
       id: comment.id,
       content: comment.content,
@@ -107,6 +121,17 @@ export async function GET(request: NextRequest) {
         publicId: comment.report.publicId,
         title: comment.report.summary,
       },
+      attachments: comment.attachments.map(a => ({
+        id: a.id,
+        fileName: a.fileName,
+        fileSize: a.fileSize,
+        mimeType: a.mimeType,
+        uploadedAt: a.uploadedAt.toISOString(),
+        url: siteUrl
+          ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(a.fileKey)}`
+          : `/api/v1/evidence/files/${encodeURIComponent(a.fileKey)}`,
+      })),
+      attachmentsCount: comment.attachments.length,
     }));
 
     return NextResponse.json({
@@ -117,10 +142,6 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (error) {
-    console.error('Error fetching comments:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch comments' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/comments' });
   }
 }

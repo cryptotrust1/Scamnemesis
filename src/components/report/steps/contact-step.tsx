@@ -13,7 +13,7 @@ interface ContactStepProps {
 }
 
 export function ContactStep({ data, errors, onChange }: ContactStepProps) {
-  const { t } = useTranslation();
+  const { t, tv } = useTranslation();
 
   return (
     <div className="space-y-6">
@@ -180,7 +180,7 @@ export function ContactStep({ data, errors, onChange }: ContactStepProps) {
             <div className="text-sm text-blue-800 dark:text-blue-200">
               <p className="font-medium mb-1">{t('report.contact.infoTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
-                {(t('report.contact.infoItems') as unknown as string[]).map((item, idx) => (
+                {(tv<string[]>('report.contact.infoItems') || []).map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>

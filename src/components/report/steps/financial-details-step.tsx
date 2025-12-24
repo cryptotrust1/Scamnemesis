@@ -59,7 +59,7 @@ const WALLET_ADDRESS_HINTS = {
 };
 
 export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetailsStepProps) {
-  const { t } = useTranslation();
+  const { t, tv } = useTranslation();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     banking: true,
     crypto: false,
@@ -111,7 +111,7 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
               <p className="font-medium mb-1">{t('report.financialDetails.infoTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
                 {(() => {
-                  const items = t('report.financialDetails.infoItems');
+                  const items = tv<string[]>('report.financialDetails.infoItems');
                   if (Array.isArray(items)) {
                     return items.map((item, idx) => (
                       <li key={idx}>{item}</li>
@@ -555,7 +555,7 @@ export function FinancialDetailsStep({ data, errors, onChange }: FinancialDetail
             <div className="text-sm text-muted-foreground">
               <p className="font-medium mb-1">{t('report.financialDetails.tipTitle')}</p>
               <ul className="list-disc list-inside space-y-1">
-                {(t('report.financialDetails.tipItems') as unknown as string[]).map((item, idx) => (
+                {(tv<string[]>('report.financialDetails.tipItems') || []).map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
