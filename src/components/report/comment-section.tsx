@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { MessageSquare, ThumbsUp, Flag, Send, Loader2, LogIn, Paperclip, X, Image, FileText, Smile } from 'lucide-react';
+import { MessageSquare, ThumbsUp, Flag, Send, Loader2, LogIn, Paperclip, X, Image as ImageIcon, FileText, Smile } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
 import { RelativeTime } from '@/components/ui/relative-time';
 import { toast } from 'sonner';
@@ -226,7 +226,7 @@ export function CommentSection({ reportId }: CommentSectionProps) {
   };
 
   const getFileIcon = (type: string) => {
-    if (type.startsWith('image/')) return <Image className="h-4 w-4" />;
+    if (type.startsWith('image/')) return <ImageIcon className="h-4 w-4" />;
     if (type === 'application/pdf') return <FileText className="h-4 w-4" />;
     return <Paperclip className="h-4 w-4" />;
   };
@@ -471,7 +471,7 @@ export function CommentSection({ reportId }: CommentSectionProps) {
                       className="flex items-center gap-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors"
                     >
                       {attachment.fileType.startsWith('image/') ? (
-                        <Image className="h-4 w-4 text-blue-500" />
+                        <ImageIcon className="h-4 w-4 text-blue-500" />
                       ) : (
                         <FileText className="h-4 w-4 text-red-500" />
                       )}
