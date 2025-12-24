@@ -34,20 +34,15 @@ export async function verifyCaptcha(
     return { success: true };
   }
 
-  // In development with test key, always succeed
-  if (process.env.NODE_ENV === 'development' &&
-      TURNSTILE_SECRET_KEY === '1x0000000000000000000000000000000AA') {
-    console.log('[CAPTCHA] Development mode - skipping verification');
+  // Skip verification if CAPTCHA is not properly configured (test keys)
+  // This allows the system to work without CAPTCHA until real keys are set
+  if (!isCaptchaEnabled()) {
+    console.log('[CAPTCHA] Not enabled (using test keys) - skipping verification');
     return { success: true };
   }
 
   if (!token) {
     return { success: false, errors: ['missing-token'] };
-  }
-
-  // Accept test tokens in development
-  if (process.env.NODE_ENV === 'development' && token.startsWith('test_')) {
-    return { success: true };
   }
 
   try {
