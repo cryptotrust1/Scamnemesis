@@ -46,8 +46,9 @@ export default function LoginPage() {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            ...formData,
-            captchaToken: captchaToken,
+            grant_type: 'password',
+            email: formData.email,
+            password: formData.password,
           }),
         });
 
