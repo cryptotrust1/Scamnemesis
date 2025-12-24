@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User, Mail, Shield, Calendar, CheckCircle, AlertCircle, Save, Loader2 } from 'lucide-react';
+import { User, Mail, Shield, Calendar, CheckCircle, AlertCircle, Save, Loader2, FileText, Lock } from 'lucide-react';
 import { useUser, useRequireAuth } from '@/lib/auth/user-context';
 import { toast } from 'sonner';
 
@@ -11,6 +11,7 @@ export default function ProfilePage() {
 
   const [displayName, setDisplayName] = useState('');
   const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isResendingVerification, setIsResendingVerification] = useState(false);
 
@@ -19,6 +20,7 @@ export default function ProfilePage() {
     if (user) {
       setDisplayName(user.displayName || '');
       setName(user.name || '');
+      setBio(user.bio || '');
     }
   }, [user]);
 
@@ -35,6 +37,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           name: name.trim() || undefined,
           displayName: displayName.trim() || undefined,
+          bio: bio.trim(),
         }),
       });
 
@@ -166,10 +169,10 @@ export default function ProfilePage() {
 
           {/* Profile Form */}
           <form onSubmit={handleSave} className="p-6 space-y-6">
-            {/* Display Name */}
+            {/* Display Name (Public Nickname) */}
             <div className="space-y-2">
               <label htmlFor="displayName" className="block text-sm font-semibold text-slate-700">
-                Zobrazované meno
+                Prezývka (verejná)
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -182,13 +185,16 @@ export default function ProfilePage() {
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
                 />
               </div>
-              <p className="text-xs text-slate-500">Toto meno bude viditeľné pre ostatných používateľov</p>
+              <p className="text-xs text-green-600 flex items-center gap-1">
+                <CheckCircle className="h-3 w-3" />
+                Toto meno bude viditeľné pre ostatných používateľov
+              </p>
             </div>
 
-            {/* Full Name */}
+            {/* Full Name (Private) */}
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
-                Celé meno
+                Celé meno (súkromné)
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -198,8 +204,39 @@ export default function ProfilePage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Vaše celé meno"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
+                  className="w-full pl-10 pr-12 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
+                  required
                 />
+                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+              </div>
+              <p className="text-xs text-slate-500 flex items-center gap-1">
+                <Lock className="h-3 w-3" />
+                Vaše meno je súkromné a nebude zobrazené ostatným
+              </p>
+            </div>
+
+            {/* Bio (Optional) */}
+            <div className="space-y-2">
+              <label htmlFor="bio" className="block text-sm font-semibold text-slate-700">
+                O mne (voliteľné)
+              </label>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                <textarea
+                  id="bio"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Napíšte niečo o sebe..."
+                  rows={3}
+                  maxLength={500}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm resize-none"
+                />
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-500">Krátky popis o vás (voliteľné)</span>
+                <span className={`${bio.length > 450 ? 'text-amber-600' : 'text-slate-400'}`}>
+                  {bio.length}/500
+                </span>
               </div>
             </div>
 

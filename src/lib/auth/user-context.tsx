@@ -8,6 +8,7 @@ export interface User {
   email: string;
   name?: string;
   displayName?: string;
+  bio?: string;
   role: string;
   image?: string;
   emailVerified?: boolean;
@@ -50,6 +51,7 @@ export function UserAuthProvider({ children }: { children: React.ReactNode }) {
         email: data.email,
         name: data.name,
         displayName: data.displayName || data.display_name,
+        bio: data.bio,
         role: data.role,
         image: data.image,
         emailVerified: data.emailVerified || data.email_verified,
@@ -121,6 +123,7 @@ export function UserAuthProvider({ children }: { children: React.ReactNode }) {
         email: data.user.email,
         name: data.user.name,
         displayName: data.user.displayName || data.user.display_name,
+        bio: data.user.bio,
         role: data.user.role || 'BASIC',
         image: data.user.image,
         emailVerified: data.user.emailVerified,
@@ -163,6 +166,7 @@ export function UserAuthProvider({ children }: { children: React.ReactNode }) {
           email: data.user.email,
           name: data.user.name,
           displayName: data.user.displayName || data.user.display_name,
+          bio: data.user.bio,
           role: data.user.role || 'BASIC',
           image: data.user.image,
           emailVerified: false,

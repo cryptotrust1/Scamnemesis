@@ -144,8 +144,11 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  // Display name
+  // Display name (public nickname)
   displayName     String?         @map("display_name")
+
+  // User bio (optional, public)
+  bio             String?         @db.Text
 
   // Auth.js OAuth Relations
   accounts         Account[]
