@@ -564,6 +564,7 @@ model Comment {
   report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id], onDelete: SetNull)
+  attachments CommentAttachment[]
 
   @@index([reportId])
   @@index([status])
@@ -572,6 +573,22 @@ model Comment {
   @@index([reportId, status])   // Added: composite for report comments
   @@index([isReported])         // Added: for reported comment filtering
   @@map("comments")
+}
+
+// Comment file attachments (PNG, JPEG, PDF)
+model CommentAttachment {
+  id         String   @id @default(uuid())
+  commentId  String   @map("comment_id")
+  fileKey    String   @map("file_key")      // S3 storage key
+  fileName   String   @map("file_name")     // Original filename
+  fileSize   Int      @map("file_size")     // Size in bytes
+  mimeType   String   @map("mime_type")     // MIME type
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId])
+  @@map("comment_attachments")
 }
 
 // ==================== DUPLICATE DETECTION ====================
