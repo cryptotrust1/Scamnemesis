@@ -1330,6 +1330,58 @@
       "ctaTitle": "Protect Your Business Today",
       "ctaDescription": "Take your next strategic step with confidence. Order your due diligence report now.",
       "ctaButton": "Order Due Diligence Report"
+    },
+    "about": {
+      "hero": {
+        "title": "About ScamNemesis",
+        "description": "We are a team of lawyers, forensic analysts, and ethical hackers dedicated to helping victims of crypto scams and investment frauds. Our mission is to protect people from fraud and help those who have been victimized."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "text1": "To create a safer digital environment by providing accessible fraud prevention tools, professional investigation services, and support for victims of online scams.",
+        "text2": "We believe everyone deserves protection from fraud, regardless of their financial situation. That's why we offer free tools alongside our professional services.",
+        "imageAlt": "Our Team"
+      },
+      "values": {
+        "title": "Our Values",
+        "items": [
+          { "title": "Transparency", "description": "We are honest about what we can and cannot do. No false promises, just professional investigation." },
+          { "title": "Expertise", "description": "Our team includes certified fraud examiners, OSINT specialists, and legal professionals." },
+          { "title": "Accessibility", "description": "Justice and safety should not be reserved only for those who can afford them financially." },
+          { "title": "Compassion", "description": "We understand the emotional impact of being scammed and treat every victim with respect." }
+        ]
+      },
+      "team": {
+        "title": "Expert Team",
+        "description": "Our team holds certifications from leading institutions with backgrounds in financial crime investigation, military intelligence, and Big 4 consulting.",
+        "credentials": [
+          "Certified Fraud Examiners (CFE®)",
+          "Certified Anti-Money Laundering Specialists (CAMS®)",
+          "Certified Information Systems Auditors (CISA®)",
+          "Certified Information Security Managers (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Military Intelligence Background",
+          "Big 4 Consulting Experience"
+        ]
+      },
+      "services": {
+        "title": "What We Offer",
+        "items": [
+          { "name": "Scam Checker", "description": "Free tool to verify identities and check for fraud indicators" },
+          { "name": "Scam Reporting", "description": "Comprehensive form to document and report fraud incidents" },
+          { "name": "Money Recovery", "description": "Professional investigation and fund recovery services" },
+          { "name": "Due Diligence", "description": "Business partner vetting and corporate verification" },
+          { "name": "Training", "description": "Cybersecurity and fraud prevention courses (coming soon)" },
+          { "name": "Second Chance Program", "description": "Rehabilitation support for former offenders" }
+        ]
+      },
+      "certifications": { "title": "Our Certifications" },
+      "cta": {
+        "title": "Need Help?",
+        "description": "Whether you want to check someone's legitimacy, report a scam, or need help recovering your money — we're here for you.",
+        "scamChecker": "Use Scam Checker",
+        "contact": "Contact Us"
+      }
     }
   }
 }
