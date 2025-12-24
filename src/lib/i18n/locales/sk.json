@@ -1223,5 +1223,113 @@
       "fillFormButton": "Vyplniť formulár hlásenia",
       "contactButton": "Kontaktujte nás pre pomoc"
     }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Kontaktujte nás",
+      "title": "Kontaktujte",
+      "titleHighlight": "nás",
+      "description": "Môžete nás kontaktovať e-mailom. Ak však chcete nahlásiť podvod, kliknite na tlačidlo nižšie a vyplňte formulár — bez neho vám nebudeme môcť účinne pomôcť.",
+      "emailLabel": "Napíšte nám na",
+      "reportPrompt": "Potrebujete nahlásiť podvod?",
+      "reportButton": "Nahlásiť podvod",
+      "quickResponse": {
+        "title": "Rýchla odpoveď",
+        "description": "Na všetky otázky odpovedáme do 24-48 hodín"
+      },
+      "confidential": {
+        "title": "Dôverné",
+        "description": "Vaše informácie sú chránené a prísne dôverné"
+      },
+      "expertSupport": {
+        "title": "Odborná podpora",
+        "description": "Náš tím špecialistov je tu, aby vám pomohol"
+      },
+      "cta": {
+        "title": "Ste pripravení konať?",
+        "description": "Ak ste sa stali obeťou podvodu, nečakajte. Odošlite podrobnú správu, aby náš tím mohol začať vyšetrovať váš prípad.",
+        "button": "Nahlásiť podvod"
+      }
+    },
+    "verifyService": {
+      "badge": "Profesionálne Due Diligence Služby",
+      "heroTitle": "Investigatívna Due Diligence & Preverovanie Obchodných Partnerov",
+      "heroSubtitle": "Minimalizujte Riziko Pred Vstupom do Obchodu",
+      "heroDescription": "Overte Integritu Vášho Budúceho Obchodného Partnera, Dodávateľa alebo Investície",
+      "orderNow": "Objednať Službu",
+      "learnMore": "Dozvedieť Sa Viac",
+      "useCasesTitle": "Kedy Je Táto Služba Nevyhnutná?",
+      "useCases": [
+        {
+          "title": "Hodnotenie Strategických Partnerstiev & Joint Ventures",
+          "description": "Pred investovaním kapitálu a zdrojov je nevyhnutné overiť prevádzkovú, finančnú a reputačnú integritu potenciálneho partnera."
+        },
+        {
+          "title": "Onboarding Kľúčových Dodávateľov",
+          "description": "Odolný a etický dodávateľský reťazec je kritickým obchodným aktívom. Preverujeme vašich dodávateľov na finančnú stabilitu a regulačnú zhodu."
+        },
+        {
+          "title": "Pre-investičný & M&A Screening",
+          "description": "Pre private equity firmy a venture kapitál poskytujeme vrstvu predbežnej integrity a reputačnej due diligence."
+        },
+        {
+          "title": "Preverovanie Klientov (KYB Compliance)",
+          "description": "Chráňte svoju firmu pred finančnou kriminalitou. Náš KYB proces potvrdzuje identitu a legitimitu nových firemných klientov."
+        }
+      ],
+      "pillarsTitle": "Štyri Piliere Nášho Vyšetrovania",
+      "pillars": [
+        {
+          "number": "1",
+          "title": "Firemná Identita & Právna Štruktúra",
+          "description": "Overujeme právnu existenciu, vlastnícku štruktúru a regulačný status v medzinárodných obchodných registroch."
+        },
+        {
+          "number": "2",
+          "title": "Finančná Integrita & Reputačné Riziká",
+          "description": "Analyzujeme verejné záznamy, súdne spisy a mediálne zdroje na odhalenie potenciálnych rizík."
+        },
+        {
+          "number": "3",
+          "title": "Digitálna Stopa & Mapovanie Aktív",
+          "description": "Pomocou pokročilých OSINT nástrojov sledujeme online prítomnosť, históriu domén a digitálne aktíva."
+        },
+        {
+          "number": "4",
+          "title": "Ľudský Faktor & Screening Vedenia",
+          "description": "Vykonávame dôkladné preverovanie kariér, reputácie a potenciálnych konfliktov záujmov."
+        }
+      ],
+      "whatYouGet": "Čo Získate",
+      "reportTitle": "Due Diligence Správa",
+      "reportDescription": "Komplexná a Praktická Správa",
+      "reportDetails": "Dostanete komplexnú PDF správu e-mailom do 30 dní.",
+      "reportIncludes": "Správa Obsahuje:",
+      "deliverables": [
+        "Overenie firemnej identity a právneho statusu",
+        "Analýza vlastníckej a riadiacej štruktúry vrátane UBO",
+        "Hodnotenie finančnej integrity a solventnosti",
+        "Reputačná a riziková analýza",
+        "Audit digitálnej stopy a online aktív"
+      ],
+      "transparentPricing": "Transparentná Cenová Politika",
+      "noSurprises": "Žiadne skryté poplatky. Pevná cena za kompletné vyšetrovanie.",
+      "processTitle": "Jednoduchý 3-Krokový Proces",
+      "steps": [
+        { "title": "Vyplňte Online Formulár", "description": "Poskytnite základné informácie o subjekte, ktorý chcete prešetriť." },
+        { "title": "Bezpečne Zaplaťte", "description": "Zaplaťte bezpečne online. Akceptujeme všetky bežné platobné metódy." },
+        { "title": "Dostanete Správu", "description": "Získajte komplexnú due diligence správu do 30 dní." }
+      ],
+      "whyChooseTitle": "Prečo Si Vybrať ScamNemesis?",
+      "whyChoose": [
+        { "title": "Spravodajská Expertíza", "description": "Náš tím kombinuje skúsenosti z vojenskej spravodajskej služby, OSINT operácií a korporátnych vyšetrovaní." },
+        { "title": "Certifikovaní Špecialisti", "description": "CFE®, CAMS®, CISA®, CISM®, OSCP® certifikovaní profesionáli vedú každé vyšetrovanie." },
+        { "title": "Pokročilé OSINT Techniky", "description": "Používame najmodernejšie Open-Source Intelligence integrujúce stovky globálnych databáz." },
+        { "title": "Transparentné Ceny", "description": "Žiadne skryté poplatky. Všetky údaje sú spracované podľa prísnych štandardov dôvernosti." }
+      ],
+      "ctaTitle": "Chráňte Svoj Biznis Ešte Dnes",
+      "ctaDescription": "Urobte ďalší strategický krok s istotou. Objednajte si due diligence správu teraz.",
+      "ctaButton": "Objednať Due Diligence Správu"
+    }
   }
 }
