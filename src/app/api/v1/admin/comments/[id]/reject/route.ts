@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,10 +103,6 @@ export async function POST(
       rejected_at: updatedComment.moderatedAt?.toISOString(),
     });
   } catch (error) {
-    console.error('Error rejecting comment:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to reject comment' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'POST /api/v1/admin/comments/[id]/reject' });
   }
 }

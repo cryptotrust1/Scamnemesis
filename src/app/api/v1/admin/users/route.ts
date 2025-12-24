@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { parsePagination } from '@/lib/utils/pagination';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,10 +104,6 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch users' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/users' });
   }
 }

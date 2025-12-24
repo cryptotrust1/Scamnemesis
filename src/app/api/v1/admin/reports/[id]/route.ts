@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -136,11 +137,7 @@ export async function PATCH(
       updated_at: updatedReport.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error('Error updating report:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to update report' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'PATCH /api/v1/admin/reports/[id]' });
   }
 }
 
@@ -250,10 +247,6 @@ export async function GET(
       moderated_at: report.moderatedAt?.toISOString(),
     });
   } catch (error) {
-    console.error('Error fetching report:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch report' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/reports/[id]' });
   }
 }
