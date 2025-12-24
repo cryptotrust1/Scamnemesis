@@ -59,13 +59,15 @@ function getJwtSecret(): Uint8Array {
 
   const jwtSecretString = process.env.JWT_SECRET;
 
-  if (!jwtSecretString && process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET environment variable is required in production');
+  // JWT_SECRET is required in all environments for security
+  if (!jwtSecretString) {
+    throw new Error(
+      'JWT_SECRET environment variable is required. ' +
+      'Please set JWT_SECRET in your .env file with a secure random string (min 32 characters).'
+    );
   }
 
-  _jwtSecret = new TextEncoder().encode(
-    jwtSecretString || 'dev-jwt-secret-not-for-production'
-  );
+  _jwtSecret = new TextEncoder().encode(jwtSecretString);
 
   return _jwtSecret;
 }
