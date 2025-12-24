@@ -64,8 +64,8 @@ function getJwtSecret(): string {
   return secret;
 }
 
-// Rate limit: 5 registrations per hour per IP
-const REGISTER_RATE_LIMIT = 5;
+// Rate limit: 25 registrations per hour per IP (5x increase for better UX)
+const REGISTER_RATE_LIMIT = 25;
 const REGISTER_RATE_WINDOW = 3600000; // 1 hour in milliseconds
 
 // Password validation regex
