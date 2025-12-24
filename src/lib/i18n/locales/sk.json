@@ -1330,6 +1330,58 @@
       "ctaTitle": "Chráňte Svoj Biznis Ešte Dnes",
       "ctaDescription": "Urobte ďalší strategický krok s istotou. Objednajte si due diligence správu teraz.",
       "ctaButton": "Objednať Due Diligence Správu"
+    },
+    "about": {
+      "hero": {
+        "title": "O ScamNemesis",
+        "description": "Sme tím právnikov, forenzných analytikov a etických hackerov, ktorí sa venujú pomoci obetiam krypto podvodov a investičných podvodov. Našou misiou je chrániť ľudí pred podvodmi a pomáhať tým, ktorí sa stali obeťami."
+      },
+      "mission": {
+        "title": "Naša misia",
+        "text1": "Vytvoriť bezpečnejšie digitálne prostredie poskytovaním dostupných nástrojov na prevenciu podvodov, profesionálnych vyšetrovacích služieb a podpory pre obete online podvodov.",
+        "text2": "Veríme, že každý si zaslúži ochranu pred podvodmi, bez ohľadu na svoju finančnú situáciu. Preto ponúkame bezplatné nástroje popri našich profesionálnych službách.",
+        "imageAlt": "Náš tím"
+      },
+      "values": {
+        "title": "Naše hodnoty",
+        "items": [
+          { "title": "Transparentnosť", "description": "Sme úprimní v tom, čo môžeme a nemôžeme urobiť. Žiadne falošné sľuby, len profesionálne vyšetrovanie." },
+          { "title": "Odbornosť", "description": "Náš tím zahŕňa certifikovaných vyšetrovateľov podvodov, OSINT špecialistov a právnych profesionálov." },
+          { "title": "Dostupnosť", "description": "Spravodlivosť a bezpečnosť by nemali byť vyhradené len pre tých, ktorí si ich môžu finančne dovoliť." },
+          { "title": "Súcit", "description": "Chápeme emocionálny dopad podvodu a ku každej obeti pristupujeme s rešpektom." }
+        ]
+      },
+      "team": {
+        "title": "Expertný tím",
+        "description": "Náš tím má certifikácie od popredných inštitúcií so skúsenosťami vo vyšetrovaní finančnej kriminality, vojenskom spravodajstve a Big 4 konzultingu.",
+        "credentials": [
+          "Certifikovaní vyšetrovatelia podvodov (CFE®)",
+          "Certifikovaní špecialisti na boj proti praniu špinavých peňazí (CAMS®)",
+          "Certifikovaní audítori informačných systémov (CISA®)",
+          "Certifikovaní manažéri informačnej bezpečnosti (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Skúsenosti z vojenského spravodajstva",
+          "Skúsenosti z Big 4 konzultingu"
+        ]
+      },
+      "services": {
+        "title": "Čo ponúkame",
+        "items": [
+          { "name": "Kontrola podvodov", "description": "Bezplatný nástroj na overenie identity a kontrolu indikátorov podvodu" },
+          { "name": "Nahlásenie podvodu", "description": "Komplexný formulár na dokumentáciu a nahlásenie incidentov podvodu" },
+          { "name": "Vymáhanie peňazí", "description": "Profesionálne vyšetrovanie a služby na vymáhanie prostriedkov" },
+          { "name": "Due Diligence", "description": "Preverovanie obchodných partnerov a firemná verifikácia" },
+          { "name": "Školenia", "description": "Kurzy kybernetickej bezpečnosti a prevencie podvodov (čoskoro)" },
+          { "name": "Program druhej šance", "description": "Podpora rehabilitácie pre bývalých páchateľov" }
+        ]
+      },
+      "certifications": { "title": "Naše certifikácie" },
+      "cta": {
+        "title": "Potrebujete pomoc?",
+        "description": "Či chcete overiť niekoho legitimitu, nahlásiť podvod alebo potrebujete pomoc s vrátením peňazí — sme tu pre vás.",
+        "scamChecker": "Použiť kontrolu podvodov",
+        "contact": "Kontaktujte nás"
+      }
     }
   }
 }

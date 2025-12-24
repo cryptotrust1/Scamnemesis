@@ -1057,6 +1057,58 @@
       "ctaTitle": "Schützen Sie Ihr Unternehmen Heute",
       "ctaDescription": "Machen Sie Ihren nächsten strategischen Schritt mit Zuversicht. Bestellen Sie Ihren Due Diligence Bericht jetzt.",
       "ctaButton": "Due Diligence Bericht Bestellen"
+    },
+    "about": {
+      "hero": {
+        "title": "Über ScamNemesis",
+        "description": "Wir sind ein Team aus Anwälten, forensischen Analysten und ethischen Hackern, die sich der Hilfe für Opfer von Krypto-Betrug und Investitionsbetrug widmen. Unsere Mission ist es, Menschen vor Betrug zu schützen und denjenigen zu helfen, die Opfer geworden sind."
+      },
+      "mission": {
+        "title": "Unsere Mission",
+        "text1": "Eine sicherere digitale Umgebung zu schaffen, indem wir zugängliche Werkzeuge zur Betrugsprävention, professionelle Ermittlungsdienste und Unterstützung für Opfer von Online-Betrug bereitstellen.",
+        "text2": "Wir glauben, dass jeder Schutz vor Betrug verdient, unabhängig von seiner finanziellen Situation. Deshalb bieten wir kostenlose Tools neben unseren professionellen Dienstleistungen an.",
+        "imageAlt": "Unser Team"
+      },
+      "values": {
+        "title": "Unsere Werte",
+        "items": [
+          { "title": "Transparenz", "description": "Wir sind ehrlich darüber, was wir tun können und was nicht. Keine falschen Versprechen, nur professionelle Ermittlung." },
+          { "title": "Expertise", "description": "Unser Team umfasst zertifizierte Betrugsermittler, OSINT-Spezialisten und Rechtsexperten." },
+          { "title": "Zugänglichkeit", "description": "Gerechtigkeit und Sicherheit sollten nicht nur denen vorbehalten sein, die sie sich finanziell leisten können." },
+          { "title": "Mitgefühl", "description": "Wir verstehen die emotionale Auswirkung von Betrug und behandeln jedes Opfer mit Respekt." }
+        ]
+      },
+      "team": {
+        "title": "Expertenteam",
+        "description": "Unser Team verfügt über Zertifizierungen von führenden Institutionen mit Hintergründen in der Untersuchung von Finanzkriminalität, militärischer Aufklärung und Big 4 Beratung.",
+        "credentials": [
+          "Zertifizierte Betrugsermittler (CFE®)",
+          "Zertifizierte Anti-Geldwäsche-Spezialisten (CAMS®)",
+          "Zertifizierte Informationssystem-Auditoren (CISA®)",
+          "Zertifizierte Informationssicherheits-Manager (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Militärischer Nachrichtendienst-Hintergrund",
+          "Big 4 Beratungserfahrung"
+        ]
+      },
+      "services": {
+        "title": "Was wir anbieten",
+        "items": [
+          { "name": "Betrugscheck", "description": "Kostenloses Tool zur Identitätsverifizierung und Überprüfung von Betrugsindikatoren" },
+          { "name": "Betrugsmeldung", "description": "Umfassendes Formular zur Dokumentation und Meldung von Betrugsfällen" },
+          { "name": "Geldwiederherstellung", "description": "Professionelle Ermittlung und Dienstleistungen zur Rückgewinnung von Geldern" },
+          { "name": "Due Diligence", "description": "Überprüfung von Geschäftspartnern und Unternehmensverifizierung" },
+          { "name": "Schulungen", "description": "Kurse zu Cybersicherheit und Betrugsprävention (demnächst)" },
+          { "name": "Zweite-Chance-Programm", "description": "Rehabilitationsunterstützung für ehemalige Straftäter" }
+        ]
+      },
+      "certifications": { "title": "Unsere Zertifizierungen" },
+      "cta": {
+        "title": "Brauchen Sie Hilfe?",
+        "description": "Ob Sie die Legitimität einer Person überprüfen, einen Betrug melden oder Hilfe bei der Rückholung Ihres Geldes benötigen — wir sind für Sie da.",
+        "scamChecker": "Betrugscheck verwenden",
+        "contact": "Kontaktieren Sie uns"
+      }
     }
   },
   "iWasScammed": {
