@@ -1223,5 +1223,113 @@
       "fillFormButton": "Fill Out Report Form",
       "contactButton": "Contact Us for Help"
     }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Get in Touch",
+      "title": "Contact",
+      "titleHighlight": "us",
+      "description": "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
+      "emailLabel": "Email us at",
+      "reportPrompt": "Need to report fraud?",
+      "reportButton": "Report scam",
+      "quickResponse": {
+        "title": "Quick Response",
+        "description": "We respond to all inquiries within 24-48 hours"
+      },
+      "confidential": {
+        "title": "Confidential",
+        "description": "Your information is protected and kept strictly confidential"
+      },
+      "expertSupport": {
+        "title": "Expert Support",
+        "description": "Our team of specialists is here to assist you"
+      },
+      "cta": {
+        "title": "Ready to take action?",
+        "description": "If you've been affected by fraud, don't wait. Submit a detailed report so our team can begin investigating your case.",
+        "button": "Report scam"
+      }
+    },
+    "verifyService": {
+      "badge": "Professional Due Diligence Services",
+      "heroTitle": "Investigative Due Diligence & Business Partner Vetting",
+      "heroSubtitle": "Mitigate Risk Before You Engage",
+      "heroDescription": "Verify the Integrity of Your Next Business Partner, Supplier, or Investment",
+      "orderNow": "Order Service Now",
+      "learnMore": "Learn More",
+      "useCasesTitle": "When Is This Service Essential?",
+      "useCases": [
+        {
+          "title": "Evaluating Strategic Partnerships & Joint Ventures",
+          "description": "Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner."
+        },
+        {
+          "title": "Onboarding Key Suppliers & Vendors",
+          "description": "A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability and regulatory compliance."
+        },
+        {
+          "title": "Pre-Investment & M&A Screening",
+          "description": "For private equity firms and venture capitalists, our service provides essential preliminary integrity and reputational due diligence."
+        },
+        {
+          "title": "Vetting High-Value Clients (KYB Compliance)",
+          "description": "Protect your firm from financial crime and meet stringent regulatory requirements with our Know Your Business verification."
+        }
+      ],
+      "pillarsTitle": "Our Four Pillars of Investigation",
+      "pillars": [
+        {
+          "number": "1",
+          "title": "Corporate Identity & Legal Architecture",
+          "description": "We verify legal existence, ownership structure, and regulatory status across international business registries."
+        },
+        {
+          "number": "2",
+          "title": "Financial Integrity & Reputational Risks",
+          "description": "We examine public records, court filings, and media sources to uncover potential risks."
+        },
+        {
+          "number": "3",
+          "title": "Digital Footprint & Asset Mapping",
+          "description": "Using advanced OSINT tools, we trace online presence, domain history, and digital assets."
+        },
+        {
+          "number": "4",
+          "title": "Human Factor & Leadership Screening",
+          "description": "We conduct thorough background investigations into careers and potential conflicts of interest."
+        }
+      ],
+      "whatYouGet": "What You Get",
+      "reportTitle": "Due Diligence Report",
+      "reportDescription": "Comprehensive and Practical Report",
+      "reportDetails": "You will receive a comprehensive PDF report via email within 30 days.",
+      "reportIncludes": "Report Includes:",
+      "deliverables": [
+        "Verification of corporate identity and legal status",
+        "Analysis of ownership and management structure, including UBOs",
+        "Assessment of financial integrity and solvency",
+        "Reputation and risk evaluation",
+        "Audit of digital footprint and online assets"
+      ],
+      "transparentPricing": "Transparent Pricing",
+      "noSurprises": "No hidden fees. Fixed price for complete investigation.",
+      "processTitle": "Simple 3-Step Process",
+      "steps": [
+        { "title": "Complete the Online Form", "description": "Provide basic information about the entity you want to investigate." },
+        { "title": "Make a Secure Payment", "description": "Pay securely online. We accept all major payment methods." },
+        { "title": "Receive Your Report", "description": "Get your comprehensive due diligence report within 30 days." }
+      ],
+      "whyChooseTitle": "Why Choose ScamNemesis?",
+      "whyChoose": [
+        { "title": "Intelligence-Grade Expertise", "description": "Our team combines military intelligence, OSINT operations, and corporate investigations experience." },
+        { "title": "Certified Specialists", "description": "CFE®, CAMS®, CISA®, CISM®, OSCP® certified professionals conduct every investigation." },
+        { "title": "Advanced OSINT Techniques", "description": "We employ cutting-edge Open-Source Intelligence integrating hundreds of global databases." },
+        { "title": "Transparent Fixed Pricing", "description": "No hidden fees. All data handled according to strict confidentiality standards." }
+      ],
+      "ctaTitle": "Protect Your Business Today",
+      "ctaDescription": "Take your next strategic step with confidence. Order your due diligence report now.",
+      "ctaButton": "Order Due Diligence Report"
+    }
   }
 }

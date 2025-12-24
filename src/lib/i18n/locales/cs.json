@@ -1114,5 +1114,66 @@
       "fillFormButton": "Vyplnit formulář hlášení",
       "contactButton": "Kontaktujte nás pro pomoc"
     }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Kontaktujte nás",
+      "title": "Kontaktujte",
+      "titleHighlight": "nás",
+      "description": "Můžete nás kontaktovat e-mailem. Pokud však chcete nahlásit podvod, klikněte na tlačítko níže a vyplňte formulář.",
+      "emailLabel": "Napište nám na",
+      "reportPrompt": "Potřebujete nahlásit podvod?",
+      "reportButton": "Nahlásit podvod",
+      "quickResponse": { "title": "Rychlá odpověď", "description": "Na všechny dotazy odpovídáme do 24-48 hodin" },
+      "confidential": { "title": "Důvěrné", "description": "Vaše informace jsou chráněny a přísně důvěrné" },
+      "expertSupport": { "title": "Odborná podpora", "description": "Náš tým specialistů je tu, aby vám pomohl" },
+      "cta": { "title": "Jste připraveni jednat?", "description": "Pokud jste se stali obětí podvodu, nečekejte.", "button": "Nahlásit podvod" }
+    },
+    "verifyService": {
+      "badge": "Profesionální Due Diligence Služby",
+      "heroTitle": "Investigativní Due Diligence & Prověřování Obchodních Partnerů",
+      "heroSubtitle": "Minimalizujte Riziko Před Vstupem do Obchodu",
+      "heroDescription": "Ověřte Integritu Vašeho Budoucího Obchodního Partnera",
+      "orderNow": "Objednat Službu",
+      "learnMore": "Zjistit Více",
+      "useCasesTitle": "Kdy Je Tato Služba Nezbytná?",
+      "useCases": [
+        { "title": "Hodnocení Strategických Partnerství", "description": "Před investováním kapitálu je nezbytné ověřit integritu partnera." },
+        { "title": "Onboarding Klíčových Dodavatelů", "description": "Prověřujeme vaše dodavatele na finanční stabilitu." },
+        { "title": "Pre-investiční & M&A Screening", "description": "Poskytujeme vrstvu předběžné integrity a reputační due diligence." },
+        { "title": "Prověřování Klientů (KYB)", "description": "Náš KYB proces potvrzuje identitu klientů." }
+      ],
+      "pillarsTitle": "Čtyři Pilíře Našeho Vyšetřování",
+      "pillars": [
+        { "number": "1", "title": "Firemní Identita & Právní Struktura", "description": "Rozkládáme právní strukturu subjektu." },
+        { "number": "2", "title": "Finanční Integrita & Reputační Rizika", "description": "Mapujeme finanční zdraví." },
+        { "number": "3", "title": "Digitální Stopa & Mapování Aktiv", "description": "Pomocí OSINT nástrojů sledujeme online přítomnost." },
+        { "number": "4", "title": "Lidský Faktor & Screening Vedení", "description": "Provádíme důkladné prověřování." }
+      ],
+      "whatYouGet": "Co Získáte",
+      "reportTitle": "Due Diligence Zpráva",
+      "reportDescription": "Komplexní a Praktická Zpráva",
+      "reportDetails": "Dostanete komplexní PDF zprávu do 30 dnů.",
+      "reportIncludes": "Zpráva Obsahuje:",
+      "deliverables": ["Ověření firemní identity", "Analýza vlastnické struktury", "Hodnocení finanční integrity", "Reputační analýza", "Audit digitální stopy"],
+      "transparentPricing": "Transparentní Ceny",
+      "noSurprises": "Žádné skryté poplatky.",
+      "processTitle": "Jednoduchý 3-Krokový Proces",
+      "steps": [
+        { "title": "Vyplňte Formulář", "description": "Poskytněte základní informace." },
+        { "title": "Bezpečně Zaplaťte", "description": "Zaplaťte bezpečně online." },
+        { "title": "Dostanete Zprávu", "description": "Získejte zprávu do 30 dnů." }
+      ],
+      "whyChooseTitle": "Proč Si Vybrat ScamNemesis?",
+      "whyChoose": [
+        { "title": "Zpravodajská Expertíza", "description": "Kombinujeme zkušenosti z vojenské zpravodajské služby." },
+        { "title": "Certifikovaní Specialisté", "description": "CFE®, CAMS®, CISA® certifikovaní profesionálové." },
+        { "title": "Pokročilé OSINT Techniky", "description": "Používáme nejmodernější Open-Source Intelligence." },
+        { "title": "Transparentní Ceny", "description": "Žádné skryté poplatky." }
+      ],
+      "ctaTitle": "Chraňte Svůj Byznys",
+      "ctaDescription": "Udělejte další strategický krok s jistotou.",
+      "ctaButton": "Objednat Due Diligence Zprávu"
+    }
   }
 }

@@ -967,6 +967,98 @@
       "freeTrainingButton": "Kostenloses Training"
     }
   },
+  "pages": {
+    "contactUs": {
+      "badge": "Kontaktieren Sie uns",
+      "title": "Kontaktieren Sie",
+      "titleHighlight": "uns",
+      "description": "Sie können uns per E-Mail kontaktieren. Wenn Sie jedoch einen Betrug melden möchten, klicken Sie bitte auf die Schaltfläche unten und füllen Sie das Formular aus — ohne dieses können wir Ihnen nicht effektiv helfen.",
+      "emailLabel": "Schreiben Sie uns an",
+      "reportPrompt": "Müssen Sie einen Betrug melden?",
+      "reportButton": "Betrug melden",
+      "quickResponse": {
+        "title": "Schnelle Antwort",
+        "description": "Wir beantworten alle Anfragen innerhalb von 24-48 Stunden"
+      },
+      "confidential": {
+        "title": "Vertraulich",
+        "description": "Ihre Informationen sind geschützt und streng vertraulich"
+      },
+      "expertSupport": {
+        "title": "Expertenunterstützung",
+        "description": "Unser Spezialistenteam steht Ihnen zur Verfügung"
+      },
+      "cta": {
+        "title": "Bereit zu handeln?",
+        "description": "Wenn Sie von Betrug betroffen sind, warten Sie nicht. Reichen Sie einen detaillierten Bericht ein, damit unser Team mit der Untersuchung Ihres Falls beginnen kann.",
+        "button": "Betrug melden"
+      }
+    },
+    "verifyService": {
+      "badge": "Professionelle Due Diligence Dienste",
+      "heroTitle": "Investigative Due Diligence & Geschäftspartnerprüfung",
+      "heroSubtitle": "Minimieren Sie das Risiko Vor dem Engagement",
+      "heroDescription": "Überprüfen Sie die Integrität Ihres Nächsten Geschäftspartners, Lieferanten oder Investments",
+      "orderNow": "Service Bestellen",
+      "learnMore": "Mehr Erfahren",
+      "useCasesTitle": "Wann Ist Dieser Service Unerlässlich?",
+      "useCases": [
+        {
+          "title": "Bewertung Strategischer Partnerschaften & Joint Ventures",
+          "description": "Vor der Investition von Kapital ist es unerlässlich, die operative, finanzielle und reputationsbezogene Integrität zu überprüfen."
+        },
+        {
+          "title": "Onboarding von Schlüssellieferanten",
+          "description": "Eine widerstandsfähige und ethische Lieferkette ist ein kritisches Geschäftsvermögen."
+        },
+        {
+          "title": "Pre-Investment & M&A Screening",
+          "description": "Für Private-Equity-Firmen bieten wir eine Schicht der vorläufigen Integritäts- und Reputationsprüfung."
+        },
+        {
+          "title": "Kundenprüfung (KYB Compliance)",
+          "description": "Schützen Sie Ihr Unternehmen vor Finanzkriminalität mit unserer Know Your Business Verifizierung."
+        }
+      ],
+      "pillarsTitle": "Unsere Vier Säulen der Untersuchung",
+      "pillars": [
+        { "number": "1", "title": "Unternehmensidentität & Rechtsstruktur", "description": "Wir überprüfen die rechtliche Existenz, Eigentümerstruktur und regulatorischen Status." },
+        { "number": "2", "title": "Finanzielle Integrität & Reputationsrisiken", "description": "Wir untersuchen öffentliche Aufzeichnungen, Gerichtsunterlagen und Medienquellen." },
+        { "number": "3", "title": "Digitaler Fußabdruck & Asset-Mapping", "description": "Mit fortschrittlichen OSINT-Tools verfolgen wir die Online-Präsenz." },
+        { "number": "4", "title": "Menschlicher Faktor & Führungsscreening", "description": "Wir führen gründliche Hintergrundermittlungen durch." }
+      ],
+      "whatYouGet": "Was Sie Bekommen",
+      "reportTitle": "Due Diligence Bericht",
+      "reportDescription": "Umfassender und Praktischer Bericht",
+      "reportDetails": "Sie erhalten einen umfassenden PDF-Bericht per E-Mail innerhalb von 30 Tagen.",
+      "reportIncludes": "Bericht Enthält:",
+      "deliverables": [
+        "Überprüfung der Unternehmensidentität und des rechtlichen Status",
+        "Analyse der Eigentümerstruktur inkl. UBO",
+        "Bewertung der finanziellen Integrität",
+        "Reputations- und Risikoanalyse",
+        "Audit des digitalen Fußabdrucks"
+      ],
+      "transparentPricing": "Transparente Preisgestaltung",
+      "noSurprises": "Keine versteckten Gebühren. Festpreis für komplette Untersuchung.",
+      "processTitle": "Einfacher 3-Schritte-Prozess",
+      "steps": [
+        { "title": "Online-Formular Ausfüllen", "description": "Geben Sie grundlegende Informationen über das Unternehmen an." },
+        { "title": "Sicher Bezahlen", "description": "Bezahlen Sie sicher online. Wir akzeptieren alle gängigen Zahlungsmethoden." },
+        { "title": "Bericht Erhalten", "description": "Erhalten Sie Ihren umfassenden Bericht innerhalb von 30 Tagen." }
+      ],
+      "whyChooseTitle": "Warum ScamNemesis Wählen?",
+      "whyChoose": [
+        { "title": "Nachrichtendienstliche Expertise", "description": "Unser Team kombiniert Erfahrungen aus dem militärischen Nachrichtendienst und OSINT-Operationen." },
+        { "title": "Zertifizierte Spezialisten", "description": "CFE®, CAMS®, CISA®, CISM®, OSCP® zertifizierte Fachleute führen jede Untersuchung durch." },
+        { "title": "Fortgeschrittene OSINT-Techniken", "description": "Wir verwenden modernste Open-Source Intelligence mit Zugang zu Hunderten globaler Datenbanken." },
+        { "title": "Transparente Preise", "description": "Keine versteckten Gebühren. Alle Daten werden nach strengen Vertraulichkeitsstandards behandelt." }
+      ],
+      "ctaTitle": "Schützen Sie Ihr Unternehmen Heute",
+      "ctaDescription": "Machen Sie Ihren nächsten strategischen Schritt mit Zuversicht. Bestellen Sie Ihren Due Diligence Bericht jetzt.",
+      "ctaButton": "Due Diligence Bericht Bestellen"
+    }
+  },
   "iWasScammed": {
     "hero": {
       "badges": {
