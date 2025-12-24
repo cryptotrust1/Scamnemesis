@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   Shield,
   Building,
@@ -29,6 +30,302 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+
+type Locale = 'en' | 'sk' | 'cs' | 'de';
+
+const getTranslations = (locale: Locale) => {
+  const translations = {
+    en: {
+      badge: 'Professional Due Diligence Services',
+      heroTitle: 'Investigative Due Diligence & Business Partner Vetting',
+      heroSubtitle: 'Mitigate Risk Before You Engage',
+      heroDescription: 'Verify the Integrity of Your Next Business Partner, Supplier, or Investment',
+      orderNow: 'Order Service Now',
+      learnMore: 'Learn More',
+      useCasesTitle: 'When Is This Service Essential?',
+      useCases: [
+        {
+          title: 'Evaluating Strategic Partnerships & Joint Ventures',
+          description: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.',
+        },
+        {
+          title: 'Onboarding Key Suppliers & Vendors',
+          description: 'A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm.',
+        },
+        {
+          title: 'Pre-Investment & M&A Screening',
+          description: 'For private equity firms, venture capitalists, and corporate development teams, our service provides an essential layer of preliminary integrity and reputational due diligence. We identify critical red flags that may be missed in traditional financial audits.',
+        },
+        {
+          title: 'Vetting High-Value Clients (KYB Compliance)',
+          description: 'Protect your firm from financial crime and meet stringent regulatory requirements. Our Know Your Business (KYB) verification process confirms the identity and legitimacy of new corporate clients.',
+        },
+      ],
+      pillarsTitle: 'Our Four Pillars of Investigation',
+      pillars: [
+        {
+          number: '1',
+          title: 'Corporate Identity & Legal Architecture',
+          description: 'We dissect the legal structure of the entity down to the finest detail. Our team verifies its legal existence, ownership structure, and regulatory status across international business registries.',
+        },
+        {
+          number: '2',
+          title: 'Financial Integrity & Reputational Risks',
+          description: 'We map the financial health and reputational profile of the target. Our analysts examine public records, court filings, data leaks, and deep-sourced media to uncover potential risks.',
+        },
+        {
+          number: '3',
+          title: 'Digital Footprint & Asset Mapping',
+          description: 'Using advanced OSINT and cyber intelligence tools, we trace the entity\'s online presence, domain history, digital assets, and technical infrastructure.',
+        },
+        {
+          number: '4',
+          title: 'Human Factor & Leadership Screening',
+          description: 'Behind every company stand people. We conduct thorough background investigations into the careers, reputations, and potential conflicts of interest of key individuals.',
+        },
+      ],
+      whatYouGet: 'What You Get',
+      reportTitle: 'Due Diligence Report',
+      reportDescription: 'Comprehensive and Practical Report',
+      reportDetails: 'You will receive a comprehensive PDF report via email within 30 days. The report is a 360° intelligence profile tailored for decision-makers.',
+      reportIncludes: 'Report Includes:',
+      deliverables: [
+        'Verification of corporate identity and legal status',
+        'Analysis of ownership and management structure, including UBOs',
+        'Assessment of financial integrity and solvency',
+        'Reputation and risk evaluation',
+        'Audit of digital footprint and online assets',
+      ],
+      transparentPricing: 'Transparent Pricing',
+      noSurprises: 'No hidden fees. Fixed price for complete investigation.',
+      processTitle: 'Simple 3-Step Process',
+      steps: [
+        { title: 'Complete the Online Form', description: 'Provide basic information about the entity you want to investigate.' },
+        { title: 'Make a Secure Payment', description: 'Pay securely online. We accept all major payment methods.' },
+        { title: 'Receive Your Report', description: 'Get your comprehensive due diligence report within 30 days.' },
+      ],
+      whyChooseTitle: 'Why Choose ScamNemesis?',
+      whyChoose: [
+        { title: 'Intelligence-Grade Expertise', description: 'Our team combines military intelligence, OSINT operations, and Big 4 corporate investigations experience.' },
+        { title: 'Certified Specialists', description: 'CFE®, CAMS®, CISA®, CISM®, OSCP® certified professionals conduct every investigation.' },
+        { title: 'Advanced OSINT Techniques', description: 'We employ cutting-edge Open-Source Intelligence integrating hundreds of global databases.' },
+        { title: 'Transparent Fixed Pricing', description: 'No hidden fees. All data handled according to strict confidentiality standards.' },
+      ],
+      ctaTitle: 'Protect Your Business Today',
+      ctaDescription: 'Take your next strategic step with confidence. Order your due diligence report now.',
+      ctaButton: 'Order Due Diligence Report',
+    },
+    sk: {
+      badge: 'Profesionálne Due Diligence Služby',
+      heroTitle: 'Investigatívna Due Diligence & Preverovanie Obchodných Partnerov',
+      heroSubtitle: 'Minimalizujte Riziko Pred Vstupom do Obchodu',
+      heroDescription: 'Overte Integritu Vášho Budúceho Obchodného Partnera, Dodávateľa alebo Investície',
+      orderNow: 'Objednať Službu',
+      learnMore: 'Dozvedieť Sa Viac',
+      useCasesTitle: 'Kedy Je Táto Služba Nevyhnutná?',
+      useCases: [
+        {
+          title: 'Hodnotenie Strategických Partnerstiev & Joint Ventures',
+          description: 'Pred investovaním kapitálu a zdrojov je nevyhnutné overiť prevádzkovú, finančnú a reputačnú integritu potenciálneho partnera. Naša analýza potvrdzuje legitimitu subjektu.',
+        },
+        {
+          title: 'Onboarding Kľúčových Dodávateľov',
+          description: 'Odolný a etický dodávateľský reťazec je kritickým obchodným aktívom. Preverujeme vašich dodávateľov na finančnú stabilitu, regulačnú zhodu a ďalšie varovné signály.',
+        },
+        {
+          title: 'Pre-investičný & M&A Screening',
+          description: 'Pre private equity firmy a venture kapitál poskytujeme vrstvu predbežnej integrity a reputačnej due diligence. Identifikujeme kritické varovné signály.',
+        },
+        {
+          title: 'Preverovanie Klientov (KYB Compliance)',
+          description: 'Chráňte svoju firmu pred finančnou kriminalitou. Náš KYB proces potvrdzuje identitu a legitimitu nových firemných klientov.',
+        },
+      ],
+      pillarsTitle: 'Štyri Piliere Nášho Vyšetrovania',
+      pillars: [
+        {
+          number: '1',
+          title: 'Firemná Identita & Právna Štruktúra',
+          description: 'Rozkladáme právnu štruktúru subjektu do najmenších detailov. Overujeme právnu existenciu, vlastnícku štruktúru a regulačný status.',
+        },
+        {
+          number: '2',
+          title: 'Finančná Integrita & Reputačné Riziká',
+          description: 'Mapujeme finančné zdravie a reputačný profil cieľa. Analyzujeme verejné záznamy, súdne spisy a mediálne zdroje.',
+        },
+        {
+          number: '3',
+          title: 'Digitálna Stopa & Mapovanie Aktív',
+          description: 'Pomocou pokročilých OSINT nástrojov sledujeme online prítomnosť, históriu domén a digitálne aktíva.',
+        },
+        {
+          number: '4',
+          title: 'Ľudský Faktor & Screening Vedenia',
+          description: 'Za každou spoločnosťou stoja ľudia. Vykonávame dôkladné preverovanie kariér, reputácie a konfliktov záujmov.',
+        },
+      ],
+      whatYouGet: 'Čo Získate',
+      reportTitle: 'Due Diligence Správa',
+      reportDescription: 'Komplexná a Praktická Správa',
+      reportDetails: 'Dostanete komplexnú PDF správu e-mailom do 30 dní. Správa je 360° spravodajský profil prispôsobený pre rozhodovateľov.',
+      reportIncludes: 'Správa Obsahuje:',
+      deliverables: [
+        'Overenie firemnej identity a právneho statusu',
+        'Analýza vlastníckej a riadiacej štruktúry vrátane UBO',
+        'Hodnotenie finančnej integrity a solventnosti',
+        'Reputačná a riziková analýza',
+        'Audit digitálnej stopy a online aktív',
+      ],
+      transparentPricing: 'Transparentná Cenová Politika',
+      noSurprises: 'Žiadne skryté poplatky. Pevná cena za kompletné vyšetrovanie.',
+      processTitle: 'Jednoduchý 3-Krokový Proces',
+      steps: [
+        { title: 'Vyplňte Online Formulár', description: 'Poskytnite základné informácie o subjekte, ktorý chcete prešetriť.' },
+        { title: 'Bezpečne Zaplaťte', description: 'Zaplaťte bezpečne online. Akceptujeme všetky bežné platobné metódy.' },
+        { title: 'Dostanete Správu', description: 'Získajte komplexnú due diligence správu do 30 dní.' },
+      ],
+      whyChooseTitle: 'Prečo Si Vybrať ScamNemesis?',
+      whyChoose: [
+        { title: 'Spravodajská Expertíza', description: 'Náš tím kombinuje skúsenosti z vojenskej spravodajskej služby, OSINT operácií a korporátnych vyšetrovaní.' },
+        { title: 'Certifikovaní Špecialisti', description: 'CFE®, CAMS®, CISA®, CISM®, OSCP® certifikovaní profesionáli vedú každé vyšetrovanie.' },
+        { title: 'Pokročilé OSINT Techniky', description: 'Používame najmodernejšie Open-Source Intelligence integrujúce stovky globálnych databáz.' },
+        { title: 'Transparentné Ceny', description: 'Žiadne skryté poplatky. Všetky údaje sú spracované podľa prísnych štandardov dôvernosti.' },
+      ],
+      ctaTitle: 'Chráňte Svoj Biznis Ešte Dnes',
+      ctaDescription: 'Urobte ďalší strategický krok s istotou. Objednajte si due diligence správu teraz.',
+      ctaButton: 'Objednať Due Diligence Správu',
+    },
+    cs: {
+      badge: 'Profesionální Due Diligence Služby',
+      heroTitle: 'Investigativní Due Diligence & Prověřování Obchodních Partnerů',
+      heroSubtitle: 'Minimalizujte Riziko Před Vstupem do Obchodu',
+      heroDescription: 'Ověřte Integritu Vašeho Budoucího Obchodního Partnera, Dodavatele nebo Investice',
+      orderNow: 'Objednat Službu',
+      learnMore: 'Zjistit Více',
+      useCasesTitle: 'Kdy Je Tato Služba Nezbytná?',
+      useCases: [
+        {
+          title: 'Hodnocení Strategických Partnerství & Joint Ventures',
+          description: 'Před investováním kapitálu je nezbytné ověřit provozní, finanční a reputační integritu potenciálního partnera.',
+        },
+        {
+          title: 'Onboarding Klíčových Dodavatelů',
+          description: 'Odolný a etický dodavatelský řetězec je kritickým obchodním aktivem. Prověřujeme vaše dodavatele.',
+        },
+        {
+          title: 'Pre-investiční & M&A Screening',
+          description: 'Pro private equity firmy poskytujeme vrstvu předběžné integrity a reputační due diligence.',
+        },
+        {
+          title: 'Prověřování Klientů (KYB Compliance)',
+          description: 'Chraňte svou firmu před finanční kriminalitou. Náš KYB proces potvrzuje identitu klientů.',
+        },
+      ],
+      pillarsTitle: 'Čtyři Pilíře Našeho Vyšetřování',
+      pillars: [
+        { number: '1', title: 'Firemní Identita & Právní Struktura', description: 'Rozkládáme právní strukturu subjektu do nejmenších detailů.' },
+        { number: '2', title: 'Finanční Integrita & Reputační Rizika', description: 'Mapujeme finanční zdraví a reputační profil cíle.' },
+        { number: '3', title: 'Digitální Stopa & Mapování Aktiv', description: 'Pomocí pokročilých OSINT nástrojů sledujeme online přítomnost.' },
+        { number: '4', title: 'Lidský Faktor & Screening Vedení', description: 'Za každou společností stojí lidé. Provádíme důkladné prověřování.' },
+      ],
+      whatYouGet: 'Co Získáte',
+      reportTitle: 'Due Diligence Zpráva',
+      reportDescription: 'Komplexní a Praktická Zpráva',
+      reportDetails: 'Dostanete komplexní PDF zprávu e-mailem do 30 dnů.',
+      reportIncludes: 'Zpráva Obsahuje:',
+      deliverables: [
+        'Ověření firemní identity a právního statusu',
+        'Analýza vlastnické struktury včetně UBO',
+        'Hodnocení finanční integrity',
+        'Reputační a riziková analýza',
+        'Audit digitální stopy',
+      ],
+      transparentPricing: 'Transparentní Ceny',
+      noSurprises: 'Žádné skryté poplatky. Pevná cena za kompletní vyšetřování.',
+      processTitle: 'Jednoduchý 3-Krokový Proces',
+      steps: [
+        { title: 'Vyplňte Online Formulář', description: 'Poskytněte základní informace o subjektu.' },
+        { title: 'Bezpečně Zaplaťte', description: 'Zaplaťte bezpečně online.' },
+        { title: 'Dostanete Zprávu', description: 'Získejte zprávu do 30 dnů.' },
+      ],
+      whyChooseTitle: 'Proč Si Vybrat ScamNemesis?',
+      whyChoose: [
+        { title: 'Zpravodajská Expertíza', description: 'Náš tým kombinuje zkušenosti z vojenské zpravodajské služby.' },
+        { title: 'Certifikovaní Specialisté', description: 'CFE®, CAMS®, CISA®, CISM®, OSCP® certifikovaní profesionálové.' },
+        { title: 'Pokročilé OSINT Techniky', description: 'Používáme nejmodernější Open-Source Intelligence.' },
+        { title: 'Transparentní Ceny', description: 'Žádné skryté poplatky.' },
+      ],
+      ctaTitle: 'Chraňte Svůj Byznys Ještě Dnes',
+      ctaDescription: 'Udělejte další strategický krok s jistotou.',
+      ctaButton: 'Objednat Due Diligence Zprávu',
+    },
+    de: {
+      badge: 'Professionelle Due Diligence Dienste',
+      heroTitle: 'Investigative Due Diligence & Geschäftspartnerprüfung',
+      heroSubtitle: 'Minimieren Sie das Risiko Vor dem Engagement',
+      heroDescription: 'Überprüfen Sie die Integrität Ihres Nächsten Geschäftspartners, Lieferanten oder Investments',
+      orderNow: 'Service Bestellen',
+      learnMore: 'Mehr Erfahren',
+      useCasesTitle: 'Wann Ist Dieser Service Unerlässlich?',
+      useCases: [
+        {
+          title: 'Bewertung Strategischer Partnerschaften & Joint Ventures',
+          description: 'Vor der Investition von Kapital ist es unerlässlich, die operative, finanzielle und reputationsbezogene Integrität zu überprüfen.',
+        },
+        {
+          title: 'Onboarding von Schlüssellieferanten',
+          description: 'Eine widerstandsfähige und ethische Lieferkette ist ein kritisches Geschäftsvermögen.',
+        },
+        {
+          title: 'Pre-Investment & M&A Screening',
+          description: 'Für Private-Equity-Firmen bieten wir eine Schicht der vorläufigen Integritäts- und Reputationsprüfung.',
+        },
+        {
+          title: 'Kundenprüfung (KYB Compliance)',
+          description: 'Schützen Sie Ihr Unternehmen vor Finanzkriminalität.',
+        },
+      ],
+      pillarsTitle: 'Unsere Vier Säulen der Untersuchung',
+      pillars: [
+        { number: '1', title: 'Unternehmensidentität & Rechtsstruktur', description: 'Wir analysieren die Rechtsstruktur bis ins kleinste Detail.' },
+        { number: '2', title: 'Finanzielle Integrität & Reputationsrisiken', description: 'Wir kartieren die finanzielle Gesundheit und das Reputationsprofil.' },
+        { number: '3', title: 'Digitaler Fußabdruck & Asset-Mapping', description: 'Mit fortschrittlichen OSINT-Tools verfolgen wir die Online-Präsenz.' },
+        { number: '4', title: 'Menschlicher Faktor & Führungsscreening', description: 'Hinter jedem Unternehmen stehen Menschen.' },
+      ],
+      whatYouGet: 'Was Sie Bekommen',
+      reportTitle: 'Due Diligence Bericht',
+      reportDescription: 'Umfassender und Praktischer Bericht',
+      reportDetails: 'Sie erhalten einen umfassenden PDF-Bericht per E-Mail innerhalb von 30 Tagen.',
+      reportIncludes: 'Bericht Enthält:',
+      deliverables: [
+        'Überprüfung der Unternehmensidentität',
+        'Analyse der Eigentümerstruktur inkl. UBO',
+        'Bewertung der finanziellen Integrität',
+        'Reputations- und Risikoanalyse',
+        'Audit des digitalen Fußabdrucks',
+      ],
+      transparentPricing: 'Transparente Preisgestaltung',
+      noSurprises: 'Keine versteckten Gebühren. Festpreis für komplette Untersuchung.',
+      processTitle: 'Einfacher 3-Schritte-Prozess',
+      steps: [
+        { title: 'Online-Formular Ausfüllen', description: 'Geben Sie grundlegende Informationen über das Unternehmen an.' },
+        { title: 'Sicher Bezahlen', description: 'Bezahlen Sie sicher online.' },
+        { title: 'Bericht Erhalten', description: 'Erhalten Sie Ihren Bericht innerhalb von 30 Tagen.' },
+      ],
+      whyChooseTitle: 'Warum ScamNemesis Wählen?',
+      whyChoose: [
+        { title: 'Nachrichtendienstliche Expertise', description: 'Unser Team kombiniert Erfahrungen aus dem militärischen Nachrichtendienst.' },
+        { title: 'Zertifizierte Spezialisten', description: 'CFE®, CAMS®, CISA®, CISM®, OSCP® zertifizierte Fachleute.' },
+        { title: 'Fortgeschrittene OSINT-Techniken', description: 'Wir verwenden modernste Open-Source Intelligence.' },
+        { title: 'Transparente Preise', description: 'Keine versteckten Gebühren.' },
+      ],
+      ctaTitle: 'Schützen Sie Ihr Unternehmen Heute',
+      ctaDescription: 'Machen Sie Ihren nächsten strategischen Schritt mit Zuversicht.',
+      ctaButton: 'Due Diligence Bericht Bestellen',
+    },
+  };
+  return translations[locale] || translations.en;
+};
 
 const useCases = [
   {
@@ -334,6 +631,15 @@ const aggregateRatingSchema = {
 };
 
 export default function VerifyServiceProductPage() {
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'en';
+  const t = getTranslations(locale);
+
+  // Create icons array for use cases (for future use when updating remaining sections)
+  const _useCaseIcons = [Users, Building, TrendingUp, UserCheck];
+  const _pillarIcons = [Building, Scale, Globe, Fingerprint];
+  const _whyChooseIcons = [Award, BadgeCheck, Database, DollarSign];
+
   return (
     <>
       {/* JSON-LD Schema Markup for SEO */}
@@ -380,27 +686,27 @@ export default function VerifyServiceProductPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8 hover:bg-[#0E74FF]/30 transition-colors duration-300">
               <Shield className="h-4 w-4 text-[#0E74FF]" />
-              <span className="text-sm font-semibold text-[#0E74FF]">Professional Due Diligence Services</span>
+              <span className="text-sm font-semibold text-[#0E74FF]">{t.badge}</span>
             </div>
 
             <h1 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-              Investigative Due Diligence & Business Partner Vetting
+              {t.heroTitle}
             </h1>
 
             <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-              <strong className="text-white">Mitigate Risk Before You Engage:</strong> Verify the Integrity of Your Next Business Partner, Supplier, or Investment
+              <strong className="text-white">{t.heroSubtitle}:</strong> {t.heroDescription}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-8 py-6 text-lg shadow-lg shadow-[#0E74FF]/30 hover:shadow-xl hover:shadow-[#0E74FF]/40 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
-                  Order Service Now
+                  {t.orderNow}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-2 border-slate-500 text-white hover:bg-white/10 hover:border-white px-8 py-6 text-lg backdrop-blur-sm hover:scale-105 transition-all duration-300" asChild>
                 <Link href="#process">
-                  Learn More
+                  {t.learnMore}
                 </Link>
               </Button>
             </div>

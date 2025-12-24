@@ -73,7 +73,7 @@ function DataRow({ icon: Icon, label, value }: { icon?: React.ElementType; label
 }
 
 export function ReviewStep({ data, onEdit }: ReviewStepProps) {
-  const { t, locale } = useTranslation();
+  const { t, tv, locale } = useTranslation();
 
   const getFraudTypeLabel = (type: string) => t(`search.fraudTypes.${type}`) || type;
   const getPerpetratorTypeLabel = (type: string) => t(`search.perpetratorTypes.${type}`) || type;
@@ -372,7 +372,7 @@ export function ReviewStep({ data, onEdit }: ReviewStepProps) {
             <div className="text-sm text-amber-800 dark:text-amber-200">
               <p className="font-medium mb-1">{t('report.review.warningTitle')}</p>
               <ul className="list-disc list-inside space-y-1 text-amber-700 dark:text-amber-300">
-                {(t('report.review.warningItems') as unknown as string[]).map((item, idx) => (
+                {(tv<string[]>('report.review.warningItems') || []).map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>

@@ -79,8 +79,8 @@ const nextConfig = {
     const isProduction = process.env.NODE_ENV === 'production';
 
     const scriptSrc = isProduction
-      ? "script-src 'self' 'unsafe-inline'" // Production: no unsafe-eval
-      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"; // Development: needs eval for hot reload
+      ? "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com" // Production: no unsafe-eval
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com"; // Development: needs eval for hot reload
 
     const cspHeader = [
       "default-src 'self'",
@@ -88,7 +88,8 @@ const nextConfig = {
       "style-src 'self' 'unsafe-inline'", // Next.js uses inline styles
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.resend.com https://*.ingest.de.sentry.io", // API endpoints + Sentry
+      "connect-src 'self' https://api.resend.com https://*.ingest.de.sentry.io https://challenges.cloudflare.com", // API endpoints + Sentry + Turnstile
+      "frame-src 'self' https://challenges.cloudflare.com", // Turnstile CAPTCHA iframe
       "worker-src 'self' blob:", // Allow Web Workers from blob URLs (needed for Sentry and other libraries)
       "frame-ancestors 'self'",
       "form-action 'self'",
