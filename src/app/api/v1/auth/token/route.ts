@@ -15,6 +15,8 @@ import {
   generateRefreshToken,
   getScopesForRole,
 } from '@/lib/auth/jwt';
+import { setAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import {
   isAccountLocked,
@@ -24,43 +26,6 @@ import {
 import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
-
-// Cookie configuration
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: IS_PRODUCTION,
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Set auth tokens as HttpOnly cookies on the response
- */
-function setAuthCookies(
-  response: NextResponse,
-  accessToken: string,
-  refreshToken?: string
-): void {
-  // Access token cookie - 1 hour
-  response.cookies.set('access_token', accessToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  // Refresh token cookie - 7 days (only for password auth)
-  if (refreshToken) {
-    response.cookies.set('refresh_token', refreshToken, {
-      ...COOKIE_OPTIONS,
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/api/v1/auth', // Restrict to auth endpoints only
-    });
-  }
-}
-
-// Stricter rate limit for auth endpoints to prevent brute force
-const AUTH_RATE_LIMIT = 10; // 10 attempts per window
-const AUTH_RATE_WINDOW = 900000; // 15 minutes
 
 // Request schemas
 const passwordLoginSchema = z.object({
@@ -83,8 +48,12 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting to prevent brute force attacks
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:token:${ip}`;
-    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, AUTH_RATE_LIMIT, AUTH_RATE_WINDOW);
+    const rateLimitKey = getRateLimitKey('token', ip);
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      AUTH_RATE_LIMITS.TOKEN.limit,
+      AUTH_RATE_LIMITS.TOKEN.windowMs
+    );
 
     if (!allowed) {
       return NextResponse.json(
@@ -141,13 +110,14 @@ export async function POST(request: NextRequest) {
 
       // Password authentication
       const user = await prisma.user.findUnique({
-        where: { email: data.email },
+        where: { email: data.email.toLowerCase() },
         select: {
           id: true,
           email: true,
           passwordHash: true,
           role: true,
           isActive: true,
+          emailVerified: true,
         },
       });
 
@@ -223,6 +193,33 @@ export async function POST(request: NextRequest) {
 
       // SECURITY: Clear failed attempts on successful login
       await clearFailedAttempts(data.email);
+
+      // Check if email is verified
+      if (!user.emailVerified) {
+        // Log unverified login attempt
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              reason: 'email_not_verified',
+              email: data.email,
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json(
+          {
+            error: 'email_not_verified',
+            message: 'Please verify your email address before logging in. Check your inbox for the verification link.',
+            email: user.email,
+          },
+          { status: 403 }
+        );
+      }
 
       // Get scopes for role
       const scopes = getScopesForRole(user.role);
