@@ -42,8 +42,19 @@ export function middleware(request: NextRequest) {
     '/verify-serviceproduct',
   ];
 
+  // Routes that should NOT be redirected (check with startsWith for nested routes)
+  const rootPrefixes = [
+    '/auth',      // All auth routes: /auth/login, /auth/register, /auth/verify-email, etc.
+    '/report',    // Report routes
+    '/admin',     // Admin routes
+  ];
+
+  // Check if route matches root routes or prefixes
+  const isRootRoute = rootRoutes.includes(pathname);
+  const hasRootPrefix = rootPrefixes.some(prefix => pathname.startsWith(prefix));
+
   // If it's not a root route, redirect to locale-prefixed path
-  if (!rootRoutes.includes(pathname)) {
+  if (!isRootRoute && !hasRootPrefix) {
     // Detect locale from Accept-Language header
     const acceptLanguage = request.headers.get('accept-language');
     let locale: Locale = i18n.defaultLocale;

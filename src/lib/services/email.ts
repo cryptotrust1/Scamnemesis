@@ -177,6 +177,149 @@ export async function sendEmail(options: EmailOptions): Promise<SendResult> {
 }
 
 /**
+ * Professional email base styles with high contrast
+ */
+const emailStyles = `
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8fafc;
+    line-height: 1.6;
+    color: #1e293b;
+  }
+  .wrapper {
+    width: 100%;
+    background-color: #f8fafc;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    padding: 40px 30px;
+    text-align: center;
+  }
+  .header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .header p {
+    margin: 10px 0 0;
+    color: #bfdbfe;
+    font-size: 14px;
+  }
+  .content {
+    padding: 40px 30px;
+    background-color: #ffffff;
+  }
+  .content h2 {
+    margin: 0 0 20px;
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .content p {
+    margin: 0 0 16px;
+    color: #334155;
+    font-size: 16px;
+  }
+  .content ul {
+    margin: 0 0 20px;
+    padding-left: 20px;
+    color: #334155;
+  }
+  .content li {
+    margin-bottom: 8px;
+  }
+  .button {
+    display: inline-block;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+    transition: all 0.2s;
+  }
+  .button:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  }
+  .button-container {
+    text-align: center;
+    margin: 30px 0;
+  }
+  .warning {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+  .warning strong {
+    color: #92400e;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .warning p {
+    margin: 0;
+    color: #92400e;
+    font-size: 14px;
+  }
+  .info-box {
+    background-color: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+  .info-box p {
+    margin: 0;
+    color: #0c4a6e;
+    font-size: 14px;
+  }
+  .link-text {
+    word-break: break-all;
+    color: #64748b;
+    font-size: 14px;
+    background-color: #f1f5f9;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .footer {
+    background-color: #1e293b;
+    padding: 30px;
+    text-align: center;
+  }
+  .footer p {
+    margin: 0 0 8px;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+  .footer a {
+    color: #60a5fa;
+    text-decoration: none;
+  }
+  .footer .brand {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+`;
+
+/**
  * Email templates
  */
 export const emailTemplates = {
@@ -185,59 +328,70 @@ export const emailTemplates = {
    */
   welcome: (userName: string, verificationUrl?: string) => {
     const safeUserName = escapeHtml(userName);
-    const safeVerificationUrl = verificationUrl ? encodeURI(verificationUrl) : undefined;
+    const safeVerificationUrl = verificationUrl ? encodeURIComponent(verificationUrl) : undefined;
     return {
-      subject: `Vitajte v ${SITE_NAME}!`,
+      subject: `Welcome to ${SITE_NAME}!`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Welcome to ${SITE_NAME}</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>🛡️ ${SITE_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>Vitajte, ${safeUserName}!</h2>
-              <p>Ďakujeme za registráciu v ${SITE_NAME}. Teraz môžete:</p>
-              <ul>
-                <li>Vyhľadávať v databáze nahlásených podvodníkov</li>
-                <li>Nahlasovať podozrivé aktivity</li>
-                <li>Pomáhať chrániť komunitu</li>
-              </ul>
-              ${safeVerificationUrl ? `
-                <p>Pre aktiváciu účtu kliknite na tlačidlo nižšie:</p>
-                <p><a href="${safeVerificationUrl}" class="button">Overiť email</a></p>
-              ` : ''}
-              <p>S pozdravom,<br>Tím ${SITE_NAME}</p>
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
-              <p><a href="${SITE_URL}">scamnemesis.com</a></p>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <h1>🛡️ ${SITE_NAME}</h1>
+                <p>Fighting Fraud, Protecting Communities</p>
+              </div>
+              <div class="content">
+                <h2>Welcome, ${safeUserName}!</h2>
+                <p>Thank you for joining ${SITE_NAME}. You're now part of our community dedicated to fighting fraud and protecting others.</p>
+                <p>With your account, you can:</p>
+                <ul>
+                  <li>Search our database of reported scammers</li>
+                  <li>Report suspicious activities and fraud attempts</li>
+                  <li>Help protect others from becoming victims</li>
+                  <li>Stay informed about the latest scam tactics</li>
+                </ul>
+                ${safeVerificationUrl ? `
+                  <div class="info-box">
+                    <p><strong>One more step:</strong> Please verify your email address to activate all features.</p>
+                  </div>
+                  <div class="button-container">
+                    <a href="${decodeURIComponent(safeVerificationUrl)}" class="button">Verify Email Address</a>
+                  </div>
+                ` : ''}
+                <p>Best regards,<br><strong>The ${SITE_NAME} Team</strong></p>
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+                <p><a href="${SITE_URL}">${SITE_URL.replace('https://', '')}</a></p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Vitajte v ${SITE_NAME}, ${userName}!
+Welcome to ${SITE_NAME}, ${userName}!
 
-Ďakujeme za registráciu. Teraz môžete vyhľadávať v databáze nahlásených podvodníkov a nahlasovať podozrivé aktivity.
+Thank you for joining us. You're now part of our community dedicated to fighting fraud and protecting others.
 
-${verificationUrl ? `Pre aktiváciu účtu navštívte: ${verificationUrl}` : ''}
+With your account, you can:
+- Search our database of reported scammers
+- Report suspicious activities and fraud attempts
+- Help protect others from becoming victims
+- Stay informed about the latest scam tactics
 
-S pozdravom,
-Tím ${SITE_NAME}
+${verificationUrl ? `Please verify your email address: ${verificationUrl}` : ''}
+
+Best regards,
+The ${SITE_NAME} Team
       `.trim(),
     };
   },
@@ -247,58 +401,61 @@ Tím ${SITE_NAME}
    */
   verifyEmail: (userName: string, verificationUrl: string) => {
     const safeUserName = escapeHtml(userName);
-    const safeVerificationUrl = encodeURI(verificationUrl);
+    const safeVerificationUrl = encodeURIComponent(verificationUrl);
     return {
-      subject: `Overte svoj email - ${SITE_NAME}`,
+      subject: `Verify Your Email - ${SITE_NAME}`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verify Your Email</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>🛡️ ${SITE_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>Overte svoj email</h2>
-              <p>Dobrý deň ${safeUserName},</p>
-              <p>Pre dokončenie registrácie a overenie vášho emailu kliknite na tlačidlo nižšie:</p>
-              <p style="text-align: center; margin: 30px 0;">
-                <a href="${safeVerificationUrl}" class="button">Overiť email</a>
-              </p>
-              <p>Alebo skopírujte tento odkaz do prehliadača:</p>
-              <p style="word-break: break-all; color: #666;">${escapeHtml(verificationUrl)}</p>
-              <p><strong>Odkaz je platný 24 hodín.</strong></p>
-              <p>Ak ste sa neregistrovali na ${SITE_NAME}, tento email môžete ignorovať.</p>
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <h1>🛡️ ${SITE_NAME}</h1>
+                <p>Email Verification Required</p>
+              </div>
+              <div class="content">
+                <h2>Verify Your Email Address</h2>
+                <p>Hello ${safeUserName},</p>
+                <p>To complete your registration and secure your account, please verify your email address by clicking the button below:</p>
+                <div class="button-container">
+                  <a href="${decodeURIComponent(safeVerificationUrl)}" class="button">Verify Email Address</a>
+                </div>
+                <p>Or copy and paste this link into your browser:</p>
+                <div class="link-text">${escapeHtml(verificationUrl)}</div>
+                <div class="warning">
+                  <strong>⏰ This link expires in 24 hours</strong>
+                  <p>For security reasons, this verification link will expire in 24 hours. If it expires, you can request a new one from the login page.</p>
+                </div>
+                <p>If you didn't create an account on ${SITE_NAME}, you can safely ignore this email.</p>
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Overte svoj email
+Verify Your Email Address
 
-Dobrý deň ${userName},
+Hello ${userName},
 
-Pre dokončenie registrácie a overenie vášho emailu navštívte:
+To complete your registration and secure your account, please verify your email address by visiting:
+
 ${verificationUrl}
 
-Odkaz je platný 24 hodín.
+This link expires in 24 hours.
 
-Ak ste sa neregistrovali na ${SITE_NAME}, tento email môžete ignorovať.
+If you didn't create an account on ${SITE_NAME}, you can safely ignore this email.
 
 ${SITE_NAME}
       `.trim(),
@@ -310,62 +467,61 @@ ${SITE_NAME}
    */
   passwordReset: (userName: string, resetUrl: string) => {
     const safeUserName = escapeHtml(userName);
-    const safeResetUrl = encodeURI(resetUrl);
+    const safeResetUrl = encodeURIComponent(resetUrl);
     return {
-      subject: `Obnovenie hesla - ${SITE_NAME}`,
+      subject: `Reset Your Password - ${SITE_NAME}`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
-            .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin: 20px 0; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Reset Your Password</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>🛡️ ${SITE_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>Obnovenie hesla</h2>
-              <p>Dobrý deň ${safeUserName},</p>
-              <p>Prijali sme požiadavku na obnovenie hesla pre váš účet.</p>
-              <p style="text-align: center; margin: 30px 0;">
-                <a href="${safeResetUrl}" class="button">Obnoviť heslo</a>
-              </p>
-              <div class="warning">
-                <strong>⚠️ Bezpečnostné upozornenie:</strong>
-                <p>Odkaz je platný iba 1 hodinu. Ak ste o obnovenie hesla nežiadali, odporúčame skontrolovať bezpečnosť vášho účtu.</p>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <h1>🛡️ ${SITE_NAME}</h1>
+                <p>Password Reset Request</p>
               </div>
-              <p>Ak ste o obnovenie hesla nežiadali, tento email môžete ignorovať.</p>
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
+              <div class="content">
+                <h2>Reset Your Password</h2>
+                <p>Hello ${safeUserName},</p>
+                <p>We received a request to reset the password for your account. Click the button below to create a new password:</p>
+                <div class="button-container">
+                  <a href="${decodeURIComponent(safeResetUrl)}" class="button">Reset Password</a>
+                </div>
+                <div class="warning">
+                  <strong>⚠️ Security Notice</strong>
+                  <p>This link is valid for 1 hour only. If you didn't request a password reset, please ignore this email and ensure your account is secure.</p>
+                </div>
+                <p>If the button doesn't work, copy and paste this link into your browser:</p>
+                <div class="link-text">${escapeHtml(resetUrl)}</div>
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Obnovenie hesla
+Reset Your Password
 
-Dobrý deň ${userName},
+Hello ${userName},
 
-Prijali sme požiadavku na obnovenie hesla pre váš účet.
+We received a request to reset the password for your account.
 
-Pre obnovenie hesla navštívte:
+To reset your password, visit:
 ${resetUrl}
 
-Odkaz je platný iba 1 hodinu.
+This link is valid for 1 hour only.
 
-Ak ste o obnovenie hesla nežiadali, tento email môžete ignorovať.
+If you didn't request a password reset, please ignore this email.
 
 ${SITE_NAME}
       `.trim(),
@@ -381,55 +537,54 @@ ${SITE_NAME}
     const safeFraudType = escapeHtml(fraudType);
     const safeAdminUrl = `${SITE_URL}/admin/reports/${encodeURIComponent(reportId)}`;
     return {
-      subject: `Nové hlásenie: ${reportTitle.substring(0, 50)}`,
+      subject: `New Report: ${reportTitle.substring(0, 50)}`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .report-box { background: white; border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Report Submitted</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>⚠️ Nové hlásenie</h1>
-            </div>
-            <div class="content">
-              <p>Bolo prijaté nové hlásenie podvodu na schválenie:</p>
-              <div class="report-box">
-                <h3>${safeReportTitle}</h3>
-                <p><strong>Typ podvodu:</strong> ${safeFraudType}</p>
-                <p><strong>ID:</strong> ${safeReportId}</p>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                <h1>⚠️ New Report</h1>
+                <p>Requires Review</p>
               </div>
-              <p style="text-align: center;">
-                <a href="${safeAdminUrl}" class="button">Zobraziť hlásenie</a>
-              </p>
-            </div>
-            <div class="footer">
-              <p>Táto správa bola automaticky vygenerovaná systémom ${SITE_NAME}.</p>
+              <div class="content">
+                <h2>New Fraud Report Submitted</h2>
+                <p>A new fraud report has been submitted and is awaiting your review:</p>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin: 24px 0;">
+                  <h3 style="margin: 0 0 16px; color: #0f172a;">${safeReportTitle}</h3>
+                  <p style="margin: 8px 0;"><strong>Fraud Type:</strong> ${safeFraudType}</p>
+                  <p style="margin: 8px 0;"><strong>Report ID:</strong> <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">${safeReportId}</code></p>
+                </div>
+                <div class="button-container">
+                  <a href="${safeAdminUrl}" class="button">Review Report</a>
+                </div>
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>This is an automated message from ${SITE_NAME} admin system.</p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Nové hlásenie podvodu
+New Fraud Report Submitted
 
-Bolo prijaté nové hlásenie na schválenie:
+A new fraud report has been submitted and is awaiting your review:
 
-Názov: ${reportTitle}
-Typ: ${fraudType}
-ID: ${reportId}
+Title: ${reportTitle}
+Fraud Type: ${fraudType}
+Report ID: ${reportId}
 
-Zobraziť: ${SITE_URL}/admin/reports/${reportId}
+Review at: ${SITE_URL}/admin/reports/${reportId}
 
 ${SITE_NAME}
       `.trim(),
@@ -453,239 +608,160 @@ ${SITE_NAME}
     const safeReporterName = escapeHtml(options.reporterName || 'Reporter');
     const safeCaseNumber = escapeHtml(options.caseNumber);
     const safeFraudType = escapeHtml(options.fraudType.replace(/_/g, ' ').toLowerCase());
-    // Note: Summary currently not used in template but prepared for future use
-    const _safeSummary = escapeHtml(options.summary.substring(0, 100) + (options.summary.length > 100 ? '...' : ''));
     const trackingUrl = `${SITE_URL}/${options.locale || 'en'}/case-update/${encodeURIComponent(options.trackingToken)}`;
-    const formattedDate = options.reportDate.toLocaleDateString('sk-SK', {
+    const formattedDate = options.reportDate.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
     const formattedLoss = options.financialLoss
-      ? `${options.financialLoss.amount.toLocaleString('sk-SK')} ${options.financialLoss.currency}`
-      : 'Neuvedené';
+      ? `${options.financialLoss.amount.toLocaleString('en-US')} ${options.financialLoss.currency}`
+      : 'Not specified';
 
     return {
-      subject: `Potvrdenie hlásenia - ${safeCaseNumber} | ${SITE_NAME}`,
+      subject: `Report Confirmation - ${safeCaseNumber} | ${SITE_NAME}`,
       html: `
         <!DOCTYPE html>
-        <html lang="sk">
+        <html lang="en">
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Potvrdenie hlásenia</title>
+          <title>Report Confirmation</title>
+          <style>${emailStyles}</style>
         </head>
-        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7fa; line-height: 1.6;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f7fa; padding: 40px 20px;">
-            <tr>
-              <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
-                  <!-- Header -->
+        <body>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <h1>🛡️ ${SITE_NAME}</h1>
+                <p>Fighting Fraud, Protecting Communities</p>
+              </div>
+              <div class="content">
+                <h2>Report Received</h2>
+                <p>Dear <strong>${safeReporterName}</strong>,</p>
+                <p>Thank you for submitting your fraud report to ${SITE_NAME}. We have successfully received your report and assigned it a unique case number for tracking and investigation.</p>
+
+                <!-- Case ID Box -->
+                <div style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 8px; padding: 24px; text-align: center; margin: 24px 0;">
+                  <p style="margin: 0 0 8px; color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Case Number</p>
+                  <p style="margin: 0; color: #1e40af; font-size: 28px; font-weight: 700; font-family: monospace;">${safeCaseNumber}</p>
+                </div>
+
+                <!-- Report Summary -->
+                <h3 style="margin: 24px 0 16px; color: #0f172a; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">📋 Report Summary</h3>
+                <table width="100%" style="margin-bottom: 24px;">
                   <tr>
-                    <td style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 40px 30px; text-align: center;">
-                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
-                        🛡️ ${SITE_NAME}
-                      </h1>
-                      <p style="margin: 10px 0 0; color: #bfdbfe; font-size: 14px;">
-                        Spoločne proti podvodom
-                      </p>
-                    </td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Report Date:</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right; color: #334155; font-weight: 600;">${formattedDate}</td>
                   </tr>
-
-                  <!-- Main Content -->
                   <tr>
-                    <td style="padding: 40px 30px;">
-                      <p style="margin: 0 0 20px; color: #374151; font-size: 16px;">
-                        Vážený/á <strong>${safeReporterName}</strong>,
-                      </p>
-                      <p style="margin: 0 0 30px; color: #374151; font-size: 16px;">
-                        Ďakujeme za odoslanie hlásenia o podvode do ${SITE_NAME}. Vaše hlásenie sme úspešne prijali a bolo mu pridelené jedinečné číslo prípadu pre sledovanie a vyšetrovanie.
-                      </p>
-
-                      <!-- Case ID Box -->
-                      <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 8px; margin-bottom: 30px;">
-                        <tr>
-                          <td style="padding: 20px; text-align: center;">
-                            <p style="margin: 0 0 5px; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                              Číslo prípadu
-                            </p>
-                            <p style="margin: 0; color: #1e40af; font-size: 24px; font-weight: 700; font-family: monospace;">
-                              ${safeCaseNumber}
-                            </p>
-                          </td>
-                        </tr>
-                      </table>
-
-                      <!-- Report Summary -->
-                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                        📋 Zhrnutie hlásenia
-                      </h3>
-                      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
-                        <tr>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
-                            <span style="color: #6b7280; font-size: 14px;">Dátum hlásenia:</span>
-                          </td>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
-                            <strong style="color: #374151; font-size: 14px;">${formattedDate}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
-                            <span style="color: #6b7280; font-size: 14px;">Typ podvodu:</span>
-                          </td>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
-                            <strong style="color: #374151; font-size: 14px; text-transform: capitalize;">${safeFraudType}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
-                            <span style="color: #6b7280; font-size: 14px;">Nahlásená strata:</span>
-                          </td>
-                          <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; text-align: right;">
-                            <strong style="color: #374151; font-size: 14px;">${formattedLoss}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding: 10px 0;">
-                            <span style="color: #6b7280; font-size: 14px;">Stav:</span>
-                          </td>
-                          <td style="padding: 10px 0; text-align: right;">
-                            <span style="display: inline-block; background-color: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
-                              Prijaté - Čaká na kontrolu
-                            </span>
-                          </td>
-                        </tr>
-                      </table>
-
-                      <!-- Track Button -->
-                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px;">
-                        🔍 Sledovať a aktualizovať prípad
-                      </h3>
-                      <p style="margin: 0 0 20px; color: #6b7280; font-size: 14px;">
-                        Stav vášho hlásenia môžete kedykoľvek skontrolovať a pridať ďalšie informácie pomocou odkazu nižšie:
-                      </p>
-                      <table width="100%" cellpadding="0" cellspacing="0">
-                        <tr>
-                          <td align="center" style="padding: 10px 0 30px;">
-                            <a href="${trackingUrl}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);">
-                              Zobraziť stav prípadu
-                            </a>
-                          </td>
-                        </tr>
-                      </table>
-
-                      <!-- Save Link Warning -->
-                      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b; margin-bottom: 30px;">
-                        <tr>
-                          <td style="padding: 15px 20px;">
-                            <p style="margin: 0 0 5px; color: #92400e; font-size: 14px; font-weight: 600;">
-                              ⚠️ Dôležité: Uložte si tento email
-                            </p>
-                            <p style="margin: 0; color: #92400e; font-size: 13px;">
-                              Odkaz na sledovanie prípadu je váš jedinečný prístupový kľúč. Z bezpečnostných dôvodov nie je prístupný nikomu inému.
-                            </p>
-                          </td>
-                        </tr>
-                      </table>
-
-                      <!-- What's Next -->
-                      <h3 style="margin: 0 0 15px; color: #1f2937; font-size: 16px;">
-                        📌 Čo sa stane ďalej?
-                      </h3>
-                      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
-                        <tr>
-                          <td style="padding: 10px 0; vertical-align: top; width: 30px;">
-                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">1</span>
-                          </td>
-                          <td style="padding: 10px 0 10px 10px;">
-                            <strong style="color: #374151; font-size: 14px;">Proces kontroly:</strong>
-                            <span style="color: #6b7280; font-size: 14px;"> Náš tím skontroluje vaše hlásenie do 24-48 hodín</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding: 10px 0; vertical-align: top;">
-                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">2</span>
-                          </td>
-                          <td style="padding: 10px 0 10px 10px;">
-                            <strong style="color: #374151; font-size: 14px;">Vyšetrovanie:</strong>
-                            <span style="color: #6b7280; font-size: 14px;"> Platné hlásenia budú vyšetrené a pridané do verejnej databázy</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding: 10px 0; vertical-align: top;">
-                            <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">3</span>
-                          </td>
-                          <td style="padding: 10px 0 10px 10px;">
-                            <strong style="color: #374151; font-size: 14px;">Aktualizácie:</strong>
-                            <span style="color: #6b7280; font-size: 14px;"> Stav prípadu môžete kedykoľvek skontrolovať pomocou odkazu vyššie</span>
-                          </td>
-                        </tr>
-                      </table>
-
-                      <p style="margin: 0 0 20px; color: #374151; font-size: 14px; background-color: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
-                        💚 Vaše hlásenie pomáha chrániť ostatných pred podobnými podvodmi. Zdieľaním svojej skúsenosti prispievate k bezpečnejšej online komunite pre všetkých.
-                      </p>
-
-                      <p style="margin: 0; color: #6b7280; font-size: 14px;">
-                        Ak máte ďalšie dôkazy alebo informácie, použite odkaz na sledovanie prípadu vyššie. Pre všeobecné otázky nás kontaktujte na <a href="mailto:support@scamnemesis.com" style="color: #2563eb;">support@scamnemesis.com</a>.
-                      </p>
-                    </td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Fraud Type:</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right; color: #334155; font-weight: 600; text-transform: capitalize;">${safeFraudType}</td>
                   </tr>
-
-                  <!-- Footer -->
                   <tr>
-                    <td style="background-color: #1f2937; padding: 30px; text-align: center;">
-                      <p style="margin: 0 0 10px; color: #ffffff; font-size: 18px; font-weight: 600;">
-                        🛡️ ${SITE_NAME}
-                      </p>
-                      <p style="margin: 0 0 20px; color: #9ca3af; font-size: 12px;">
-                        Bojujeme proti podvodom, chránime komunity
-                      </p>
-                      <p style="margin: 0; color: #6b7280; font-size: 11px;">
-                        Toto je automatická správa. Prosím neodpovedajte priamo na tento email.<br>
-                        Pre podporu nás kontaktujte na <a href="mailto:support@scamnemesis.com" style="color: #60a5fa;">support@scamnemesis.com</a>
-                      </p>
-                      <p style="margin: 20px 0 0; color: #6b7280; font-size: 11px;">
-                        © ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.
-                      </p>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Reported Loss:</td>
+                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; text-align: right; color: #334155; font-weight: 600;">${formattedLoss}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 12px 0; color: #64748b;">Status:</td>
+                    <td style="padding: 12px 0; text-align: right;">
+                      <span style="display: inline-block; background-color: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Received - Pending Review</span>
                     </td>
                   </tr>
                 </table>
-              </td>
-            </tr>
-          </table>
+
+                <!-- Track Button -->
+                <h3 style="margin: 24px 0 12px; color: #0f172a; font-size: 18px;">🔍 Track & Update Your Case</h3>
+                <p style="color: #64748b; font-size: 14px;">You can check the status of your report and add additional information at any time using the link below:</p>
+                <div class="button-container">
+                  <a href="${trackingUrl}" class="button">View Case Status</a>
+                </div>
+
+                <div class="warning">
+                  <strong>⚠️ Important: Save This Email</strong>
+                  <p>The tracking link is your unique access key. For security reasons, it cannot be accessed by anyone else.</p>
+                </div>
+
+                <!-- What's Next -->
+                <h3 style="margin: 24px 0 16px; color: #0f172a; font-size: 18px;">📌 What Happens Next?</h3>
+                <table width="100%" style="margin-bottom: 24px;">
+                  <tr>
+                    <td style="padding: 10px 0; vertical-align: top; width: 36px;">
+                      <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">1</span>
+                    </td>
+                    <td style="padding: 10px 0;">
+                      <strong style="color: #334155;">Review Process:</strong>
+                      <span style="color: #64748b;"> Our team will review your report within 24-48 hours</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; vertical-align: top;">
+                      <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">2</span>
+                    </td>
+                    <td style="padding: 10px 0;">
+                      <strong style="color: #334155;">Investigation:</strong>
+                      <span style="color: #64748b;"> Valid reports will be investigated and added to our public database</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; vertical-align: top;">
+                      <span style="display: inline-block; background-color: #dbeafe; color: #1e40af; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 600;">3</span>
+                    </td>
+                    <td style="padding: 10px 0;">
+                      <strong style="color: #334155;">Updates:</strong>
+                      <span style="color: #64748b;"> You can check your case status anytime using the link above</span>
+                    </td>
+                  </tr>
+                </table>
+
+                <div class="info-box" style="background-color: #f0fdf4; border-left-color: #22c55e;">
+                  <p style="color: #166534;"><strong>💚 Thank you for your report!</strong> By sharing your experience, you're helping protect others from similar scams and contributing to a safer online community for everyone.</p>
+                </div>
+
+                <p style="color: #64748b; font-size: 14px;">
+                  If you have additional evidence or information, please use the tracking link above. For general questions, contact us at <a href="mailto:support@scamnemesis.com" style="color: #2563eb;">support@scamnemesis.com</a>.
+                </p>
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>Fighting Fraud, Protecting Communities</p>
+                <p>This is an automated message. Please do not reply directly to this email.<br>For support, contact us at <a href="mailto:support@scamnemesis.com">support@scamnemesis.com</a></p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
         </body>
         </html>
       `,
       text: `
-${SITE_NAME} - Potvrdenie hlásenia
+${SITE_NAME} - Report Confirmation
 ================================
 
-Vážený/á ${options.reporterName || 'Reporter'},
+Dear ${options.reporterName || 'Reporter'},
 
-Ďakujeme za odoslanie hlásenia o podvode do ${SITE_NAME}. Vaše hlásenie sme úspešne prijali.
+Thank you for submitting your fraud report to ${SITE_NAME}. We have successfully received your report.
 
-ČÍSLO PRÍPADU: ${options.caseNumber}
+CASE NUMBER: ${options.caseNumber}
 
-ZHRNUTIE HLÁSENIA:
-- Dátum hlásenia: ${formattedDate}
-- Typ podvodu: ${safeFraudType}
-- Nahlásená strata: ${formattedLoss}
-- Stav: Prijaté - Čaká na kontrolu
+REPORT SUMMARY:
+- Report Date: ${formattedDate}
+- Fraud Type: ${safeFraudType}
+- Reported Loss: ${formattedLoss}
+- Status: Received - Pending Review
 
-SLEDOVAŤ PRÍPAD:
+TRACK YOUR CASE:
 ${trackingUrl}
 
-⚠️ DÔLEŽITÉ: Uložte si tento email. Odkaz na sledovanie je váš jedinečný prístupový kľúč.
+⚠️ IMPORTANT: Save this email. The tracking link is your unique access key.
 
-ČO SA STANE ĎALEJ:
-1. Náš tím skontroluje vaše hlásenie do 24-48 hodín
-2. Platné hlásenia budú vyšetrené a pridané do verejnej databázy
-3. Stav prípadu môžete kedykoľvek skontrolovať pomocou odkazu vyššie
+WHAT HAPPENS NEXT:
+1. Our team will review your report within 24-48 hours
+2. Valid reports will be investigated and added to our public database
+3. You can check your case status anytime using the link above
 
-Vaše hlásenie pomáha chrániť ostatných pred podobnými podvodmi.
+Your report helps protect others from similar scams.
 
-Pre podporu: support@scamnemesis.com
+For support: support@scamnemesis.com
 
 © ${new Date().getFullYear()} ${SITE_NAME}
       `.trim(),
@@ -698,59 +774,59 @@ Pre podporu: support@scamnemesis.com
   passwordResetConfirmation: (userName: string) => {
     const safeUserName = escapeHtml(userName);
     return {
-      subject: `Heslo bolo úspešne zmenené - ${SITE_NAME}`,
+      subject: `Password Changed Successfully - ${SITE_NAME}`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #16a34a; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .success-box { background: #dcfce7; border: 1px solid #22c55e; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin: 20px 0; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Password Changed</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>✅ Heslo zmenené</h1>
-            </div>
-            <div class="content">
-              <p>Dobrý deň ${safeUserName},</p>
-              <div class="success-box">
-                <p><strong>Vaše heslo bolo úspešne zmenené.</strong></p>
-                <p>Teraz sa môžete prihlásiť do svojho účtu s novým heslom.</p>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header" style="background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);">
+                <h1>✅ Password Changed</h1>
+                <p>Your account is secure</p>
               </div>
-              <div class="warning">
-                <strong>⚠️ Bezpečnostné upozornenie:</strong>
-                <p>Ak ste túto zmenu nevykonali vy, okamžite nás kontaktujte na <a href="mailto:support@scamnemesis.com">support@scamnemesis.com</a>.</p>
-                <p>Všetky vaše predchádzajúce prihlásenia boli z bezpečnostných dôvodov odhlásené.</p>
+              <div class="content">
+                <h2>Password Successfully Changed</h2>
+                <p>Hello ${safeUserName},</p>
+                <div class="info-box" style="background-color: #f0fdf4; border-left-color: #22c55e;">
+                  <p style="color: #166534;"><strong>Your password has been successfully changed.</strong> You can now sign in to your account with your new password.</p>
+                </div>
+                <div class="warning">
+                  <strong>⚠️ Security Notice</strong>
+                  <p>If you didn't make this change, please contact us immediately at <a href="mailto:support@scamnemesis.com" style="color: #92400e;">support@scamnemesis.com</a>.</p>
+                  <p>All your previous sessions have been logged out for security.</p>
+                </div>
+                <div class="button-container">
+                  <a href="${SITE_URL}/auth/login" class="button">Sign In Now</a>
+                </div>
               </div>
-              <p>Pre prihlásenie navštívte: <a href="${SITE_URL}/auth/login">${SITE_URL}/auth/login</a></p>
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Heslo bolo úspešne zmenené
+Password Changed Successfully
 
-Dobrý deň ${userName},
+Hello ${userName},
 
-Vaše heslo bolo úspešne zmenené. Teraz sa môžete prihlásiť do svojho účtu s novým heslom.
+Your password has been successfully changed. You can now sign in to your account with your new password.
 
-BEZPEČNOSTNÉ UPOZORNENIE:
-Ak ste túto zmenu nevykonali vy, okamžite nás kontaktujte na support@scamnemesis.com.
-Všetky vaše predchádzajúce prihlásenia boli z bezpečnostných dôvodov odhlásené.
+SECURITY NOTICE:
+If you didn't make this change, please contact us immediately at support@scamnemesis.com.
+All your previous sessions have been logged out for security.
 
-Pre prihlásenie navštívte: ${SITE_URL}/auth/login
+Sign in at: ${SITE_URL}/auth/login
 
 ${SITE_NAME}
       `.trim(),
@@ -764,57 +840,71 @@ ${SITE_NAME}
     const safeUserName = escapeHtml(userName);
     const safeReportTitle = escapeHtml(reportTitle);
     const safeReason = reason ? escapeHtml(reason) : undefined;
+    const headerColor = status === 'approved'
+      ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)'
+      : 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)';
+    const statusBoxStyle = status === 'approved'
+      ? 'background-color: #f0fdf4; border-left: 4px solid #22c55e;'
+      : 'background-color: #fef2f2; border-left: 4px solid #ef4444;';
+    const statusTextColor = status === 'approved' ? '#166534' : '#991b1b';
+
     return {
-      subject: `Stav hlásenia aktualizovaný - ${SITE_NAME}`,
+      subject: `Report Status Updated - ${SITE_NAME}`,
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: ${status === 'approved' ? '#16a34a' : '#dc2626'}; color: white; padding: 20px; text-align: center; }
-            .content { padding: 30px; background: #f9fafb; }
-            .status-box { background: ${status === 'approved' ? '#dcfce7' : '#fee2e2'}; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-          </style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Report Status Update</title>
+          <style>${emailStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <h1>${status === 'approved' ? '✅ Hlásenie schválené' : '❌ Hlásenie zamietnuté'}</h1>
-            </div>
-            <div class="content">
-              <p>Dobrý deň ${safeUserName},</p>
-              <div class="status-box">
-                <p><strong>Vaše hlásenie:</strong> ${safeReportTitle}</p>
-                <p><strong>Stav:</strong> ${status === 'approved' ? 'Schválené a zverejnené' : 'Zamietnuté'}</p>
-                ${safeReason ? `<p><strong>Dôvod:</strong> ${safeReason}</p>` : ''}
+          <div class="wrapper">
+            <div class="container">
+              <div class="header" style="background: ${headerColor};">
+                <h1>${status === 'approved' ? '✅ Report Approved' : '❌ Report Rejected'}</h1>
+                <p>Status Update</p>
               </div>
-              ${status === 'approved'
-                ? '<p>Ďakujeme za vaše hlásenie. Pomáhate chrániť komunitu pred podvodníkmi.</p>'
-                : '<p>Ak máte otázky ohľadom zamietnutia, kontaktujte nás prosím.</p>'
-              }
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} ${SITE_NAME}. Všetky práva vyhradené.</p>
+              <div class="content">
+                <h2>Your Report Has Been Reviewed</h2>
+                <p>Hello ${safeUserName},</p>
+                <div style="${statusBoxStyle} padding: 20px; border-radius: 8px; margin: 24px 0;">
+                  <p style="margin: 0 0 12px; color: ${statusTextColor};"><strong>Report:</strong> ${safeReportTitle}</p>
+                  <p style="margin: 0 0 12px; color: ${statusTextColor};"><strong>Status:</strong> ${status === 'approved' ? 'Approved & Published' : 'Rejected'}</p>
+                  ${safeReason ? `<p style="margin: 0; color: ${statusTextColor};"><strong>Reason:</strong> ${safeReason}</p>` : ''}
+                </div>
+                ${status === 'approved'
+                  ? `<p>Thank you for your report. By sharing your experience, you're helping protect others from scammers and making our community safer.</p>
+                     <div class="button-container">
+                       <a href="${SITE_URL}/search" class="button">View Published Reports</a>
+                     </div>`
+                  : `<p>If you have questions about why your report was rejected or would like to provide additional information, please contact us.</p>
+                     <div class="button-container">
+                       <a href="mailto:support@scamnemesis.com" class="button">Contact Support</a>
+                     </div>`
+                }
+              </div>
+              <div class="footer">
+                <p class="brand">🛡️ ${SITE_NAME}</p>
+                <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
+              </div>
             </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Stav hlásenia aktualizovaný
+Report Status Updated
 
-Dobrý deň ${userName},
+Hello ${userName},
 
-Vaše hlásenie "${reportTitle}" bolo ${status === 'approved' ? 'schválené a zverejnené' : 'zamietnuté'}.
-${reason ? `Dôvod: ${reason}` : ''}
+Your report "${reportTitle}" has been ${status === 'approved' ? 'approved and published' : 'rejected'}.
+${reason ? `Reason: ${reason}` : ''}
 
 ${status === 'approved'
-  ? 'Ďakujeme za vaše hlásenie. Pomáhate chrániť komunitu pred podvodníkmi.'
-  : 'Ak máte otázky ohľadom zamietnutia, kontaktujte nás prosím.'
+  ? 'Thank you for your report. You\'re helping protect others from scammers.'
+  : 'If you have questions about why your report was rejected, please contact us.'
 }
 
 ${SITE_NAME}

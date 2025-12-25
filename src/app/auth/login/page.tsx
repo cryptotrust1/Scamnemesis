@@ -150,9 +150,9 @@ export default function LoginPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
               <Shield className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Vitajte späť</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-blue-100 text-sm">
-              Prihláste sa do svojho účtu
+              Sign in to your account
             </p>
           </div>
 
@@ -165,11 +165,11 @@ export default function LoginPage() {
                   <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <h3 className="font-semibold text-amber-800 mb-1">
-                      Email nie je overený
+                      Email Not Verified
                     </h3>
                     <p className="text-sm text-amber-700 mb-3">
-                      Pred prihlásením musíte overiť svoju emailovú adresu.
-                      Skontrolujte svoju schránku ({emailVerification.email}) a kliknite na overovací odkaz.
+                      Please verify your email address before signing in.
+                      Check your inbox ({emailVerification.email}) and click the verification link.
                     </p>
                     <button
                       type="button"
@@ -177,7 +177,7 @@ export default function LoginPage() {
                       disabled={emailVerification.isResending}
                       className="text-sm font-medium text-amber-700 hover:text-amber-800 underline disabled:opacity-50"
                     >
-                      {emailVerification.isResending ? 'Odosielam...' : 'Odoslať overovací email znova'}
+                      {emailVerification.isResending ? 'Sending...' : 'Resend verification email'}
                     </button>
                   </div>
                 </div>
@@ -188,14 +188,14 @@ export default function LoginPage() {
               {/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
-                  Emailová adresa
+                  Email Address
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                   <input
                     id="email"
                     type="email"
-                    placeholder="vas@email.sk"
+                    placeholder="your@email.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     autoComplete="email"
@@ -209,13 +209,13 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label htmlFor="password" className="block text-sm font-semibold text-slate-700">
-                    Heslo
+                    Password
                   </label>
                   <Link
                     href="/auth/forgot-password"
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline"
                   >
-                    Zabudli ste heslo?
+                    Forgot password?
                   </Link>
                 </div>
                 <div className="relative">
@@ -259,11 +259,11 @@ export default function LoginPage() {
                 {isLoading ? (
                   <>
                     <span className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Prihlasovanie...</span>
+                    <span>Signing in...</span>
                   </>
                 ) : (
                   <>
-                    <span>Prihlásiť sa</span>
+                    <span>Sign In</span>
                     <ArrowRight className="h-5 w-5" />
                   </>
                 )}
@@ -277,7 +277,7 @@ export default function LoginPage() {
                   <div className="w-full border-t border-slate-200" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-4 bg-white text-sm text-slate-500">alebo pokračujte cez</span>
+                  <span className="px-4 bg-white text-sm text-slate-500">or continue with</span>
                 </div>
               </div>
             )}
@@ -330,12 +330,12 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 text-center">
             <p className="text-slate-600">
-              Nemáte ešte účet?{' '}
+              Don&apos;t have an account?{' '}
               <Link
                 href="/auth/register"
                 className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
               >
-                Zaregistrujte sa
+                Sign Up
               </Link>
             </p>
           </div>
@@ -344,7 +344,7 @@ export default function LoginPage() {
         {/* Security badge */}
         <div className="mt-6 flex items-center justify-center gap-2 text-slate-500 text-sm">
           <Shield className="h-4 w-4" />
-          <span>Zabezpečené SSL šifrovaním</span>
+          <span>Secured with SSL encryption</span>
         </div>
       </div>
     </div>
