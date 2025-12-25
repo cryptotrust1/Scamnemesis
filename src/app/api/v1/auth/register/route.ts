@@ -6,7 +6,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z, type ZodIssue } from 'zod';
-import { SignJWT } from 'jose';
 import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import {
@@ -14,7 +13,12 @@ import {
   generateAccessToken,
   generateRefreshToken,
   getScopesForRole,
+  PASSWORD_REGEX,
+  PASSWORD_REQUIREMENTS,
+  generateEmailVerificationToken,
 } from '@/lib/auth/jwt';
+import { setAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
 import { verifyCaptcha, isCaptchaEnabled } from '@/lib/captcha';
@@ -24,64 +28,13 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
 
-// Cookie configuration (must match token endpoint)
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: IS_PRODUCTION,
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Set auth tokens as HttpOnly cookies on the response
- */
-function setAuthCookies(
-  response: NextResponse,
-  accessToken: string,
-  refreshToken: string
-): void {
-  // Access token cookie - 1 hour
-  response.cookies.set('access_token', accessToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  // Refresh token cookie - 7 days
-  response.cookies.set('refresh_token', refreshToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 7 * 24 * 60 * 60, // 7 days
-    path: '/api/v1/auth', // Restrict to auth endpoints only
-  });
-}
-
-// JWT_SECRET validation at runtime to avoid build-time failures
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required.');
-  }
-  return secret;
-}
-
-// Rate limit: 25 registrations per hour per IP (5x increase for better UX)
-const REGISTER_RATE_LIMIT = 25;
-const REGISTER_RATE_WINDOW = 3600000; // 1 hour in milliseconds
-
-// Password validation regex
-// Requires: 9+ chars, uppercase, lowercase, number, and special character
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
-
 // Request schema
 const registerSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z
     .string()
     .min(9, 'Password must be at least 9 characters')
-    .regex(
-      PASSWORD_REGEX,
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
-    ),
+    .regex(PASSWORD_REGEX, PASSWORD_REQUIREMENTS),
   name: z.string().optional(),
   captchaToken: z.string().optional(), // Turnstile CAPTCHA token
 });
@@ -93,11 +46,11 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:register:${ip}`;
+    const rateLimitKey = getRateLimitKey('register', ip);
     const { allowed, resetAt } = await checkRateLimit(
       rateLimitKey,
-      REGISTER_RATE_LIMIT,
-      REGISTER_RATE_WINDOW
+      AUTH_RATE_LIMITS.REGISTER.limit,
+      AUTH_RATE_LIMITS.REGISTER.windowMs
     );
 
     if (!allowed) {
@@ -221,16 +174,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     // Generate email verification token (valid for 24 hours)
-    const secret = new TextEncoder().encode(getJwtSecret());
-    const verificationToken = await new SignJWT({
-      sub: user.id,
-      email: user.email,
-      type: 'email_verification',
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('24h')
-      .sign(secret);
+    const verificationToken = await generateEmailVerificationToken(user.id, user.email);
 
     // Build verification URL
     const verificationUrl = `${SITE_URL}/auth/verify-email?token=${verificationToken}`;

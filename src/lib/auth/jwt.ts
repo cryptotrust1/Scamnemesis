@@ -1,17 +1,52 @@
 /**
  * JWT Authentication Utilities
+ *
+ * This module provides centralized JWT handling for the authentication system.
+ * All auth endpoints should use these functions for token generation and verification.
  */
 
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { UserRole } from '@prisma/client';
 
-const JWT_ISSUER = 'scamnemesis';
-const JWT_AUDIENCE = 'scamnemesis-api';
+// JWT Configuration Constants
+export const JWT_ISSUER = 'scamnemesis';
+export const JWT_AUDIENCE = 'scamnemesis-api';
+
+/**
+ * Password validation regex
+ * Requires: 9+ chars, uppercase, lowercase, number, and special character
+ */
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
+
+/**
+ * Password requirements message for user feedback
+ */
+export const PASSWORD_REQUIREMENTS =
+  'Password must be at least 9 characters and contain at least one uppercase letter, ' +
+  'one lowercase letter, one number, and one special character (!@#$%^&*...)';
+
+/**
+ * Validate password against requirements
+ *
+ * @param password - Password to validate
+ * @returns true if password meets requirements
+ */
+export function validatePassword(password: string): boolean {
+  return PASSWORD_REGEX.test(password);
+}
 
 // Lazy initialization of JWT secret to avoid build-time errors
 let _jwtSecret: Uint8Array | null = null;
+let _jwtSecretString: string | null = null;
 
-function getJwtSecret(): Uint8Array {
+/**
+ * Get JWT secret as Uint8Array (for jose library)
+ * Use this for token generation and verification with jose
+ *
+ * @throws Error if JWT_SECRET is not set
+ * @returns JWT secret as Uint8Array
+ */
+export function getJwtSecret(): Uint8Array {
   if (_jwtSecret) return _jwtSecret;
 
   const jwtSecretString = process.env.JWT_SECRET;
@@ -24,9 +59,36 @@ function getJwtSecret(): Uint8Array {
     );
   }
 
+  _jwtSecretString = jwtSecretString;
   _jwtSecret = new TextEncoder().encode(jwtSecretString);
 
   return _jwtSecret;
+}
+
+/**
+ * Get JWT secret as string
+ * Use this for cases where you need the raw string (e.g., manual JWT operations)
+ *
+ * @throws Error if JWT_SECRET is not set
+ * @returns JWT secret as string
+ */
+export function getJwtSecretString(): string {
+  if (_jwtSecretString) return _jwtSecretString;
+
+  const jwtSecretString = process.env.JWT_SECRET;
+
+  // JWT_SECRET is required in all environments for security
+  if (!jwtSecretString) {
+    throw new Error(
+      'JWT_SECRET environment variable is required. ' +
+      'Please set JWT_SECRET in your .env file with a secure random string (min 32 characters).'
+    );
+  }
+
+  _jwtSecretString = jwtSecretString;
+  _jwtSecret = new TextEncoder().encode(jwtSecretString);
+
+  return _jwtSecretString;
 }
 
 export interface TokenPayload extends JWTPayload {
@@ -229,4 +291,88 @@ export function generateApiKey(): string {
   const randomBytes = crypto.getRandomValues(new Uint8Array(32));
   const key = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
   return prefix + key;
+}
+
+/**
+ * Generate email verification token
+ *
+ * @param userId - User ID
+ * @param email - User email
+ * @param expiresIn - Token expiration time (default: 24h)
+ * @returns Signed JWT token
+ */
+export async function generateEmailVerificationToken(
+  userId: string,
+  email: string,
+  expiresIn: string = '24h'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    email,
+    type: 'email_verification',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Generate password reset token
+ *
+ * @param userId - User ID
+ * @param email - User email
+ * @param expiresIn - Token expiration time (default: 1h)
+ * @returns Signed JWT token
+ */
+export async function generatePasswordResetToken(
+  userId: string,
+  email: string,
+  expiresIn: string = '1h'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    email,
+    type: 'password_reset',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Verify a special-purpose token (email verification, password reset)
+ *
+ * @param token - Token to verify
+ * @param expectedType - Expected token type
+ * @returns Token payload or null if invalid
+ */
+export async function verifySpecialToken(
+  token: string,
+  expectedType: 'email_verification' | 'password_reset'
+): Promise<{ sub: string; email: string; type: string } | null> {
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      issuer: JWT_ISSUER,
+    });
+
+    if (payload.type !== expectedType) {
+      return null;
+    }
+
+    return {
+      sub: payload.sub as string,
+      email: payload.email as string,
+      type: payload.type as string,
+    };
+  } catch {
+    return null;
+  }
 }

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Shield, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Shield, Mail, Lock, Eye, EyeOff, ArrowRight, AlertTriangle } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
@@ -12,6 +12,12 @@ import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
 const isGoogleEnabled = process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true';
 const isGithubEnabled = process.env.NEXT_PUBLIC_GITHUB_ENABLED === 'true';
 const hasOAuthProviders = isGoogleEnabled || isGithubEnabled;
+
+interface EmailVerificationState {
+  needsVerification: boolean;
+  email: string;
+  isResending: boolean;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,10 +33,41 @@ export default function LoginPage() {
     email: '',
     password: '',
   });
+  const [emailVerification, setEmailVerification] = useState<EmailVerificationState>({
+    needsVerification: false,
+    email: '',
+    isResending: false,
+  });
+
+  const handleResendVerification = async () => {
+    if (!emailVerification.email) return;
+
+    setEmailVerification((prev) => ({ ...prev, isResending: true }));
+
+    try {
+      const response = await fetch('/api/v1/auth/verify-email', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailVerification.email }),
+      });
+
+      if (response.ok) {
+        toast.success('Overovací email bol odoslaný. Skontrolujte svoju schránku.');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Nepodarilo sa odoslať overovací email.');
+      }
+    } catch {
+      toast.error('Nepodarilo sa odoslať overovací email.');
+    } finally {
+      setEmailVerification((prev) => ({ ...prev, isResending: false }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setEmailVerification({ needsVerification: false, email: '', isResending: false });
 
     try {
       const result = await signIn('credentials', {
@@ -57,7 +94,18 @@ export default function LoginPage() {
           router.push(callbackUrl);
         } else {
           const error = await response.json();
-          toast.error(error.message || 'Nesprávne prihlasovacie údaje');
+
+          // Handle email not verified error
+          if (error.error === 'email_not_verified') {
+            setEmailVerification({
+              needsVerification: true,
+              email: error.email || formData.email,
+              isResending: false,
+            });
+          } else {
+            toast.error(error.message || 'Nesprávne prihlasovacie údaje');
+          }
+
           captchaRef.current?.reset();
           setCaptchaToken(null);
         }
@@ -110,6 +158,32 @@ export default function LoginPage() {
 
           {/* Form */}
           <div className="p-8">
+            {/* Email Verification Warning */}
+            {emailVerification.needsVerification && (
+              <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-amber-800 mb-1">
+                      Email nie je overený
+                    </h3>
+                    <p className="text-sm text-amber-700 mb-3">
+                      Pred prihlásením musíte overiť svoju emailovú adresu.
+                      Skontrolujte svoju schránku ({emailVerification.email}) a kliknite na overovací odkaz.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={emailVerification.isResending}
+                      className="text-sm font-medium text-amber-700 hover:text-amber-800 underline disabled:opacity-50"
+                    >
+                      {emailVerification.isResending ? 'Odosielam...' : 'Odoslať overovací email znova'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email */}
               <div className="space-y-2">
