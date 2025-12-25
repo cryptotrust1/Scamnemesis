@@ -45,11 +45,11 @@ function VerifyEmailContent() {
           setState('success');
         }
       } else {
-        setError(data.message || 'Token je neplatný alebo vypršal');
+        setError(data.message || 'Invalid or expired token');
         setState('error');
       }
     } catch {
-      setError('Chyba pri komunikácii so serverom');
+      setError('Error communicating with the server');
       setState('error');
     }
   };
@@ -58,7 +58,7 @@ function VerifyEmailContent() {
     e.preventDefault();
 
     if (!email) {
-      toast.error('Zadajte email');
+      toast.error('Please enter your email');
       return;
     }
 
@@ -74,15 +74,15 @@ function VerifyEmailContent() {
       });
 
       if (response.ok) {
-        toast.success('Ak existuje neoverený účet s týmto emailom, dostanete verifikačný email.');
+        toast.success('If an unverified account with this email exists, you will receive a verification email.');
       } else if (response.status === 429) {
         const data = await response.json();
-        toast.error(data.message || 'Príliš veľa pokusov. Skúste to neskôr.');
+        toast.error(data.message || 'Too many attempts. Please try again later.');
       } else {
-        toast.success('Ak existuje neoverený účet s týmto emailom, dostanete verifikačný email.');
+        toast.success('If an unverified account with this email exists, you will receive a verification email.');
       }
     } catch {
-      toast.error('Chyba pri odosielaní');
+      toast.error('Error sending email');
     } finally {
       setIsResending(false);
     }
@@ -97,8 +97,8 @@ function VerifyEmailContent() {
             <div className="flex items-center justify-center mb-4">
               <Shield className="h-12 w-12 text-primary animate-pulse" />
             </div>
-            <CardTitle className="text-2xl text-center">Overujem email...</CardTitle>
-            <CardDescription className="text-center">Prosím čakajte, overujeme váš email</CardDescription>
+            <CardTitle className="text-2xl text-center">Verifying email...</CardTitle>
+            <CardDescription className="text-center">Please wait while we verify your email</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -117,14 +117,14 @@ function VerifyEmailContent() {
             <div className="flex items-center justify-center mb-4">
               <CheckCircle className="h-12 w-12 text-green-600" />
             </div>
-            <CardTitle className="text-2xl text-center">Email overený</CardTitle>
+            <CardTitle className="text-2xl text-center">Email Verified</CardTitle>
             <CardDescription className="text-center">
-              Váš email bol úspešne overený. Teraz máte prístup ku všetkým funkciám.
+              Your email has been successfully verified. You now have access to all features.
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button className="w-full" asChild>
-              <Link href="/auth/login">Prihlásiť sa</Link>
+              <Link href="/auth/login">Sign In</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -141,14 +141,14 @@ function VerifyEmailContent() {
             <div className="flex items-center justify-center mb-4">
               <CheckCircle className="h-12 w-12 text-green-600" />
             </div>
-            <CardTitle className="text-2xl text-center">Email už je overený</CardTitle>
+            <CardTitle className="text-2xl text-center">Email Already Verified</CardTitle>
             <CardDescription className="text-center">
-              Váš email bol už predtým overený. Môžete sa prihlásiť.
+              Your email has already been verified. You can sign in now.
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button className="w-full" asChild>
-              <Link href="/auth/login">Prihlásiť sa</Link>
+              <Link href="/auth/login">Sign In</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -165,12 +165,12 @@ function VerifyEmailContent() {
             <div className="flex items-center justify-center mb-4">
               <AlertTriangle className="h-12 w-12 text-destructive" />
             </div>
-            <CardTitle className="text-2xl text-center">Overenie zlyhalo</CardTitle>
+            <CardTitle className="text-2xl text-center">Verification Failed</CardTitle>
             <CardDescription className="text-center">{error}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground text-center mb-4">
-              Link mohol vypršať. Môžete požiadať o nový verifikačný email.
+              The link may have expired. You can request a new verification email.
             </p>
             <form onSubmit={handleResendVerification} className="space-y-4">
               <div className="space-y-2">
@@ -182,7 +182,7 @@ function VerifyEmailContent() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="vas@email.sk"
+                    placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
@@ -194,17 +194,17 @@ function VerifyEmailContent() {
                 {isResending ? (
                   <>
                     <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Odosielam...
+                    Sending...
                   </>
                 ) : (
-                  'Poslať nový verifikačný email'
+                  'Send New Verification Email'
                 )}
               </Button>
             </form>
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full" asChild>
-              <Link href="/auth/login">Späť na prihlásenie</Link>
+              <Link href="/auth/login">Back to Sign In</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -220,9 +220,9 @@ function VerifyEmailContent() {
           <div className="flex items-center justify-center mb-4">
             <Mail className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl text-center">Overenie emailu</CardTitle>
+          <CardTitle className="text-2xl text-center">Email Verification</CardTitle>
           <CardDescription className="text-center">
-            Zadajte svoj email a pošleme vám nový verifikačný link
+            Enter your email and we will send you a new verification link
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -236,7 +236,7 @@ function VerifyEmailContent() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="vas@email.sk"
+                  placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
@@ -248,10 +248,10 @@ function VerifyEmailContent() {
               {isResending ? (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Odosielam...
+                  Sending...
                 </>
               ) : (
-                'Poslať verifikačný email'
+                'Send Verification Email'
               )}
             </Button>
           </form>
@@ -259,7 +259,7 @@ function VerifyEmailContent() {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-sm text-center text-muted-foreground">
             <Link href="/auth/login" className="text-primary hover:underline font-medium">
-              Späť na prihlásenie
+              Back to Sign In
             </Link>
           </div>
         </CardFooter>
