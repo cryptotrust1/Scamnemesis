@@ -14,6 +14,8 @@ import {
   generateAccessToken,
   generateRefreshToken,
   getScopesForRole,
+  needsHashUpgrade,
+  hashPassword,
 } from '@/lib/auth/jwt';
 import { setAuthCookies } from '@/lib/auth/cookies';
 import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
@@ -193,6 +195,24 @@ export async function POST(request: NextRequest) {
 
       // SECURITY: Clear failed attempts on successful login
       await clearFailedAttempts(data.email);
+
+      // SECURITY: Upgrade legacy password hash if needed (v1 -> v2 with 600k iterations)
+      if (user.passwordHash && needsHashUpgrade(user.passwordHash)) {
+        try {
+          const upgradedHash = await hashPassword(data.password);
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash: upgradedHash },
+          });
+          log.info('Password hash upgraded to v2', { userId: user.id });
+        } catch (upgradeError) {
+          // Don't fail login if hash upgrade fails, just log it
+          log.warn('Failed to upgrade password hash', {
+            userId: user.id,
+            error: upgradeError instanceof Error ? upgradeError.message : String(upgradeError),
+          });
+        }
+      }
 
       // Check if email is verified
       if (!user.emailVerified) {

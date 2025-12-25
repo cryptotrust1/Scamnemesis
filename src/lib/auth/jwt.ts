@@ -210,8 +210,16 @@ export function hasScope(userScopes: string[], requiredScope: string): boolean {
   return userScopes.includes(requiredScope);
 }
 
+// PBKDF2 Configuration
+// v1 (legacy): 310,000 iterations - for backward compatibility
+// v2 (current): 600,000 iterations - OWASP 2023 recommendation for SHA-256
+const PBKDF2_ITERATIONS_V1 = 310000;
+const PBKDF2_ITERATIONS_V2 = 600000;
+const CURRENT_HASH_VERSION = 'v2';
+
 /**
- * Hash password using bcrypt-like approach with crypto
+ * Hash password using PBKDF2-SHA256 with OWASP-recommended iterations
+ * Returns versioned hash format: v2:salt:hash
  */
 export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -230,7 +238,7 @@ export async function hashPassword(password: string): Promise<string> {
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
+      iterations: PBKDF2_ITERATIONS_V2, // OWASP 2023: 600k for SHA-256
       hash: 'SHA-256',
     },
     key,
@@ -241,14 +249,36 @@ export async function hashPassword(password: string): Promise<string> {
   const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
   const hashHex = Array.from(hashArray).map(b => b.toString(16).padStart(2, '0')).join('');
 
-  return `${saltHex}:${hashHex}`;
+  // New versioned format: v2:salt:hash
+  return `${CURRENT_HASH_VERSION}:${saltHex}:${hashHex}`;
 }
 
 /**
- * Verify password
+ * Verify password - supports both legacy (v1) and current (v2) hash formats
+ * Legacy format: salt:hash (310k iterations)
+ * Current format: v2:salt:hash (600k iterations)
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  const [saltHex, storedHashHex] = hash.split(':');
+  // Detect hash version
+  const parts = hash.split(':');
+  let saltHex: string;
+  let storedHashHex: string;
+  let iterations: number;
+
+  if (parts.length === 3 && parts[0] === 'v2') {
+    // New v2 format: v2:salt:hash
+    saltHex = parts[1];
+    storedHashHex = parts[2];
+    iterations = PBKDF2_ITERATIONS_V2;
+  } else if (parts.length === 2) {
+    // Legacy v1 format: salt:hash
+    saltHex = parts[0];
+    storedHashHex = parts[1];
+    iterations = PBKDF2_ITERATIONS_V1;
+  } else {
+    return false; // Invalid hash format
+  }
+
   if (!saltHex || !storedHashHex) return false;
 
   const salt = new Uint8Array(
@@ -270,7 +300,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
+      iterations: iterations,
       hash: 'SHA-256',
     },
     key,
@@ -281,6 +311,13 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   const computedHashHex = Array.from(hashArray).map(b => b.toString(16).padStart(2, '0')).join('');
 
   return computedHashHex === storedHashHex;
+}
+
+/**
+ * Check if a password hash needs to be upgraded to the latest version
+ */
+export function needsHashUpgrade(hash: string): boolean {
+  return !hash.startsWith(`${CURRENT_HASH_VERSION}:`);
 }
 
 /**

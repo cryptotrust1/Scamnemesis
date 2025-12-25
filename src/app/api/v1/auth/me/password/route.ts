@@ -10,28 +10,19 @@ import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import { requireAuth, getClientIp, checkRateLimit } from '@/lib/middleware/auth';
-import { verifyPassword, hashPassword } from '@/lib/auth/jwt';
+import { verifyPassword, hashPassword, PASSWORD_REGEX, PASSWORD_REQUIREMENTS } from '@/lib/auth/jwt';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
-// Password validation regex (same as registration)
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
-
-// Rate limit for password change
-const PASSWORD_CHANGE_RATE_LIMIT = 5;
-const PASSWORD_CHANGE_RATE_WINDOW = 3600000; // 1 hour
-
-// Request schema
+// Request schema - uses centralized password validation from @/lib/auth/jwt
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
   newPassword: z
     .string()
     .min(9, 'Password must be at least 9 characters')
-    .regex(
-      PASSWORD_REGEX,
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-    ),
+    .regex(PASSWORD_REGEX, PASSWORD_REQUIREMENTS),
 });
 
 export async function PATCH(request: NextRequest) {
@@ -44,13 +35,13 @@ export async function PATCH(request: NextRequest) {
     if (authResult instanceof NextResponse) return authResult;
     const { userId } = authResult;
 
-    // Rate limiting
+    // Rate limiting using centralized configuration
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:password-change:${userId}`;
+    const rateLimitKey = getRateLimitKey('password-change', userId);
     const { allowed, resetAt } = await checkRateLimit(
       rateLimitKey,
-      PASSWORD_CHANGE_RATE_LIMIT,
-      PASSWORD_CHANGE_RATE_WINDOW
+      AUTH_RATE_LIMITS.PASSWORD_CHANGE.limit,
+      AUTH_RATE_LIMITS.PASSWORD_CHANGE.windowMs
     );
 
     if (!allowed) {

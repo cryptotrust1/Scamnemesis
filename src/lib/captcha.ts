@@ -2,7 +2,11 @@
  * Cloudflare Turnstile CAPTCHA Server-side Verification
  */
 
-const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
+// Test key that always passes - ONLY for development
+const TURNSTILE_TEST_KEY = '1x0000000000000000000000000000000AA';
+
+// Get secret key - NO fallback to test key in production for security
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 
 interface TurnstileVerifyResponse {
   success: boolean;
@@ -34,10 +38,19 @@ export async function verifyCaptcha(
     return { success: true };
   }
 
-  // Skip verification if CAPTCHA is not properly configured (test keys)
-  // This allows the system to work without CAPTCHA until real keys are set
+  // In development: allow skipping CAPTCHA if not configured
+  // In production: CAPTCHA is REQUIRED - fail if not configured
   if (!isCaptchaEnabled()) {
-    console.log('[CAPTCHA] Not enabled (using test keys) - skipping verification');
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[CAPTCHA] SECURITY ERROR: CAPTCHA not configured in production!');
+      console.error('[CAPTCHA] Set TURNSTILE_SECRET_KEY environment variable.');
+      return {
+        success: false,
+        errors: ['captcha-not-configured']
+      };
+    }
+    // Development only: allow skipping
+    console.warn('[CAPTCHA] Not enabled in development - skipping verification');
     return { success: true };
   }
 
@@ -45,9 +58,17 @@ export async function verifyCaptcha(
     return { success: false, errors: ['missing-token'] };
   }
 
+  // Determine which secret key to use
+  const secretKey = TURNSTILE_SECRET_KEY || (process.env.NODE_ENV !== 'production' ? TURNSTILE_TEST_KEY : null);
+
+  if (!secretKey) {
+    console.error('[CAPTCHA] No secret key available');
+    return { success: false, errors: ['captcha-not-configured'] };
+  }
+
   try {
     const formData = new URLSearchParams();
-    formData.append('secret', TURNSTILE_SECRET_KEY);
+    formData.append('secret', secretKey);
     formData.append('response', token);
     if (ip) formData.append('remoteip', ip);
 
@@ -97,13 +118,22 @@ export function getClientIP(headers: Headers): string {
 }
 
 /**
- * Check if CAPTCHA is enabled
+ * Check if CAPTCHA is properly configured with a real (non-test) key
  */
 export function isCaptchaEnabled(): boolean {
-  // Disabled if no real key is set
-  if (!process.env.TURNSTILE_SECRET_KEY ||
-      process.env.TURNSTILE_SECRET_KEY === '1x0000000000000000000000000000000AA') {
+  const key = process.env.TURNSTILE_SECRET_KEY;
+
+  // Not enabled if no key or using test key
+  if (!key || key === TURNSTILE_TEST_KEY) {
     return false;
   }
+
   return true;
+}
+
+/**
+ * Check if CAPTCHA should be required (for production environments)
+ */
+export function isCaptchaRequired(): boolean {
+  return process.env.NODE_ENV === 'production';
 }
