@@ -47,12 +47,13 @@ if (!resend) {
   console.error('4. Verify your domain at https://resend.com/domains');
   console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.error('');
-} else {
+} else if (RESEND_API_KEY) {
   const fromEmail = process.env.FROM_EMAIL || 'noreply@scamnemesis.com';
   const fromDomain = fromEmail.split('@')[1];
+  const keyPreview = `${RESEND_API_KEY.substring(0, 6)}...${RESEND_API_KEY.substring(RESEND_API_KEY.length - 4)}`;
   console.log('[Email] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('[Email] Resend client initialized successfully');
-  console.log(`[Email] API Key: ${RESEND_API_KEY.substring(0, 6)}...${RESEND_API_KEY.substring(RESEND_API_KEY.length - 4)}`);
+  console.log(`[Email] API Key: ${keyPreview}`);
   console.log(`[Email] API Key Format: ${isValidApiKeyFormat ? 'OK (starts with re_)' : 'WARNING: Should start with re_'}`);
   console.log(`[Email] FROM_EMAIL: ${fromEmail}`);
   console.log(`[Email] FROM_DOMAIN: ${fromDomain}`);
