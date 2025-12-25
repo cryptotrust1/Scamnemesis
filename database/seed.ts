@@ -315,7 +315,7 @@ async function main() {
   await prisma.companyInfo.deleteMany();
   await prisma.vehicleInfo.deleteMany();
   await prisma.perpetrator.deleteMany();
-  await prisma.duplicateMatch.deleteMany();
+  await prisma.duplicateClusterReport.deleteMany();
   await prisma.duplicateCluster.deleteMany();
   await prisma.report.deleteMany();
   await prisma.refreshToken.deleteMany();

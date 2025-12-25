@@ -10,8 +10,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prisma from '@/lib/db';
 import { hashPassword } from '@/lib/auth/jwt';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
+
+// Rate limiting for setup endpoint - prevent brute force token guessing
+const SETUP_RATE_LIMIT = 5; // 5 attempts
+const SETUP_RATE_WINDOW = 3600000; // per hour
 
 // SECURITY: All credentials MUST come from environment variables
 function getSetupConfig() {
@@ -51,6 +56,31 @@ function generateSecurePassword(): string {
 
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting to prevent brute force token guessing
+    const ip = getClientIp(request);
+    const rateLimitKey = `setup:admin:${ip}`;
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      SETUP_RATE_LIMIT,
+      SETUP_RATE_WINDOW
+    );
+
+    if (!allowed) {
+      console.warn(`[Admin Setup] Rate limited IP: ${ip}`);
+      return NextResponse.json(
+        {
+          error: 'rate_limited',
+          message: 'Too many setup attempts. Please try again later.',
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((resetAt.getTime() - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     // SECURITY: Only allow in production with proper setup token
     let config;
     try {
@@ -74,6 +104,7 @@ export async function GET(request: NextRequest) {
       Buffer.from(token.padEnd(64, '\0')),
       Buffer.from(config.setupToken.padEnd(64, '\0'))
     )) {
+      console.warn(`[Admin Setup] Invalid token attempt from IP: ${ip}`);
       return NextResponse.json(
         { error: 'Invalid setup token' },
         { status: 403 }

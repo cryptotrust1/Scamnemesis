@@ -94,7 +94,8 @@ export const authConfig: NextAuthConfig = {
           Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            allowDangerousEmailAccountLinking: true, // Allow linking existing accounts
+            // SECURITY: Do NOT use allowDangerousEmailAccountLinking as it allows
+            // account takeover. Account linking is handled in signIn callback below.
           }),
         ]
       : []),
@@ -105,30 +106,74 @@ export const authConfig: NextAuthConfig = {
           GitHub({
             clientId: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            allowDangerousEmailAccountLinking: true,
+            // SECURITY: Do NOT use allowDangerousEmailAccountLinking as it allows
+            // account takeover. Account linking is handled in signIn callback below.
           }),
         ]
       : []),
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // For OAuth providers, check if user is active
-      if (account?.provider !== 'credentials') {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-        });
-
-        if (existingUser && !existingUser.isActive) {
-          return false; // Block inactive users
-        }
-
-        // Set default role for new OAuth users
-        if (!existingUser) {
-          // User will be created by adapter, we'll update the role after
-          return true;
-        }
+      // For credentials provider or no account, just return true
+      if (!account || account.provider === 'credentials') {
+        return true;
       }
 
+      // For OAuth providers, handle account linking and check user status
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email! },
+        include: {
+          accounts: true,
+        },
+      });
+
+      if (existingUser) {
+        // Block inactive users
+        if (!existingUser.isActive) {
+          return false;
+        }
+
+        // Check if this OAuth account is already linked
+        const isAccountLinked = existingUser.accounts.some(
+          (acc) => acc.provider === account.provider && acc.providerAccountId === account.providerAccountId
+        );
+
+        if (!isAccountLinked) {
+          // User exists but OAuth account is not linked
+          // Only allow linking if the user's email is verified (proves ownership)
+          if (!existingUser.emailVerified) {
+            console.warn(
+              `[Auth] Blocked OAuth linking: User ${user.email} exists but email not verified`
+            );
+            return '/auth/error?error=EmailNotVerified';
+          }
+
+          // Link the OAuth account to existing user
+          // This is safe because email is verified (user owns the account)
+          await prisma.account.create({
+            data: {
+              userId: existingUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token ?? undefined,
+              expires_at: account.expires_at ?? undefined,
+              token_type: account.token_type ?? undefined,
+              scope: account.scope ?? undefined,
+              id_token: account.id_token ?? undefined,
+              refresh_token: account.refresh_token ?? undefined,
+            },
+          });
+
+          // Update user object with existing user data for session
+          user.id = existingUser.id;
+          user.role = existingUser.role;
+        }
+
+        return true;
+      }
+
+      // New user - will be created by adapter
       return true;
     },
 
