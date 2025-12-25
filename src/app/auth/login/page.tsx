@@ -52,13 +52,13 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        toast.success('Overovací email bol odoslaný. Skontrolujte svoju schránku.');
+        toast.success('Verification email sent. Please check your inbox.');
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Nepodarilo sa odoslať overovací email.');
+        toast.error(error.message || 'Failed to send verification email.');
       }
     } catch {
-      toast.error('Nepodarilo sa odoslať overovací email.');
+      toast.error('Failed to send verification email.');
     } finally {
       setEmailVerification((prev) => ({ ...prev, isResending: false }));
     }
@@ -70,52 +70,42 @@ export default function LoginPage() {
     setEmailVerification({ needsVerification: false, email: '', isResending: false });
 
     try {
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        captchaToken: captchaToken,
-        redirect: false,
+      // Use custom API for password login (sets HttpOnly cookies)
+      const response = await fetch('/api/v1/auth/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          grant_type: 'password',
+          email: formData.email,
+          password: formData.password,
+          captcha_token: captchaToken,
+        }),
       });
 
-      if (result?.error) {
-        const response = await fetch('/api/v1/auth/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            grant_type: 'password',
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-
-        if (response.ok) {
-          toast.success('Prihlásenie úspešné!');
-          router.push(callbackUrl);
-        } else {
-          const error = await response.json();
-
-          // Handle email not verified error
-          if (error.error === 'email_not_verified') {
-            setEmailVerification({
-              needsVerification: true,
-              email: error.email || formData.email,
-              isResending: false,
-            });
-          } else {
-            toast.error(error.message || 'Nesprávne prihlasovacie údaje');
-          }
-
-          captchaRef.current?.reset();
-          setCaptchaToken(null);
-        }
-      } else if (result?.ok) {
-        toast.success('Prihlásenie úspešné!');
+      if (response.ok) {
+        toast.success('Successfully signed in!');
         router.push(callbackUrl);
+      } else {
+        const error = await response.json();
+
+        // Handle email not verified error
+        if (error.error === 'email_not_verified') {
+          setEmailVerification({
+            needsVerification: true,
+            email: error.email || formData.email,
+            isResending: false,
+          });
+        } else {
+          toast.error(error.message || 'Invalid credentials');
+        }
+
+        captchaRef.current?.reset();
+        setCaptchaToken(null);
       }
     } catch (error) {
       console.error('[Login] Error:', error);
-      toast.error('Chyba pri prihlasovaní. Skúste to znova.');
+      toast.error('Login failed. Please try again.');
       captchaRef.current?.reset();
       setCaptchaToken(null);
     } finally {
@@ -129,7 +119,7 @@ export default function LoginPage() {
       await signIn(provider, { callbackUrl });
     } catch (error) {
       console.error(`[Login] ${provider} OAuth error:`, error);
-      toast.error(`Chyba pri prihlasovaní cez ${provider}`);
+      toast.error(`Failed to sign in with ${provider}`);
       setOauthLoading(null);
     }
   };

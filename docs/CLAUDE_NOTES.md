@@ -279,4 +279,47 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ---
 
-**Posledný update:** Claude Opus 4, 13. December 2024 (Session Review)
+## 🔐 AUTH SYSTEM ARCHITECTURE (25. December 2024)
+
+### Architektonický prehľad:
+
+Systém používa **HYBRIDNÝ AUTH**:
+1. **Custom JWT API** (`/api/v1/auth/*`) - pre password login a user management
+2. **NextAuth v5** (`/api/auth/*`) - pre OAuth (Google, GitHub)
+
+### Kľúčové súbory:
+
+| Súbor | Účel |
+|-------|------|
+| `src/auth.ts` | NextAuth v5 konfigurácia (OAuth providers) |
+| `src/lib/auth/jwt.ts` | JWT generation, verification, password hashing |
+| `src/lib/auth/user-context.tsx` | React context pre user state (`useUser()`) |
+| `src/lib/admin/auth-context.tsx` | Admin auth context (`useAdminAuth()`) |
+| `src/app/api/v1/auth/*` | Custom auth endpoints |
+
+### Auth Flow:
+
+1. **Password Login**: `/auth/login` → `POST /api/v1/auth/token` → HttpOnly cookies
+2. **Google OAuth**: `/auth/login` → `signIn('google')` → NextAuth → callback → session
+3. **Registration**: `/auth/register` → `POST /api/v1/auth/register` → verification email
+4. **Email Verification**: `/auth/verify-email?token=X` → `POST /api/v1/auth/verify-email`
+
+### ⚠️ DÔLEŽITÉ:
+
+1. **NEPOUŽÍVAJ** `useAuth()` z `src/hooks/use-auth.tsx` - je deprecated (mŕtvy kód)
+2. **POUŽÍVAJ** `useUser()` z `src/lib/auth/user-context.tsx` pre user state
+3. **JWT_SECRET** musí byť rovnaký pri build aj runtime
+4. **RESEND_API_KEY** musí byť nastavený pre email verification
+
+### Opravy z 25. December 2024:
+
+- ✅ Pridaná `/auth/error` stránka pre OAuth chyby
+- ✅ Opravený signIn callback - vracia redirect namiesto `false`
+- ✅ Pridaná null check pre `payload.sub` v verify-email route
+- ✅ Konvertovaná verify-email stránka na angličtinu
+- ✅ Zjednodušený login - odstránený dual auth flow
+- ✅ Pridaná migrácia pre chýbajúci `bio` stĺpec
+
+---
+
+**Posledný update:** Claude Opus 4.5, 25. December 2024 (Auth System Cleanup)
