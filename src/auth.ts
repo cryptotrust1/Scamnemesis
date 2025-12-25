@@ -128,9 +128,9 @@ export const authConfig: NextAuthConfig = {
       });
 
       if (existingUser) {
-        // Block inactive users
+        // Block inactive users with proper error redirect
         if (!existingUser.isActive) {
-          return false;
+          return '/auth/error?error=AccountInactive';
         }
 
         // Check if this OAuth account is already linked
