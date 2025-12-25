@@ -41,7 +41,8 @@ export const authConfig: NextAuthConfig = {
     signIn: '/auth/login',
     signOut: '/auth/logout',
     error: '/auth/error',
-    newUser: '/auth/welcome',
+    // Note: newUser page removed - OAuth users redirect to callbackUrl directly
+    // The /auth/welcome page was never created, causing 404 errors
   },
   providers: [
     // Email/Password authentication
