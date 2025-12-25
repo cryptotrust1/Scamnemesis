@@ -7,11 +7,11 @@ import { useUser, useRequireAuth } from '@/lib/auth/user-context';
 import { toast } from 'sonner';
 
 const passwordRequirements = [
-  { label: 'Aspoň 9 znakov', test: (pwd: string) => pwd.length >= 9 },
-  { label: 'Obsahuje veľké písmeno', test: (pwd: string) => /[A-Z]/.test(pwd) },
-  { label: 'Obsahuje malé písmeno', test: (pwd: string) => /[a-z]/.test(pwd) },
-  { label: 'Obsahuje číslo', test: (pwd: string) => /[0-9]/.test(pwd) },
-  { label: 'Obsahuje špeciálny znak', test: (pwd: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+  { label: 'At least 9 characters', test: (pwd: string) => pwd.length >= 9 },
+  { label: 'Contains uppercase letter', test: (pwd: string) => /[A-Z]/.test(pwd) },
+  { label: 'Contains lowercase letter', test: (pwd: string) => /[a-z]/.test(pwd) },
+  { label: 'Contains number', test: (pwd: string) => /[0-9]/.test(pwd) },
+  { label: 'Contains special character', test: (pwd: string) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
 ];
 
 export default function ProfilePage() {
@@ -63,13 +63,13 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Nepodarilo sa uložiť zmeny');
+        throw new Error(data.message || 'Failed to save changes');
       }
 
       await refreshUser();
-      toast.success('Profil bol úspešne aktualizovaný');
+      toast.success('Profile updated successfully');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa uložiť zmeny');
+      toast.error(error instanceof Error ? error.message : 'Failed to save changes');
     } finally {
       setIsSaving(false);
     }
@@ -89,12 +89,12 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Nepodarilo sa odoslať verifikačný email');
+        throw new Error(data.message || 'Failed to send verification email');
       }
 
-      toast.success('Verifikačný email bol odoslaný');
+      toast.success('Verification email sent');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa odoslať email');
+      toast.error(error instanceof Error ? error.message : 'Failed to send email');
     } finally {
       setIsResendingVerification(false);
     }
@@ -105,13 +105,13 @@ export default function ProfilePage() {
     e.preventDefault();
 
     if (newPassword !== confirmNewPassword) {
-      toast.error('Nové heslá sa nezhodujú');
+      toast.error('New passwords do not match');
       return;
     }
 
     const allRequirementsMet = passwordRequirements.every((req) => req.test(newPassword));
     if (!allRequirementsMet) {
-      toast.error('Nové heslo nespĺňa všetky požiadavky');
+      toast.error('New password does not meet all requirements');
       return;
     }
 
@@ -130,10 +130,10 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Nepodarilo sa zmeniť heslo');
+        throw new Error(data.message || 'Failed to change password');
       }
 
-      toast.success('Heslo bolo úspešne zmenené. Budete presmerovaný na prihlásenie.');
+      toast.success('Password changed successfully. You will be redirected to login.');
 
       // Clear form
       setCurrentPassword('');
@@ -149,7 +149,7 @@ export default function ProfilePage() {
         router.push('/auth/login');
       }, 2000);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nepodarilo sa zmeniť heslo');
+      toast.error(error instanceof Error ? error.message : 'Failed to change password');
     } finally {
       setIsChangingPassword(false);
     }
@@ -161,10 +161,10 @@ export default function ProfilePage() {
   // Get role display name
   const getRoleDisplay = (role?: string) => {
     const roles: Record<string, { label: string; color: string }> = {
-      BASIC: { label: 'Základný', color: 'bg-slate-100 text-slate-700' },
-      STANDARD: { label: 'Štandardný', color: 'bg-blue-100 text-blue-700' },
+      BASIC: { label: 'Basic', color: 'bg-slate-100 text-slate-700' },
+      STANDARD: { label: 'Standard', color: 'bg-blue-100 text-blue-700' },
       GOLD: { label: 'Gold', color: 'bg-amber-100 text-amber-700' },
-      ADMIN: { label: 'Administrátor', color: 'bg-purple-100 text-purple-700' },
+      ADMIN: { label: 'Administrator', color: 'bg-purple-100 text-purple-700' },
       SUPER_ADMIN: { label: 'Super Admin', color: 'bg-red-100 text-red-700' },
     };
     return roles[role || 'BASIC'] || roles.BASIC;
@@ -176,7 +176,7 @@ export default function ProfilePage() {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-10 w-10 animate-spin text-[#0E74FF]" />
-          <p className="text-slate-600">Načítavam profil...</p>
+          <p className="text-slate-600">Loading profile...</p>
         </div>
       </div>
     );
@@ -193,8 +193,8 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Môj profil</h1>
-          <p className="text-slate-600 mt-2">Spravujte svoje osobné údaje a nastavenia účtu</p>
+          <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
+          <p className="text-slate-600 mt-2">Manage your personal information and account settings</p>
         </div>
 
         {/* Profile Card */}
@@ -226,8 +226,8 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-600" />
                   <div>
-                    <p className="text-sm font-medium text-amber-800">Email nie je overený</p>
-                    <p className="text-xs text-amber-600">Overte svoj email pre plný prístup k funkciám</p>
+                    <p className="text-sm font-medium text-amber-800">Email not verified</p>
+                    <p className="text-xs text-amber-600">Verify your email for full access to features</p>
                   </div>
                 </div>
                 <button
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                   {isResendingVerification ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    'Odoslať znova'
+                    'Resend'
                   )}
                 </button>
               </div>
@@ -250,7 +250,7 @@ export default function ProfilePage() {
             {/* Display Name (Public Nickname) */}
             <div className="space-y-2">
               <label htmlFor="displayName" className="block text-sm font-semibold text-slate-700">
-                Prezývka (verejná)
+                Display Name (public)
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -259,20 +259,20 @@ export default function ProfilePage() {
                   id="displayName"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Ako vás majú ostatní vidieť"
+                  placeholder="How others will see you"
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
                 />
               </div>
               <p className="text-xs text-green-600 flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" />
-                Toto meno bude viditeľné pre ostatných používateľov
+                This name will be visible to other users
               </p>
             </div>
 
             {/* Full Name (Private) */}
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
-                Celé meno (súkromné)
+                Full Name (private)
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -281,7 +281,7 @@ export default function ProfilePage() {
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Vaše celé meno"
+                  placeholder="Your full name"
                   className="w-full pl-10 pr-12 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
                   required
                 />
@@ -289,14 +289,14 @@ export default function ProfilePage() {
               </div>
               <p className="text-xs text-slate-500 flex items-center gap-1">
                 <Lock className="h-3 w-3" />
-                Vaše meno je súkromné a nebude zobrazené ostatným
+                Your name is private and will not be shown to others
               </p>
             </div>
 
             {/* Bio (Optional) */}
             <div className="space-y-2">
               <label htmlFor="bio" className="block text-sm font-semibold text-slate-700">
-                O mne (voliteľné)
+                About me (optional)
               </label>
               <div className="relative">
                 <FileText className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
@@ -304,14 +304,14 @@ export default function ProfilePage() {
                   id="bio"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="Napíšte niečo o sebe..."
+                  placeholder="Write something about yourself..."
                   rows={3}
                   maxLength={500}
                   className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm resize-none"
                 />
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-slate-500">Krátky popis o vás (voliteľné)</span>
+                <span className="text-slate-500">A short description about you (optional)</span>
                 <span className={`${bio.length > 450 ? 'text-amber-600' : 'text-slate-400'}`}>
                   {bio.length}/500
                 </span>
@@ -335,24 +335,24 @@ export default function ProfilePage() {
                   <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" />
                 )}
               </div>
-              <p className="text-xs text-slate-500">Email nie je možné zmeniť</p>
+              <p className="text-xs text-slate-500">Email cannot be changed</p>
             </div>
 
             {/* Account Info */}
             <div className="pt-4 border-t border-slate-200">
-              <h3 className="text-sm font-semibold text-slate-700 mb-4">Informácie o účte</h3>
+              <h3 className="text-sm font-semibold text-slate-700 mb-4">Account Information</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Shield className="h-4 w-4" />
-                    <span className="text-xs font-medium">Typ účtu</span>
+                    <span className="text-xs font-medium">Account Type</span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">{roleInfo.label}</p>
                 </div>
                 <div className="p-4 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Calendar className="h-4 w-4" />
-                    <span className="text-xs font-medium">Člen od</span>
+                    <span className="text-xs font-medium">Member Since</span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900">December 2024</p>
                 </div>
@@ -371,7 +371,7 @@ export default function ProfilePage() {
                 ) : (
                   <Save className="h-5 w-5" />
                 )}
-                {isSaving ? 'Ukladám...' : 'Uložiť zmeny'}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </form>
@@ -383,13 +383,13 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Key className="h-5 w-5 text-slate-600" />
-                <h3 className="text-lg font-semibold text-slate-900">Zmena hesla</h3>
+                <h3 className="text-lg font-semibold text-slate-900">Change Password</h3>
               </div>
               <button
                 onClick={() => setShowPasswordSection(!showPasswordSection)}
                 className="px-4 py-2 text-sm font-medium text-[#0E74FF] hover:bg-[#0E74FF]/10 rounded-lg transition-colors"
               >
-                {showPasswordSection ? 'Zrušiť' : 'Zmeniť heslo'}
+                {showPasswordSection ? 'Cancel' : 'Change Password'}
               </button>
             </div>
           </div>
@@ -399,7 +399,7 @@ export default function ProfilePage() {
               {/* Current Password */}
               <div className="space-y-2">
                 <label htmlFor="currentPassword" className="block text-sm font-semibold text-slate-700">
-                  Aktuálne heslo
+                  Current Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -408,7 +408,7 @@ export default function ProfilePage() {
                     id="currentPassword"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Zadajte aktuálne heslo"
+                    placeholder="Enter current password"
                     autoComplete="current-password"
                     className="w-full pl-10 pr-12 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
                     required
@@ -426,7 +426,7 @@ export default function ProfilePage() {
               {/* New Password */}
               <div className="space-y-2">
                 <label htmlFor="newPassword" className="block text-sm font-semibold text-slate-700">
-                  Nové heslo
+                  New Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -435,7 +435,7 @@ export default function ProfilePage() {
                     id="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Zadajte nové heslo"
+                    placeholder="Enter new password"
                     autoComplete="new-password"
                     className="w-full pl-10 pr-12 py-3 rounded-xl border-2 border-slate-200 focus:border-[#0E74FF] focus:ring-4 focus:ring-[#0E74FF]/10 transition-all text-sm"
                     required
@@ -452,7 +452,7 @@ export default function ProfilePage() {
                 {/* Password Requirements */}
                 {newPassword && (
                   <div className="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <p className="text-xs font-medium text-slate-600 mb-2">Požiadavky na heslo:</p>
+                    <p className="text-xs font-medium text-slate-600 mb-2">Password requirements:</p>
                     <div className="grid grid-cols-1 gap-1.5">
                       {passwordRequirements.map((req, index) => {
                         const met = req.test(newPassword);
@@ -475,7 +475,7 @@ export default function ProfilePage() {
               {/* Confirm New Password */}
               <div className="space-y-2">
                 <label htmlFor="confirmNewPassword" className="block text-sm font-semibold text-slate-700">
-                  Potvrďte nové heslo
+                  Confirm New Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                     id="confirmNewPassword"
                     value={confirmNewPassword}
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    placeholder="Zadajte nové heslo znova"
+                    placeholder="Enter new password again"
                     autoComplete="new-password"
                     className={`w-full pl-10 pr-12 py-3 rounded-xl border-2 transition-all text-sm ${
                       confirmNewPassword && !passwordsMatch
@@ -506,13 +506,13 @@ export default function ProfilePage() {
                 {confirmNewPassword && !passwordsMatch && (
                   <p className="text-xs text-red-500 font-medium flex items-center gap-1">
                     <span className="inline-block w-1.5 h-1.5 bg-red-500 rounded-full" />
-                    Heslá sa nezhodujú
+                    Passwords do not match
                   </p>
                 )}
                 {passwordsMatch && (
                   <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                     <CheckCircle className="h-3.5 w-3.5" />
-                    Heslá sa zhodujú
+                    Passwords match
                   </p>
                 )}
               </div>
@@ -522,7 +522,7 @@ export default function ProfilePage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-amber-800">
-                    Po zmene hesla budete odhlásený zo všetkých zariadení a budete sa musieť znova prihlásiť.
+                    After changing your password, you will be logged out from all devices and will need to log in again.
                   </p>
                 </div>
               </div>
@@ -538,7 +538,7 @@ export default function ProfilePage() {
                 ) : (
                   <Key className="h-5 w-5" />
                 )}
-                {isChangingPassword ? 'Mením heslo...' : 'Zmeniť heslo'}
+                {isChangingPassword ? 'Changing password...' : 'Change Password'}
               </button>
             </form>
           )}
@@ -547,19 +547,19 @@ export default function ProfilePage() {
         {/* Danger Zone */}
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-red-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-red-100 bg-red-50">
-            <h3 className="text-lg font-semibold text-red-900">Nebezpečná zóna</h3>
+            <h3 className="text-lg font-semibold text-red-900">Danger Zone</h3>
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-900">Zmazať účet</p>
-                <p className="text-xs text-slate-500 mt-1">Táto akcia je nevratná. Všetky vaše dáta budú vymazané.</p>
+                <p className="text-sm font-medium text-slate-900">Delete Account</p>
+                <p className="text-xs text-slate-500 mt-1">This action is irreversible. All your data will be deleted.</p>
               </div>
               <button
-                onClick={() => toast.info('Kontaktujte podporu pre zmazanie účtu')}
+                onClick={() => toast.info('Contact support to delete your account')}
                 className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
               >
-                Zmazať účet
+                Delete Account
               </button>
             </div>
           </div>

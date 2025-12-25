@@ -719,8 +719,15 @@
             const form = this.container.querySelector('[data-sn-form]');
             const closeBtn = this.container.querySelector('[data-sn-close]');
 
-            form.addEventListener('submit', (e) => this.handleSearch(e));
-            closeBtn.addEventListener('click', () => this.hideResults());
+            // Null-check before adding event listeners to prevent "Cannot read properties of null"
+            if (form) {
+                form.addEventListener('submit', (e) => this.handleSearch(e));
+            } else {
+                console.warn('Scamnemesis: Search form element not found');
+            }
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => this.hideResults());
+            }
         }
 
         async handleSearch(e) {
@@ -892,7 +899,12 @@
 
         bindEvents() {
             const form = this.container.querySelector('[data-sn-form]');
-            form.addEventListener('submit', (e) => this.handleSubmit(e));
+            // Null-check before adding event listeners to prevent "Cannot read properties of null"
+            if (form) {
+                form.addEventListener('submit', (e) => this.handleSubmit(e));
+            } else {
+                console.warn('Scamnemesis: Report form element not found');
+            }
         }
 
         async handleSubmit(e) {
@@ -989,7 +1001,12 @@
 
         bindEvents() {
             const form = this.container.querySelector('[data-sn-form]');
-            form.addEventListener('submit', (e) => this.handleVerify(e));
+            // Null-check before adding event listeners to prevent "Cannot read properties of null"
+            if (form) {
+                form.addEventListener('submit', (e) => this.handleVerify(e));
+            } else {
+                console.warn('Scamnemesis: Verify form element not found');
+            }
         }
 
         async handleVerify(e) {
