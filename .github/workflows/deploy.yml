@@ -100,7 +100,16 @@ jobs:
             echo "GOOGLE_CLIENT_SECRET=$(strip_newlines "${GOOGLE_CLIENT_SECRET:-}")" >> .env
             echo "RESEND_API_KEY=$(strip_newlines "${RESEND_API_KEY:-}")" >> .env
             echo "FROM_EMAIL=noreply@scamnemesis.com" >> .env
+            echo "SITE_NAME=ScamNemesis" >> .env
             echo "AUTH_SECRET=$(openssl rand -base64 32)" >> .env
+
+            # Debug: Verify RESEND_API_KEY is set
+            RESEND_KEY_CLEAN=$(strip_newlines "${RESEND_API_KEY:-}")
+            if [ -n "$RESEND_KEY_CLEAN" ]; then
+              echo "✓ RESEND_API_KEY is set (${#RESEND_KEY_CLEAN} chars)"
+            else
+              echo "⚠ WARNING: RESEND_API_KEY is not set (emails will not be sent)"
+            fi
 
             # Sentry configuration for source maps upload
             echo "SENTRY_AUTH_TOKEN=$(strip_newlines "${SENTRY_AUTH_TOKEN:-}")" >> .env
@@ -350,10 +359,29 @@ jobs:
               docker compose -f docker-compose.prod.yml logs traefik --tail=20
             fi
 
+            # ===========================================
+            # EMAIL SERVICE VALIDATION
+            # ===========================================
+            echo "Checking email service configuration..."
+            EMAIL_HEALTH=$(docker compose -f docker-compose.prod.yml exec -T app curl -s http://localhost:3000/api/v1/health/detailed 2>/dev/null | grep -o '"email":{[^}]*}' || echo "")
+            if echo "$EMAIL_HEALTH" | grep -q '"status":"ok"'; then
+              echo "✓ Email service is configured correctly"
+            elif echo "$EMAIL_HEALTH" | grep -q '"status":"not_configured"'; then
+              echo "⚠ WARNING: Email service is NOT configured!"
+              echo "  RESEND_API_KEY might be missing or empty in GitHub Secrets"
+              echo "  Users will NOT receive confirmation emails after report submission"
+              echo ""
+              echo "  To fix: Add RESEND_API_KEY to GitHub Secrets"
+              echo "  Get your key at: https://resend.com/api-keys"
+            else
+              echo "⚠ Could not determine email service status"
+            fi
+
             echo ""
             echo "=========================================="
             echo "DEPLOYMENT COMPLETE!"
             echo "=========================================="
             echo "Domain: https://${DOMAIN_VAL}"
             echo "SSL Status: Check above for certificate validation"
+            echo "Email: Check above for email service status"
             echo ""

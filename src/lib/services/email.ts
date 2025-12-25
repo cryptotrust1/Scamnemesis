@@ -24,12 +24,17 @@ function escapeHtml(text: string): string {
 }
 
 // Initialize Resend client
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const resend = RESEND_API_KEY && RESEND_API_KEY.trim() !== ''
+  ? new Resend(RESEND_API_KEY)
   : null;
+
+// Validate API key format
+const isValidApiKeyFormat = RESEND_API_KEY?.startsWith('re_') ?? false;
 
 // Log email service status at startup
 if (!resend) {
+  console.error('');
   console.error('⚠️  EMAIL SERVICE NOT CONFIGURED ⚠️');
   console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.error('RESEND_API_KEY is not set in environment variables.');
@@ -39,10 +44,23 @@ if (!resend) {
   console.error('1. Sign up for Resend at https://resend.com');
   console.error('2. Get your API key from https://resend.com/api-keys');
   console.error('3. Add RESEND_API_KEY=your_key_here to your .env file');
+  console.error('4. Verify your domain at https://resend.com/domains');
   console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.error('');
 } else {
+  const fromEmail = process.env.FROM_EMAIL || 'noreply@scamnemesis.com';
+  const fromDomain = fromEmail.split('@')[1];
+  console.log('[Email] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('[Email] Resend client initialized successfully');
-  console.log(`[Email] FROM_EMAIL: ${process.env.FROM_EMAIL || 'noreply@scamnemesis.com'}`);
+  console.log(`[Email] API Key: ${RESEND_API_KEY.substring(0, 6)}...${RESEND_API_KEY.substring(RESEND_API_KEY.length - 4)}`);
+  console.log(`[Email] API Key Format: ${isValidApiKeyFormat ? 'OK (starts with re_)' : 'WARNING: Should start with re_'}`);
+  console.log(`[Email] FROM_EMAIL: ${fromEmail}`);
+  console.log(`[Email] FROM_DOMAIN: ${fromDomain}`);
+  console.log(`[Email] SITE_NAME: ${process.env.SITE_NAME || 'ScamNemesis'}`);
+  console.log('[Email] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  if (!isValidApiKeyFormat) {
+    console.warn('[Email] WARNING: API key format looks incorrect. Resend API keys should start with "re_"');
+  }
 }
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@scamnemesis.com';
@@ -67,20 +85,26 @@ export interface SendResult {
  */
 export async function sendEmail(options: EmailOptions): Promise<SendResult> {
   const recipients = Array.isArray(options.to) ? options.to : [options.to];
+  const timestamp = new Date().toISOString();
 
   if (!resend) {
-    console.warn('[Email] Service not configured. Set RESEND_API_KEY to enable.');
+    console.warn(`[Email] [${timestamp}] Service not configured. Set RESEND_API_KEY to enable.`);
     console.warn(`[Email] Would have sent to: ${recipients.join(', ')}`);
     console.warn(`[Email] Subject: ${options.subject}`);
-    return { success: false, error: 'Email service not configured' };
+    return { success: false, error: 'Email service not configured. RESEND_API_KEY is missing or empty.' };
+  }
+
+  // Validate API key format
+  if (!isValidApiKeyFormat) {
+    console.warn(`[Email] [${timestamp}] API key format warning: Key should start with "re_"`);
   }
 
   const fromAddress = `${SITE_NAME} <${FROM_EMAIL}>`;
 
-  console.log(`[Email] Sending email...`);
-  console.log(`[Email]   From: ${fromAddress}`);
-  console.log(`[Email]   To: ${recipients.join(', ')}`);
-  console.log(`[Email]   Subject: ${options.subject}`);
+  console.log(`[Email] [${timestamp}] ━━━━━━━━━━ Sending Email ━━━━━━━━━━`);
+  console.log(`[Email] From: ${fromAddress}`);
+  console.log(`[Email] To: ${recipients.join(', ')}`);
+  console.log(`[Email] Subject: ${options.subject}`);
 
   try {
     const result = await resend.emails.send({
@@ -92,25 +116,61 @@ export async function sendEmail(options: EmailOptions): Promise<SendResult> {
     });
 
     if (result.error) {
-      console.error('[Email] Resend API error:', result.error);
+      console.error(`[Email] [${timestamp}] Resend API Error:`, JSON.stringify(result.error, null, 2));
+      console.error(`[Email] Error Name: ${result.error.name}`);
+      console.error(`[Email] Error Message: ${result.error.message}`);
+
+      // Provide more specific error messages
+      let errorMessage = result.error.message || 'Resend API error';
+      if (result.error.message?.includes('domain')) {
+        errorMessage = `Domain verification issue: ${result.error.message}. Please verify your domain at https://resend.com/domains`;
+      } else if (result.error.message?.includes('API key')) {
+        errorMessage = `API key issue: ${result.error.message}. Check your RESEND_API_KEY`;
+      } else if (result.error.message?.includes('rate')) {
+        errorMessage = `Rate limit exceeded: ${result.error.message}`;
+      }
+
       return {
         success: false,
-        error: result.error.message || 'Resend API error',
+        error: errorMessage,
       };
     }
 
-    console.log(`[Email] Successfully sent! Message ID: ${result.data?.id}`);
+    console.log(`[Email] [${timestamp}] ✓ Successfully sent!`);
+    console.log(`[Email] Message ID: ${result.data?.id}`);
+    console.log(`[Email] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+
     return { success: true, messageId: result.data?.id };
   } catch (error) {
-    console.error('[Email] Failed to send email:', error);
+    console.error(`[Email] [${timestamp}] ━━━━━━ SEND FAILED ━━━━━━`);
+    console.error(`[Email] To: ${recipients.join(', ')}`);
+    console.error(`[Email] Subject: ${options.subject}`);
+
     if (error instanceof Error) {
-      console.error('[Email] Error name:', error.name);
-      console.error('[Email] Error message:', error.message);
-      console.error('[Email] Error stack:', error.stack);
+      console.error(`[Email] Error Type: ${error.name}`);
+      console.error(`[Email] Error Message: ${error.message}`);
+      console.error(`[Email] Stack Trace:`, error.stack);
+
+      // Check for common error patterns
+      let friendlyError = error.message;
+      if (error.message.includes('fetch')) {
+        friendlyError = 'Network error connecting to Resend API. Check internet connectivity.';
+      } else if (error.message.includes('timeout')) {
+        friendlyError = 'Timeout connecting to Resend API. The service might be temporarily unavailable.';
+      } else if (error.message.includes('ENOTFOUND')) {
+        friendlyError = 'DNS resolution failed for Resend API. Check network configuration.';
+      }
+
+      return {
+        success: false,
+        error: friendlyError,
+      };
     }
+
+    console.error(`[Email] Unknown Error:`, error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to send email',
+      error: 'Failed to send email: Unknown error',
     };
   }
 }
