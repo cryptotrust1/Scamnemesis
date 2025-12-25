@@ -19,7 +19,9 @@ interface TurnstileProps {
   size?: 'normal' | 'compact' | 'invisible';
 }
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Test key
+// IMPORTANT: Site key MUST be set during Docker build via NEXT_PUBLIC_TURNSTILE_SITE_KEY
+// Do NOT use test key fallback in production - it causes "invalid domain" errors
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
 
 export const TurnstileCaptcha = forwardRef<TurnstileRef, TurnstileProps>(
   ({ onSuccess, onError, onExpire, className, theme = 'auto', size = 'normal' }, ref) => {
@@ -54,8 +56,23 @@ export const TurnstileCaptcha = forwardRef<TurnstileRef, TurnstileProps>(
       onExpire?.();
     };
 
-    // Use test key for development
     const siteKey = SITE_KEY;
+
+    // If no site key configured, show warning (will cause "invalid domain" error otherwise)
+    if (!siteKey) {
+      console.error('[Turnstile] NEXT_PUBLIC_TURNSTILE_SITE_KEY is not configured');
+      return (
+        <div className={cn('space-y-2', className)}>
+          <div className="flex items-center gap-2 text-sm text-amber-600 mb-2">
+            <AlertCircle className="h-4 w-4" />
+            <span>CAPTCHA nie je nakonfigurovaná</span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Kontaktujte administrátora stránky.
+          </p>
+        </div>
+      );
+    }
 
     if (size === 'invisible') {
       return (
