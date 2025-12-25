@@ -51,7 +51,8 @@ export function setAuthCookies(
     response.cookies.set('refresh_token', refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: TOKEN_EXPIRY.REFRESH_TOKEN,
-      path: '/api/v1/auth', // Restrict to auth endpoints only
+      // Use same path as access token to ensure cookie is available for all routes
+      // Previously restricted to '/api/v1/auth' which caused issues after login
     });
   }
 }
@@ -69,11 +70,10 @@ export function clearAuthCookies(response: NextResponse): void {
     maxAge: 0,
   });
 
-  // Clear refresh token
+  // Clear refresh token (use same path as when setting)
   response.cookies.set('refresh_token', '', {
     ...COOKIE_OPTIONS,
     maxAge: 0,
-    path: '/api/v1/auth',
   });
 }
 

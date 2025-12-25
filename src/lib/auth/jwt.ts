@@ -395,21 +395,45 @@ export async function verifySpecialToken(
   token: string,
   expectedType: 'email_verification' | 'password_reset'
 ): Promise<{ sub: string; email: string; type: string } | null> {
+  const tokenPreview = token ? `${token.substring(0, 20)}...` : 'empty';
+
   try {
     const { payload } = await jwtVerify(token, getJwtSecret(), {
       issuer: JWT_ISSUER,
     });
 
     if (payload.type !== expectedType) {
+      console.warn(`[JWT] Token type mismatch: expected ${expectedType}, got ${payload.type}`, { tokenPreview });
       return null;
     }
+
+    console.log(`[JWT] Special token verified successfully`, {
+      type: expectedType,
+      sub: payload.sub,
+      exp: payload.exp ? new Date(payload.exp * 1000).toISOString() : 'none'
+    });
 
     return {
       sub: payload.sub as string,
       email: payload.email as string,
       type: payload.type as string,
     };
-  } catch {
+  } catch (error) {
+    // Log detailed error for debugging
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      if (errorMessage.includes('expired')) {
+        console.warn(`[JWT] Token expired`, { tokenPreview, expectedType });
+      } else if (errorMessage.includes('signature')) {
+        console.warn(`[JWT] Invalid signature`, { tokenPreview, expectedType });
+      } else if (errorMessage.includes('malformed')) {
+        console.warn(`[JWT] Malformed token`, { tokenPreview, expectedType });
+      } else {
+        console.warn(`[JWT] Verification failed: ${error.message}`, { tokenPreview, expectedType });
+      }
+    } else {
+      console.warn(`[JWT] Unknown verification error`, { tokenPreview, expectedType, error });
+    }
     return null;
   }
 }
