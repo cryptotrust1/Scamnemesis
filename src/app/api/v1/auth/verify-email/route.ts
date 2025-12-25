@@ -81,6 +81,18 @@ export async function POST(request: NextRequest) {
 
     const userId = payload.sub;
 
+    // Validate userId exists
+    if (!userId) {
+      console.error('[VerifyEmail] Token payload missing sub (userId)');
+      return NextResponse.json(
+        {
+          error: 'invalid_token',
+          message: 'Invalid verification token. Please request a new verification email.',
+        },
+        { status: 400 }
+      );
+    }
+
     // Find user
     const user = await prisma.user.findUnique({
       where: { id: userId },
