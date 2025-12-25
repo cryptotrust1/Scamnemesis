@@ -167,6 +167,16 @@ services:
         - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN:-}
         - SENTRY_ORG=${SENTRY_ORG:-m0ne-sro}
         - SENTRY_PROJECT=${SENTRY_PROJECT:-scamnemesis}
+        # =====================================================================
+        # CRITICAL: NEXT_PUBLIC_* must be passed as BUILD ARGS, not just ENV!
+        # Next.js embeds these at build time into the JavaScript bundle.
+        # =====================================================================
+        - NEXT_PUBLIC_API_URL=https://${DOMAIN:-localhost}
+        - NEXT_PUBLIC_DOMAIN=${DOMAIN:-localhost}
+        - NEXT_PUBLIC_SITE_URL=https://${DOMAIN:-localhost}
+        - NEXT_PUBLIC_GOOGLE_ENABLED=${NEXT_PUBLIC_GOOGLE_ENABLED:-false}
+        - NEXT_PUBLIC_GITHUB_ENABLED=${NEXT_PUBLIC_GITHUB_ENABLED:-false}
+        - NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
     container_name: scamnemesis-app
     restart: always
     logging: *default-logging
