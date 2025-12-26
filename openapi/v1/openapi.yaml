@@ -59,6 +59,11 @@ tags:
     description: Media file management
   - name: Stats
     description: Public statistics
+  - name: Partner API
+    description: |
+      Partner API for external integrations. Provides read-only access to approved
+      fraud reports with masked sensitive data. Requires API key authentication
+      with appropriate scopes (reports:read, search:read, stats:read).
   - name: Contact
     description: Contact form
   - name: Webhooks
@@ -863,6 +868,125 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatsResponse'
+
+  # ============ PARTNER API ============
+  /partner/reports:
+    get:
+      tags: [Partner API]
+      summary: List fraud reports (Partner)
+      description: |
+        Get paginated list of approved fraud reports for partners.
+        All sensitive data (emails, phones, IBANs, names) is masked.
+        Requires API key with `reports:read` scope.
+      operationId: partnerListReports
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/fraudType'
+        - $ref: '#/components/parameters/country'
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - name: min_loss
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: max_loss
+          in: query
+          schema:
+            type: number
+            minimum: 0
+      responses:
+        '200':
+          description: List of masked fraud reports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerReportListResponse'
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Total number of reports
+            X-Data-Masked:
+              schema:
+                type: string
+              description: Indicates data is masked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /partner/search:
+    get:
+      tags: [Partner API]
+      summary: Search fraud reports (Partner)
+      description: |
+        Search for fraud reports by email, phone, IBAN, website, or name.
+        All sensitive data is masked. Requires API key with `search:read` scope.
+      operationId: partnerSearchReports
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 200
+          description: Search query (minimum 3 characters)
+        - name: field
+          in: query
+          schema:
+            type: string
+            enum: [email, phone, iban, website, name, all]
+            default: all
+          description: Field to search in
+        - $ref: '#/components/parameters/fraudType'
+        - $ref: '#/components/parameters/country'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: Search results with masked data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerSearchResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /partner/stats:
+    get:
+      tags: [Partner API]
+      summary: Get fraud statistics (Partner)
+      description: |
+        Get aggregated statistics about fraud reports.
+        Includes totals, trends, and breakdowns by type and country.
+        Requires API key with `stats:read` scope.
+      operationId: partnerGetStats
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Aggregated statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerStatsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 
   # ============ EVIDENCE ============
   /evidence/upload:
@@ -2814,6 +2938,222 @@ components:
           type: integer
         pageSize:
           type: integer
+
+    # ============ PARTNER API SCHEMAS ============
+    PartnerMaskedPerpetrator:
+      type: object
+      description: Masked perpetrator data for partner access
+      properties:
+        name:
+          type: string
+          description: Masked name (e.g., "J*** D***")
+          nullable: true
+        email:
+          type: string
+          description: Masked email (e.g., "s***@example.com")
+          nullable: true
+        phone:
+          type: string
+          description: Masked phone (e.g., "+421***123")
+          nullable: true
+        iban:
+          type: string
+          description: Masked IBAN (e.g., "SK89***5678")
+          nullable: true
+        website:
+          type: string
+          description: Full website URL (public data)
+          nullable: true
+        social_media:
+          type: object
+          nullable: true
+
+    PartnerReport:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Public report ID
+        fraud_type:
+          type: string
+          enum: [INVESTMENT, PHISHING, ROMANCE, SHOPPING, EMPLOYMENT, TECH_SUPPORT, LOTTERY, ADVANCE_FEE, CRYPTOCURRENCY, OTHER]
+        status:
+          type: string
+          enum: [APPROVED, VERIFIED]
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+        currency:
+          type: string
+          nullable: true
+        financial_loss:
+          type: number
+          nullable: true
+        description:
+          type: string
+          description: Truncated description (max 500 chars)
+          nullable: true
+        perpetrator:
+          $ref: '#/components/schemas/PartnerMaskedPerpetrator'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PartnerReportListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnerReport'
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            limit:
+              type: integer
+            offset:
+              type: integer
+            has_more:
+              type: boolean
+        meta:
+          type: object
+          properties:
+            data_masked:
+              type: boolean
+              description: Indicates sensitive data is masked
+            note:
+              type: string
+
+    PartnerSearchResponse:
+      type: object
+      properties:
+        query:
+          type: object
+          properties:
+            term:
+              type: string
+            field:
+              type: string
+            fraud_type:
+              type: string
+              nullable: true
+            country:
+              type: string
+              nullable: true
+        results:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/PartnerReport'
+              - type: object
+                properties:
+                  match_score:
+                    type: number
+                    description: Relevance score (0-1)
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            limit:
+              type: integer
+            offset:
+              type: integer
+            has_more:
+              type: boolean
+        meta:
+          type: object
+          properties:
+            data_masked:
+              type: boolean
+            note:
+              type: string
+
+    PartnerStatsResponse:
+      type: object
+      properties:
+        overview:
+          type: object
+          properties:
+            total_reports:
+              type: integer
+            reports_last_30_days:
+              type: integer
+            reports_with_financial_data:
+              type: integer
+        financial_impact:
+          type: object
+          properties:
+            total_loss:
+              type: number
+            average_loss:
+              type: number
+            highest_loss:
+              type: number
+            currency:
+              type: string
+        by_fraud_type:
+          type: array
+          items:
+            type: object
+            properties:
+              fraud_type:
+                type: string
+              count:
+                type: integer
+              percentage:
+                type: number
+        by_country:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              count:
+                type: integer
+        monthly_trend:
+          type: array
+          items:
+            type: object
+            properties:
+              month:
+                type: string
+              count:
+                type: integer
+        top_fraud_types_by_loss:
+          type: array
+          items:
+            type: object
+            properties:
+              fraud_type:
+                type: string
+              total_loss:
+                type: number
+              report_count:
+                type: integer
+        meta:
+          type: object
+          properties:
+            generated_at:
+              type: string
+              format: date-time
+            data_period:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: date-time
+                to:
+                  type: string
+                  format: date-time
+            note:
+              type: string
 
   responses:
     Unauthorized:
