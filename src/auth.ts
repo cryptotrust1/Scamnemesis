@@ -131,8 +131,10 @@ export const authConfig: NextAuthConfig = {
         }
 
         // For OAuth providers, handle account linking and check user status
+        // CRITICAL: Lowercase email to match how emails are stored in database
+        // OAuth providers may return mixed-case emails which would fail lookup
         const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! },
+          where: { email: user.email!.toLowerCase() },
           include: {
             accounts: true,
           },
