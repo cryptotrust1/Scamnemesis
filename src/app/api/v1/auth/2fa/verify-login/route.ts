@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { verifyTOTP, verifyBackupCode } from '@/lib/auth/totp';
-import { verify2FATempToken, getJwtSecret } from '@/lib/auth/jwt';
+import { verify2FATempToken, generateAccessToken, generateRefreshToken, getScopesForRole } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
+import { setAuthCookies } from '@/lib/auth/cookies';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,41 +128,41 @@ export async function POST(request: NextRequest) {
       data: { lastLoginAt: new Date() },
     });
 
-    // Generate full JWT token using secure secret from environment
-    const scopes = getDefaultScopes(user.role);
-    const token = await new SignJWT({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      scopes,
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('24h')
-      .sign(getJwtSecret());
+    // Generate tokens using the centralized JWT functions
+    const scopes = getScopesForRole(user.role);
+    const accessToken = await generateAccessToken(user.id, user.email, user.role, scopes);
+    const refreshToken = await generateRefreshToken(user.id);
 
-    // Create response with cookie
+    // Store refresh token in database
+    await prisma.refreshToken.create({
+      data: {
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
+    });
+
+    // Create response with user info
     const response = NextResponse.json({
+      token_type: 'Bearer',
+      expires_in: 3600,
+      scopes,
       user: {
         id: user.id,
         email: user.email,
         display_name: user.displayName,
-        role: user.role.toLowerCase(),
-        scopes,
+        role: user.role,
       },
-      token,
       message: 'Login successful',
       backup_codes_remaining: is_backup_code ? user.backupCodes.length - 1 : undefined,
+      // Legacy: Include tokens in response body for API clients
+      access_token: accessToken,
+      refresh_token: refreshToken,
     });
 
-    // Set HttpOnly cookie
-    response.cookies.set('auth_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 86400, // 24 hours
-      path: '/',
-    });
+    // CRITICAL FIX: Use centralized setAuthCookies to set 'access_token' cookie
+    // Previously this was setting 'auth_token' which middleware couldn't find
+    setAuthCookies(response, accessToken, refreshToken);
 
     return response;
   } catch (error) {
@@ -171,22 +171,5 @@ export async function POST(request: NextRequest) {
       { error: 'internal_error', message: 'Failed to verify 2FA' },
       { status: 500 }
     );
-  }
-}
-
-function getDefaultScopes(role: string): string[] {
-  switch (role) {
-    case 'SUPER_ADMIN':
-      return ['*'];
-    case 'ADMIN':
-      return ['admin:read', 'admin:edit', 'report:read', 'report:write', 'comment:create'];
-    case 'MODERATOR':
-      return ['admin:read', 'report:read', 'report:write', 'comment:create'];
-    case 'GOLD':
-      return ['report:read', 'report:write', 'comment:create', 'premium:read'];
-    case 'STANDARD':
-      return ['report:read', 'report:write', 'comment:create'];
-    default:
-      return ['report:read', 'report:create'];
   }
 }
