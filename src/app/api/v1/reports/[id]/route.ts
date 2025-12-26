@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createHash } from 'crypto';
 import { prisma } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { Prisma, FraudType } from '@prisma/client';
 import { getAuthContext } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
@@ -556,7 +556,7 @@ export async function PATCH(
       updateData.description = validated.data.description;
     }
     if (validated.data.fraud_type !== undefined) {
-      updateData.fraudType = validated.data.fraud_type;
+      updateData.fraudType = validated.data.fraud_type as FraudType;
     }
 
     // Update the report
