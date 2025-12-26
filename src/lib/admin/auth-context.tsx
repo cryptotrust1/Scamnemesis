@@ -10,11 +10,23 @@ interface AdminUser {
   scopes: string[];
 }
 
+interface TwoFactorRequired {
+  requires2FA: true;
+  tempToken: string;
+}
+
+interface LoginResult {
+  success: boolean;
+  error?: string;
+  twoFactorRequired?: TwoFactorRequired;
+}
+
 interface AuthContextType {
   user: AdminUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string, captchaToken?: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string, captchaToken?: string) => Promise<LoginResult>;
+  verify2FA: (tempToken: string, code: string, isBackupCode?: boolean) => Promise<LoginResult>;
   logout: () => void;
   hasScope: (scope: string) => boolean;
 }
@@ -77,7 +89,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = useCallback(async (email: string, password: string, captchaToken?: string) => {
+  const login = useCallback(async (email: string, password: string, captchaToken?: string): Promise<LoginResult> => {
     try {
       const response = await fetch('/api/v1/auth/token', {
         method: 'POST',
@@ -97,6 +109,17 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
       if (!response.ok) {
         return { success: false, error: data.message || 'Prihlásenie zlyhalo' };
+      }
+
+      // Check if 2FA is required
+      if (data.requires_2fa && data.temp_token) {
+        return {
+          success: false,
+          twoFactorRequired: {
+            requires2FA: true,
+            tempToken: data.temp_token,
+          },
+        };
       }
 
       // Check if user has admin privileges
@@ -136,6 +159,56 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const verify2FA = useCallback(async (tempToken: string, code: string, isBackupCode = false): Promise<LoginResult> => {
+    try {
+      const response = await fetch('/api/v1/auth/2fa/verify-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          temp_token: tempToken,
+          code,
+          is_backup_code: isBackupCode,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.message || 'Overenie zlyhalo' };
+      }
+
+      // Check if user has admin privileges
+      const hasAdminAccess = data.user?.scopes?.some(
+        (s: string) => s === '*' || s.startsWith('admin:')
+      );
+
+      if (!hasAdminAccess) {
+        // Logout to clear the cookies since this user doesn't have admin access
+        await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+        return { success: false, error: 'Nemáte oprávnenia pre admin prístup' };
+      }
+
+      const adminUser: AdminUser = {
+        id: data.user.id,
+        email: data.user.email,
+        role: data.user.role?.toUpperCase() || 'BASIC',
+        scopes: data.user.scopes,
+      };
+
+      // Store user info in state and localStorage
+      setUser(adminUser);
+      localStorage.setItem(USER_KEY, JSON.stringify(adminUser));
+
+      return { success: true };
+    } catch (error) {
+      console.error('2FA verification error:', error);
+      return { success: false, error: 'Chyba pripojenia k serveru' };
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     // Clear local state
     setUser(null);
@@ -167,6 +240,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     // User is authenticated if we have user info (tokens are in HttpOnly cookies)
     isAuthenticated: !!user,
     login,
+    verify2FA,
     logout,
     hasScope,
   };
