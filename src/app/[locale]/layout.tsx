@@ -4,6 +4,8 @@ import '../globals.css';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/layout';
 import { I18nProvider } from '@/lib/i18n/context';
+import { Providers } from '@/components/providers';
+import { Toaster } from '@/components/ui/toaster';
 
 // Use system font stack for reliability - avoids build failures due to font fetch issues
 const fontClass = 'font-sans';
@@ -118,12 +120,15 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${fontClass} antialiased`}>
-        <I18nProvider initialLocale={locale as 'sk' | 'en' | 'cs' | 'de'}>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </I18nProvider>
+      <body className={`${fontClass} antialiased min-h-screen flex flex-col`}>
+        <Providers>
+          <I18nProvider initialLocale={locale as 'sk' | 'en' | 'cs' | 'de'}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <Toaster />
+          </I18nProvider>
+        </Providers>
       </body>
     </html>
   );

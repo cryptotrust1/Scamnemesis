@@ -19,6 +19,14 @@ interface EmailVerificationState {
   isResending: boolean;
 }
 
+interface TwoFactorState {
+  required: boolean;
+  tempToken: string;
+  code: string;
+  useBackupCode: boolean;
+  isVerifying: boolean;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,6 +45,13 @@ export default function LoginPage() {
     needsVerification: false,
     email: '',
     isResending: false,
+  });
+  const [twoFactor, setTwoFactor] = useState<TwoFactorState>({
+    required: false,
+    tempToken: '',
+    code: '',
+    useBackupCode: false,
+    isVerifying: false,
   });
 
   const handleResendVerification = async () => {
@@ -83,21 +98,32 @@ export default function LoginPage() {
         }),
       });
 
-      if (response.ok) {
-        toast.success('Successfully signed in!');
-        router.push(callbackUrl);
-      } else {
-        const error = await response.json();
+      const data = await response.json();
 
+      if (response.ok) {
+        // Check if 2FA is required
+        if (data.requires_2fa) {
+          setTwoFactor({
+            required: true,
+            tempToken: data.temp_token,
+            code: '',
+            useBackupCode: false,
+            isVerifying: false,
+          });
+        } else {
+          toast.success('Successfully signed in!');
+          router.push(callbackUrl);
+        }
+      } else {
         // Handle email not verified error
-        if (error.error === 'email_not_verified') {
+        if (data.error === 'email_not_verified') {
           setEmailVerification({
             needsVerification: true,
-            email: error.email || formData.email,
+            email: data.email || formData.email,
             isResending: false,
           });
         } else {
-          toast.error(error.message || 'Invalid credentials');
+          toast.error(data.message || 'Invalid credentials');
         }
 
         captchaRef.current?.reset();
@@ -124,6 +150,57 @@ export default function LoginPage() {
     }
   };
 
+  const handleTwoFactorVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!twoFactor.code || twoFactor.code.length < 6) {
+      toast.error('Please enter a valid code');
+      return;
+    }
+
+    setTwoFactor(prev => ({ ...prev, isVerifying: true }));
+
+    try {
+      const response = await fetch('/api/v1/auth/2fa/verify-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          temp_token: twoFactor.tempToken,
+          code: twoFactor.code,
+          is_backup_code: twoFactor.useBackupCode,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.backup_codes_remaining !== undefined && data.backup_codes_remaining < 3) {
+          toast.warning(`Only ${data.backup_codes_remaining} backup codes remaining. Consider generating new ones.`);
+        }
+        toast.success('Successfully signed in!');
+        router.push(callbackUrl);
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Invalid verification code');
+        setTwoFactor(prev => ({ ...prev, code: '' }));
+      }
+    } catch (error) {
+      console.error('[Login] 2FA error:', error);
+      toast.error('Verification failed. Please try again.');
+    } finally {
+      setTwoFactor(prev => ({ ...prev, isVerifying: false }));
+    }
+  };
+
+  const handleCancelTwoFactor = () => {
+    setTwoFactor({
+      required: false,
+      tempToken: '',
+      code: '',
+      useBackupCode: false,
+      isVerifying: false,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Background decoration */}
@@ -148,33 +225,106 @@ export default function LoginPage() {
 
           {/* Form */}
           <div className="p-8">
-            {/* Email Verification Warning */}
-            {emailVerification.needsVerification && (
-              <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-amber-800 mb-1">
-                      Email Not Verified
-                    </h3>
-                    <p className="text-sm text-amber-700 mb-3">
-                      Please verify your email address before signing in.
-                      Check your inbox ({emailVerification.email}) and click the verification link.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleResendVerification}
-                      disabled={emailVerification.isResending}
-                      className="text-sm font-medium text-amber-700 hover:text-amber-800 underline disabled:opacity-50"
-                    >
-                      {emailVerification.isResending ? 'Sending...' : 'Resend verification email'}
-                    </button>
+            {/* Two-Factor Authentication Form */}
+            {twoFactor.required ? (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-4">
+                    <Shield className="h-6 w-6 text-blue-600" />
                   </div>
+                  <h2 className="text-lg font-semibold text-slate-900 mb-2">
+                    Two-Factor Authentication
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    {twoFactor.useBackupCode
+                      ? 'Enter one of your backup codes'
+                      : 'Enter the 6-digit code from your authenticator app'}
+                  </p>
+                </div>
+
+                <form onSubmit={handleTwoFactorVerify} className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      maxLength={twoFactor.useBackupCode ? 9 : 6}
+                      value={twoFactor.code}
+                      onChange={(e) => setTwoFactor(prev => ({
+                        ...prev,
+                        code: twoFactor.useBackupCode
+                          ? e.target.value.toUpperCase()
+                          : e.target.value.replace(/\D/g, '')
+                      }))}
+                      placeholder={twoFactor.useBackupCode ? 'XXXX-XXXX' : '000000'}
+                      className="w-full text-center text-2xl font-mono tracking-widest py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      autoFocus
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={twoFactor.isVerifying || twoFactor.code.length < 6}
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {twoFactor.isVerifying ? (
+                      <>
+                        <span className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Verifying...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Verify</span>
+                        <ArrowRight className="h-5 w-5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="flex flex-col items-center gap-3 pt-4 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setTwoFactor(prev => ({ ...prev, useBackupCode: !prev.useBackupCode, code: '' }))}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    {twoFactor.useBackupCode ? 'Use authenticator app instead' : 'Use backup code instead'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelTwoFactor}
+                    className="text-sm text-slate-500 hover:text-slate-700"
+                  >
+                    Cancel and go back
+                  </button>
                 </div>
               </div>
-            )}
+            ) : (
+              <>
+                {/* Email Verification Warning */}
+                {emailVerification.needsVerification && (
+                  <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-amber-800 mb-1">
+                          Email Not Verified
+                        </h3>
+                        <p className="text-sm text-amber-700 mb-3">
+                          Please verify your email address before signing in.
+                          Check your inbox ({emailVerification.email}) and click the verification link.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleResendVerification}
+                          disabled={emailVerification.isResending}
+                          className="text-sm font-medium text-amber-700 hover:text-amber-800 underline disabled:opacity-50"
+                        >
+                          {emailVerification.isResending ? 'Sending...' : 'Resend verification email'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
@@ -314,6 +464,8 @@ export default function LoginPage() {
                   </button>
                 )}
               </div>
+            )}
+              </>
             )}
           </div>
 

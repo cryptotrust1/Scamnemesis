@@ -208,6 +208,8 @@ export async function GET(
             id: true,
             type: true,
             url: true,
+            fileKey: true,
+            externalUrl: true,
             thumbnailUrl: true,
             description: true,
           },
@@ -330,12 +332,25 @@ export async function GET(
       } : null,
 
       // Evidence (images, documents)
-      evidence: report.evidence.map(e => ({
-        id: e.id,
-        type: e.type.toLowerCase(),
-        thumbnail_url: e.thumbnailUrl,
-        description: e.description,
-      })),
+      evidence: report.evidence.map(e => {
+        // Generate file URL from fileKey if available
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+        let file_url = e.url || e.externalUrl || '';
+
+        if (e.fileKey && !file_url) {
+          file_url = siteUrl
+            ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`
+            : `/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`;
+        }
+
+        return {
+          id: e.id,
+          type: e.type.toLowerCase(),
+          file_url,
+          thumbnail_url: e.thumbnailUrl || file_url,
+          description: e.description,
+        };
+      }),
 
       // Approved comments
       comments: report.comments.map(c => ({
@@ -442,6 +457,165 @@ export async function POST(
     console.error('Error creating comment:', error);
     return NextResponse.json(
       { error: 'internal_error', message: 'Failed to create comment' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /reports/:id - Update user's own report
+const UpdateReportSchema = z.object({
+  summary: z.string().min(10).max(500).optional(),
+  description: z.string().max(5000).optional(),
+  fraud_type: z.enum([
+    'INVESTMENT_FRAUD', 'ROMANCE_SCAM', 'PHISHING', 'IDENTITY_THEFT',
+    'ONLINE_SHOPPING_FRAUD', 'CRYPTOCURRENCY_SCAM', 'EMPLOYMENT_SCAM',
+    'TECH_SUPPORT_SCAM', 'LOTTERY_SCAM', 'ADVANCE_FEE_FRAUD',
+    'CHARITY_SCAM', 'RENTAL_SCAM', 'PYRAMID_SCHEME', 'OTHER'
+  ]).optional(),
+});
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: RouteParams
+) {
+  const { id } = await params;
+
+  // Get authentication context - required for editing
+  const auth = await getAuthContext(request);
+  const userId = auth.user?.sub || auth.apiKey?.userId;
+
+  if (!userId) {
+    return NextResponse.json(
+      { error: 'unauthorized', message: 'Authentication required to edit reports' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    // Parse and validate request body
+    const body = await request.json();
+    const validated = UpdateReportSchema.safeParse(body);
+
+    if (!validated.success) {
+      return NextResponse.json(
+        { error: 'validation_error', message: validated.error.message },
+        { status: 400 }
+      );
+    }
+
+    // Find the report and verify ownership
+    const report = await prisma.report.findFirst({
+      where: {
+        OR: [{ id }, { publicId: id }],
+      },
+      select: {
+        id: true,
+        reporterId: true,
+        status: true,
+        summary: true,
+        description: true,
+        fraudType: true,
+      },
+    });
+
+    if (!report) {
+      return NextResponse.json(
+        { error: 'not_found', message: 'Report not found' },
+        { status: 404 }
+      );
+    }
+
+    // Check if user is admin or owns this report
+    const isAdmin = auth.scopes.some(s => s === '*' || s.startsWith('admin:'));
+
+    if (!isAdmin && report.reporterId !== userId) {
+      return NextResponse.json(
+        { error: 'forbidden', message: 'You can only edit your own reports' },
+        { status: 403 }
+      );
+    }
+
+    // Only allow editing of PENDING or APPROVED reports
+    if (!['PENDING', 'APPROVED'].includes(report.status)) {
+      return NextResponse.json(
+        { error: 'forbidden', message: 'This report cannot be edited in its current status' },
+        { status: 403 }
+      );
+    }
+
+    // Build update data
+    const updateData: {
+      summary?: string;
+      description?: string;
+      fraudType?: string;
+      updatedAt: Date;
+    } = {
+      updatedAt: new Date(),
+    };
+
+    if (validated.data.summary !== undefined) {
+      updateData.summary = validated.data.summary;
+    }
+    if (validated.data.description !== undefined) {
+      updateData.description = validated.data.description;
+    }
+    if (validated.data.fraud_type !== undefined) {
+      updateData.fraudType = validated.data.fraud_type;
+    }
+
+    // Update the report
+    const updatedReport = await prisma.report.update({
+      where: { id: report.id },
+      data: updateData,
+      select: {
+        id: true,
+        publicId: true,
+        summary: true,
+        description: true,
+        fraudType: true,
+        status: true,
+        updatedAt: true,
+      },
+    });
+
+    // Create audit log entry
+    await prisma.auditLog.create({
+      data: {
+        action: isAdmin ? 'REPORT_UPDATED_BY_ADMIN' : 'REPORT_UPDATED_BY_OWNER',
+        entityType: 'Report',
+        entityId: report.id,
+        userId: userId,
+        changes: {
+          before: {
+            summary: report.summary,
+            description: report.description,
+            fraudType: report.fraudType,
+          },
+          after: {
+            summary: updatedReport.summary,
+            description: updatedReport.description,
+            fraudType: updatedReport.fraudType,
+          },
+          editedByAdmin: isAdmin,
+        },
+        ipAddress: request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip'),
+      },
+    });
+
+    return NextResponse.json({
+      id: updatedReport.id,
+      public_id: updatedReport.publicId,
+      summary: updatedReport.summary,
+      description: updatedReport.description,
+      fraud_type: updatedReport.fraudType?.toLowerCase(),
+      status: updatedReport.status.toLowerCase(),
+      updated_at: updatedReport.updatedAt.toISOString(),
+      message: 'Report updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating report:', error);
+    return NextResponse.json(
+      { error: 'internal_error', message: 'Failed to update report' },
       { status: 500 }
     );
   }

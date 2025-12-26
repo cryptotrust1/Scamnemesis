@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User, Mail, Shield, Calendar, CheckCircle, AlertCircle, Save, Loader2, FileText, Lock, Eye, EyeOff, Key, Check } from 'lucide-react';
 import { useUser, useRequireAuth } from '@/lib/auth/user-context';
 import { toast } from 'sonner';
+import { TwoFactorSection } from '@/components/auth/TwoFactorSection';
 
 const passwordRequirements = [
   { label: 'At least 9 characters', test: (pwd: string) => pwd.length >= 9 },
@@ -35,12 +36,31 @@ export default function ProfilePage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
+  // 2FA state
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
+
+  // Fetch 2FA status
+  const fetch2FAStatus = async () => {
+    try {
+      const response = await fetch('/api/v1/auth/2fa/status', {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIs2FAEnabled(data.enabled);
+      }
+    } catch (error) {
+      console.error('Error fetching 2FA status:', error);
+    }
+  };
+
   // Load user data into form
   useEffect(() => {
     if (user) {
       setDisplayName(user.displayName || '');
       setName(user.name || '');
       setBio(user.bio || '');
+      fetch2FAStatus();
     }
   }, [user]);
 
@@ -542,6 +562,14 @@ export default function ProfilePage() {
               </button>
             </form>
           )}
+        </div>
+
+        {/* Two-Factor Authentication Section */}
+        <div className="mt-8">
+          <TwoFactorSection
+            isEnabled={is2FAEnabled}
+            onStatusChange={fetch2FAStatus}
+          />
         </div>
 
         {/* Danger Zone */}

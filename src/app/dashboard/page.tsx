@@ -11,6 +11,7 @@ import {
   Shield,
   Plus,
   Eye,
+  Pencil,
   Clock,
   CheckCircle,
   XCircle,
@@ -347,28 +348,45 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {reports.map((report) => (
-                  <div
-                    key={report.id}
-                    className="flex items-center justify-between p-4 rounded-lg border"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{report.title}</p>
-                      <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                        <span>{new Date(report.createdAt).toLocaleDateString('en-US')}</span>
-                        <Badge variant="outline">{report.fraudType}</Badge>
+                {reports.map((report) => {
+                  // Safe date parsing
+                  const createdDate = report.createdAt ? new Date(report.createdAt) : null;
+                  const dateStr = createdDate && !isNaN(createdDate.getTime())
+                    ? createdDate.toLocaleDateString('en-US')
+                    : 'Unknown date';
+                  // Only allow editing for PENDING or APPROVED reports
+                  const canEdit = ['PENDING', 'APPROVED'].includes(report.status);
+
+                  return (
+                    <div
+                      key={report.id}
+                      className="flex items-center justify-between p-4 rounded-lg border"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{report.title}</p>
+                        <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                          <span>{dateStr}</span>
+                          <Badge variant="outline">{report.fraudType}</Badge>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        {getStatusBadge(report.status)}
+                        {canEdit && (
+                          <Button variant="ghost" size="icon" asChild title="Edit report">
+                            <Link href={`/dashboard/reports/${report.publicId || report.id}/edit`}>
+                              <Pencil className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="icon" asChild title="View report">
+                          <Link href={`/reports/${report.publicId || report.id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 ml-4">
-                      {getStatusBadge(report.status)}
-                      <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/reports/${report.publicId || report.id}`}>
-                          <Eye className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>

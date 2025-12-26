@@ -42,7 +42,27 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           const parsedUser = JSON.parse(storedUser);
           // Verify user has admin privileges from cached data
           if (parsedUser.scopes?.some((s: string) => s === '*' || s.startsWith('admin:'))) {
-            setUser(parsedUser);
+            // CRITICAL: Verify session is still valid with server before trusting cached data
+            // This prevents redirect loops when session has expired but localStorage has stale data
+            try {
+              const response = await fetch('/api/v1/auth/me', {
+                credentials: 'include',
+              });
+
+              if (response.ok) {
+                // Session is valid, use cached user
+                setUser(parsedUser);
+              } else {
+                // Session expired or invalid - clear cached data
+                console.log('Admin session expired, clearing cached data');
+                localStorage.removeItem(USER_KEY);
+                setUser(null);
+              }
+            } catch {
+              // Network error - clear cached data to be safe
+              localStorage.removeItem(USER_KEY);
+              setUser(null);
+            }
           } else {
             localStorage.removeItem(USER_KEY);
           }
@@ -51,9 +71,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Optionally verify with server that session is still valid
-      // by making a test request (cookies are sent automatically)
-      // This is optional - the API will return 401 if session expired
       setIsLoading(false);
     };
 
