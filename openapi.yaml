@@ -1,0 +1,2867 @@
+openapi: 3.1.0
+info:
+  title: ScamNemesis API
+  description: |
+    REST API for the ScamNemesis fraud reporting and tracking platform.
+
+    ## Authentication
+    The API supports three authentication methods:
+    - **Bearer Token**: JWT access token in Authorization header
+    - **HttpOnly Cookie**: Automatic for browser clients
+    - **API Key**: X-API-Key header for programmatic access
+
+    ## Rate Limiting
+    - Standard users: 100 requests/hour per endpoint
+    - Admin users: 1000 requests/hour (10x multiplier)
+    - Auth endpoints: 20 requests/15min (brute force protection)
+
+    ## Error Handling
+    All errors follow RFC 7807 Problem Details format with additional fields.
+  version: 1.0.0
+  contact:
+    name: ScamNemesis Support
+    url: https://scamnemesis.com/contact
+    email: support@scamnemesis.com
+  license:
+    name: Proprietary
+    url: https://scamnemesis.com/terms
+
+servers:
+  - url: https://scamnemesis.com/api/v1
+    description: Production server
+  - url: https://staging.scamnemesis.com/api/v1
+    description: Staging server
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Health
+    description: Health check endpoints for monitoring
+  - name: Auth
+    description: Authentication and user management
+  - name: 2FA
+    description: Two-factor authentication
+  - name: Reports
+    description: Fraud report submission and retrieval
+  - name: Search
+    description: Search functionality with multiple modes
+  - name: Admin
+    description: Administrative endpoints (requires admin scope)
+  - name: Admin Reports
+    description: Report moderation and management
+  - name: Admin Users
+    description: User management
+  - name: Admin Comments
+    description: Comment moderation
+  - name: Evidence
+    description: Evidence file upload and retrieval
+  - name: Media
+    description: Media file management
+  - name: Stats
+    description: Public statistics
+  - name: Contact
+    description: Contact form
+  - name: Webhooks
+    description: Webhook endpoints for external integrations
+
+security:
+  - BearerAuth: []
+  - CookieAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  # ============ HEALTH ============
+  /health:
+    get:
+      tags: [Health]
+      summary: Basic health check
+      description: Lightweight health check for container orchestration (Docker/K8s)
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: healthy
+                timestamp: "2024-01-15T10:30:00Z"
+                version: "1.0.0"
+
+  /health/detailed:
+    get:
+      tags: [Health]
+      summary: Detailed health check
+      description: Comprehensive health check including database connectivity
+      operationId: getHealthDetailed
+      security: []
+      responses:
+        '200':
+          description: All services healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedHealthResponse'
+        '503':
+          description: Service degraded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedHealthResponse'
+
+  # ============ AUTH ============
+  /auth/token:
+    post:
+      tags: [Auth]
+      summary: Authenticate and get JWT token
+      description: |
+        Authenticate using email/password or API key.
+        Returns JWT tokens and sets HttpOnly cookies for browser clients.
+
+        **Brute Force Protection**: Account locked after 5 failed attempts for 15 minutes.
+      operationId: authenticate
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PasswordLoginRequest'
+                - $ref: '#/components/schemas/ApiKeyLoginRequest'
+            examples:
+              password:
+                summary: Password authentication
+                value:
+                  grant_type: password
+                  email: user@example.com
+                  password: SecureP@ss123
+              api_key:
+                summary: API key authentication
+                value:
+                  grant_type: api_key
+                  api_key: sk_live_xxxxxxxxxxxxx
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+          headers:
+            Set-Cookie:
+              description: HttpOnly cookies for access_token and refresh_token
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Email not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '423':
+          description: Account locked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockedError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register new user
+      description: |
+        Create a new user account. Sends verification email.
+
+        **Password Requirements**:
+        - Minimum 9 characters
+        - At least 1 uppercase letter
+        - At least 1 lowercase letter
+        - At least 1 number
+        - At least 1 special character
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      description: Exchange refresh token for new access token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+              required: [refresh_token]
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout user
+      description: Invalidate refresh token and clear cookies
+      operationId: logout
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user info
+      description: Returns the authenticated user's profile information
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags: [Auth]
+      summary: Update user profile
+      description: Update the authenticated user's profile
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me/password:
+    patch:
+      tags: [Auth]
+      summary: Change password
+      description: Change the authenticated user's password
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                new_password:
+                  type: string
+                  minLength: 9
+              required: [current_password, new_password]
+      responses:
+        '200':
+          description: Password changed
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request password reset
+      description: Send password reset email
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        '200':
+          description: Reset email sent (if account exists)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password with token
+      description: Reset password using token from email
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                new_password:
+                  type: string
+                  minLength: 9
+              required: [token, new_password]
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/verify-email:
+    post:
+      tags: [Auth]
+      summary: Verify email address
+      description: Verify email using token from verification email
+      operationId: verifyEmail
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required: [token]
+      responses:
+        '200':
+          description: Email verified
+        '400':
+          description: Invalid or expired token
+
+  # ============ 2FA ============
+  /auth/2fa/setup:
+    post:
+      tags: [2FA]
+      summary: Setup 2FA
+      description: Generate TOTP secret and QR code for 2FA setup
+      operationId: setup2FA
+      responses:
+        '200':
+          description: 2FA setup data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setup2FAResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: 2FA already enabled
+
+  /auth/2fa/verify:
+    post:
+      tags: [2FA]
+      summary: Verify and enable 2FA
+      description: Verify TOTP code to enable 2FA, returns backup codes
+      operationId: verify2FA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  pattern: '^\d{6}$'
+              required: [code]
+      responses:
+        '200':
+          description: 2FA enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enable2FAResponse'
+        '400':
+          description: Invalid code
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/2fa/verify-login:
+    post:
+      tags: [2FA]
+      summary: Verify 2FA during login
+      description: Complete login by verifying TOTP code
+      operationId: verify2FALogin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                temp_token:
+                  type: string
+                code:
+                  type: string
+                  pattern: '^\d{6}$'
+              required: [temp_token, code]
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid code
+        '401':
+          description: Invalid or expired temp token
+
+  /auth/2fa/disable:
+    post:
+      tags: [2FA]
+      summary: Disable 2FA
+      description: Disable 2FA (requires TOTP code verification)
+      operationId: disable2FA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  pattern: '^\d{6}$'
+              required: [code]
+      responses:
+        '200':
+          description: 2FA disabled
+        '400':
+          description: Invalid code
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/2fa/status:
+    get:
+      tags: [2FA]
+      summary: Get 2FA status
+      description: Check if 2FA is enabled for current user
+      operationId: get2FAStatus
+      responses:
+        '200':
+          description: 2FA status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  backup_codes_remaining:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/2fa/backup-codes:
+    post:
+      tags: [2FA]
+      summary: Regenerate backup codes
+      description: Generate new backup codes (invalidates old ones)
+      operationId: regenerateBackupCodes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  pattern: '^\d{6}$'
+              required: [code]
+      responses:
+        '200':
+          description: New backup codes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  backup_codes:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Invalid code
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============ REPORTS ============
+  /reports:
+    get:
+      tags: [Reports]
+      summary: List fraud reports
+      description: |
+        Get paginated list of approved fraud reports.
+        Results are masked based on user role.
+      operationId: listReports
+      parameters:
+        - $ref: '#/components/parameters/status'
+        - $ref: '#/components/parameters/fraudType'
+        - $ref: '#/components/parameters/country'
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      tags: [Reports]
+      summary: Submit fraud report
+      description: |
+        Submit a new fraud report. Anonymous submissions allowed.
+
+        Returns tracking token for status updates.
+      operationId: createReport
+      security:
+        - {}
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportRequest'
+      responses:
+        '201':
+          description: Report created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateReportResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /reports/{id}:
+    get:
+      tags: [Reports]
+      summary: Get report details
+      description: Get full details of a specific report
+      operationId: getReport
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Report public ID
+      responses:
+        '200':
+          description: Report details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportDetail'
+        '404':
+          description: Report not found
+
+  /reports/{id}/comments:
+    get:
+      tags: [Reports]
+      summary: Get report comments
+      description: Get approved comments for a report
+      operationId: getReportComments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+    post:
+      tags: [Reports]
+      summary: Add comment to report
+      description: Add a comment to a report (requires moderation)
+      operationId: addComment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  maxLength: 2000
+              required: [content]
+      responses:
+        '201':
+          description: Comment submitted for moderation
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /reports/{id}/export:
+    get:
+      tags: [Reports]
+      summary: Export report
+      description: Export report in various formats (PDF, JSON, CSV)
+      operationId: exportReport
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [pdf, json, csv]
+            default: json
+      responses:
+        '200':
+          description: Exported report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportDetail'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Report not found
+
+  # ============ SEARCH ============
+  /search:
+    get:
+      tags: [Search]
+      summary: Search fraud reports
+      description: |
+        Search reports using multiple modes:
+        - **auto**: Automatically detect search type and try exact then fuzzy
+        - **exact**: Exact match on normalized fields (email, phone, IBAN, wallet)
+        - **fuzzy**: Trigram-based fuzzy name matching
+        - **semantic**: Vector embedding similarity search
+
+        Results are masked based on user role.
+      operationId: searchReports
+      security:
+        - {}
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          schema:
+            type: string
+            maxLength: 500
+        - name: mode
+          in: query
+          description: Search mode
+          schema:
+            type: string
+            enum: [auto, exact, fuzzy, semantic]
+            default: auto
+        - name: fields
+          in: query
+          description: Comma-separated fields to search
+          schema:
+            type: string
+        - $ref: '#/components/parameters/fraudType'
+        - $ref: '#/components/parameters/country'
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - name: amount_min
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: amount_max
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created_at, financial_loss, relevance]
+            default: created_at
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  # ============ CASE UPDATE ============
+  /case-update/{token}:
+    get:
+      tags: [Reports]
+      summary: Get case status by tracking token
+      description: Check report status using tracking token (for anonymous reporters)
+      operationId: getCaseStatus
+      security: []
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Case status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  case_number:
+                    type: string
+                  status:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+        '404':
+          description: Case not found
+
+  # ============ STATS ============
+  /stats:
+    get:
+      tags: [Stats]
+      summary: Get public statistics
+      description: Get aggregated statistics about fraud reports
+      operationId: getStats
+      security: []
+      responses:
+        '200':
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+
+  # ============ EVIDENCE ============
+  /evidence/upload:
+    post:
+      tags: [Evidence]
+      summary: Upload evidence file
+      description: Upload evidence file (max 10MB, images/documents)
+      operationId: uploadEvidence
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                type:
+                  type: string
+                  enum: [SCREENSHOT, DOCUMENT, CONVERSATION, TRANSACTION, OTHER]
+                description:
+                  type: string
+                  maxLength: 500
+              required: [file, type]
+      responses:
+        '201':
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_key:
+                    type: string
+                  url:
+                    type: string
+        '400':
+          description: Invalid file
+        '413':
+          description: File too large
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /evidence/files/{fileKey}:
+    get:
+      tags: [Evidence]
+      summary: Get evidence file
+      description: Download evidence file
+      operationId: getEvidence
+      parameters:
+        - name: fileKey
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File content
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found
+
+  # ============ IMAGES ============
+  /images/upload/presigned:
+    post:
+      tags: [Media]
+      summary: Get presigned upload URL
+      description: Get presigned URL for direct S3 upload
+      operationId: getPresignedUploadUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                content_type:
+                  type: string
+              required: [filename, content_type]
+      responses:
+        '200':
+          description: Presigned URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_url:
+                    type: string
+                  file_key:
+                    type: string
+                  expires_in:
+                    type: integer
+
+  /images/search:
+    get:
+      tags: [Media]
+      summary: Reverse image search
+      description: Search for similar images using perceptual hash
+      operationId: reverseImageSearch
+      parameters:
+        - name: url
+          in: query
+          schema:
+            type: string
+            format: uri
+        - name: hash
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Similar images
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        report_id:
+                          type: string
+                        similarity:
+                          type: number
+
+  # ============ MEDIA ============
+  /media:
+    get:
+      tags: [Media]
+      summary: List media files
+      description: List uploaded media files for current user
+      operationId: listMedia
+      responses:
+        '200':
+          description: Media list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  media:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaItem'
+
+  /media/{id}:
+    get:
+      tags: [Media]
+      summary: Get media details
+      operationId: getMedia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Media details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaItem'
+    delete:
+      tags: [Media]
+      summary: Delete media
+      operationId: deleteMedia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Media deleted
+
+  /media/{id}/confirm:
+    post:
+      tags: [Media]
+      summary: Confirm media upload
+      description: Confirm that media upload to S3 is complete
+      operationId: confirmMediaUpload
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Upload confirmed
+
+  # ============ CONTACT ============
+  /contact:
+    post:
+      tags: [Contact]
+      summary: Submit contact form
+      description: Submit a contact form message
+      operationId: submitContact
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                subject:
+                  type: string
+                  maxLength: 200
+                message:
+                  type: string
+                  maxLength: 5000
+                captchaToken:
+                  type: string
+              required: [name, email, subject, message]
+      responses:
+        '201':
+          description: Message sent
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  # ============ CAPTCHA ============
+  /captcha/verify:
+    post:
+      tags: [Auth]
+      summary: Verify CAPTCHA token
+      description: Verify Cloudflare Turnstile CAPTCHA token
+      operationId: verifyCaptcha
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required: [token]
+      responses:
+        '200':
+          description: CAPTCHA valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: CAPTCHA invalid
+
+  # ============ WEBHOOKS ============
+  /webhooks/enrichment:
+    post:
+      tags: [Webhooks]
+      summary: Enrichment webhook
+      description: Receive enrichment data from external services
+      operationId: enrichmentWebhook
+      security:
+        - WebhookSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed
+        '401':
+          description: Invalid webhook secret
+
+  # ============ ADMIN ============
+  /admin/reports:
+    get:
+      tags: [Admin Reports]
+      summary: List all reports (admin)
+      description: Get paginated list of all reports with full details
+      operationId: adminListReports
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/status'
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [LOW, MEDIUM, HIGH, CRITICAL]
+        - $ref: '#/components/parameters/fraudType'
+        - name: q
+          in: query
+          description: Search query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, severity, status]
+            default: createdAt
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Reports list with stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminReportListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /admin/reports/{id}:
+    get:
+      tags: [Admin Reports]
+      summary: Get report details (admin)
+      operationId: adminGetReport
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Full report details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminReportDetail'
+        '404':
+          description: Report not found
+
+  /admin/reports/{id}/approve:
+    post:
+      tags: [Admin Reports]
+      summary: Approve report
+      operationId: approveReport
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                severity:
+                  type: string
+                  enum: [LOW, MEDIUM, HIGH, CRITICAL]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Report approved
+        '404':
+          description: Report not found
+
+  /admin/reports/{id}/reject:
+    post:
+      tags: [Admin Reports]
+      summary: Reject report
+      operationId: rejectReport
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  maxLength: 1000
+              required: [reason]
+      responses:
+        '200':
+          description: Report rejected
+        '404':
+          description: Report not found
+
+  /admin/reports/{id}/delete:
+    delete:
+      tags: [Admin Reports]
+      summary: Delete report
+      operationId: deleteReport
+      security:
+        - BearerAuth: [admin:delete]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Report deleted
+        '404':
+          description: Report not found
+
+  /admin/users:
+    get:
+      tags: [Admin Users]
+      summary: List users
+      operationId: adminListUsers
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [BASIC, STANDARD, GOLD, ADMIN, SUPER_ADMIN]
+        - name: q
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserListResponse'
+
+  /admin/users/{id}:
+    get:
+      tags: [Admin Users]
+      summary: Get user details
+      operationId: adminGetUser
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+
+  /admin/users/{id}/role:
+    patch:
+      tags: [Admin Users]
+      summary: Update user role
+      operationId: updateUserRole
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [BASIC, STANDARD, GOLD, ADMIN]
+              required: [role]
+      responses:
+        '200':
+          description: Role updated
+
+  /admin/users/{id}/ban:
+    post:
+      tags: [Admin Users]
+      summary: Ban user
+      operationId: banUser
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                duration:
+                  type: integer
+                  description: Ban duration in hours (0 = permanent)
+      responses:
+        '200':
+          description: User banned
+
+  /admin/users/{id}/unban:
+    post:
+      tags: [Admin Users]
+      summary: Unban user
+      operationId: unbanUser
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User unbanned
+
+  /admin/comments:
+    get:
+      tags: [Admin Comments]
+      summary: List pending comments
+      operationId: adminListComments
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, APPROVED, REJECTED]
+      responses:
+        '200':
+          description: Comments list
+
+  /admin/comments/{id}/approve:
+    post:
+      tags: [Admin Comments]
+      summary: Approve comment
+      operationId: approveComment
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comment approved
+
+  /admin/comments/{id}/reject:
+    post:
+      tags: [Admin Comments]
+      summary: Reject comment
+      operationId: rejectComment
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Comment rejected
+
+  /admin/duplicates:
+    get:
+      tags: [Admin Reports]
+      summary: List duplicate clusters
+      operationId: listDuplicates
+      security:
+        - BearerAuth: [admin:read]
+      responses:
+        '200':
+          description: Duplicate clusters
+
+  /admin/duplicates/{id}/merge:
+    post:
+      tags: [Admin Reports]
+      summary: Merge duplicate reports
+      operationId: mergeDuplicates
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                primary_report_id:
+                  type: string
+              required: [primary_report_id]
+      responses:
+        '200':
+          description: Reports merged
+
+  /admin/duplicates/{id}/dismiss:
+    post:
+      tags: [Admin Reports]
+      summary: Dismiss duplicate suggestion
+      operationId: dismissDuplicate
+      security:
+        - BearerAuth: [admin:write]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Duplicate dismissed
+
+  /admin/stats:
+    get:
+      tags: [Admin]
+      summary: Get admin statistics
+      operationId: getAdminStats
+      security:
+        - BearerAuth: [admin:read]
+      responses:
+        '200':
+          description: Admin statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminStatsResponse'
+
+  /admin/audit:
+    get:
+      tags: [Admin]
+      summary: Get audit logs
+      operationId: getAuditLogs
+      security:
+        - BearerAuth: [admin:read]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - name: action
+          in: query
+          schema:
+            type: string
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+      responses:
+        '200':
+          description: Audit logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogResponse'
+
+  /admin/settings:
+    get:
+      tags: [Admin]
+      summary: Get system settings
+      operationId: getSettings
+      security:
+        - BearerAuth: [admin:read]
+      responses:
+        '200':
+          description: System settings
+    patch:
+      tags: [Admin]
+      summary: Update system settings
+      operationId: updateSettings
+      security:
+        - BearerAuth: [admin:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Settings updated
+
+  /admin/email/test:
+    post:
+      tags: [Admin]
+      summary: Send test email
+      operationId: sendTestEmail
+      security:
+        - BearerAuth: [admin:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                  format: email
+                template:
+                  type: string
+              required: [to]
+      responses:
+        '200':
+          description: Test email sent
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: HttpOnly cookie authentication
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key authentication
+    WebhookSecret:
+      type: apiKey
+      in: header
+      name: X-Webhook-Secret
+      description: Webhook secret for external services
+
+  parameters:
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 1
+    pageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    status:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum: [pending, under_review, approved, rejected, merged, archived]
+    fraudType:
+      name: fraud_type
+      in: query
+      schema:
+        type: string
+        enum: [PHISHING, SCAM, FAKE_SHOP, INVESTMENT_FRAUD, ROMANCE_SCAM, TECH_SUPPORT, LOTTERY, CRYPTOCURRENCY, IDENTITY_THEFT, OTHER]
+    country:
+      name: country
+      in: query
+      schema:
+        type: string
+        maxLength: 2
+      description: ISO 3166-1 alpha-2 country code
+    dateFrom:
+      name: date_from
+      in: query
+      schema:
+        type: string
+        format: date
+    dateTo:
+      name: date_to
+      in: query
+      schema:
+        type: string
+        format: date
+
+  schemas:
+    # ============ ERROR SCHEMAS ============
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        request_id:
+          type: string
+          description: Request ID for debugging
+        timestamp:
+          type: string
+          format: date-time
+      required: [error, message]
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            details:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+            issues:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+
+    AccountLockedError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            locked_until:
+              type: string
+              format: date-time
+
+    # ============ HEALTH SCHEMAS ============
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+      required: [status, timestamp]
+
+    DetailedHealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/HealthResponse'
+        - type: object
+          properties:
+            services:
+              type: object
+              properties:
+                database:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    latency_ms:
+                      type: number
+                redis:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                s3:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+
+    # ============ AUTH SCHEMAS ============
+    PasswordLoginRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum: [password]
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      required: [grant_type, email, password]
+
+    ApiKeyLoginRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum: [api_key]
+        api_key:
+          type: string
+      required: [grant_type, api_key]
+
+    TokenResponse:
+      type: object
+      properties:
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+          description: Token expiration in seconds
+        scopes:
+          type: array
+          items:
+            type: string
+        user:
+          $ref: '#/components/schemas/UserBasic'
+        access_token:
+          type: string
+          description: JWT access token
+        refresh_token:
+          type: string
+          description: Refresh token (not included for API key auth)
+        requires_2fa:
+          type: boolean
+          description: True if 2FA verification required
+        temp_token:
+          type: string
+          description: Temporary token for 2FA verification
+
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 9
+          description: Must meet password requirements
+        name:
+          type: string
+        captchaToken:
+          type: string
+          description: Cloudflare Turnstile token
+      required: [email, password]
+
+    RegisterResponse:
+      allOf:
+        - $ref: '#/components/schemas/TokenResponse'
+        - type: object
+          properties:
+            message:
+              type: string
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        bio:
+          type: string
+          maxLength: 500
+
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [BASIC, STANDARD, GOLD, ADMIN, SUPER_ADMIN]
+
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/UserBasic'
+        - type: object
+          properties:
+            name:
+              type: string
+            displayName:
+              type: string
+            bio:
+              type: string
+            emailVerified:
+              type: string
+              format: date-time
+              nullable: true
+            createdAt:
+              type: string
+              format: date-time
+            totpEnabled:
+              type: boolean
+
+    # ============ 2FA SCHEMAS ============
+    Setup2FAResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+          description: Base32 encoded TOTP secret
+        qr_code:
+          type: string
+          description: Base64 encoded QR code image
+        otpauth_url:
+          type: string
+          description: OTPAuth URL for manual entry
+
+    Enable2FAResponse:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        backup_codes:
+          type: array
+          items:
+            type: string
+          description: One-time backup codes
+
+    # ============ REPORT SCHEMAS ============
+    CreateReportRequest:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/IncidentInput'
+        perpetrator:
+          $ref: '#/components/schemas/PerpetratorInput'
+        digital_footprints:
+          $ref: '#/components/schemas/DigitalFootprintsInput'
+        financial:
+          $ref: '#/components/schemas/FinancialInput'
+        crypto:
+          $ref: '#/components/schemas/CryptoInput'
+        company:
+          $ref: '#/components/schemas/CompanyInput'
+        vehicle:
+          $ref: '#/components/schemas/VehicleInput'
+        evidence:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/EvidenceInput'
+        reporter:
+          $ref: '#/components/schemas/ReporterInput'
+      required: [incident, reporter]
+
+    IncidentInput:
+      type: object
+      properties:
+        fraud_type:
+          type: string
+          enum: [PHISHING, SCAM, FAKE_SHOP, INVESTMENT_FRAUD, ROMANCE_SCAM, TECH_SUPPORT, LOTTERY, CRYPTOCURRENCY, IDENTITY_THEFT, OTHER]
+        date:
+          type: string
+          format: date-time
+        transaction_date:
+          type: string
+          format: date-time
+        summary:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+          maxLength: 10000
+        financial_loss:
+          type: object
+          properties:
+            amount:
+              type: number
+              minimum: 0
+            currency:
+              type: string
+              default: EUR
+        location:
+          $ref: '#/components/schemas/LocationInput'
+      required: [fraud_type, summary]
+
+    PerpetratorInput:
+      type: object
+      properties:
+        perpetrator_type:
+          type: string
+          enum: [INDIVIDUAL, COMPANY, UNKNOWN]
+        full_name:
+          type: string
+          maxLength: 255
+        nickname:
+          type: string
+          maxLength: 100
+        username:
+          type: string
+          maxLength: 100
+        approx_age:
+          type: integer
+          minimum: 0
+          maximum: 150
+        nationality:
+          type: string
+          maxLength: 50
+        physical_description:
+          type: string
+          maxLength: 2000
+        phone:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/LocationInput'
+
+    DigitalFootprintsInput:
+      type: object
+      properties:
+        telegram:
+          type: string
+        whatsapp:
+          type: string
+        signal:
+          type: string
+        instagram:
+          type: string
+        facebook:
+          type: string
+        tiktok:
+          type: string
+        twitter:
+          type: string
+        website_url:
+          type: string
+          format: uri
+        domain_name:
+          type: string
+        domain_creation_date:
+          type: string
+          format: date-time
+        ip_address:
+          type: string
+        ip_country:
+          type: string
+          maxLength: 2
+        isp:
+          type: string
+        ip_abuse_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    FinancialInput:
+      type: object
+      properties:
+        iban:
+          type: string
+        account_holder:
+          type: string
+        account_number:
+          type: string
+        bank_name:
+          type: string
+        bank_country:
+          type: string
+          maxLength: 2
+        swift_bic:
+          type: string
+        routing_number:
+          type: string
+        bsb:
+          type: string
+        sort_code:
+          type: string
+        ifsc:
+          type: string
+        cnaps:
+          type: string
+        other_banking_details:
+          type: string
+
+    CryptoInput:
+      type: object
+      properties:
+        wallet_address:
+          type: string
+        blockchain:
+          type: string
+          enum: [BITCOIN, ETHEREUM, TRON, BINANCE, SOLANA, POLYGON, RIPPLE, CARDANO, OTHER]
+        exchange_wallet_name:
+          type: string
+        transaction_hash:
+          type: string
+        paypal_account:
+          type: string
+
+    CompanyInput:
+      type: object
+      properties:
+        name:
+          type: string
+        vat_tax_id:
+          type: string
+        address:
+          $ref: '#/components/schemas/LocationInput'
+
+    VehicleInput:
+      type: object
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        color:
+          type: string
+        license_plate:
+          type: string
+        vin:
+          type: string
+        registered_owner:
+          type: string
+
+    EvidenceInput:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [SCREENSHOT, DOCUMENT, CONVERSATION, TRANSACTION, OTHER]
+        file_key:
+          type: string
+        external_url:
+          type: string
+          format: uri
+        description:
+          type: string
+          maxLength: 500
+      required: [type]
+
+    ReporterInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        preferred_language:
+          type: string
+          default: en
+        consent:
+          type: boolean
+          default: true
+        want_updates:
+          type: boolean
+          default: false
+        agree_to_terms:
+          type: boolean
+          default: false
+
+    LocationInput:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        postal_code:
+          type: string
+        country:
+          type: string
+          maxLength: 2
+
+    CreateReportResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        publicId:
+          type: string
+        case_number:
+          type: string
+          pattern: '^SN-\d{8}-[A-F0-9]{4}$'
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        duplicate_check:
+          type: object
+          properties:
+            has_duplicates:
+              type: boolean
+            cluster_id:
+              type: string
+              nullable: true
+            match_count:
+              type: integer
+        email_sent:
+          type: boolean
+        email_warning:
+          type: string
+        email_note:
+          type: string
+
+    ReportListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportSummary'
+
+    ReportSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        fraud_type:
+          type: string
+        incident_date:
+          type: string
+          format: date
+        country:
+          type: string
+        perpetrator:
+          type: object
+          properties:
+            name:
+              type: string
+              nullable: true
+              description: Masked based on user role
+        created_at:
+          type: string
+          format: date-time
+
+    ReportDetail:
+      allOf:
+        - $ref: '#/components/schemas/ReportSummary'
+        - type: object
+          properties:
+            summary:
+              type: string
+            description:
+              type: string
+            financial_loss:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+            perpetrators:
+              type: array
+              items:
+                $ref: '#/components/schemas/Perpetrator'
+            digital_footprint:
+              $ref: '#/components/schemas/DigitalFootprint'
+            financial_info:
+              $ref: '#/components/schemas/FinancialInfo'
+            crypto_info:
+              $ref: '#/components/schemas/CryptoInfo'
+            evidence:
+              type: array
+              items:
+                $ref: '#/components/schemas/Evidence'
+
+    Perpetrator:
+      type: object
+      properties:
+        id:
+          type: string
+        full_name:
+          type: string
+          nullable: true
+        nickname:
+          type: string
+        username:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+
+    DigitalFootprint:
+      type: object
+      properties:
+        telegram:
+          type: string
+        whatsapp:
+          type: string
+        instagram:
+          type: string
+        facebook:
+          type: string
+        website_url:
+          type: string
+        domain_name:
+          type: string
+
+    FinancialInfo:
+      type: object
+      properties:
+        iban:
+          type: string
+        bank_name:
+          type: string
+        bank_country:
+          type: string
+
+    CryptoInfo:
+      type: object
+      properties:
+        wallet_address:
+          type: string
+        blockchain:
+          type: string
+        transaction_hash:
+          type: string
+
+    Evidence:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        file_url:
+          type: string
+        external_url:
+          type: string
+        description:
+          type: string
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        author:
+          type: object
+          properties:
+            displayName:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+
+    # ============ SEARCH SCHEMAS ============
+    SearchResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+        facets:
+          type: object
+          properties:
+            country:
+              type: object
+              additionalProperties:
+                type: integer
+            fraud_type:
+              type: object
+              additionalProperties:
+                type: integer
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+        source:
+          type: string
+          enum: [exact, fuzzy, semantic]
+        perpetrator:
+          type: object
+          properties:
+            name:
+              type: string
+              nullable: true
+            phone:
+              type: string
+              nullable: true
+            email:
+              type: string
+              nullable: true
+        fraud_type:
+          type: string
+        country:
+          type: string
+        incident_date:
+          type: string
+          format: date
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        pages:
+          type: integer
+        total_pages:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    # ============ STATS SCHEMAS ============
+    StatsResponse:
+      type: object
+      properties:
+        total_reports:
+          type: integer
+        reports_this_month:
+          type: integer
+        total_financial_loss:
+          type: number
+        by_fraud_type:
+          type: object
+          additionalProperties:
+            type: integer
+        by_country:
+          type: object
+          additionalProperties:
+            type: integer
+        recent_activity:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              count:
+                type: integer
+
+    # ============ MEDIA SCHEMAS ============
+    MediaItem:
+      type: object
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        content_type:
+          type: string
+        size:
+          type: integer
+        url:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, deleted]
+        created_at:
+          type: string
+          format: date-time
+
+    # ============ ADMIN SCHEMAS ============
+    AdminReportListResponse:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminReportSummary'
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        stats:
+          type: object
+          properties:
+            pending:
+              type: integer
+            underReview:
+              type: integer
+            approved:
+              type: integer
+            rejected:
+              type: integer
+            merged:
+              type: integer
+            archived:
+              type: integer
+
+    AdminReportSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        publicId:
+          type: string
+        caseNumber:
+          type: string
+        status:
+          type: string
+        severity:
+          type: string
+          nullable: true
+        fraudType:
+          type: string
+        summary:
+          type: string
+        financialLoss:
+          type: object
+          nullable: true
+          properties:
+            amount:
+              type: number
+            currency:
+              type: string
+        country:
+          type: string
+        reporter:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+            displayName:
+              type: string
+        moderatedBy:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            displayName:
+              type: string
+        counts:
+          type: object
+          properties:
+            perpetrators:
+              type: integer
+            evidence:
+              type: integer
+            comments:
+              type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        moderatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    AdminReportDetail:
+      allOf:
+        - $ref: '#/components/schemas/AdminReportSummary'
+        - type: object
+          properties:
+            description:
+              type: string
+            perpetrators:
+              type: array
+              items:
+                type: object
+            digitalFootprint:
+              type: object
+            financialInfo:
+              type: object
+            cryptoInfo:
+              type: object
+            companyInfo:
+              type: object
+            vehicleInfo:
+              type: object
+            evidence:
+              type: array
+              items:
+                type: object
+            trackingToken:
+              type: string
+            reporterEmail:
+              type: string
+            reporterName:
+              type: string
+            reporterPhone:
+              type: string
+
+    AdminUserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUserSummary'
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+
+    AdminUserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        emailVerified:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+        reportCount:
+          type: integer
+
+    AdminUserDetail:
+      allOf:
+        - $ref: '#/components/schemas/AdminUserSummary'
+        - type: object
+          properties:
+            bio:
+              type: string
+            totpEnabled:
+              type: boolean
+            apiKeys:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  lastUsedAt:
+                    type: string
+                    format: date-time
+            reports:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportSummary'
+
+    AdminStatsResponse:
+      type: object
+      properties:
+        reports:
+          type: object
+          properties:
+            total:
+              type: integer
+            pending:
+              type: integer
+            approved:
+              type: integer
+            rejected:
+              type: integer
+            thisWeek:
+              type: integer
+            thisMonth:
+              type: integer
+        users:
+          type: object
+          properties:
+            total:
+              type: integer
+            active:
+              type: integer
+            newThisMonth:
+              type: integer
+        financialLoss:
+          type: object
+          properties:
+            total:
+              type: number
+            currency:
+              type: string
+            byType:
+              type: object
+              additionalProperties:
+                type: number
+
+    AuditLogResponse:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              action:
+                type: string
+              entityType:
+                type: string
+              entityId:
+                type: string
+              userId:
+                type: string
+              user:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  displayName:
+                    type: string
+              changes:
+                type: object
+              ipAddress:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: unauthorized
+            message: Authentication required
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: forbidden
+            message: "Missing required scope: admin:read"
+
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+        Retry-After:
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: rate_limited
+            message: Rate limit exceeded. Try again later.
