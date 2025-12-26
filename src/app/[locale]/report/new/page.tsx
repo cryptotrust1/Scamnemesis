@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useTranslation } from '@/lib/i18n/context';
@@ -264,6 +264,459 @@ const breadcrumbSchema = {
   ],
 };
 
+type Locale = 'en' | 'sk' | 'cs' | 'de';
+
+// Page translations
+const getPageTranslations = (locale: Locale) => {
+  const t = {
+    en: {
+      trustedPlatform: 'Trusted Platform',
+      secureConfidential: 'Secure & Confidential',
+      records: '612M+ Records',
+      heroTitle: 'Where to Report',
+      heroTitleHighlight: 'Scammers?',
+      heroDesc: 'ScamNemesis helps victims report scammers, recover lost money, and protect others from fraud. Our platform connects you with authorities, investigators, and a global community dedicated to fighting scams.',
+      startReport: 'Start Your Report',
+      searchDatabase: 'Search Database',
+      statsRecords: 'Records',
+      statsDataSources: 'Data Sources',
+      statsPartners: 'Partners',
+      statsMonitoring: 'Monitoring',
+      whatHappensTitle: 'What Happens After You Submit?',
+      whatHappensDesc: 'By completing the form, you provide detailed information that we report to the relevant authorities and compile into a clearly structured PDF report. Your report helps build a comprehensive database that protects others from the same scammers.',
+      pdfGenerated: 'PDF Report Generated',
+      pdfGeneratedDesc: 'Receive a professional, structured PDF summary of your report that you can share with authorities and legal professionals.',
+      sharedAuthorities: 'Shared with Authorities',
+      sharedAuthoritiesDesc: 'Your report is automatically forwarded to relevant law enforcement agencies, regulators, and fraud prevention organizations.',
+      addedToDatabase: 'Added to Database',
+      addedToDatabaseDesc: 'Scammer details are added to our global database, helping protect millions of people from future fraud attempts.',
+      instructionsTitle: 'Instructions for Completing the Form',
+      instruction1: 'Most fields are not mandatory.',
+      instruction1Desc: 'Fill in as much information as you have available. The more details you provide, the more effective your report will be in helping authorities investigate.',
+      instruction2: 'Fields that do not apply to your case',
+      instruction2Desc: 'can be left blank. Not every scam involves all types of contact information or financial details.',
+      instruction3: 'After submitting,',
+      instruction3Desc: 'you will receive a confirmation with your report ID. Use this to track your report status and provide additional information if needed.',
+      advancedTechnology: 'Advanced Technology',
+      dataProcessingTitle: 'Data Processing and Visualization',
+      dataProcessingDesc: 'Our advanced analytics platform processes millions of data points to identify patterns, connections, and emerging threats in real-time.',
+      advancedAnalytics: 'Advanced Analytics',
+      advancedAnalyticsDesc: 'Real-time data processing and pattern recognition across millions of reports.',
+      visualReports: 'Visual Reports',
+      visualReportsDesc: 'Clear visualizations that help identify trends and connections.',
+      trendAnalysis: 'Trend Analysis',
+      trendAnalysisDesc: 'Track scam evolution and emerging fraud patterns over time.',
+      geographicMapping: 'Geographic Mapping',
+      geographicMappingDesc: 'Location-based analysis to identify regional fraud hotspots.',
+      intelligenceCapabilities: 'Intelligence Capabilities',
+      osintTitle: 'Advanced OSINT and Intelligence Practice',
+      osintDesc: 'ScamNemesis employs sophisticated Open Source Intelligence (OSINT) techniques to track, identify, and expose scammers across the digital landscape. Our intelligence team uses advanced tools and methodologies to uncover hidden connections.',
+      osintFeature1: 'Cross-reference data from 130+ global sources',
+      osintFeature2: 'Identify fake identities and shell companies',
+      osintFeature3: 'Track cryptocurrency transactions and wallets',
+      osintFeature4: 'Monitor dark web marketplaces and forums',
+      osintFeature5: 'Analyze social media footprints and patterns',
+      deepWebAnalysis: 'Deep Web Analysis',
+      deepWebAnalysisDesc: 'Advanced search capabilities across surface and deep web sources.',
+      networkMapping: 'Network Mapping',
+      networkMappingDesc: 'Identify connections between scammers and criminal networks.',
+      digitalFootprint: 'Digital Footprint',
+      digitalFootprintDesc: 'Track digital traces and identify hidden identities.',
+      dataSources130: '130+ Data Sources',
+      dataSources130Desc: 'Access to comprehensive global databases and intelligence feeds.',
+      communityPower: 'Community Power',
+      communityTitle: 'Community Engagement and Interactive Report',
+      communityDesc: 'Join a global community of fraud fighters. Your reports contribute to a collective defense system that protects millions of people worldwide.',
+      interactiveReports: 'Interactive Reports',
+      interactiveReportsDesc: 'Comment, update, and collaborate on fraud investigations.',
+      communityVerification: 'Community Verification',
+      communityVerificationDesc: 'Crowd-sourced validation improves report accuracy.',
+      reputationSystem: 'Reputation System',
+      reputationSystemDesc: 'Trusted reporters earn badges and enhanced visibility.',
+      watchlists: 'Watchlists',
+      watchlistsDesc: 'Monitor specific entities and receive alerts on new activity.',
+      globalNetwork: 'Global Network',
+      partnersTitle: 'Data Sharing with Partners and Investigators',
+      partnersDesc: 'Your report reaches a network of trusted partners dedicated to fighting fraud. We work with law enforcement, financial institutions, and security experts worldwide.',
+      lawEnforcement: 'Law Enforcement',
+      lawEnforcementDesc: 'Police departments, cybercrime units, and international agencies.',
+      regulatoryBodies: 'Regulatory Bodies',
+      regulatoryBodiesDesc: 'Financial regulators, consumer protection agencies, and government bodies.',
+      financialInstitutions: 'Financial Institutions',
+      financialInstitutionsDesc: 'Banks, payment processors, and cryptocurrency exchanges.',
+      securityCompanies: 'Security Companies',
+      securityCompaniesDesc: 'Cybersecurity firms, fraud prevention services, and investigators.',
+      privacyProtected: 'Your Privacy is Protected',
+      privacyProtectedDesc: 'We anonymize personal information before sharing reports with partners. Only relevant fraud details are shared to protect your privacy while maximizing the effectiveness of investigations.',
+      victimSupport: 'Victim Support',
+      scamRecovery: 'Scam Recovery',
+      scamRecoveryDesc: 'Being scammed is stressful, but there are steps you can take to minimize damage and potentially recover your losses. Follow these guidelines for the best chance of recovery.',
+      reportImmediately: 'Report Immediately',
+      reportImmediatelyDesc: 'Time is critical. Submit your report as soon as possible to increase recovery chances.',
+      documentEverything: 'Document Everything',
+      documentEverythingDesc: 'Save all communications, transactions, and evidence related to the scam.',
+      contactBank: 'Contact Your Bank',
+      contactBankDesc: 'Notify your financial institution immediately to freeze accounts and reverse transactions.',
+      fileOfficialReports: 'File Official Reports',
+      fileOfficialReportsDesc: 'Report to local police, IC3, FTC, and relevant authorities in your jurisdiction.',
+      monitorAccounts: 'Monitor Your Accounts',
+      monitorAccountsDesc: 'Watch for unauthorized activity and consider credit monitoring services.',
+      seekProfessionalHelp: 'Seek Professional Help',
+      seekProfessionalHelpDesc: 'Consider consulting fraud recovery specialists and legal professionals.',
+      bewareRecoveryScams: 'Beware of Recovery Scams',
+      bewareRecoveryScamsDesc: 'Unfortunately, scammers often target fraud victims again with fake "recovery services" that promise to retrieve lost funds for an upfront fee. Legitimate recovery services and law enforcement agencies will never ask for payment upfront. Be extremely cautious of unsolicited offers to help recover your money.',
+      getInTouch: 'Get in Touch',
+      contactTitle: 'Contact ScamNemesis',
+      contactDesc: 'Have questions, need assistance, or want to report additional information? Our team is here to help you.',
+      emailUs: 'Email Us',
+      helpCenter: 'Help Center',
+      faqsGuides: 'FAQs & Guides',
+      secureCommunication: 'Secure Communication',
+      responseTime: 'Response within 24 hours',
+      worldwideSupport: 'Worldwide Support',
+      readyToReport: 'Ready to Report a Scam?',
+      readyToReportDesc: 'Your report makes a difference. Help protect others by sharing your experience and contributing to our global fraud database.',
+      startReportNow: 'Start Your Report Now',
+      searchOurDatabase: 'Search Our Database',
+      step: 'Step',
+    },
+    de: {
+      trustedPlatform: 'Vertrauenswürdige Plattform',
+      secureConfidential: 'Sicher & Vertraulich',
+      records: '612M+ Datensätze',
+      heroTitle: 'Wo kann man',
+      heroTitleHighlight: 'Betrüger melden?',
+      heroDesc: 'ScamNemesis hilft Opfern, Betrüger zu melden, verlorenes Geld zurückzugewinnen und andere vor Betrug zu schützen. Unsere Plattform verbindet Sie mit Behörden, Ermittlern und einer globalen Gemeinschaft, die sich der Bekämpfung von Betrug widmet.',
+      startReport: 'Meldung starten',
+      searchDatabase: 'Datenbank durchsuchen',
+      statsRecords: 'Datensätze',
+      statsDataSources: 'Datenquellen',
+      statsPartners: 'Partner',
+      statsMonitoring: 'Überwachung',
+      whatHappensTitle: 'Was passiert nach dem Absenden?',
+      whatHappensDesc: 'Durch das Ausfüllen des Formulars stellen Sie detaillierte Informationen bereit, die wir an die zuständigen Behörden weiterleiten und in einem klar strukturierten PDF-Bericht zusammenstellen. Ihr Bericht hilft beim Aufbau einer umfassenden Datenbank, die andere vor denselben Betrügern schützt.',
+      pdfGenerated: 'PDF-Bericht erstellt',
+      pdfGeneratedDesc: 'Erhalten Sie eine professionelle, strukturierte PDF-Zusammenfassung Ihres Berichts, die Sie mit Behörden und Rechtsexperten teilen können.',
+      sharedAuthorities: 'Mit Behörden geteilt',
+      sharedAuthoritiesDesc: 'Ihr Bericht wird automatisch an relevante Strafverfolgungsbehörden, Regulierungsbehörden und Betrugspräventionsorganisationen weitergeleitet.',
+      addedToDatabase: 'Zur Datenbank hinzugefügt',
+      addedToDatabaseDesc: 'Betrügerdetails werden zu unserer globalen Datenbank hinzugefügt und helfen, Millionen von Menschen vor zukünftigen Betrugsversuchen zu schützen.',
+      instructionsTitle: 'Anleitung zum Ausfüllen des Formulars',
+      instruction1: 'Die meisten Felder sind nicht obligatorisch.',
+      instruction1Desc: 'Füllen Sie so viele Informationen aus, wie Sie haben. Je mehr Details Sie angeben, desto effektiver wird Ihr Bericht bei der Unterstützung der Ermittlungen sein.',
+      instruction2: 'Felder, die auf Ihren Fall nicht zutreffen,',
+      instruction2Desc: 'können leer gelassen werden. Nicht jeder Betrug beinhaltet alle Arten von Kontaktinformationen oder Finanzdaten.',
+      instruction3: 'Nach dem Absenden',
+      instruction3Desc: 'erhalten Sie eine Bestätigung mit Ihrer Berichts-ID. Verwenden Sie diese, um den Status Ihres Berichts zu verfolgen und bei Bedarf zusätzliche Informationen bereitzustellen.',
+      advancedTechnology: 'Fortschrittliche Technologie',
+      dataProcessingTitle: 'Datenverarbeitung und Visualisierung',
+      dataProcessingDesc: 'Unsere fortschrittliche Analyseplattform verarbeitet Millionen von Datenpunkten, um Muster, Verbindungen und aufkommende Bedrohungen in Echtzeit zu identifizieren.',
+      advancedAnalytics: 'Erweiterte Analysen',
+      advancedAnalyticsDesc: 'Echtzeit-Datenverarbeitung und Mustererkennung über Millionen von Berichten.',
+      visualReports: 'Visuelle Berichte',
+      visualReportsDesc: 'Klare Visualisierungen, die helfen, Trends und Verbindungen zu identifizieren.',
+      trendAnalysis: 'Trendanalyse',
+      trendAnalysisDesc: 'Verfolgen Sie die Entwicklung von Betrug und aufkommende Betrugsmuster im Laufe der Zeit.',
+      geographicMapping: 'Geografische Kartierung',
+      geographicMappingDesc: 'Standortbasierte Analyse zur Identifizierung regionaler Betrugsschwerpunkte.',
+      intelligenceCapabilities: 'Aufklärungsfähigkeiten',
+      osintTitle: 'Fortgeschrittene OSINT- und Aufklärungspraxis',
+      osintDesc: 'ScamNemesis setzt ausgefeilte Open Source Intelligence (OSINT) Techniken ein, um Betrüger in der digitalen Landschaft zu verfolgen, zu identifizieren und zu entlarven. Unser Aufklärungsteam verwendet fortschrittliche Tools und Methoden, um versteckte Verbindungen aufzudecken.',
+      osintFeature1: 'Querverweise von Daten aus über 130 globalen Quellen',
+      osintFeature2: 'Identifizierung gefälschter Identitäten und Briefkastenfirmen',
+      osintFeature3: 'Verfolgung von Kryptowährungstransaktionen und Wallets',
+      osintFeature4: 'Überwachung von Darknet-Marktplätzen und Foren',
+      osintFeature5: 'Analyse von Social-Media-Fußabdrücken und Mustern',
+      deepWebAnalysis: 'Deep-Web-Analyse',
+      deepWebAnalysisDesc: 'Erweiterte Suchfunktionen über Surface- und Deep-Web-Quellen.',
+      networkMapping: 'Netzwerkmapping',
+      networkMappingDesc: 'Identifizierung von Verbindungen zwischen Betrügern und kriminellen Netzwerken.',
+      digitalFootprint: 'Digitaler Fußabdruck',
+      digitalFootprintDesc: 'Verfolgung digitaler Spuren und Identifizierung versteckter Identitäten.',
+      dataSources130: '130+ Datenquellen',
+      dataSources130Desc: 'Zugang zu umfassenden globalen Datenbanken und Aufklärungsfeeds.',
+      communityPower: 'Community-Power',
+      communityTitle: 'Community-Engagement und interaktive Berichte',
+      communityDesc: 'Treten Sie einer globalen Gemeinschaft von Betrugsbekämpfern bei. Ihre Berichte tragen zu einem kollektiven Verteidigungssystem bei, das Millionen von Menschen weltweit schützt.',
+      interactiveReports: 'Interaktive Berichte',
+      interactiveReportsDesc: 'Kommentieren, aktualisieren und zusammenarbeiten bei Betrugsermittlungen.',
+      communityVerification: 'Community-Verifizierung',
+      communityVerificationDesc: 'Crowdsourced-Validierung verbessert die Berichtsgenauigkeit.',
+      reputationSystem: 'Reputationssystem',
+      reputationSystemDesc: 'Vertrauenswürdige Melder erhalten Abzeichen und erhöhte Sichtbarkeit.',
+      watchlists: 'Beobachtungslisten',
+      watchlistsDesc: 'Überwachen Sie bestimmte Entitäten und erhalten Sie Warnungen bei neuen Aktivitäten.',
+      globalNetwork: 'Globales Netzwerk',
+      partnersTitle: 'Datenaustausch mit Partnern und Ermittlern',
+      partnersDesc: 'Ihr Bericht erreicht ein Netzwerk vertrauenswürdiger Partner, die sich der Betrugsbekämpfung widmen. Wir arbeiten mit Strafverfolgungsbehörden, Finanzinstituten und Sicherheitsexperten weltweit zusammen.',
+      lawEnforcement: 'Strafverfolgung',
+      lawEnforcementDesc: 'Polizeibehörden, Cybercrime-Einheiten und internationale Agenturen.',
+      regulatoryBodies: 'Regulierungsbehörden',
+      regulatoryBodiesDesc: 'Finanzaufsichtsbehörden, Verbraucherschutzagenturen und Regierungsstellen.',
+      financialInstitutions: 'Finanzinstitute',
+      financialInstitutionsDesc: 'Banken, Zahlungsabwickler und Kryptowährungsbörsen.',
+      securityCompanies: 'Sicherheitsunternehmen',
+      securityCompaniesDesc: 'Cybersicherheitsfirmen, Betrugspräventionsdienste und Ermittler.',
+      privacyProtected: 'Ihre Privatsphäre ist geschützt',
+      privacyProtectedDesc: 'Wir anonymisieren persönliche Informationen, bevor wir Berichte mit Partnern teilen. Nur relevante Betrugsdetails werden geteilt, um Ihre Privatsphäre zu schützen und gleichzeitig die Effektivität der Ermittlungen zu maximieren.',
+      victimSupport: 'Opferunterstützung',
+      scamRecovery: 'Betrugswiederherstellung',
+      scamRecoveryDesc: 'Betrogen zu werden ist stressig, aber es gibt Schritte, die Sie unternehmen können, um den Schaden zu minimieren und möglicherweise Ihre Verluste wiederzuerlangen. Befolgen Sie diese Richtlinien für die beste Chance auf Wiederherstellung.',
+      reportImmediately: 'Sofort melden',
+      reportImmediatelyDesc: 'Zeit ist entscheidend. Reichen Sie Ihren Bericht so schnell wie möglich ein, um die Wiederherstellungschancen zu erhöhen.',
+      documentEverything: 'Alles dokumentieren',
+      documentEverythingDesc: 'Speichern Sie alle Kommunikationen, Transaktionen und Beweise im Zusammenhang mit dem Betrug.',
+      contactBank: 'Kontaktieren Sie Ihre Bank',
+      contactBankDesc: 'Benachrichtigen Sie Ihr Finanzinstitut sofort, um Konten einzufrieren und Transaktionen rückgängig zu machen.',
+      fileOfficialReports: 'Offizielle Berichte einreichen',
+      fileOfficialReportsDesc: 'Melden Sie bei der örtlichen Polizei, IC3, FTC und zuständigen Behörden in Ihrer Gerichtsbarkeit.',
+      monitorAccounts: 'Überwachen Sie Ihre Konten',
+      monitorAccountsDesc: 'Achten Sie auf nicht autorisierte Aktivitäten und erwägen Sie Kreditüberwachungsdienste.',
+      seekProfessionalHelp: 'Professionelle Hilfe suchen',
+      seekProfessionalHelpDesc: 'Erwägen Sie, Betrugswiederherstellungsspezialisten und Rechtsexperten zu konsultieren.',
+      bewareRecoveryScams: 'Vorsicht vor Wiederherstellungsbetrug',
+      bewareRecoveryScamsDesc: 'Leider zielen Betrüger oft erneut auf Betrugsopfer mit gefälschten "Wiederherstellungsdiensten" ab, die versprechen, verlorene Gelder gegen eine Vorabgebühr zurückzuholen. Seriöse Wiederherstellungsdienste und Strafverfolgungsbehörden verlangen niemals eine Vorauszahlung. Seien Sie äußerst vorsichtig bei unaufgeforderten Angeboten zur Wiederherstellung Ihres Geldes.',
+      getInTouch: 'Kontaktieren Sie uns',
+      contactTitle: 'Kontakt zu ScamNemesis',
+      contactDesc: 'Haben Sie Fragen, benötigen Hilfe oder möchten zusätzliche Informationen melden? Unser Team ist hier, um Ihnen zu helfen.',
+      emailUs: 'E-Mail senden',
+      helpCenter: 'Hilfezentrum',
+      faqsGuides: 'FAQs & Anleitungen',
+      secureCommunication: 'Sichere Kommunikation',
+      responseTime: 'Antwort innerhalb von 24 Stunden',
+      worldwideSupport: 'Weltweiter Support',
+      readyToReport: 'Bereit, einen Betrug zu melden?',
+      readyToReportDesc: 'Ihr Bericht macht einen Unterschied. Helfen Sie anderen, indem Sie Ihre Erfahrung teilen und zu unserer globalen Betrugsdatenbank beitragen.',
+      startReportNow: 'Jetzt Meldung starten',
+      searchOurDatabase: 'Unsere Datenbank durchsuchen',
+      step: 'Schritt',
+    },
+    sk: {
+      trustedPlatform: 'Dôveryhodná platforma',
+      secureConfidential: 'Bezpečné a dôverné',
+      records: '612M+ záznamov',
+      heroTitle: 'Kde nahlásiť',
+      heroTitleHighlight: 'podvodníkov?',
+      heroDesc: 'ScamNemesis pomáha obetiam nahlásiť podvodníkov, získať späť stratené peniaze a chrániť ostatných pred podvodmi. Naša platforma vás spája s úradmi, vyšetrovateľmi a globálnou komunitou oddanou boju proti podvodom.',
+      startReport: 'Začať hlásenie',
+      searchDatabase: 'Prehľadať databázu',
+      statsRecords: 'Záznamov',
+      statsDataSources: 'Zdrojov dát',
+      statsPartners: 'Partnerov',
+      statsMonitoring: 'Monitorovanie',
+      whatHappensTitle: 'Čo sa stane po odoslaní?',
+      whatHappensDesc: 'Vyplnením formulára poskytnete podrobné informácie, ktoré nahlásime príslušným úradom a zostavíme do prehľadne štruktúrovaného PDF reportu. Váš report pomáha budovať komplexnú databázu, ktorá chráni ostatných pred rovnakými podvodníkmi.',
+      pdfGenerated: 'PDF report vygenerovaný',
+      pdfGeneratedDesc: 'Dostanete profesionálne štruktúrované PDF zhrnutie vášho hlásenia, ktoré môžete zdieľať s úradmi a právnymi profesionálmi.',
+      sharedAuthorities: 'Zdieľané s úradmi',
+      sharedAuthoritiesDesc: 'Váš report je automaticky preposlaný relevantným orgánom činným v trestnom konaní, regulátorom a organizáciám na prevenciu podvodov.',
+      addedToDatabase: 'Pridané do databázy',
+      addedToDatabaseDesc: 'Detaily podvodníka sú pridané do našej globálnej databázy, čím pomáhajú chrániť milióny ľudí pred budúcimi podvodnými pokusmi.',
+      instructionsTitle: 'Pokyny na vyplnenie formulára',
+      instruction1: 'Väčšina polí nie je povinná.',
+      instruction1Desc: 'Vyplňte toľko informácií, koľko máte k dispozícii. Čím viac detailov poskytnete, tým efektívnejšie bude vaše hlásenie pri pomáhaní úradom vyšetrovať.',
+      instruction2: 'Polia, ktoré sa nevzťahujú na váš prípad,',
+      instruction2Desc: 'môžu zostať prázdne. Nie každý podvod zahŕňa všetky typy kontaktných informácií alebo finančných údajov.',
+      instruction3: 'Po odoslaní',
+      instruction3Desc: 'dostanete potvrdenie s ID vášho hlásenia. Použite ho na sledovanie stavu vášho hlásenia a poskytnutie dodatočných informácií v prípade potreby.',
+      advancedTechnology: 'Pokročilá technológia',
+      dataProcessingTitle: 'Spracovanie a vizualizácia dát',
+      dataProcessingDesc: 'Naša pokročilá analytická platforma spracováva milióny dátových bodov na identifikáciu vzorov, spojení a vznikajúcich hrozieb v reálnom čase.',
+      advancedAnalytics: 'Pokročilé analýzy',
+      advancedAnalyticsDesc: 'Spracovanie dát v reálnom čase a rozpoznávanie vzorov naprieč miliónmi hlásení.',
+      visualReports: 'Vizuálne reporty',
+      visualReportsDesc: 'Jasné vizualizácie, ktoré pomáhajú identifikovať trendy a spojenia.',
+      trendAnalysis: 'Analýza trendov',
+      trendAnalysisDesc: 'Sledujte vývoj podvodov a vznikajúce podvodné vzory v čase.',
+      geographicMapping: 'Geografické mapovanie',
+      geographicMappingDesc: 'Analýza založená na polohe na identifikáciu regionálnych ohnísk podvodov.',
+      intelligenceCapabilities: 'Spravodajské schopnosti',
+      osintTitle: 'Pokročilá OSINT a spravodajská prax',
+      osintDesc: 'ScamNemesis využíva sofistikované techniky Open Source Intelligence (OSINT) na sledovanie, identifikáciu a odhaľovanie podvodníkov v digitálnom prostredí. Náš spravodajský tím používa pokročilé nástroje a metodológie na odhaľovanie skrytých spojení.',
+      osintFeature1: 'Krížové referencie dát z viac ako 130 globálnych zdrojov',
+      osintFeature2: 'Identifikácia falošných identít a schránkových spoločností',
+      osintFeature3: 'Sledovanie kryptomenových transakcií a peňaženiek',
+      osintFeature4: 'Monitorovanie trhov a fór na dark webe',
+      osintFeature5: 'Analýza digitálnych stôp a vzorov na sociálnych sieťach',
+      deepWebAnalysis: 'Analýza deep webu',
+      deepWebAnalysisDesc: 'Pokročilé možnosti vyhľadávania naprieč povrchovým a hlbokým webom.',
+      networkMapping: 'Mapovanie sietí',
+      networkMappingDesc: 'Identifikácia spojení medzi podvodníkmi a kriminálnymi sieťami.',
+      digitalFootprint: 'Digitálna stopa',
+      digitalFootprintDesc: 'Sledovanie digitálnych stôp a identifikácia skrytých identít.',
+      dataSources130: '130+ zdrojov dát',
+      dataSources130Desc: 'Prístup ku komplexným globálnym databázam a spravodajským kanálom.',
+      communityPower: 'Sila komunity',
+      communityTitle: 'Zapojenie komunity a interaktívne hlásenie',
+      communityDesc: 'Pripojte sa ku globálnej komunite bojovníkov proti podvodom. Vaše hlásenia prispievajú ku kolektívnemu obrannému systému, ktorý chráni milióny ľudí po celom svete.',
+      interactiveReports: 'Interaktívne reporty',
+      interactiveReportsDesc: 'Komentujte, aktualizujte a spolupracujte na vyšetrovaní podvodov.',
+      communityVerification: 'Overenie komunitou',
+      communityVerificationDesc: 'Crowdsourcingové overovanie zlepšuje presnosť hlásení.',
+      reputationSystem: 'Reputačný systém',
+      reputationSystemDesc: 'Dôveryhodní nahlasujúci získavajú odznaky a zvýšenú viditeľnosť.',
+      watchlists: 'Zoznamy sledovaných',
+      watchlistsDesc: 'Sledujte konkrétne entity a dostávajte upozornenia na novú aktivitu.',
+      globalNetwork: 'Globálna sieť',
+      partnersTitle: 'Zdieľanie dát s partnermi a vyšetrovateľmi',
+      partnersDesc: 'Váš report sa dostane k sieti dôveryhodných partnerov oddaných boju proti podvodom. Spolupracujeme s orgánmi činnými v trestnom konaní, finančnými inštitúciami a bezpečnostnými expertmi po celom svete.',
+      lawEnforcement: 'Orgány činné v trestnom konaní',
+      lawEnforcementDesc: 'Policajné oddelenia, jednotky kybernetickej kriminality a medzinárodné agentúry.',
+      regulatoryBodies: 'Regulačné orgány',
+      regulatoryBodiesDesc: 'Finanční regulátori, agentúry na ochranu spotrebiteľa a vládne orgány.',
+      financialInstitutions: 'Finančné inštitúcie',
+      financialInstitutionsDesc: 'Banky, spracovatelia platieb a kryptomenové burzy.',
+      securityCompanies: 'Bezpečnostné spoločnosti',
+      securityCompaniesDesc: 'Firmy v oblasti kybernetickej bezpečnosti, služby prevencie podvodov a vyšetrovatelia.',
+      privacyProtected: 'Vaše súkromie je chránené',
+      privacyProtectedDesc: 'Anonymizujeme osobné informácie pred zdieľaním hlásení s partnermi. Zdieľané sú len relevantné detaily podvodu na ochranu vášho súkromia pri maximalizácii efektívnosti vyšetrovania.',
+      victimSupport: 'Podpora obetí',
+      scamRecovery: 'Obnova po podvode',
+      scamRecoveryDesc: 'Byť podvedený je stresujúce, ale existujú kroky, ktoré môžete podniknúť na minimalizáciu škody a prípadné získanie strát späť. Postupujte podľa týchto pokynov pre najlepšiu šancu na obnovu.',
+      reportImmediately: 'Okamžite nahláste',
+      reportImmediatelyDesc: 'Čas je rozhodujúci. Odošlite svoje hlásenie čo najskôr, aby ste zvýšili šance na obnovu.',
+      documentEverything: 'Zdokumentujte všetko',
+      documentEverythingDesc: 'Uložte všetku komunikáciu, transakcie a dôkazy súvisiace s podvodom.',
+      contactBank: 'Kontaktujte svoju banku',
+      contactBankDesc: 'Okamžite upozornite svoju finančnú inštitúciu na zmrazenie účtov a zrušenie transakcií.',
+      fileOfficialReports: 'Podajte oficiálne hlásenia',
+      fileOfficialReportsDesc: 'Nahláste miestnej polícii, IC3, FTC a príslušným úradom vo vašej jurisdikcii.',
+      monitorAccounts: 'Sledujte svoje účty',
+      monitorAccountsDesc: 'Sledujte neautorizovanú aktivitu a zvážte služby monitorovania kreditu.',
+      seekProfessionalHelp: 'Vyhľadajte odbornú pomoc',
+      seekProfessionalHelpDesc: 'Zvážte konzultáciu so špecialistami na obnovu po podvodoch a právnymi profesionálmi.',
+      bewareRecoveryScams: 'Pozor na podvody s obnovou',
+      bewareRecoveryScamsDesc: 'Bohužiaľ, podvodníci často opäť cieľujú na obete podvodov s falošnými "službami obnovy", ktoré sľubujú získanie stratených prostriedkov za poplatok vopred. Legitímne služby obnovy a orgány činné v trestnom konaní nikdy nevyžadujú platbu vopred. Buďte mimoriadne opatrní pri nevyžiadaných ponukách na pomoc s vrátením vašich peňazí.',
+      getInTouch: 'Kontaktujte nás',
+      contactTitle: 'Kontaktujte ScamNemesis',
+      contactDesc: 'Máte otázky, potrebujete pomoc alebo chcete nahlásiť ďalšie informácie? Náš tím je tu, aby vám pomohol.',
+      emailUs: 'Napíšte nám',
+      helpCenter: 'Centrum pomoci',
+      faqsGuides: 'Časté otázky a príručky',
+      secureCommunication: 'Bezpečná komunikácia',
+      responseTime: 'Odpoveď do 24 hodín',
+      worldwideSupport: 'Celosvetová podpora',
+      readyToReport: 'Pripravení nahlásiť podvod?',
+      readyToReportDesc: 'Vaše hlásenie robí rozdiel. Pomôžte chrániť ostatných zdieľaním vašej skúsenosti a prispením do našej globálnej databázy podvodov.',
+      startReportNow: 'Začať hlásenie teraz',
+      searchOurDatabase: 'Prehľadať našu databázu',
+      step: 'Krok',
+    },
+    cs: {
+      trustedPlatform: 'Důvěryhodná platforma',
+      secureConfidential: 'Bezpečné a důvěrné',
+      records: '612M+ záznamů',
+      heroTitle: 'Kde nahlásit',
+      heroTitleHighlight: 'podvodníky?',
+      heroDesc: 'ScamNemesis pomáhá obětem nahlásit podvodníky, získat zpět ztracené peníze a chránit ostatní před podvody. Naše platforma vás spojuje s úřady, vyšetřovateli a globální komunitou oddanou boji proti podvodům.',
+      startReport: 'Zahájit hlášení',
+      searchDatabase: 'Prohledat databázi',
+      statsRecords: 'Záznamů',
+      statsDataSources: 'Zdrojů dat',
+      statsPartners: 'Partnerů',
+      statsMonitoring: 'Monitoring',
+      whatHappensTitle: 'Co se stane po odeslání?',
+      whatHappensDesc: 'Vyplněním formuláře poskytnete podrobné informace, které nahlásíme příslušným úřadům a sestavíme do přehledně strukturovaného PDF reportu. Váš report pomáhá budovat komplexní databázi, která chrání ostatní před stejnými podvodníky.',
+      pdfGenerated: 'PDF report vygenerován',
+      pdfGeneratedDesc: 'Obdržíte profesionálně strukturované PDF shrnutí vašeho hlášení, které můžete sdílet s úřady a právními profesionály.',
+      sharedAuthorities: 'Sdíleno s úřady',
+      sharedAuthoritiesDesc: 'Váš report je automaticky přeposlán relevantním orgánům činným v trestním řízení, regulátorům a organizacím pro prevenci podvodů.',
+      addedToDatabase: 'Přidáno do databáze',
+      addedToDatabaseDesc: 'Detaily podvodníka jsou přidány do naší globální databáze, čímž pomáhají chránit miliony lidí před budoucími podvodnými pokusy.',
+      instructionsTitle: 'Pokyny k vyplnění formuláře',
+      instruction1: 'Většina polí není povinná.',
+      instruction1Desc: 'Vyplňte tolik informací, kolik máte k dispozici. Čím více detailů poskytnete, tím efektivnější bude vaše hlášení při pomoci úřadům vyšetřovat.',
+      instruction2: 'Pole, která se nevztahují na váš případ,',
+      instruction2Desc: 'mohou zůstat prázdná. Ne každý podvod zahrnuje všechny typy kontaktních informací nebo finančních údajů.',
+      instruction3: 'Po odeslání',
+      instruction3Desc: 'obdržíte potvrzení s ID vašeho hlášení. Použijte ho ke sledování stavu vašeho hlášení a poskytnutí dodatečných informací v případě potřeby.',
+      advancedTechnology: 'Pokročilá technologie',
+      dataProcessingTitle: 'Zpracování a vizualizace dat',
+      dataProcessingDesc: 'Naše pokročilá analytická platforma zpracovává miliony datových bodů k identifikaci vzorů, spojení a vznikajících hrozeb v reálném čase.',
+      advancedAnalytics: 'Pokročilé analýzy',
+      advancedAnalyticsDesc: 'Zpracování dat v reálném čase a rozpoznávání vzorů napříč miliony hlášení.',
+      visualReports: 'Vizuální reporty',
+      visualReportsDesc: 'Jasné vizualizace, které pomáhají identifikovat trendy a spojení.',
+      trendAnalysis: 'Analýza trendů',
+      trendAnalysisDesc: 'Sledujte vývoj podvodů a vznikající podvodné vzory v čase.',
+      geographicMapping: 'Geografické mapování',
+      geographicMappingDesc: 'Analýza založená na poloze k identifikaci regionálních ohnisek podvodů.',
+      intelligenceCapabilities: 'Zpravodajské schopnosti',
+      osintTitle: 'Pokročilá OSINT a zpravodajská praxe',
+      osintDesc: 'ScamNemesis využívá sofistikované techniky Open Source Intelligence (OSINT) ke sledování, identifikaci a odhalování podvodníků v digitálním prostředí. Náš zpravodajský tým používá pokročilé nástroje a metodologie k odhalování skrytých spojení.',
+      osintFeature1: 'Křížové reference dat z více než 130 globálních zdrojů',
+      osintFeature2: 'Identifikace falešných identit a schránkových společností',
+      osintFeature3: 'Sledování kryptoměnových transakcí a peněženek',
+      osintFeature4: 'Monitoring trhů a fór na dark webu',
+      osintFeature5: 'Analýza digitálních stop a vzorů na sociálních sítích',
+      deepWebAnalysis: 'Analýza deep webu',
+      deepWebAnalysisDesc: 'Pokročilé možnosti vyhledávání napříč povrchovým a hlubokým webem.',
+      networkMapping: 'Mapování sítí',
+      networkMappingDesc: 'Identifikace spojení mezi podvodníky a kriminálními sítěmi.',
+      digitalFootprint: 'Digitální stopa',
+      digitalFootprintDesc: 'Sledování digitálních stop a identifikace skrytých identit.',
+      dataSources130: '130+ zdrojů dat',
+      dataSources130Desc: 'Přístup ke komplexním globálním databázím a zpravodajským kanálům.',
+      communityPower: 'Síla komunity',
+      communityTitle: 'Zapojení komunity a interaktivní hlášení',
+      communityDesc: 'Připojte se ke globální komunitě bojovníků proti podvodům. Vaše hlášení přispívají ke kolektivnímu obrannému systému, který chrání miliony lidí po celém světě.',
+      interactiveReports: 'Interaktivní reporty',
+      interactiveReportsDesc: 'Komentujte, aktualizujte a spolupracujte na vyšetřování podvodů.',
+      communityVerification: 'Ověření komunitou',
+      communityVerificationDesc: 'Crowdsourcingové ověřování zlepšuje přesnost hlášení.',
+      reputationSystem: 'Reputační systém',
+      reputationSystemDesc: 'Důvěryhodní nahlašující získávají odznaky a zvýšenou viditelnost.',
+      watchlists: 'Seznamy sledovaných',
+      watchlistsDesc: 'Sledujte konkrétní entity a dostávejte upozornění na novou aktivitu.',
+      globalNetwork: 'Globální síť',
+      partnersTitle: 'Sdílení dat s partnery a vyšetřovateli',
+      partnersDesc: 'Váš report se dostane k síti důvěryhodných partnerů oddaných boji proti podvodům. Spolupracujeme s orgány činnými v trestním řízení, finančními institucemi a bezpečnostními experty po celém světě.',
+      lawEnforcement: 'Orgány činné v trestním řízení',
+      lawEnforcementDesc: 'Policejní oddělení, jednotky kybernetické kriminality a mezinárodní agentury.',
+      regulatoryBodies: 'Regulační orgány',
+      regulatoryBodiesDesc: 'Finanční regulátoři, agentury na ochranu spotřebitele a vládní orgány.',
+      financialInstitutions: 'Finanční instituce',
+      financialInstitutionsDesc: 'Banky, zpracovatelé plateb a kryptoměnové burzy.',
+      securityCompanies: 'Bezpečnostní společnosti',
+      securityCompaniesDesc: 'Firmy v oblasti kybernetické bezpečnosti, služby prevence podvodů a vyšetřovatelé.',
+      privacyProtected: 'Vaše soukromí je chráněno',
+      privacyProtectedDesc: 'Anonymizujeme osobní informace před sdílením hlášení s partnery. Sdíleny jsou pouze relevantní detaily podvodu k ochraně vašeho soukromí při maximalizaci efektivity vyšetřování.',
+      victimSupport: 'Podpora obětí',
+      scamRecovery: 'Obnova po podvodu',
+      scamRecoveryDesc: 'Být podveden je stresující, ale existují kroky, které můžete podniknout k minimalizaci škody a případnému získání ztrát zpět. Postupujte podle těchto pokynů pro nejlepší šanci na obnovu.',
+      reportImmediately: 'Okamžitě nahlaste',
+      reportImmediatelyDesc: 'Čas je rozhodující. Odešlete své hlášení co nejdříve, abyste zvýšili šance na obnovu.',
+      documentEverything: 'Zdokumentujte vše',
+      documentEverythingDesc: 'Uložte veškerou komunikaci, transakce a důkazy související s podvodem.',
+      contactBank: 'Kontaktujte svou banku',
+      contactBankDesc: 'Okamžitě upozorněte svou finanční instituci na zmrazení účtů a zrušení transakcí.',
+      fileOfficialReports: 'Podejte oficiální hlášení',
+      fileOfficialReportsDesc: 'Nahlaste místní policii, IC3, FTC a příslušným úřadům ve vaší jurisdikci.',
+      monitorAccounts: 'Sledujte své účty',
+      monitorAccountsDesc: 'Sledujte neautorizovanou aktivitu a zvažte služby monitorování kreditu.',
+      seekProfessionalHelp: 'Vyhledejte odbornou pomoc',
+      seekProfessionalHelpDesc: 'Zvažte konzultaci se specialisty na obnovu po podvodech a právními profesionály.',
+      bewareRecoveryScams: 'Pozor na podvody s obnovou',
+      bewareRecoveryScamsDesc: 'Bohužel podvodníci často znovu cílují na oběti podvodů s falešnými "službami obnovy", které slibují získání ztracených prostředků za poplatek předem. Legitimní služby obnovy a orgány činné v trestním řízení nikdy nevyžadují platbu předem. Buďte mimořádně opatrní při nevyžádaných nabídkách na pomoc s vrácením vašich peněz.',
+      getInTouch: 'Kontaktujte nás',
+      contactTitle: 'Kontaktujte ScamNemesis',
+      contactDesc: 'Máte otázky, potřebujete pomoc nebo chcete nahlásit další informace? Náš tým je tu, aby vám pomohl.',
+      emailUs: 'Napište nám',
+      helpCenter: 'Centrum pomoci',
+      faqsGuides: 'Časté otázky a příručky',
+      secureCommunication: 'Bezpečná komunikace',
+      responseTime: 'Odpověď do 24 hodin',
+      worldwideSupport: 'Celosvětová podpora',
+      readyToReport: 'Připraveni nahlásit podvod?',
+      readyToReportDesc: 'Vaše hlášení dělá rozdíl. Pomozte chránit ostatní sdílením vaší zkušenosti a přispěním do naší globální databáze podvodů.',
+      startReportNow: 'Zahájit hlášení nyní',
+      searchOurDatabase: 'Prohledat naši databázi',
+      step: 'Krok',
+    },
+  };
+  return t[locale] || t.en;
+};
+
 // Data Processing Features
 const dataProcessingFeatures = [
   {
@@ -402,6 +855,9 @@ const recoverySteps = [
 
 export default function NewReportPage() {
   const router = useRouter();
+  const params = useParams();
+  const pageLocale = (params?.locale as Locale) || 'en';
+  const pt = getPageTranslations(pageLocale);
   const { translations, locale } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<CompleteReportForm>>({
@@ -1096,27 +1552,25 @@ export default function NewReportPage() {
               <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
                   <Shield className="h-4 w-4" />
-                  Trusted Platform
+                  {pt.trustedPlatform}
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-medium">
                   <Lock className="h-4 w-4" />
-                  Secure & Confidential
+                  {pt.secureConfidential}
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium">
                   <Globe className="h-4 w-4" />
-                  612M+ Records
+                  {pt.records}
                 </span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6">
-                Where to Report{' '}
-                <span className="text-primary">Scammers?</span>
+                {pt.heroTitle}{' '}
+                <span className="text-primary">{pt.heroTitleHighlight}</span>
               </h1>
 
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
-                ScamNemesis helps victims report scammers, recover lost money, and protect others from fraud.
-                Our platform connects you with authorities, investigators, and a global community dedicated to
-                fighting scams.
+                {pt.heroDesc}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -1126,16 +1580,16 @@ export default function NewReportPage() {
                   onClick={() => document.getElementById('report-form')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <FileText className="h-5 w-5 mr-2" />
-                  Start Your Report
+                  {pt.startReport}
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
                   className="w-full sm:w-auto text-base px-8"
-                  onClick={() => router.push('/search')}
+                  onClick={() => router.push(`/${pageLocale}/search`)}
                 >
                   <Search className="h-5 w-5 mr-2" />
-                  Search Database
+                  {pt.searchDatabase}
                 </Button>
               </div>
 
@@ -1143,19 +1597,19 @@ export default function NewReportPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
                 <div className="text-center p-4 rounded-xl bg-card/50 backdrop-blur-sm border">
                   <div className="text-2xl md:text-3xl font-bold text-primary">612M+</div>
-                  <div className="text-sm text-muted-foreground">Records</div>
+                  <div className="text-sm text-muted-foreground">{pt.statsRecords}</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-card/50 backdrop-blur-sm border">
                   <div className="text-2xl md:text-3xl font-bold text-primary">130+</div>
-                  <div className="text-sm text-muted-foreground">Data Sources</div>
+                  <div className="text-sm text-muted-foreground">{pt.statsDataSources}</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-card/50 backdrop-blur-sm border">
                   <div className="text-2xl md:text-3xl font-bold text-primary">50+</div>
-                  <div className="text-sm text-muted-foreground">Partners</div>
+                  <div className="text-sm text-muted-foreground">{pt.statsPartners}</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-card/50 backdrop-blur-sm border">
                   <div className="text-2xl md:text-3xl font-bold text-primary">24/7</div>
-                  <div className="text-sm text-muted-foreground">Monitoring</div>
+                  <div className="text-sm text-muted-foreground">{pt.statsMonitoring}</div>
                 </div>
               </div>
             </div>
@@ -1168,12 +1622,10 @@ export default function NewReportPage() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8 md:mb-12">
                 <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-                  What Happens After You Submit?
+                  {pt.whatHappensTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  By completing the form, you provide detailed information that we report to the relevant
-                  authorities and compile into a clearly structured PDF report. Your report helps build
-                  a comprehensive database that protects others from the same scammers.
+                  {pt.whatHappensDesc}
                 </p>
               </div>
 
@@ -1182,10 +1634,9 @@ export default function NewReportPage() {
                   <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                     <FileText className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">PDF Report Generated</h3>
+                  <h3 className="text-lg font-semibold mb-2">{pt.pdfGenerated}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Receive a professional, structured PDF summary of your report that you can share
-                    with authorities and legal professionals.
+                    {pt.pdfGeneratedDesc}
                   </p>
                 </div>
 
@@ -1193,10 +1644,9 @@ export default function NewReportPage() {
                   <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
                     <Share2 className="h-7 w-7 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Shared with Authorities</h3>
+                  <h3 className="text-lg font-semibold mb-2">{pt.sharedAuthorities}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Your report is automatically forwarded to relevant law enforcement agencies,
-                    regulators, and fraud prevention organizations.
+                    {pt.sharedAuthoritiesDesc}
                   </p>
                 </div>
 
@@ -1204,10 +1654,9 @@ export default function NewReportPage() {
                   <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4">
                     <Database className="h-7 w-7 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Added to Database</h3>
+                  <h3 className="text-lg font-semibold mb-2">{pt.addedToDatabase}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Scammer details are added to our global database, helping protect millions of
-                    people from future fraud attempts.
+                    {pt.addedToDatabaseDesc}
                   </p>
                 </div>
               </div>
@@ -1225,7 +1674,7 @@ export default function NewReportPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="text-xl md:text-2xl font-bold mb-4">
-                    Instructions for Completing the Form
+                    {pt.instructionsTitle}
                   </h2>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
@@ -1234,9 +1683,8 @@ export default function NewReportPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-muted-foreground leading-relaxed">
-                          <span className="font-semibold text-foreground">Most fields are not mandatory.</span>{' '}
-                          Fill in as much information as you have available. The more details you provide,
-                          the more effective your report will be in helping authorities investigate.
+                          <span className="font-semibold text-foreground">{pt.instruction1}</span>{' '}
+                          {pt.instruction1Desc}
                         </p>
                       </div>
                     </div>
@@ -1246,9 +1694,8 @@ export default function NewReportPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-muted-foreground leading-relaxed">
-                          <span className="font-semibold text-foreground">Fields that do not apply to your case</span>{' '}
-                          can be left blank. Not every scam involves all types of contact information or
-                          financial details.
+                          <span className="font-semibold text-foreground">{pt.instruction2}</span>{' '}
+                          {pt.instruction2Desc}
                         </p>
                       </div>
                     </div>
@@ -1258,9 +1705,8 @@ export default function NewReportPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-muted-foreground leading-relaxed">
-                          <span className="font-semibold text-foreground">After submitting,</span>{' '}
-                          you will receive a confirmation with your report ID. Use this to track your
-                          report status and provide additional information if needed.
+                          <span className="font-semibold text-foreground">{pt.instruction3}</span>{' '}
+                          {pt.instruction3Desc}
                         </p>
                       </div>
                     </div>
@@ -1361,19 +1807,23 @@ export default function NewReportPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                   <BarChart3 className="h-4 w-4" />
-                  Advanced Technology
+                  {pt.advancedTechnology}
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                  Data Processing and Visualization
+                  {pt.dataProcessingTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Our advanced analytics platform processes millions of data points to identify patterns,
-                  connections, and emerging threats in real-time.
+                  {pt.dataProcessingDesc}
                 </p>
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {dataProcessingFeatures.map((feature, index) => (
+                {[
+                  { icon: BarChart3, title: pt.advancedAnalytics, description: pt.advancedAnalyticsDesc },
+                  { icon: PieChart, title: pt.visualReports, description: pt.visualReportsDesc },
+                  { icon: LineChart, title: pt.trendAnalysis, description: pt.trendAnalysisDesc },
+                  { icon: MapPin, title: pt.geographicMapping, description: pt.geographicMappingDesc },
+                ].map((feature, index) => (
                   <div
                     key={index}
                     className="group p-6 rounded-2xl bg-card border hover:border-primary/50 hover:shadow-lg transition-all duration-300"
@@ -1400,23 +1850,21 @@ export default function NewReportPage() {
                 <div>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium mb-4">
                     <Search className="h-4 w-4" />
-                    Intelligence Capabilities
+                    {pt.intelligenceCapabilities}
                   </div>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                    Advanced OSINT and Intelligence Practice
+                    {pt.osintTitle}
                   </h2>
                   <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                    ScamNemesis employs sophisticated Open Source Intelligence (OSINT) techniques to
-                    track, identify, and expose scammers across the digital landscape. Our intelligence
-                    team uses advanced tools and methodologies to uncover hidden connections.
+                    {pt.osintDesc}
                   </p>
                   <div className="space-y-3">
                     {[
-                      'Cross-reference data from 130+ global sources',
-                      'Identify fake identities and shell companies',
-                      'Track cryptocurrency transactions and wallets',
-                      'Monitor dark web marketplaces and forums',
-                      'Analyze social media footprints and patterns',
+                      pt.osintFeature1,
+                      pt.osintFeature2,
+                      pt.osintFeature3,
+                      pt.osintFeature4,
+                      pt.osintFeature5,
                     ].map((item, index) => (
                       <div key={index} className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -1426,7 +1874,12 @@ export default function NewReportPage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  {osintFeatures.map((feature, index) => (
+                  {[
+                    { icon: Search, title: pt.deepWebAnalysis, description: pt.deepWebAnalysisDesc },
+                    { icon: Network, title: pt.networkMapping, description: pt.networkMappingDesc },
+                    { icon: Fingerprint, title: pt.digitalFootprint, description: pt.digitalFootprintDesc },
+                    { icon: Database, title: pt.dataSources130, description: pt.dataSources130Desc },
+                  ].map((feature, index) => (
                     <div
                       key={index}
                       className="p-5 rounded-xl bg-card border hover:border-primary/50 hover:shadow-md transition-all duration-300"
@@ -1453,19 +1906,23 @@ export default function NewReportPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-medium mb-4">
                   <Users className="h-4 w-4" />
-                  Community Power
+                  {pt.communityPower}
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                  Community Engagement and Interactive Report
+                  {pt.communityTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Join a global community of fraud fighters. Your reports contribute to a collective
-                  defense system that protects millions of people worldwide.
+                  {pt.communityDesc}
                 </p>
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {communityFeatures.map((feature, index) => (
+                {[
+                  { icon: MessageSquare, title: pt.interactiveReports, description: pt.interactiveReportsDesc },
+                  { icon: Users, title: pt.communityVerification, description: pt.communityVerificationDesc },
+                  { icon: TrendingUp, title: pt.reputationSystem, description: pt.reputationSystemDesc },
+                  { icon: Eye, title: pt.watchlists, description: pt.watchlistsDesc },
+                ].map((feature, index) => (
                   <div
                     key={index}
                     className="group p-6 rounded-2xl bg-card border hover:border-green-500/50 hover:shadow-lg transition-all duration-300"
@@ -1491,19 +1948,23 @@ export default function NewReportPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">
                   <Link2 className="h-4 w-4" />
-                  Global Network
+                  {pt.globalNetwork}
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                  Data Sharing with Partners and Investigators
+                  {pt.partnersTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Your report reaches a network of trusted partners dedicated to fighting fraud.
-                  We work with law enforcement, financial institutions, and security experts worldwide.
+                  {pt.partnersDesc}
                 </p>
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {partnerTypes.map((partner, index) => (
+                {[
+                  { icon: Building2, title: pt.lawEnforcement, description: pt.lawEnforcementDesc },
+                  { icon: Scale, title: pt.regulatoryBodies, description: pt.regulatoryBodiesDesc },
+                  { icon: Banknote, title: pt.financialInstitutions, description: pt.financialInstitutionsDesc },
+                  { icon: Shield, title: pt.securityCompanies, description: pt.securityCompaniesDesc },
+                ].map((partner, index) => (
                   <div
                     key={index}
                     className="group p-6 rounded-2xl bg-card border hover:border-purple-500/50 hover:shadow-lg transition-all duration-300"
@@ -1525,11 +1986,9 @@ export default function NewReportPage() {
                     <Lock className="h-7 w-7 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold mb-1">Your Privacy is Protected</h3>
+                    <h3 className="text-lg font-semibold mb-1">{pt.privacyProtected}</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      We anonymize personal information before sharing reports with partners. Only
-                      relevant fraud details are shared to protect your privacy while maximizing
-                      the effectiveness of investigations.
+                      {pt.privacyProtectedDesc}
                     </p>
                   </div>
                 </div>
@@ -1545,15 +2004,13 @@ export default function NewReportPage() {
               <div className="text-center mb-10 md:mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-sm font-medium mb-4">
                   <Heart className="h-4 w-4" />
-                  Victim Support
+                  {pt.victimSupport}
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                  Scam Recovery
+                  {pt.scamRecovery}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Being scammed is stressful, but there are steps you can take to minimize damage
-                  and potentially recover your losses. Follow these guidelines for the best chance
-                  of recovery.
+                  {pt.scamRecoveryDesc}
                 </p>
               </div>
 
@@ -1563,7 +2020,14 @@ export default function NewReportPage() {
                 <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-orange-500/50 via-orange-500/30 to-orange-500/10 transform -translate-x-1/2" />
 
                 <div className="space-y-6 md:space-y-0">
-                  {recoverySteps.map((item, index) => (
+                  {[
+                    { step: 1, title: pt.reportImmediately, description: pt.reportImmediatelyDesc, icon: Clock },
+                    { step: 2, title: pt.documentEverything, description: pt.documentEverythingDesc, icon: FileCheck },
+                    { step: 3, title: pt.contactBank, description: pt.contactBankDesc, icon: Banknote },
+                    { step: 4, title: pt.fileOfficialReports, description: pt.fileOfficialReportsDesc, icon: FileText },
+                    { step: 5, title: pt.monitorAccounts, description: pt.monitorAccountsDesc, icon: Eye },
+                    { step: 6, title: pt.seekProfessionalHelp, description: pt.seekProfessionalHelpDesc, icon: UserCheck },
+                  ].map((item, index) => (
                     <div
                       key={index}
                       className={`relative flex flex-col md:flex-row items-start gap-4 md:gap-8 ${
@@ -1598,7 +2062,7 @@ export default function NewReportPage() {
                           {item.step}
                         </div>
                         <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                          Step {item.step}
+                          {pt.step} {item.step}
                         </span>
                       </div>
 
@@ -1615,12 +2079,9 @@ export default function NewReportPage() {
                     <AlertTriangle className="h-7 w-7 text-orange-600 dark:text-orange-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold mb-2">Beware of Recovery Scams</h3>
+                    <h3 className="text-lg font-semibold mb-2">{pt.bewareRecoveryScams}</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Unfortunately, scammers often target fraud victims again with fake &quot;recovery services&quot;
-                      that promise to retrieve lost funds for an upfront fee. Legitimate recovery services
-                      and law enforcement agencies will never ask for payment upfront. Be extremely cautious
-                      of unsolicited offers to help recover your money.
+                      {pt.bewareRecoveryScamsDesc}
                     </p>
                   </div>
                 </div>
@@ -1635,14 +2096,13 @@ export default function NewReportPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                 <Mail className="h-4 w-4" />
-                Get in Touch
+                {pt.getInTouch}
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                Contact ScamNemesis
+                {pt.contactTitle}
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-                Have questions, need assistance, or want to report additional information?
-                Our team is here to help you.
+                {pt.contactDesc}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto mb-8">
@@ -1654,22 +2114,22 @@ export default function NewReportPage() {
                     <Mail className="h-6 w-6 text-primary" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold">Email Us</div>
+                    <div className="font-semibold">{pt.emailUs}</div>
                     <div className="text-sm text-muted-foreground">info@scamnemesis.com</div>
                   </div>
                   <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
                 </a>
 
                 <Link
-                  href="/help"
+                  href={`/${pageLocale}/help`}
                   className="flex items-center justify-center gap-3 p-6 rounded-2xl bg-card border hover:border-primary/50 hover:shadow-lg transition-all duration-300 group"
                 >
                   <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
                     <HelpCircle className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold">Help Center</div>
-                    <div className="text-sm text-muted-foreground">FAQs & Guides</div>
+                    <div className="font-semibold">{pt.helpCenter}</div>
+                    <div className="text-sm text-muted-foreground">{pt.faqsGuides}</div>
                   </div>
                   <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors ml-auto" />
                 </Link>
@@ -1678,15 +2138,15 @@ export default function NewReportPage() {
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                   <ShieldCheck className="h-4 w-4 text-green-500" />
-                  Secure Communication
+                  {pt.secureCommunication}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4 text-blue-500" />
-                  Response within 24 hours
+                  {pt.responseTime}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Globe className="h-4 w-4 text-purple-500" />
-                  Worldwide Support
+                  {pt.worldwideSupport}
                 </span>
               </div>
             </div>
@@ -1698,11 +2158,10 @@ export default function NewReportPage() {
           <div className="container">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-                Ready to Report a Scam?
+                {pt.readyToReport}
               </h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Your report makes a difference. Help protect others by sharing your experience
-                and contributing to our global fraud database.
+                {pt.readyToReportDesc}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
@@ -1711,16 +2170,16 @@ export default function NewReportPage() {
                   onClick={() => document.getElementById('report-form')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <FileText className="h-5 w-5 mr-2" />
-                  Start Your Report Now
+                  {pt.startReportNow}
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
                   className="w-full sm:w-auto text-base px-8"
-                  onClick={() => router.push('/search')}
+                  onClick={() => router.push(`/${pageLocale}/search`)}
                 >
                   <Search className="h-5 w-5 mr-2" />
-                  Search Our Database
+                  {pt.searchOurDatabase}
                 </Button>
               </div>
             </div>
