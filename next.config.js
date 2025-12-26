@@ -99,6 +99,34 @@ const nextConfig = {
     ].join('; ');
 
     return [
+      // API Documentation - noindex + private cache
+      {
+        source: '/docs/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'private, no-store',
+          },
+        ],
+      },
+      {
+        source: '/api/docs/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'private, max-age=300',
+          },
+        ],
+      },
+      // Global security headers
       {
         source: '/:path*',
         headers: [
