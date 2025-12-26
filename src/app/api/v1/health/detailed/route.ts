@@ -55,6 +55,13 @@ interface HealthCheckResult {
       status: 'ok' | 'not_configured';
       warning?: string;
     };
+    auth: {
+      status: 'ok' | 'error';
+      jwt_secret?: boolean;
+      jwt_refresh_secret?: boolean;
+      auth_secret?: boolean;
+      error?: string;
+    };
   };
   version: string;
   environment: string;
@@ -70,6 +77,7 @@ export async function GET() {
       tables: { status: 'ok', details: {} },
       redis: { status: 'not_configured' },
       email: { status: 'ok' },
+      auth: { status: 'ok' },
     },
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
@@ -157,6 +165,26 @@ export async function GET() {
     if (result.status === 'healthy') {
       result.status = 'degraded';
     }
+  }
+
+  // Check Authentication configuration (CRITICAL)
+  const jwtSecret = process.env.JWT_SECRET;
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
+  const authSecret = process.env.AUTH_SECRET;
+
+  result.checks.auth.jwt_secret = !!(jwtSecret && jwtSecret.length >= 32);
+  result.checks.auth.jwt_refresh_secret = !!(jwtRefreshSecret && jwtRefreshSecret.length >= 32);
+  result.checks.auth.auth_secret = !!(authSecret && authSecret.length >= 32);
+
+  const missingSecrets: string[] = [];
+  if (!result.checks.auth.jwt_secret) missingSecrets.push('JWT_SECRET');
+  if (!result.checks.auth.jwt_refresh_secret) missingSecrets.push('JWT_REFRESH_SECRET');
+  if (!result.checks.auth.auth_secret) missingSecrets.push('AUTH_SECRET');
+
+  if (missingSecrets.length > 0) {
+    result.checks.auth.status = 'error';
+    result.checks.auth.error = `Missing or invalid secrets (must be 32+ chars): ${missingSecrets.join(', ')}`;
+    result.status = 'unhealthy';
   }
 
   // Determine HTTP status code
