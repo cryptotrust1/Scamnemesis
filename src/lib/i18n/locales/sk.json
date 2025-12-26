@@ -1446,6 +1446,125 @@
         "scamChecker": "Použiť kontrolu podvodov",
         "contact": "Kontaktujte nás"
       }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Pristupujte k databáze podvodov programovo. Naše API poskytuje bezpečný prístup k schváleným hlásenia podvodov pre vašu aplikáciu alebo službu.",
+      "features": {
+        "fraudData": {
+          "title": "Dáta o podvodoch",
+          "description": "Pristupujte k tisícom schválených hlásení podvodov s detailnými informáciami."
+        },
+        "secureApi": {
+          "title": "Bezpečné API",
+          "description": "API kľúče s obmedzenými scope, rate limiting a šifrovaná komunikácia."
+        },
+        "fastResponses": {
+          "title": "Rýchle odpovede",
+          "description": "Optimalizované endpointy s priemernou odozvou pod 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Štandardné REST API s JSON odpoveďami. Jednoduché použitie v akomkoľvek jazyku."
+        }
+      },
+      "quickStart": {
+        "title": "Rýchly štart",
+        "description": "Začnite používať API za pár minút",
+        "step1": {
+          "title": "1. Získajte API kľúč",
+          "description": "Kontaktujte nás na",
+          "descriptionEnd": "pre získanie partnerskej zmluvy a API kľúča."
+        },
+        "step2": {
+          "title": "2. Autentifikácia",
+          "description": "Použite váš API kľúč v hlavičke"
+        },
+        "step3": {
+          "title": "3. Váš prvý request"
+        },
+        "codeComment": "// JavaScript / Node.js príklad",
+        "arrayComment": "// Pole reportov"
+      },
+      "apiReference": {
+        "title": "API Referencia",
+        "description": "Kompletná dokumentácia všetkých endpointov",
+        "tabs": {
+          "reports": "Reports",
+          "search": "Search",
+          "stats": "Stats"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Získajte zoznam schválených hlásení podvodov. Citlivé dáta sú maskované.",
+          "queryParams": "Query parametre",
+          "columns": {
+            "parameter": "Parameter",
+            "type": "Typ",
+            "description": "Popis"
+          },
+          "params": {
+            "limit": "Počet výsledkov (1-100, default: 20)",
+            "offset": "Offset pre stránkovanie",
+            "fraudType": "Filter podľa typu podvodu",
+            "country": "Filter podľa krajiny (ISO 3166-1 alpha-2)",
+            "dateFrom": "Filter od dátumu",
+            "dateTo": "Filter do dátumu"
+          },
+          "exampleResponse": "Príklad odpovede"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Vyhľadávajte v databáze podvodov podľa emailu, telefónu, IBAN, webstránky alebo mena.",
+          "queryParams": "Query parametre",
+          "params": {
+            "q": "Vyhľadávací výraz (min. 3 znaky)",
+            "qRequired": "povinný",
+            "field": "Pole na vyhľadávanie: email, phone, iban, website, name, all"
+          },
+          "example": "Príklad"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Získajte agregované štatistiky o podvodoch - počty, typy, krajiny, finančné straty.",
+          "exampleResponse": "Príklad odpovede"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API má nastavené limity na ochranu pred zneužitím:",
+        "columns": {
+          "endpoint": "Endpoint",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 req/hod",
+          "search": "50 req/hod",
+          "stats": "100 req/hod"
+        },
+        "note": "Pri prekročení dostanete HTTP 429. Skontrolujte hlavičky"
+      },
+      "errors": {
+        "title": "Chybové odpovede",
+        "columns": {
+          "code": "Kód",
+          "description": "Popis"
+        },
+        "codes": {
+          "400": "Neplatný request (validation error)",
+          "401": "Chýba alebo neplatný API kľúč",
+          "403": "Nedostatočné oprávnenia (scope)",
+          "429": "Rate limit prekročený",
+          "500": "Interná chyba servera"
+        }
+      },
+      "cta": {
+        "title": "Chcete sa stať partnerom?",
+        "description": "Ak máte záujem o integráciu našej databázy podvodov do vašej služby, kontaktujte nás pre získanie API kľúča a partnerskej zmluvy.",
+        "contactButton": "Kontaktujte nás",
+        "swaggerButton": "Swagger dokumentácia"
+      }
     }
   }
 }

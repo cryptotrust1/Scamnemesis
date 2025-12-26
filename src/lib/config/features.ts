@@ -26,7 +26,8 @@ export const FEATURES = {
   /**
    * Partner Widgets
    *
-   * ENABLE_PARTNER_WIDGETS: 'true' to enable widget features (default: false)
+   * ENABLE_PARTNER_WIDGETS: 'true' to enable, 'false' to disable
+   * Default: enabled in development, disabled in production
    *
    * When enabled:
    * - /dashboard/widgets page is accessible
@@ -36,7 +37,10 @@ export const FEATURES = {
    */
   PARTNER_WIDGETS: {
     /** Whether partner widgets feature is enabled */
-    enabled: process.env.ENABLE_PARTNER_WIDGETS === 'true',
+    enabled:
+      process.env.ENABLE_PARTNER_WIDGETS === 'true' ||
+      (process.env.ENABLE_PARTNER_WIDGETS !== 'false' &&
+        process.env.NODE_ENV === 'development'),
     /** Maximum widgets per user */
     maxWidgetsPerUser: 10,
     /** Default rate limit for widget embed requests */
