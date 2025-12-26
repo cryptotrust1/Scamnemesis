@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Shield, Loader2, Eye, EyeOff, Lock, Key, Check, Copy, Download, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -10,12 +11,13 @@ function QRCodeImage({ value, size = 180 }: { value: string; size?: number }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodedData}`;
 
   return (
-    <img
+    <Image
       src={qrUrl}
       alt="QR Code for authenticator"
       width={size}
       height={size}
       className="mx-auto"
+      unoptimized
     />
   );
 }

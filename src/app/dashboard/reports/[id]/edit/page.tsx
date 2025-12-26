@@ -37,7 +37,7 @@ const fraudTypes = [
 export default function EditReportPage() {
   const router = useRouter();
   const params = useParams();
-  const reportId = params.id as string;
+  const reportId = params?.id as string;
 
   const [report, setReport] = useState<ReportData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
