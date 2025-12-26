@@ -16,6 +16,7 @@ import {
   getScopesForRole,
   needsHashUpgrade,
   hashPassword,
+  generate2FATempToken,
 } from '@/lib/auth/jwt';
 import { setAuthCookies } from '@/lib/auth/cookies';
 import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
@@ -248,11 +249,8 @@ export async function POST(request: NextRequest) {
         // Clear failed attempts since password was correct
         await clearFailedAttempts(data.email);
 
-        // Generate temporary token for 2FA verification (5 minute expiry)
-        const tempToken = Buffer.from(JSON.stringify({
-          userId: user.id,
-          exp: Date.now() + 5 * 60 * 1000, // 5 minutes
-        })).toString('base64');
+        // Generate signed temporary token for 2FA verification (5 minute expiry)
+        const tempToken = await generate2FATempToken(user.id);
 
         // Log 2FA required
         await prisma.auditLog.create({

@@ -385,6 +385,63 @@ export async function generatePasswordResetToken(
 }
 
 /**
+ * Generate a short-lived 2FA temp token for login flow
+ * This token is issued after successful password verification
+ * and before 2FA code verification
+ *
+ * @param userId - User ID
+ * @param expiresIn - Token expiration time (default: 5m)
+ * @returns Signed JWT token
+ */
+export async function generate2FATempToken(
+  userId: string,
+  expiresIn: string = '5m'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    type: '2fa_temp',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Verify a 2FA temp token
+ *
+ * @param token - Token to verify
+ * @returns User ID or null if invalid/expired
+ */
+export async function verify2FATempToken(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      issuer: JWT_ISSUER,
+    });
+
+    if (payload.type !== '2fa_temp') {
+      console.warn('[JWT] 2FA temp token type mismatch');
+      return null;
+    }
+
+    return payload.sub as string;
+  } catch (error) {
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      if (errorMessage.includes('expired')) {
+        console.warn('[JWT] 2FA temp token expired');
+      } else {
+        console.warn(`[JWT] 2FA temp token verification failed: ${error.message}`);
+      }
+    }
+    return null;
+  }
+}
+
+/**
  * Verify a special-purpose token (email verification, password reset)
  *
  * @param token - Token to verify
