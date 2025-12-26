@@ -181,6 +181,9 @@ model User {
   // Enrichment Relations
   reviewedEnrichments Enrichment[]
 
+  // Widget Relations
+  widgets          Widget[]
+
   @@map("users")
 }
 
@@ -225,6 +228,54 @@ model ApiKey {
   @@index([isActive, expiresAt])
   @@index([organization])
   @@map("api_keys")
+}
+
+// ==================== EMBEDDABLE WIDGETS ====================
+
+enum WidgetTheme {
+  LIGHT
+  DARK
+}
+
+enum WidgetSearchMode {
+  AUTO
+  FUZZY
+  EXACT
+}
+
+model Widget {
+  id                    String           @id @default(uuid())
+  userId                String           @map("user_id")
+  name                  String
+
+  // Locale & Theme
+  locale                String           @default("en")  // en, sk, cs, de
+  theme                 WidgetTheme      @default(LIGHT)
+
+  // Customization
+  primaryColor          String           @default("#4f46e5") @map("primary_color")
+  backgroundColor       String           @default("#ffffff") @map("background_color")
+  textColor             String           @default("#1f2937") @map("text_color")
+  borderRadius          Int              @default(8) @map("border_radius")  // in pixels
+
+  // Behavior
+  showReportButton      Boolean          @default(true) @map("show_report_button")
+  showAdvancedByDefault Boolean          @default(false) @map("show_advanced_by_default")
+  defaultSearchMode     WidgetSearchMode @default(AUTO) @map("default_search_mode")
+
+  // Status
+  isActive              Boolean          @default(true) @map("is_active")
+
+  // Timestamps
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("widgets")
 }
 
 model RefreshToken {

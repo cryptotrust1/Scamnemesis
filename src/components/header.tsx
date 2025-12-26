@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, ChevronDown, Globe, User, LogOut, Settings, Shield } from 'lucide-react';
+import { Menu, X, ChevronDown, Globe, User, LogOut, Settings, Shield, Code } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { i18n, type Locale } from '@/i18n/config';
 import { useUser } from '@/lib/auth/user-context';
@@ -40,6 +40,7 @@ const authTranslations = {
     profile: 'Profile',
     settings: 'Settings',
     dashboard: 'Dashboard',
+    widgets: 'Widgets',
   },
   sk: {
     login: 'Prihlásiť sa',
@@ -48,6 +49,7 @@ const authTranslations = {
     profile: 'Profil',
     settings: 'Nastavenia',
     dashboard: 'Prehľad',
+    widgets: 'Widgety',
   },
   cs: {
     login: 'Přihlásit se',
@@ -56,6 +58,7 @@ const authTranslations = {
     profile: 'Profil',
     settings: 'Nastavení',
     dashboard: 'Přehled',
+    widgets: 'Widgety',
   },
   de: {
     login: 'Anmelden',
@@ -64,6 +67,7 @@ const authTranslations = {
     profile: 'Profil',
     settings: 'Einstellungen',
     dashboard: 'Dashboard',
+    widgets: 'Widgets',
   },
 };
 
@@ -321,6 +325,14 @@ export function Header() {
                         <Settings className="h-4 w-4 mr-3 text-muted-foreground" />
                         {t.settings}
                       </Link>
+                      <Link
+                        href="/dashboard/widgets"
+                        className="flex items-center px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <Code className="h-4 w-4 mr-3 text-muted-foreground" />
+                        {t.widgets}
+                      </Link>
                     </div>
 
                     {/* Logout */}
@@ -405,6 +417,14 @@ export function Header() {
                     >
                       <User className="h-5 w-5 mr-3 text-muted-foreground" />
                       {t.profile}
+                    </Link>
+                    <Link
+                      href="/dashboard/widgets"
+                      className="flex items-center px-4 py-3 text-base font-medium text-foreground hover:bg-muted rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Code className="h-5 w-5 mr-3 text-muted-foreground" />
+                      {t.widgets}
                     </Link>
                     <button
                       onClick={handleLogout}
