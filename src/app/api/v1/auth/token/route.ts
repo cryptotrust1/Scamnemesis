@@ -48,7 +48,11 @@ export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
   const log = createRequestLogger(requestId, 'AuthToken');
 
+  // Track which step we're on for debugging 500 errors
+  let currentStep = 'init';
+
   try {
+    currentStep = 'rate-limiting';
     // Rate limiting to prevent brute force attacks
     const ip = getClientIp(request);
     const rateLimitKey = getRateLimitKey('token', ip);
@@ -73,6 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'parse-body';
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
 
@@ -89,6 +94,7 @@ export async function POST(request: NextRequest) {
     const data = parsed.data;
 
     if (data.grant_type === 'password') {
+      currentStep = 'check-lock-status';
       // SECURITY: Check if account is locked due to brute force
       const lockStatus = await isAccountLocked(data.email);
       if (lockStatus.locked) {
@@ -111,6 +117,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      currentStep = 'find-user';
       // Password authentication
       const user = await prisma.user.findUnique({
         where: { email: data.email.toLowerCase() },
@@ -184,6 +191,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      currentStep = 'verify-password';
       const validPassword = await verifyPassword(data.password, user.passwordHash);
 
       if (!validPassword) {
@@ -302,6 +310,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      currentStep = 'generate-tokens';
       // Get scopes for role
       const scopes = getScopesForRole(user.role);
 
@@ -457,14 +466,19 @@ export async function POST(request: NextRequest) {
       return response;
     }
   } catch (error) {
+    // Log detailed error with the step where it failed
     log.error('Auth error', {
+      step: currentStep,
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     });
 
+    // Also log to console for easier debugging
+    console.error(`[Login] FAILED at step '${currentStep}':`, error);
+
     Sentry.captureException(error, {
-      tags: { api: 'auth', method: 'POST', endpoint: 'token' },
-      extra: { requestId },
+      tags: { api: 'auth', method: 'POST', endpoint: 'token', step: currentStep },
+      extra: { requestId, failedStep: currentStep },
     });
 
     return NextResponse.json(
@@ -472,6 +486,8 @@ export async function POST(request: NextRequest) {
         error: 'internal_error',
         message: 'An unexpected error occurred',
         request_id: requestId,
+        // Include step in response for debugging (remove in production if sensitive)
+        debug_step: currentStep,
       },
       { status: 500 }
     );

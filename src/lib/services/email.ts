@@ -23,11 +23,20 @@ function escapeHtml(text: string): string {
   return text.replace(/[&<>"'`=/]/g, (char) => htmlEntities[char]);
 }
 
-// Initialize Resend client
+// Initialize Resend client with error handling to prevent module load failures
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const resend = RESEND_API_KEY && RESEND_API_KEY.trim() !== ''
-  ? new Resend(RESEND_API_KEY)
-  : null;
+let resend: Resend | null = null;
+let resendInitError: string | null = null;
+
+try {
+  if (RESEND_API_KEY && RESEND_API_KEY.trim() !== '') {
+    resend = new Resend(RESEND_API_KEY);
+  }
+} catch (error) {
+  resendInitError = error instanceof Error ? error.message : String(error);
+  console.error('[Email] CRITICAL: Failed to initialize Resend client:', error);
+  // resend remains null, emails will be disabled but app won't crash
+}
 
 // Validate API key format
 const isValidApiKeyFormat = RESEND_API_KEY?.startsWith('re_') ?? false;
@@ -89,10 +98,14 @@ export async function sendEmail(options: EmailOptions): Promise<SendResult> {
   const timestamp = new Date().toISOString();
 
   if (!resend) {
-    console.warn(`[Email] [${timestamp}] Service not configured. Set RESEND_API_KEY to enable.`);
+    if (resendInitError) {
+      console.error(`[Email] [${timestamp}] Service initialization failed: ${resendInitError}`);
+    } else {
+      console.warn(`[Email] [${timestamp}] Service not configured. Set RESEND_API_KEY to enable.`);
+    }
     console.warn(`[Email] Would have sent to: ${recipients.join(', ')}`);
     console.warn(`[Email] Subject: ${options.subject}`);
-    return { success: false, error: 'Email service not configured. RESEND_API_KEY is missing or empty.' };
+    return { success: false, error: resendInitError || 'Email service not configured. RESEND_API_KEY is missing or empty.' };
   }
 
   // Validate API key format
