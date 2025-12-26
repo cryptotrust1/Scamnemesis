@@ -156,7 +156,35 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const validPassword = await verifyPassword(data.password, user.passwordHash!);
+      // SECURITY: Check if user has a password (OAuth users don't have one)
+      // This prevents crashes when OAuth users try password login
+      if (!user.passwordHash) {
+        // Log OAuth user attempting password login
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              reason: 'oauth_user_no_password',
+              email: data.email,
+              hint: 'User registered via OAuth and has no password set',
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json(
+          {
+            error: 'unauthorized',
+            message: 'Invalid email or password',
+          },
+          { status: 401 }
+        );
+      }
+
+      const validPassword = await verifyPassword(data.password, user.passwordHash);
 
       if (!validPassword) {
         // SECURITY: Record failed attempt for brute force protection

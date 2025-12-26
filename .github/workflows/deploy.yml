@@ -111,6 +111,11 @@ jobs:
             # CRITICAL: AUTH_SECRET must be persistent across deploys for session continuity
             echo "AUTH_SECRET=$(strip_newlines "${AUTH_SECRET:-$(openssl rand -base64 32)}")" >> .env
 
+            # CRITICAL: NEXTAUTH_URL is required for NextAuth.js in production
+            # Must be the full URL (https://domain.com) for OAuth callbacks and session handling
+            echo "NEXTAUTH_URL=https://${DOMAIN_VAL}" >> .env
+            echo "AUTH_TRUST_HOST=true" >> .env
+
             # Debug: Verify critical auth secrets are set
             JWT_SECRET_CLEAN=$(strip_newlines "${JWT_SECRET:-}")
             if [ -z "$JWT_SECRET_CLEAN" ]; then
