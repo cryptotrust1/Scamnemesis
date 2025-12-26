@@ -23,6 +23,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { AdminAuthProvider, useAdminAuth } from '@/lib/admin/auth-context';
+import { I18nProvider } from '@/lib/i18n/context';
+import { useTranslation } from '@/lib/i18n/context';
 
 const sidebarItems = [
   {
@@ -235,10 +237,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AdminAuthProvider>
-      <AdminLayoutContent>
-        {children}
-      </AdminLayoutContent>
-    </AdminAuthProvider>
+    <I18nProvider>
+      <AdminAuthProvider>
+        <AdminLayoutContent>
+          {children}
+        </AdminLayoutContent>
+      </AdminAuthProvider>
+    </I18nProvider>
   );
 }

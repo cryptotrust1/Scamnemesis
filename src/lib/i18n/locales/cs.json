@@ -533,6 +533,58 @@
       "invalidCredentials": "Nesprávné přihlašovací údaje",
       "emailExists": "Email již existuje",
       "weakPassword": "Heslo je příliš slabé"
+    },
+    "forgotPassword": {
+      "title": "Zapomenuté heslo",
+      "subtitle": "Zadejte svůj email a pošleme vám odkaz na obnovení hesla",
+      "email": "Email",
+      "emailPlaceholder": "vas@email.cz",
+      "submit": "Obnovit heslo",
+      "submitting": "Odesílání...",
+      "rememberPassword": "Vzpomněli jste si na heslo?",
+      "signIn": "Přihlaste se",
+      "success": {
+        "title": "Email odeslán",
+        "description": "Pokud existuje účet s emailem {{email}}, obdržíte email s instrukcemi pro reset hesla.",
+        "checkSpam": "Zkontrolujte si také složku SPAM. Odkaz platí 1 hodinu.",
+        "backToLogin": "Zpět na přihlášení",
+        "tryAnotherEmail": "Zkusit jiný email"
+      },
+      "errors": {
+        "tooManyAttempts": "Příliš mnoho pokusů. Zkuste to později.",
+        "sendError": "Chyba při odesílání. Zkuste to znovu."
+      }
+    },
+    "resetPassword": {
+      "title": "Nové heslo",
+      "subtitle": "Zadejte nové heslo pro váš účet",
+      "newPassword": "Nové heslo",
+      "confirmPassword": "Potvrďte heslo",
+      "submit": "Změnit heslo",
+      "submitting": "Měním heslo...",
+      "backToLogin": "Zpět na přihlášení",
+      "requirements": {
+        "minLength": "Alespoň 8 znaků",
+        "uppercase": "Obsahuje velké písmeno",
+        "lowercase": "Obsahuje malé písmeno",
+        "number": "Obsahuje číslo"
+      },
+      "errors": {
+        "passwordMismatch": "Hesla se neshodují",
+        "requirementsNotMet": "Heslo nesplňuje všechny požadavky",
+        "invalidToken": "Neplatný nebo chybějící token. Zkuste požádat o nový odkaz pro reset.",
+        "tokenExpired": "Token vypršel nebo je neplatný. Požádejte o nový odkaz pro reset.",
+        "serverError": "Chyba při komunikaci se serverem. Zkuste to znovu."
+      },
+      "success": {
+        "title": "Heslo změněno",
+        "description": "Vaše heslo bylo úspěšně změněno. Nyní se můžete přihlásit s novým heslem.",
+        "signIn": "Přihlásit se"
+      },
+      "invalidLink": {
+        "title": "Neplatný odkaz",
+        "requestNew": "Požádat o nový odkaz"
+      }
     }
   },
   "admin": {
@@ -542,6 +594,18 @@
     "duplicates": "Duplikáty",
     "comments": "Komentáře",
     "settings": "Nastavení",
+    "login": {
+      "title": "Přihlášení do administrace",
+      "subtitle": "Přihlaste se do administračního rozhraní pro správu systému",
+      "email": "Email",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Heslo",
+      "passwordPlaceholder": "Zadejte heslo",
+      "submit": "Přihlásit se",
+      "submitting": "Přihlašuji...",
+      "error": "Přihlášení se nezdařilo. Zkontrolujte své přihlašovací údaje.",
+      "backToHome": "Zpět na hlavní stránku"
+    },
     "actions": {
       "approve": "Schválit",
       "reject": "Zamítnout",

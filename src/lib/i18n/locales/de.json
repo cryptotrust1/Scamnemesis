@@ -533,6 +533,58 @@
       "invalidCredentials": "Ungültige Anmeldedaten",
       "emailExists": "E-Mail existiert bereits",
       "weakPassword": "Passwort ist zu schwach"
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen",
+      "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "submit": "Passwort zurücksetzen",
+      "submitting": "Wird gesendet...",
+      "rememberPassword": "Passwort eingefallen?",
+      "signIn": "Anmelden",
+      "success": {
+        "title": "E-Mail gesendet",
+        "description": "Wenn ein Konto mit der E-Mail {{email}} existiert, erhalten Sie Anweisungen zum Zurücksetzen des Passworts.",
+        "checkSpam": "Bitte überprüfen Sie auch Ihren SPAM-Ordner. Der Link ist 1 Stunde gültig.",
+        "backToLogin": "Zurück zur Anmeldung",
+        "tryAnotherEmail": "Andere E-Mail versuchen"
+      },
+      "errors": {
+        "tooManyAttempts": "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
+        "sendError": "Fehler beim Senden. Bitte versuchen Sie es erneut."
+      }
+    },
+    "resetPassword": {
+      "title": "Neues Passwort",
+      "subtitle": "Geben Sie ein neues Passwort für Ihr Konto ein",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "submit": "Passwort ändern",
+      "submitting": "Passwort wird geändert...",
+      "backToLogin": "Zurück zur Anmeldung",
+      "requirements": {
+        "minLength": "Mindestens 8 Zeichen",
+        "uppercase": "Enthält Großbuchstaben",
+        "lowercase": "Enthält Kleinbuchstaben",
+        "number": "Enthält Zahl"
+      },
+      "errors": {
+        "passwordMismatch": "Passwörter stimmen nicht überein",
+        "requirementsNotMet": "Passwort erfüllt nicht alle Anforderungen",
+        "invalidToken": "Ungültiger oder fehlender Token. Bitte fordern Sie einen neuen Reset-Link an.",
+        "tokenExpired": "Token abgelaufen oder ungültig. Bitte fordern Sie einen neuen Reset-Link an.",
+        "serverError": "Fehler bei der Kommunikation mit dem Server. Bitte versuchen Sie es erneut."
+      },
+      "success": {
+        "title": "Passwort geändert",
+        "description": "Ihr Passwort wurde erfolgreich geändert. Sie können sich jetzt mit Ihrem neuen Passwort anmelden.",
+        "signIn": "Anmelden"
+      },
+      "invalidLink": {
+        "title": "Ungültiger Link",
+        "requestNew": "Neuen Link anfordern"
+      }
     }
   },
   "admin": {
@@ -542,6 +594,18 @@
     "duplicates": "Duplikate",
     "comments": "Kommentare",
     "settings": "Einstellungen",
+    "login": {
+      "title": "Admin-Anmeldung",
+      "subtitle": "Melden Sie sich im Administrationsbereich an, um das System zu verwalten",
+      "email": "E-Mail",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung...",
+      "error": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.",
+      "backToHome": "Zurück zur Startseite"
+    },
     "actions": {
       "approve": "Genehmigen",
       "reject": "Ablehnen",

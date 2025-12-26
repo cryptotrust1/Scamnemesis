@@ -134,6 +134,15 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: cspHeader,
           },
+          // Additional security headers
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
+          },
         ],
       },
     ];

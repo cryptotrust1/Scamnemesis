@@ -642,6 +642,58 @@
       "invalidCredentials": "Invalid credentials",
       "emailExists": "Email already exists",
       "weakPassword": "Password is too weak"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "submit": "Reset Password",
+      "submitting": "Sending...",
+      "rememberPassword": "Remember your password?",
+      "signIn": "Sign in",
+      "success": {
+        "title": "Email Sent",
+        "description": "If an account exists with email {{email}}, you will receive password reset instructions.",
+        "checkSpam": "Please also check your SPAM folder. The link is valid for 1 hour.",
+        "backToLogin": "Back to login",
+        "tryAnotherEmail": "Try another email"
+      },
+      "errors": {
+        "tooManyAttempts": "Too many attempts. Please try again later.",
+        "sendError": "Error sending email. Please try again."
+      }
+    },
+    "resetPassword": {
+      "title": "New Password",
+      "subtitle": "Enter a new password for your account",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Change Password",
+      "submitting": "Changing password...",
+      "backToLogin": "Back to login",
+      "requirements": {
+        "minLength": "At least 8 characters",
+        "uppercase": "Contains uppercase letter",
+        "lowercase": "Contains lowercase letter",
+        "number": "Contains number"
+      },
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "requirementsNotMet": "Password does not meet all requirements",
+        "invalidToken": "Invalid or missing token. Please request a new reset link.",
+        "tokenExpired": "Token expired or invalid. Please request a new reset link.",
+        "serverError": "Error communicating with server. Please try again."
+      },
+      "success": {
+        "title": "Password Changed",
+        "description": "Your password has been successfully changed. You can now sign in with your new password.",
+        "signIn": "Sign In"
+      },
+      "invalidLink": {
+        "title": "Invalid Link",
+        "requestNew": "Request new link"
+      }
     }
   },
   "admin": {
@@ -656,6 +708,18 @@
       "reject": "Reject",
       "merge": "Merge",
       "ban": "Ban"
+    },
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "Sign in to the admin panel to manage the system",
+      "email": "Email",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "error": "Login failed. Please check your credentials.",
+      "backToHome": "Back to home page"
     }
   },
   "errors": {
