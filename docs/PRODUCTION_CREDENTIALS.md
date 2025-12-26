@@ -5,18 +5,38 @@
 
 ## GitHub Secrets (Repository Settings)
 
+### Critical Authentication Secrets
+
+These secrets **MUST** be set for authentication to work. Without them, login will fail with 500 errors.
+
+| Secret Name | Min Length | Purpose | How to Generate |
+|-------------|------------|---------|-----------------|
+| `JWT_SECRET` | 32 chars | JWT access token signing | `openssl rand -base64 32` |
+| `JWT_REFRESH_SECRET` | 32 chars | JWT refresh token signing | `openssl rand -base64 32` |
+| `AUTH_SECRET` | 32 chars | NextAuth.js session encryption | `openssl rand -base64 32` |
+
+**IMPORTANT**: If these secrets are not set, random values are generated on each deploy, which will:
+- Invalidate all existing user sessions
+- Cause 500 errors on login if format is wrong
+- Break token refresh functionality
+
+### All GitHub Secrets
+
 | Secret Name | Value | Purpose |
 |-------------|-------|---------|
 | `DOMAIN` | `scamnemesis.com` | Production domain |
 | `ACME_EMAIL` | `info@scamnemesis.com` | Let's Encrypt SSL certificate email |
 | `POSTGRES_PASSWORD` | *(set in GitHub)* | PostgreSQL database password |
-| `JWT_SECRET` | `k8Jm9Pq2RsT5vW7xY0zA3bC6dE8fG1hI4jK7lM0nO2pQ5rS8tU1vW4xY7zA0bC3dE6f` | JWT access token signing |
-| `JWT_REFRESH_SECRET` | `H2jK5mN8pQ1rT4vW7xZ0aC3bE6fH9iK2lN5oQ8rT1uW4xZ7aD0cF3gI6jL9mP2qS5t` | JWT refresh token signing |
+| `JWT_SECRET` | *(generate with openssl)* | JWT access token signing |
+| `JWT_REFRESH_SECRET` | *(generate with openssl)* | JWT refresh token signing |
+| `AUTH_SECRET` | *(generate with openssl)* | NextAuth.js v5 session encryption |
 | `GRAFANA_ADMIN_PASSWORD` | `ScamNemesis2024Grafana!` | Grafana admin login |
 | `REDIS_PASSWORD` | `scamnemesis_redis_2024` | Redis cache password |
 | `TYPESENSE_API_KEY` | `scamnemesis_typesense_key_2024` | Typesense search API key |
 | `S3_ACCESS_KEY` | `minioadmin` | MinIO/S3 access key |
 | `S3_SECRET_KEY` | `minioadmin123` | MinIO/S3 secret key |
+| `RESEND_API_KEY` | *(from resend.com)* | Email service API key |
+| `ADMIN_SETUP_TOKEN` | *(generate with openssl)* | Admin account creation token |
 | `SSH_HOST` | *(server IP)* | Production server SSH host |
 | `SSH_USER` | *(ssh username)* | Production server SSH user |
 | `SSH_PRIVATE_KEY` | *(private key)* | SSH key for deployment |

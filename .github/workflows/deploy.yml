@@ -52,13 +52,15 @@ jobs:
           SWAGGER_REQUIRE_AUTH: ${{ secrets.SWAGGER_REQUIRE_AUTH }}
           # Partner Widgets configuration
           ENABLE_PARTNER_WIDGETS: ${{ secrets.ENABLE_PARTNER_WIDGETS }}
+          # NextAuth.js v5 session encryption (CRITICAL for auth to work)
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           command_timeout: 45m
-          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,RESEND_API_KEY,SENTRY_AUTH_TOKEN,ADMIN_SETUP_TOKEN,ADMIN_EMAIL,ADMIN_PASSWORD,CLOUDFLARE_API_TOKEN,NEXT_PUBLIC_GOOGLE_ENABLED,NEXT_PUBLIC_GITHUB_ENABLED,NEXT_PUBLIC_TURNSTILE_SITE_KEY,TURNSTILE_SECRET_KEY,ENABLE_SWAGGER_UI,SWAGGER_REQUIRE_AUTH,ENABLE_PARTNER_WIDGETS
+          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,RESEND_API_KEY,SENTRY_AUTH_TOKEN,ADMIN_SETUP_TOKEN,ADMIN_EMAIL,ADMIN_PASSWORD,CLOUDFLARE_API_TOKEN,NEXT_PUBLIC_GOOGLE_ENABLED,NEXT_PUBLIC_GITHUB_ENABLED,NEXT_PUBLIC_TURNSTILE_SITE_KEY,TURNSTILE_SECRET_KEY,ENABLE_SWAGGER_UI,SWAGGER_REQUIRE_AUTH,ENABLE_PARTNER_WIDGETS,AUTH_SECRET
           script: |
             set -e  # Exit on any error (replaces script_stop which breaks heredocs)
             cd /var/www/Scamnemesis
@@ -106,7 +108,22 @@ jobs:
             echo "RESEND_API_KEY=$(strip_newlines "${RESEND_API_KEY:-}")" >> .env
             echo "FROM_EMAIL=noreply@scamnemesis.com" >> .env
             echo "SITE_NAME=ScamNemesis" >> .env
-            echo "AUTH_SECRET=$(openssl rand -base64 32)" >> .env
+            # CRITICAL: AUTH_SECRET must be persistent across deploys for session continuity
+            echo "AUTH_SECRET=$(strip_newlines "${AUTH_SECRET:-$(openssl rand -base64 32)}")" >> .env
+
+            # Debug: Verify critical auth secrets are set
+            JWT_SECRET_CLEAN=$(strip_newlines "${JWT_SECRET:-}")
+            if [ -z "$JWT_SECRET_CLEAN" ]; then
+              echo "⚠ WARNING: JWT_SECRET not set in GitHub Secrets - using random value (tokens will be invalidated on redeploy)"
+            else
+              echo "✓ JWT_SECRET is set (${#JWT_SECRET_CLEAN} chars)"
+            fi
+            AUTH_SECRET_CLEAN=$(strip_newlines "${AUTH_SECRET:-}")
+            if [ -z "$AUTH_SECRET_CLEAN" ]; then
+              echo "⚠ WARNING: AUTH_SECRET not set in GitHub Secrets - using random value (sessions will be invalidated on redeploy)"
+            else
+              echo "✓ AUTH_SECRET is set (${#AUTH_SECRET_CLEAN} chars)"
+            fi
 
             # Debug: Verify RESEND_API_KEY is set
             RESEND_KEY_CLEAN=$(strip_newlines "${RESEND_API_KEY:-}")
