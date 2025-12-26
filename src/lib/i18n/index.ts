@@ -35,7 +35,7 @@ const translations: Record<Locale, typeof sk> = {
   de,
 };
 
-export const defaultLocale: Locale = 'sk';
+export const defaultLocale: Locale = 'en'; // Standardized: English is default for international platform
 
 /**
  * Get the browser's preferred locale

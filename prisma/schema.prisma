@@ -259,6 +259,7 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@index([expires])  // Added: for cleanup of expired tokens
   @@map("verification_tokens")
 }
 
@@ -578,6 +579,7 @@ model Comment {
   @@index([moderatedById])       // Added: for moderator queries
   @@index([reportId, status])   // Added: composite for report comments
   @@index([isReported])         // Added: for reported comment filtering
+  @@index([status, createdAt])  // Added: for dashboard comment filtering
   @@map("comments")
 }
 
@@ -743,6 +745,7 @@ model ReportView {
   @@unique([reportId, ipHash])
   @@index([reportId])
   @@index([createdAt])
+  @@index([ipHash])  // Added: for IP-based view deduplication
   @@map("report_views")
 }
 
@@ -754,6 +757,7 @@ model SearchIndex {
   searchText    String   @map("search_text") @db.Text
   lastIndexedAt DateTime @default(now()) @map("last_indexed_at")
 
+  @@index([lastIndexedAt])  // Added: for index maintenance queries
   @@map("search_index")
 }
 
