@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert } from '@/components/ui/alert';
 import { useAdminAuth } from '@/lib/admin/auth-context';
 import { TurnstileCaptcha, TurnstileRef } from '@/components/ui/turnstile';
+import { useTranslation } from '@/lib/i18n/context';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ export default function AdminLoginPage() {
 
   const { login, isAuthenticated, isLoading } = useAdminAuth();
   const router = useRouter();
+  const { t } = useTranslation();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function AdminLoginPage() {
       // Note: useEffect will handle redirect when isAuthenticated changes
       // Don't call router.push here to avoid duplicate navigation
     } else {
-      setError(result.error || 'Prihlásenie zlyhalo');
+      setError(result.error || t('admin.login.error'));
       setIsSubmitting(false);
       // Reset CAPTCHA on error
       captchaRef.current?.reset();
@@ -69,9 +71,9 @@ export default function AdminLoginPage() {
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
             <Shield className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Admin prihlásenie</CardTitle>
+          <CardTitle className="text-2xl">{t('admin.login.title')}</CardTitle>
           <CardDescription>
-            Prihláste sa do administračného rozhrania Scamnemesis
+            {t('admin.login.subtitle')}
           </CardDescription>
         </CardHeader>
 
@@ -84,11 +86,11 @@ export default function AdminLoginPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('admin.login.email')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@scamnemesis.com"
+                placeholder={t('admin.login.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -98,12 +100,12 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Heslo</Label>
+              <Label htmlFor="password">{t('admin.login.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Zadajte heslo"
+                  placeholder={t('admin.login.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -144,10 +146,10 @@ export default function AdminLoginPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Prihlasujem...
+                  {t('admin.login.submitting')}
                 </>
               ) : (
-                'Prihlásiť sa'
+                t('admin.login.submit')
               )}
             </Button>
           </form>
@@ -157,7 +159,7 @@ export default function AdminLoginPage() {
               href="/"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              Späť na hlavnú stránku
+              {t('admin.login.backToHome')}
             </Link>
           </div>
         </CardContent>

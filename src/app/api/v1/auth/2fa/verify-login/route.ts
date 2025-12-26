@@ -3,10 +3,9 @@ import { z } from 'zod';
 import { SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { verifyTOTP, verifyBackupCode } from '@/lib/auth/totp';
+import { verify2FATempToken, getJwtSecret } from '@/lib/auth/jwt';
 
 export const dynamic = 'force-dynamic';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-jwt-secret';
 
 const VerifyLoginSchema = z.object({
   temp_token: z.string().min(1, 'Temporary token is required'),
@@ -33,25 +32,12 @@ export async function POST(request: NextRequest) {
 
     const { temp_token, code, is_backup_code } = validated.data;
 
-    // Verify temp token (should be a short-lived token from initial login)
-    // The temp token contains the user ID encrypted
-    let userId: string;
-    try {
-      // Simple decode - in production use proper JWT verification
-      const decoded = JSON.parse(Buffer.from(temp_token, 'base64').toString());
-      userId = decoded.userId;
-      const expiry = decoded.exp;
+    // Verify temp token using proper JWT verification with signature check
+    const userId = await verify2FATempToken(temp_token);
 
-      // Check if expired (5 minute window)
-      if (Date.now() > expiry) {
-        return NextResponse.json(
-          { error: 'token_expired', message: 'Verification session expired. Please login again.' },
-          { status: 401 }
-        );
-      }
-    } catch {
+    if (!userId) {
       return NextResponse.json(
-        { error: 'invalid_token', message: 'Invalid verification token' },
+        { error: 'invalid_token', message: 'Invalid or expired verification token. Please login again.' },
         { status: 401 }
       );
     }
@@ -115,7 +101,7 @@ export async function POST(request: NextRequest) {
       data: { lastLoginAt: new Date() },
     });
 
-    // Generate full JWT token
+    // Generate full JWT token using secure secret from environment
     const scopes = getDefaultScopes(user.role);
     const token = await new SignJWT({
       sub: user.id,
@@ -126,7 +112,7 @@ export async function POST(request: NextRequest) {
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('24h')
-      .sign(new TextEncoder().encode(JWT_SECRET));
+      .sign(getJwtSecret());
 
     // Create response with cookie
     const response = NextResponse.json({

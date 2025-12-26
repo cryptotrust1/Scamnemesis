@@ -642,6 +642,58 @@
       "invalidCredentials": "Nesprávne prihlasovacie údaje",
       "emailExists": "Email už existuje",
       "weakPassword": "Heslo je príliš slabé"
+    },
+    "forgotPassword": {
+      "title": "Zabudnuté heslo",
+      "subtitle": "Zadajte svoj email a pošleme vám link na obnovenie hesla",
+      "email": "Email",
+      "emailPlaceholder": "vas@email.sk",
+      "submit": "Obnoviť heslo",
+      "submitting": "Odosielanie...",
+      "rememberPassword": "Spomenuli ste si na heslo?",
+      "signIn": "Prihláste sa",
+      "success": {
+        "title": "Email odoslaný",
+        "description": "Ak existuje účet s emailom {{email}}, dostanete email s inštrukciami na reset hesla.",
+        "checkSpam": "Skontrolujte si aj priečinok SPAM. Link je platný 1 hodinu.",
+        "backToLogin": "Späť na prihlásenie",
+        "tryAnotherEmail": "Skúsiť iný email"
+      },
+      "errors": {
+        "tooManyAttempts": "Príliš veľa pokusov. Skúste to neskôr.",
+        "sendError": "Chyba pri odosielaní. Skúste to znova."
+      }
+    },
+    "resetPassword": {
+      "title": "Nové heslo",
+      "subtitle": "Zadajte nové heslo pre váš účet",
+      "newPassword": "Nové heslo",
+      "confirmPassword": "Potvrďte heslo",
+      "submit": "Zmeniť heslo",
+      "submitting": "Mením heslo...",
+      "backToLogin": "Späť na prihlásenie",
+      "requirements": {
+        "minLength": "Aspoň 8 znakov",
+        "uppercase": "Obsahuje veľké písmeno",
+        "lowercase": "Obsahuje malé písmeno",
+        "number": "Obsahuje číslo"
+      },
+      "errors": {
+        "passwordMismatch": "Heslá sa nezhodujú",
+        "requirementsNotMet": "Heslo nespĺňa všetky požiadavky",
+        "invalidToken": "Neplatný alebo chýbajúci token. Skúste požiadať o nový reset link.",
+        "tokenExpired": "Token vypršal alebo je neplatný. Požiadajte o nový reset link.",
+        "serverError": "Chyba pri komunikácii so serverom. Skúste to znova."
+      },
+      "success": {
+        "title": "Heslo zmenené",
+        "description": "Vaše heslo bolo úspešne zmenené. Teraz sa môžete prihlásiť s novým heslom.",
+        "signIn": "Prihlásiť sa"
+      },
+      "invalidLink": {
+        "title": "Neplatný link",
+        "requestNew": "Požiadať o nový link"
+      }
     }
   },
   "admin": {
@@ -656,6 +708,18 @@
       "reject": "Zamietnuť",
       "merge": "Zlúčiť",
       "ban": "Zablokovať"
+    },
+    "login": {
+      "title": "Admin prihlásenie",
+      "subtitle": "Prihláste sa do administračného rozhrania pre správu systému",
+      "email": "Email",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Heslo",
+      "passwordPlaceholder": "Zadajte heslo",
+      "submit": "Prihlásiť sa",
+      "submitting": "Prihlasujem...",
+      "error": "Prihlásenie zlyhalo. Skontrolujte svoje prihlasovacie údaje.",
+      "backToHome": "Späť na hlavnú stránku"
     }
   },
   "errors": {
