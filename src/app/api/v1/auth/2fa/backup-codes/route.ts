@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
 import { prisma } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware/auth';
 import { generateBackupCodes, hashBackupCode, verifyTOTP } from '@/lib/auth/totp';
+import { verifyPassword } from '@/lib/auth/jwt';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const passwordValid = await bcrypt.compare(validated.data.password, user.passwordHash);
+    const passwordValid = await verifyPassword(validated.data.password, user.passwordHash);
     if (!passwordValid) {
       return NextResponse.json(
         { error: 'invalid_password', message: 'Incorrect password' },

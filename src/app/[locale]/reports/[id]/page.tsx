@@ -180,6 +180,7 @@ interface ApiReportResponse {
   evidence: {
     id: string;
     type: string;
+    file_url?: string;
     thumbnail_url?: string;
     description?: string;
   }[];

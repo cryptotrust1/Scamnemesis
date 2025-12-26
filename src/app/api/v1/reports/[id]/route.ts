@@ -544,12 +544,7 @@ export async function PATCH(
     }
 
     // Build update data
-    const updateData: {
-      summary?: string;
-      description?: string;
-      fraudType?: string;
-      updatedAt: Date;
-    } = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
     };
 
@@ -566,7 +561,7 @@ export async function PATCH(
     // Update the report
     const updatedReport = await prisma.report.update({
       where: { id: report.id },
-      data: updateData,
+      data: updateData as { summary?: string; description?: string; fraudType?: string; updatedAt: Date },
       select: {
         id: true,
         publicId: true,
