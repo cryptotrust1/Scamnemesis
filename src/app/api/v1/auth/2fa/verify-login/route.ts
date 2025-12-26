@@ -4,6 +4,8 @@ import { SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { verifyTOTP, verifyBackupCode } from '@/lib/auth/totp';
 import { verify2FATempToken, getJwtSecret } from '@/lib/auth/jwt';
+import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,31 @@ const VerifyLoginSchema = z.object({
  */
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Rate limiting to prevent brute force attacks on 2FA codes
+    // This is critical since TOTP has only 1,000,000 possible 6-digit codes
+    const ip = getClientIp(request);
+    const rateLimitKey = getRateLimitKey('2fa_verify', ip);
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      10, // 10 attempts per 15 minutes (stricter than login due to fewer possible codes)
+      15 * 60 * 1000 // 15 minutes
+    );
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: 'rate_limited',
+          message: 'Too many 2FA verification attempts. Please try again later.',
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((resetAt.getTime() - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const validated = VerifyLoginSchema.safeParse(body);
 
