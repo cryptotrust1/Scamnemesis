@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createHash } from 'crypto';
 import { prisma } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 import { getAuthContext } from '@/lib/middleware/auth';
 
 export const dynamic = 'force-dynamic';
@@ -544,7 +545,7 @@ export async function PATCH(
     }
 
     // Build update data
-    const updateData: Record<string, unknown> = {
+    const updateData: Prisma.ReportUpdateInput = {
       updatedAt: new Date(),
     };
 
@@ -561,7 +562,7 @@ export async function PATCH(
     // Update the report
     const updatedReport = await prisma.report.update({
       where: { id: report.id },
-      data: updateData as { summary?: string; description?: string; fraudType?: string; updatedAt: Date },
+      data: updateData,
       select: {
         id: true,
         publicId: true,
