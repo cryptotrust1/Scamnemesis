@@ -43,7 +43,11 @@ export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
   const log = createRequestLogger(requestId, 'AuthRegister');
 
+  // Track which step we're on for debugging 500 errors
+  let currentStep = 'init';
+
   try {
+    currentStep = 'rate-limiting';
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
     const rateLimitKey = getRateLimitKey('register', ip);
@@ -68,6 +72,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'parse-body';
     // Parse and validate request body
     const body = await request.json();
     const parsed = registerSchema.safeParse(body);
@@ -90,6 +95,7 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name, captchaToken } = parsed.data;
 
+    currentStep = 'captcha-check';
     // Verify CAPTCHA if enabled
     if (isCaptchaEnabled()) {
       const captchaResult = await verifyCaptcha(captchaToken, ip);
@@ -105,6 +111,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    currentStep = 'check-existing-user';
     // Check if email already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
@@ -121,9 +128,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'hash-password';
     // Hash password
     const passwordHash = await hashPassword(password);
 
+    currentStep = 'create-user';
     // Create user in database
     const user = await prisma.user.create({
       data: {
@@ -141,6 +150,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    currentStep = 'generate-tokens';
     // Get scopes for role
     const scopes = getScopesForRole(user.role);
 
@@ -148,6 +158,7 @@ export async function POST(request: NextRequest) {
     const accessToken = await generateAccessToken(user.id, user.email, user.role, scopes);
     const refreshToken = await generateRefreshToken(user.id);
 
+    currentStep = 'store-refresh-token';
     // Store refresh token and create audit log
     await prisma.$transaction([
       prisma.refreshToken.create({
@@ -173,6 +184,7 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
+    currentStep = 'generate-email-token';
     // Generate email verification token (valid for 24 hours)
     const verificationToken = await generateEmailVerificationToken(user.id, user.email);
 
@@ -211,14 +223,19 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    // Log detailed error with the step where it failed
     log.error('Registration error', {
+      step: currentStep,
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     });
 
+    // Also log to console for easier debugging
+    console.error(`[Register] FAILED at step '${currentStep}':`, error);
+
     Sentry.captureException(error, {
-      tags: { api: 'auth', method: 'POST', endpoint: 'register' },
-      extra: { requestId },
+      tags: { api: 'auth', method: 'POST', endpoint: 'register', step: currentStep },
+      extra: { requestId, failedStep: currentStep },
     });
 
     return NextResponse.json(
@@ -226,6 +243,8 @@ export async function POST(request: NextRequest) {
         error: 'internal_error',
         message: 'An unexpected error occurred during registration',
         request_id: requestId,
+        // Include step in response for debugging (remove in production if sensitive)
+        debug_step: currentStep,
       },
       { status: 500 }
     );
