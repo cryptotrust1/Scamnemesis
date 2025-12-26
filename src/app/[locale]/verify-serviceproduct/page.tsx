@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -632,7 +633,18 @@ const aggregateRatingSchema = {
 
 export default function VerifyServiceProductPage() {
   const params = useParams();
-  const locale = (params?.locale as Locale) || 'en';
+  // FIX: Use mounted state to prevent hydration mismatch
+  // Server renders with 'en' locale, client may have different locale from URL
+  // We only read locale after hydration is complete to ensure consistency
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Always use 'en' for SSR to match server-rendered HTML
+  // After hydration, use the actual locale from URL params
+  const locale = mounted ? ((params?.locale as Locale) || 'en') : 'en';
   const t = getTranslations(locale);
 
   // Create icons array for use cases (for future use when updating remaining sections)
