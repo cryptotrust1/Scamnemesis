@@ -208,6 +208,8 @@ export async function GET(
             id: true,
             type: true,
             url: true,
+            fileKey: true,
+            externalUrl: true,
             thumbnailUrl: true,
             description: true,
           },
@@ -330,12 +332,25 @@ export async function GET(
       } : null,
 
       // Evidence (images, documents)
-      evidence: report.evidence.map(e => ({
-        id: e.id,
-        type: e.type.toLowerCase(),
-        thumbnail_url: e.thumbnailUrl,
-        description: e.description,
-      })),
+      evidence: report.evidence.map(e => {
+        // Generate file URL from fileKey if available
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+        let file_url = e.url || e.externalUrl || '';
+
+        if (e.fileKey && !file_url) {
+          file_url = siteUrl
+            ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`
+            : `/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`;
+        }
+
+        return {
+          id: e.id,
+          type: e.type.toLowerCase(),
+          file_url,
+          thumbnail_url: e.thumbnailUrl || file_url,
+          description: e.description,
+        };
+      }),
 
       // Approved comments
       comments: report.comments.map(c => ({

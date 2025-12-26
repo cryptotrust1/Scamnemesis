@@ -378,24 +378,31 @@ export async function POST(
         },
       });
 
-      // Create attachments if any
-      if (uploadedFiles.length > 0) {
-        await tx.commentAttachment.createMany({
-          data: uploadedFiles.map(f => ({
-            commentId: newComment.id,
-            fileKey: f.fileKey,
-            fileName: f.fileName,
-            fileSize: f.fileSize,
-            mimeType: f.mimeType,
-          })),
-        });
-      }
+      // Create and fetch attachments if any files were uploaded
+      let attachments: { id: string; fileKey: string; fileName: string; fileSize: number; mimeType: string }[] = [];
 
-      // Fetch attachments for response
-      const attachments = await tx.commentAttachment.findMany({
-        where: { commentId: newComment.id },
-        select: { id: true, fileKey: true, fileName: true, fileSize: true, mimeType: true },
-      });
+      if (uploadedFiles.length > 0) {
+        try {
+          await tx.commentAttachment.createMany({
+            data: uploadedFiles.map(f => ({
+              commentId: newComment.id,
+              fileKey: f.fileKey,
+              fileName: f.fileName,
+              fileSize: f.fileSize,
+              mimeType: f.mimeType,
+            })),
+          });
+
+          // Fetch attachments for response
+          attachments = await tx.commentAttachment.findMany({
+            where: { commentId: newComment.id },
+            select: { id: true, fileKey: true, fileName: true, fileSize: true, mimeType: true },
+          });
+        } catch (attachmentError) {
+          console.error('Error saving attachments:', attachmentError);
+          // Continue without attachments - comment is still created
+        }
+      }
 
       return { ...newComment, attachments };
     });

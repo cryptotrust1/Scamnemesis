@@ -19,8 +19,10 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 401) {
-    // Token expired or not authenticated - redirect to login
+    // Token expired or not authenticated - clear localStorage and redirect to login
     if (typeof window !== 'undefined') {
+      // CRITICAL: Clear cached user to prevent redirect loop
+      localStorage.removeItem('admin_user');
       window.location.href = '/admin/login';
     }
     throw new Error('Relácia vypršala. Prihláste sa znova.');

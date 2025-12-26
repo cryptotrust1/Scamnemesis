@@ -82,6 +82,7 @@ interface ReportDetail {
     id: string;
     type: 'IMAGE' | 'DOCUMENT' | 'VIDEO';
     url: string;
+    thumbnailUrl?: string;
     description?: string;
   }[];
   similarReports?: {
@@ -243,7 +244,8 @@ function transformApiResponse(data: ApiReportResponse): ReportDetail {
     evidence: data.evidence?.map(e => ({
       id: e.id,
       type: (e.type?.toUpperCase() || 'IMAGE') as 'IMAGE' | 'DOCUMENT' | 'VIDEO',
-      url: e.thumbnail_url || '',
+      url: e.file_url || e.thumbnail_url || '',
+      thumbnailUrl: e.thumbnail_url || e.file_url || '',
       description: e.description,
     })) || [],
     viewCount: data.view_count || 0,
@@ -794,25 +796,54 @@ export default function ReportDetailPage() {
 
           {/* Evidence */}
           {report.evidence.length > 0 && (
-            <SectionCard icon={FileText} title={`Dôkazy (${report.evidence.length})`} accentColor="blue">
+            <SectionCard icon={FileText} title={`Evidence (${report.evidence.length})`} accentColor="blue">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {report.evidence.map((item) => (
-                  <div
+                  <a
                     key={item.id}
-                    className="group relative rounded-xl border border-slate-200 overflow-hidden bg-slate-50 hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative rounded-xl border border-slate-200 overflow-hidden bg-slate-50 hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer block"
                   >
-                    <div className="aspect-square flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-50">
-                      <span className="text-4xl">
-                        {item.type === 'IMAGE' ? '🖼️' : item.type === 'DOCUMENT' ? '📄' : '🎥'}
-                      </span>
+                    <div className="aspect-square flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden">
+                      {item.url && item.type === 'IMAGE' ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.thumbnailUrl || item.url}
+                          alt={item.description || 'Evidence image'}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Fallback to emoji if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement!.innerHTML = '<span class="text-4xl">🖼️</span>';
+                          }}
+                        />
+                      ) : item.url && item.type === 'VIDEO' ? (
+                        <div className="relative w-full h-full flex items-center justify-center bg-slate-800">
+                          <span className="text-4xl">🎥</span>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                              <svg className="w-5 h-5 text-slate-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-4xl">
+                          {item.type === 'DOCUMENT' ? '📄' : item.type === 'VIDEO' ? '🎥' : '🖼️'}
+                        </span>
+                      )}
                     </div>
                     {item.description && (
                       <div className="p-3 border-t border-slate-100">
                         <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors"></div>
-                  </div>
+                    <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors pointer-events-none"></div>
+                  </a>
                 ))}
               </div>
             </SectionCard>
