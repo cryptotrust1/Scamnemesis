@@ -22,6 +22,26 @@ export const FEATURES = {
     /** Enable "Try it out" only in development */
     tryItOutEnabled: process.env.NODE_ENV === 'development',
   },
+
+  /**
+   * Partner Widgets
+   *
+   * ENABLE_PARTNER_WIDGETS: 'true' to enable widget features (default: false)
+   *
+   * When enabled:
+   * - /dashboard/widgets page is accessible
+   * - Widget CRUD API endpoints are active
+   * - /embed/widget/[id] pages are rendered
+   * - Widgets menu item appears in header/footer
+   */
+  PARTNER_WIDGETS: {
+    /** Whether partner widgets feature is enabled */
+    enabled: process.env.ENABLE_PARTNER_WIDGETS === 'true',
+    /** Maximum widgets per user */
+    maxWidgetsPerUser: 10,
+    /** Default rate limit for widget embed requests */
+    defaultRateLimit: 100,
+  },
 } as const;
 
 /**

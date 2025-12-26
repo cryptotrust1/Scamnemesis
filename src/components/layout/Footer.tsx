@@ -31,12 +31,17 @@ const footerLinks = {
     { name: { en: 'Privacy Policy', sk: 'Ochrana súkromia', cs: 'Ochrana soukromí', de: 'Datenschutz' }, href: '/privacy' },
     { name: { en: 'Terms of Service', sk: 'Podmienky používania', cs: 'Podmínky použití', de: 'Nutzungsbedingungen' }, href: '/terms' },
   ],
+  partners: [
+    { name: { en: 'Developers API', sk: 'Vývojári API', cs: 'Vývojáři API', de: 'Entwickler API' }, href: '/developers' },
+    { name: { en: 'Embeddable Widgets', sk: 'Vložiteľné widgety', cs: 'Vložitelné widgety', de: 'Einbettbare Widgets' }, href: '/partners/widgets' },
+  ],
 };
 
 const sectionTitles = {
   services: { en: 'Services', sk: 'Služby', cs: 'Služby', de: 'Dienste' },
   resources: { en: 'Resources', sk: 'Zdroje', cs: 'Zdroje', de: 'Ressourcen' },
   company: { en: 'Company', sk: 'Spoločnosť', cs: 'Společnost', de: 'Unternehmen' },
+  partners: { en: 'For Partners', sk: 'Pre partnerov', cs: 'Pro partnery', de: 'Für Partner' },
 };
 
 const descriptions: Record<string, string> = {
@@ -77,7 +82,7 @@ export function Footer() {
   return (
     <footer className="border-t bg-background">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-6">
           {/* Brand */}
           <div className="col-span-2">
             <Link href={`/${currentLocale}`} className="flex items-center space-x-2 mb-4">
@@ -145,6 +150,23 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={getLocalizedHref(link.href)}
+                    className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
+                  >
+                    {link.name[currentLocale]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Partners */}
+          <div>
+            <h3 className="font-semibold mb-4">{sectionTitles.partners[currentLocale]}</h3>
+            <ul className="space-y-3">
+              {footerLinks.partners.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
                     className="text-sm text-muted-foreground hover:text-[#0E74FF] transition-colors"
                   >
                     {link.name[currentLocale]}
