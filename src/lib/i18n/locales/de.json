@@ -1173,6 +1173,125 @@
         "scamChecker": "Betrugscheck verwenden",
         "contact": "Kontaktieren Sie uns"
       }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Greifen Sie programmgesteuert auf die Betrugsdatenbank zu. Unsere API bietet sicheren Zugang zu genehmigten Betrugsmeldungen für Ihre Anwendung oder Ihren Dienst.",
+      "features": {
+        "fraudData": {
+          "title": "Betrugsdaten",
+          "description": "Zugriff auf Tausende von genehmigten Betrugsmeldungen mit detaillierten Informationen."
+        },
+        "secureApi": {
+          "title": "Sichere API",
+          "description": "API-Schlüssel mit eingeschränkten Berechtigungen, Rate Limiting und verschlüsselte Kommunikation."
+        },
+        "fastResponses": {
+          "title": "Schnelle Antworten",
+          "description": "Optimierte Endpunkte mit einer durchschnittlichen Antwortzeit unter 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Standard REST API mit JSON-Antworten. Einfach zu verwenden in jeder Programmiersprache."
+        }
+      },
+      "quickStart": {
+        "title": "Schnellstart",
+        "description": "Beginnen Sie in wenigen Minuten mit der API",
+        "step1": {
+          "title": "1. API-Schlüssel erhalten",
+          "description": "Kontaktieren Sie uns unter",
+          "descriptionEnd": "um eine Partnervereinbarung und einen API-Schlüssel zu erhalten."
+        },
+        "step2": {
+          "title": "2. Authentifizierung",
+          "description": "Verwenden Sie Ihren API-Schlüssel im Header"
+        },
+        "step3": {
+          "title": "3. Ihre erste Anfrage"
+        },
+        "codeComment": "// JavaScript / Node.js Beispiel",
+        "arrayComment": "// Array von Meldungen"
+      },
+      "apiReference": {
+        "title": "API-Referenz",
+        "description": "Vollständige Dokumentation aller Endpunkte",
+        "tabs": {
+          "reports": "Meldungen",
+          "search": "Suche",
+          "stats": "Statistiken"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Erhalten Sie eine Liste genehmigter Betrugsmeldungen. Sensible Daten sind maskiert.",
+          "queryParams": "Abfrageparameter",
+          "columns": {
+            "parameter": "Parameter",
+            "type": "Typ",
+            "description": "Beschreibung"
+          },
+          "params": {
+            "limit": "Anzahl der Ergebnisse (1-100, Standard: 20)",
+            "offset": "Offset für Paginierung",
+            "fraudType": "Nach Betrugsart filtern",
+            "country": "Nach Land filtern (ISO 3166-1 alpha-2)",
+            "dateFrom": "Von Datum filtern",
+            "dateTo": "Bis Datum filtern"
+          },
+          "exampleResponse": "Beispielantwort"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Durchsuchen Sie die Betrugsdatenbank nach E-Mail, Telefon, IBAN, Website oder Name.",
+          "queryParams": "Abfrageparameter",
+          "params": {
+            "q": "Suchbegriff (min. 3 Zeichen)",
+            "qRequired": "erforderlich",
+            "field": "Suchfeld: email, phone, iban, website, name, all"
+          },
+          "example": "Beispiel"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Erhalten Sie aggregierte Betrugsstatistiken - Anzahl, Typen, Länder, finanzielle Verluste.",
+          "exampleResponse": "Beispielantwort"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API hat Limits zum Schutz vor Missbrauch:",
+        "columns": {
+          "endpoint": "Endpunkt",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 Anf/Std",
+          "search": "50 Anf/Std",
+          "stats": "100 Anf/Std"
+        },
+        "note": "Bei Überschreitung erhalten Sie HTTP 429. Überprüfen Sie die Header"
+      },
+      "errors": {
+        "title": "Fehlerantworten",
+        "columns": {
+          "code": "Code",
+          "description": "Beschreibung"
+        },
+        "codes": {
+          "400": "Ungültige Anfrage (Validierungsfehler)",
+          "401": "Fehlender oder ungültiger API-Schlüssel",
+          "403": "Unzureichende Berechtigungen (Scope)",
+          "429": "Rate Limit überschritten",
+          "500": "Interner Serverfehler"
+        }
+      },
+      "cta": {
+        "title": "Möchten Sie Partner werden?",
+        "description": "Wenn Sie unsere Betrugsdatenbank in Ihren Dienst integrieren möchten, kontaktieren Sie uns für einen API-Schlüssel und eine Partnervereinbarung.",
+        "contactButton": "Kontaktieren Sie uns",
+        "swaggerButton": "Swagger-Dokumentation"
+      }
     }
   },
   "iWasScammed": {

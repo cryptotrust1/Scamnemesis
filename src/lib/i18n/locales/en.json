@@ -1446,6 +1446,125 @@
         "scamChecker": "Use Scam Checker",
         "contact": "Contact Us"
       }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Access the fraud database programmatically. Our API provides secure access to approved fraud reports for your application or service.",
+      "features": {
+        "fraudData": {
+          "title": "Fraud Data",
+          "description": "Access thousands of approved fraud reports with detailed information."
+        },
+        "secureApi": {
+          "title": "Secure API",
+          "description": "API keys with limited scopes, rate limiting, and encrypted communication."
+        },
+        "fastResponses": {
+          "title": "Fast Responses",
+          "description": "Optimized endpoints with average response time under 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Standard REST API with JSON responses. Easy to use in any language."
+        }
+      },
+      "quickStart": {
+        "title": "Quick Start",
+        "description": "Get started using the API in a few minutes",
+        "step1": {
+          "title": "1. Get an API Key",
+          "description": "Contact us at",
+          "descriptionEnd": "to obtain a partner agreement and API key."
+        },
+        "step2": {
+          "title": "2. Authentication",
+          "description": "Use your API key in the"
+        },
+        "step3": {
+          "title": "3. Your First Request"
+        },
+        "codeComment": "// JavaScript / Node.js example",
+        "arrayComment": "// Array of reports"
+      },
+      "apiReference": {
+        "title": "API Reference",
+        "description": "Complete documentation of all endpoints",
+        "tabs": {
+          "reports": "Reports",
+          "search": "Search",
+          "stats": "Stats"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Get a list of approved fraud reports. Sensitive data is masked.",
+          "queryParams": "Query Parameters",
+          "columns": {
+            "parameter": "Parameter",
+            "type": "Type",
+            "description": "Description"
+          },
+          "params": {
+            "limit": "Number of results (1-100, default: 20)",
+            "offset": "Offset for pagination",
+            "fraudType": "Filter by fraud type",
+            "country": "Filter by country (ISO 3166-1 alpha-2)",
+            "dateFrom": "Filter from date",
+            "dateTo": "Filter to date"
+          },
+          "exampleResponse": "Example Response"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Search the fraud database by email, phone, IBAN, website, or name.",
+          "queryParams": "Query Parameters",
+          "params": {
+            "q": "Search term (min. 3 characters)",
+            "qRequired": "required",
+            "field": "Field to search: email, phone, iban, website, name, all"
+          },
+          "example": "Example"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Get aggregated fraud statistics - counts, types, countries, financial losses.",
+          "exampleResponse": "Example Response"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API has limits set to protect against abuse:",
+        "columns": {
+          "endpoint": "Endpoint",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 req/hour",
+          "search": "50 req/hour",
+          "stats": "100 req/hour"
+        },
+        "note": "When exceeded, you will receive HTTP 429. Check the"
+      },
+      "errors": {
+        "title": "Error Responses",
+        "columns": {
+          "code": "Code",
+          "description": "Description"
+        },
+        "codes": {
+          "400": "Invalid request (validation error)",
+          "401": "Missing or invalid API key",
+          "403": "Insufficient permissions (scope)",
+          "429": "Rate limit exceeded",
+          "500": "Internal server error"
+        }
+      },
+      "cta": {
+        "title": "Want to Become a Partner?",
+        "description": "If you are interested in integrating our fraud database into your service, contact us to get an API key and partner agreement.",
+        "contactButton": "Contact Us",
+        "swaggerButton": "Swagger Documentation"
+      }
     }
   }
 }
