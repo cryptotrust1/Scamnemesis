@@ -88,7 +88,8 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   // Require admin authentication
-  const authResult = await requireAuth(request, ['admin:write']);
+  // Note: admin:edit scope is used because 'admin:write' doesn't exist
+  const authResult = await requireAuth(request, ['admin:edit']);
   if (authResult instanceof NextResponse) return authResult;
 
   try {
