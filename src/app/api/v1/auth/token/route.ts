@@ -120,6 +120,8 @@ export async function POST(request: NextRequest) {
           role: true,
           isActive: true,
           emailVerified: true,
+          totpEnabled: true,
+          displayName: true,
         },
       });
 
@@ -239,6 +241,39 @@ export async function POST(request: NextRequest) {
           },
           { status: 403 }
         );
+      }
+
+      // Check if 2FA is enabled - if so, return temp token for 2FA verification
+      if (user.totpEnabled) {
+        // Clear failed attempts since password was correct
+        await clearFailedAttempts(data.email);
+
+        // Generate temporary token for 2FA verification (5 minute expiry)
+        const tempToken = Buffer.from(JSON.stringify({
+          userId: user.id,
+          exp: Date.now() + 5 * 60 * 1000, // 5 minutes
+        })).toString('base64');
+
+        // Log 2FA required
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_2FA_REQUIRED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              email: data.email,
+              requires_2fa: true,
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json({
+          requires_2fa: true,
+          temp_token: tempToken,
+          message: 'Two-factor authentication required. Please enter your verification code.',
+        });
       }
 
       // Get scopes for role

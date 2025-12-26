@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
         role: true,
         emailVerified: true,
         createdAt: true,
+        totpEnabled: true,
       },
     });
 
@@ -63,6 +64,7 @@ export async function GET(request: NextRequest) {
       role: user.role,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt.toISOString(),
+      totpEnabled: user.totpEnabled,
     });
   } catch (error) {
     console.error('Get user info error:', error);
