@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA'; // Test secret
+// SECURITY: In production, TURNSTILE_SECRET_KEY must be set via environment variable
+// Test key should ONLY be used in development
+const TURNSTILE_TEST_KEY = '1x0000000000000000000000000000000AA';
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ||
+  (process.env.NODE_ENV !== 'production' ? TURNSTILE_TEST_KEY : null);
 
 interface TurnstileResponse {
   success: boolean;
@@ -31,6 +35,15 @@ export async function POST(request: NextRequest) {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
                request.headers.get('x-real-ip') ||
                '127.0.0.1';
+
+    // SECURITY: Reject in production if secret key is not configured
+    if (!TURNSTILE_SECRET_KEY) {
+      console.error('[CAPTCHA] SECURITY ERROR: TURNSTILE_SECRET_KEY not configured in production!');
+      return NextResponse.json(
+        { success: false, error: 'CAPTCHA service not configured' },
+        { status: 503 }
+      );
+    }
 
     // Verify with Cloudflare
     const formData = new URLSearchParams();

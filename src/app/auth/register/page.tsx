@@ -65,6 +65,12 @@ export default function RegisterPage() {
       return;
     }
 
+    // SECURITY: Require CAPTCHA before submitting
+    if (!captchaToken) {
+      toast.error('Please complete the CAPTCHA verification');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -296,7 +302,7 @@ export default function RegisterPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isLoading || !agreedToTerms || !allRequirementsMet || !passwordsMatch}
+                disabled={isLoading || !agreedToTerms || !allRequirementsMet || !passwordsMatch || !captchaToken}
                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {isLoading ? (

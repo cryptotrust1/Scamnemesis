@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, type ZodIssue } from 'zod';
 import * as Sentry from '@sentry/nextjs';
+import { Prisma } from '@prisma/client';
 import prisma from '@/lib/db';
 import {
   hashPassword,
@@ -223,6 +224,21 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    // Handle Prisma unique constraint violation (race condition: same email registered twice)
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      log.warn('Registration race condition - email already exists', {
+        step: currentStep,
+        requestId,
+      });
+      return NextResponse.json(
+        {
+          error: 'email_exists',
+          message: 'An account with this email already exists',
+        },
+        { status: 409 }
+      );
+    }
+
     // Log detailed error with the step where it failed
     log.error('Registration error', {
       step: currentStep,

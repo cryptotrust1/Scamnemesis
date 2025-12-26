@@ -9,7 +9,13 @@ import { Resend } from 'resend';
  * Escape HTML special characters to prevent XSS attacks
  * IMPORTANT: Always use this for any user-supplied values in HTML templates
  */
-function escapeHtml(text: string): string {
+function escapeHtml(text: string | null | undefined): string {
+  // Handle null/undefined to prevent crashes
+  if (text == null) {
+    return '';
+  }
+  // Convert to string if not already
+  const str = String(text);
   const htmlEntities: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -20,7 +26,7 @@ function escapeHtml(text: string): string {
     '`': '&#x60;',
     '=': '&#x3D;',
   };
-  return text.replace(/[&<>"'`=/]/g, (char) => htmlEntities[char]);
+  return str.replace(/[&<>"'`=/]/g, (char) => htmlEntities[char]);
 }
 
 // Initialize Resend client with error handling to prevent module load failures
