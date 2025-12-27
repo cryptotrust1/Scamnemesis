@@ -64,6 +64,21 @@ tags:
       Partner API for external integrations. Provides read-only access to approved
       fraud reports with masked sensitive data. Requires API key authentication
       with appropriate scopes (reports:read, search:read, stats:read).
+  - name: User API Keys
+    description: |
+      Self-service API key management for authenticated users. Users can create,
+      manage, and revoke their own API keys with limited scopes (reports:read,
+      search:read, stats:read). Each user can have up to 10 active API keys.
+
+      **Available Scopes**:
+      - `reports:read`: Read access to fraud reports
+      - `search:read`: Access to search functionality
+      - `stats:read`: Access to public statistics
+
+      **Key Format**: API keys use the format `sk_live_xxxx` for production keys.
+
+      **Security**: Full API key is shown only once upon creation. After that,
+      only a preview (last 8 characters) is displayed.
   - name: Contact
     description: Contact form
   - name: Webhooks
@@ -987,6 +1002,195 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/RateLimited'
+
+  # ============ USER API KEYS ============
+  /user/api-keys:
+    get:
+      tags: [User API Keys]
+      summary: List user's API keys
+      description: |
+        Get a paginated list of the authenticated user's API keys.
+        Full key values are never returned; only key previews (last 8 characters).
+      operationId: listUserApiKeys
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: List of API keys with statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiKeyListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [User API Keys]
+      summary: Create new API key
+      description: |
+        Create a new API key for the authenticated user.
+
+        **Important**: The full API key is returned only in the response to this
+        request. It cannot be retrieved later. Store it securely.
+
+        **Limits**:
+        - Maximum 10 active API keys per user
+        - Keys can be set to expire between 1-365 days
+
+        **Available Scopes** (users can only select from these):
+        - `reports:read`: Read access to fraud reports
+        - `search:read`: Access to search functionality
+        - `stats:read`: Access to public statistics
+      operationId: createUserApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserApiKeyRequest'
+      responses:
+        '201':
+          description: API key created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserApiKeyResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Maximum API keys limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user/api-keys/{id}:
+    get:
+      tags: [User API Keys]
+      summary: Get API key details
+      description: Get detailed information about a specific API key
+      operationId: getUserApiKey
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: API key ID
+      responses:
+        '200':
+          description: API key details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiKeyDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: API key not found
+    patch:
+      tags: [User API Keys]
+      summary: Update API key
+      description: |
+        Update an API key's name, description, or scopes.
+        Cannot update revoked or expired keys.
+      operationId: updateUserApiKey
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserApiKeyRequest'
+      responses:
+        '200':
+          description: API key updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiKeyUpdated'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: API key not found
+    delete:
+      tags: [User API Keys]
+      summary: Revoke API key
+      description: |
+        Revoke an API key. This is a soft-delete operation.
+        The key will no longer work for authentication.
+        This action cannot be undone.
+      operationId: revokeUserApiKey
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API key revoked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+                    example: API key revoked successfully
+                  revoked_at:
+                    type: string
+                    format: date-time
+        '400':
+          description: Key already revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: API key not found
+
+  /user/api-keys/{id}/rotate:
+    post:
+      tags: [User API Keys]
+      summary: Rotate API key
+      description: |
+        Generate a new key value for an existing API key.
+        The old key immediately stops working.
+
+        **Important**: The new full API key is returned only in this response.
+        Store it securely as it cannot be retrieved later.
+
+        This operation resets the request counter and last used timestamp.
+      operationId: rotateUserApiKey
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API key rotated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotateUserApiKeyResponse'
+        '400':
+          description: Key is expired or revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: API key not found
 
   # ============ EVIDENCE ============
   /evidence/upload:
@@ -2938,6 +3142,245 @@ components:
           type: integer
         pageSize:
           type: integer
+
+    # ============ USER API KEY SCHEMAS ============
+    UserApiKeyScope:
+      type: string
+      enum: [reports:read, search:read, stats:read]
+      description: |
+        Available scopes for user-created API keys:
+        - `reports:read`: Read access to fraud reports
+        - `search:read`: Access to search functionality
+        - `stats:read`: Access to public statistics
+
+    CreateUserApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9\s\-_]+$'
+          description: Name for the API key (letters, numbers, spaces, hyphens, underscores only)
+          example: My Production Key
+        description:
+          type: string
+          maxLength: 500
+          description: Optional description
+          example: Used for production integration
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+          default: [reports:read, search:read, stats:read]
+          description: Permission scopes for this key
+        expires_in_days:
+          type: integer
+          minimum: 1
+          maximum: 365
+          default: 365
+          description: Number of days until the key expires
+      required: [name]
+
+    CreateUserApiKeyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique API key ID
+        api_key:
+          type: string
+          description: |
+            **IMPORTANT**: This is the only time the full API key will be shown.
+            Store it securely. It cannot be retrieved later.
+          example: scn_YOUR_API_KEY_HERE
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [personal]
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+        rate_limit:
+          type: integer
+          description: Requests per hour
+          example: 1000
+        daily_limit:
+          type: integer
+          nullable: true
+          description: Maximum requests per day
+        expires_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        message:
+          type: string
+          example: API key created successfully. Store it securely - it won't be shown again.
+
+    UserApiKeySummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [personal]
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+        key_preview:
+          type: string
+          description: Last 8 characters of the key for identification
+          example: sk_live_...abcd1234
+        is_active:
+          type: boolean
+        is_expired:
+          type: boolean
+        days_until_expiry:
+          type: integer
+          nullable: true
+        last_used_at:
+          type: string
+          format: date-time
+          nullable: true
+        request_count:
+          type: integer
+          description: Total number of requests made with this key
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserApiKeyListResponse:
+      type: object
+      properties:
+        api_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeySummary'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        stats:
+          type: object
+          properties:
+            active_keys:
+              type: integer
+              description: Number of active (non-revoked) keys
+            total_requests:
+              type: integer
+              description: Total requests across all keys
+            max_keys_allowed:
+              type: integer
+              example: 10
+            keys_remaining:
+              type: integer
+              description: How many more keys can be created
+
+    UserApiKeyDetail:
+      allOf:
+        - $ref: '#/components/schemas/UserApiKeySummary'
+        - type: object
+          properties:
+            rate_limit:
+              type: integer
+              description: Requests per hour
+            daily_limit:
+              type: integer
+              nullable: true
+            requests_last_7_days:
+              type: integer
+              description: Request count in the last 7 days
+
+    UpdateUserApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9\s\-_]+$'
+        description:
+          type: string
+          maxLength: 500
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+
+    UserApiKeyUpdated:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+        updated_at:
+          type: string
+          format: date-time
+        message:
+          type: string
+          example: API key updated successfully
+
+    RotateUserApiKeyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        api_key:
+          type: string
+          description: |
+            **IMPORTANT**: This is the only time the new API key will be shown.
+            The old key is now invalid. Store this securely.
+          example: scn_YOUR_NEW_API_KEY_HERE
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserApiKeyScope'
+        request_count:
+          type: integer
+          description: Reset to 0 after rotation
+          example: 0
+        previous_request_count:
+          type: integer
+          description: Request count before rotation
+        rotated_at:
+          type: string
+          format: date-time
+        message:
+          type: string
+          example: API key rotated successfully. Store the new key securely - it won't be shown again.
 
     # ============ PARTNER API SCHEMAS ============
     PartnerMaskedPerpetrator:
