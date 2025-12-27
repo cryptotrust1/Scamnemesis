@@ -334,7 +334,384 @@ const aggregateRatingSchema = {
   },
 };
 
+type Locale = 'en' | 'sk' | 'cs' | 'de';
+
+const getPageTranslations = (locale: Locale) => {
+  const t = {
+    en: {
+      badge: 'Professional Due Diligence Services',
+      heroTitle: 'Investigative Due Diligence & Business Partner Vetting',
+      heroSubtitleStrong: 'Mitigate Risk Before You Engage:',
+      heroSubtitle: 'Verify the Integrity of Your Next Business Partner, Supplier, or Investment',
+      orderService: 'Order Service Now',
+      learnMore: 'Learn More',
+      intro1: "In today's interconnected global economy, every new business relationship presents both opportunity and risk. Unidentified liabilities, reputational issues, or non-compliant practices within a partner's operations can lead to significant financial loss, legal exposure, and brand damage. Standard background checks are no longer sufficient.",
+      intro2: 'ScamNemesis provides comprehensive, expert-led investigative due diligence that delivers the critical intelligence you need to make strategic decisions with confidence. Our rapid, in-depth analysis uncovers the facts behind the figures, ensuring the entities you engage with are legitimate, reliable, and aligned with your standards of integrity.',
+      confidentialityTitle: 'Guaranteed Confidentiality and Discretion',
+      confidentialityDesc: 'We protect your privacy. All information is confidential and anonymous. We never share it without your consent.',
+      useCasesTitle: 'Investigative Due Diligence for Business Partners',
+      useCasesSubtitle: 'When is Professional Due Diligence Essential?',
+      useCasesDesc: 'Our confidential investigative services are designed for high-stakes business scenarios where thorough vetting is non-negotiable. We provide critical intelligence for:',
+      useCase1Title: 'Evaluating Strategic Partnerships & Joint Ventures',
+      useCase1Desc: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.',
+      useCase2Title: 'Onboarding Key Suppliers & Vendors',
+      useCase2Desc: 'A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm. Ensure your supply chain is a source of strength, not a vulnerability.',
+      useCase3Title: 'Pre-Investment & M&A Screening',
+      useCase3Desc: 'For private equity firms, venture capitalists, and corporate development teams, our service provides an essential layer of preliminary integrity and reputational due diligence. We identify critical red flags—such as undisclosed litigation, connections to sanctioned individuals, or a history of fraud—that may be missed in traditional financial audits, allowing you to proceed with your transaction with greater certainty.',
+      useCase4Title: 'Vetting High-Value Clients (KYB Compliance)',
+      useCase4Desc: 'Protect your firm from financial crime and meet stringent regulatory requirements (e.g., AML/CFT). Our Know Your Business (KYB) verification process confirms the identity and legitimacy of new corporate clients, analyzes their ownership structure to identify Ultimate Beneficial Owners (UBOs), and screens for sanctions or criminal history.',
+      processTitle: 'Our Investigative Process: Elite Due Diligence Across 4 Operational Layers',
+      processDesc: 'Every investigation we conduct is executed as a precision operation — combining the methodology of intelligence agencies with the analytical discipline of top-tier investigators. Our approach is built on four powerful pillars and leverages hundreds of global data sources, advanced OSINT techniques, and proprietary databases. The result goes far beyond standard "verification" — it\'s a comprehensive intelligence-driven risk analysis.',
+      pillar1Title: 'Corporate Identity & Legal Architecture',
+      pillar1Desc: 'We dissect the legal structure of the entity down to the finest detail. Our team verifies its legal existence, ownership structure, and regulatory status across international business registries — including those not commonly accessible.',
+      pillar2Title: 'Financial Integrity & Reputational Risks',
+      pillar2Desc: 'We map the financial health and reputational profile of the target. Our analysts examine public records, court filings, data leaks, and deep-sourced media to uncover potential financial risks, discrepancies, or red flags.',
+      pillar3Title: 'Digital Footprint & Asset Mapping',
+      pillar3Desc: "Using advanced OSINT and cyber intelligence tools, we trace the entity's online presence, domain history, digital assets, and technical infrastructure. This enables us to reveal hidden connections, undisclosed assets, or signs of fraudulent activity.",
+      pillar4Title: 'Human Factor & Leadership Screening',
+      pillar4Desc: 'Behind every company stand people — and this is where most risks originate. We conduct thorough background investigations into the careers, reputations, and potential conflicts of interest of key individuals, including ultimate beneficial owners (UBOs), to identify threats others often miss.',
+      whatYouGetBadge: 'What You Get',
+      reportTitle: 'Due Diligence Report',
+      reportDesc: 'Our investigative unit brings together experts with experience in Big 4 consulting firms, military intelligence, and international security agencies. Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, and OSCP®, ensuring the highest level of accuracy, quality, and professional expertise.',
+      reportFeature1Title: 'Comprehensive and Practical Report',
+      reportFeature1Desc: 'The result of our work is a detailed, clearly structured PDF report, delivered within 30 days. The document is designed as a practical guide for strategic decision-making.',
+      reportFeature2Title: '360° Intelligence Profile',
+      reportFeature2Desc: 'Complete view of corporate risks, financial integrity, reputation, and trustworthiness. Our due diligence is a proactive tool for protecting capital, reputation, and business interests.',
+      reportFeature3Title: 'Transparent Pricing and No Surprises',
+      reportFeature3Desc: 'Our services are offered at a fixed price, with no additional or hidden fees. You know exactly what you are getting – no unpleasant surprises.',
+      reportIncludesTitle: 'Report Includes:',
+      reportIncludesFooter: 'This 360° intelligence profile provides critical insights for strategic decision-making, capital protection, and minimizing legal or financial risks.',
+      quoteText: 'Luck is a matter of preparation meeting opportunity.',
+      quoteAuthor: 'Seneca',
+      stepsTitle: 'Launch Your Confidential Corporate Investigation & Due Diligence in 3 Simple Steps',
+      step1Title: 'Complete the Online Form',
+      step1Desc: 'Fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.',
+      step1AfterSubmitting: 'After submitting:',
+      step1A: 'We create a secure and private communication channel.',
+      step1B: 'We explain the entire due diligence process in detail.',
+      step1C: 'We provide an exact quote based on scope and complexity.',
+      step2Title: 'Make a Secure Payment',
+      step2Desc: 'Finalize your order through our secure payment gateway. We accept multiple payment methods:',
+      step2CreditCards: 'Major credit cards',
+      step2BankTransfers: 'Bank transfers',
+      step2Crypto: 'Cryptocurrencies',
+      step2TransparentPricing: 'Transparent, fixed pricing with no hidden fees.',
+      step3Title: 'Receive Your Report',
+      step3Desc: 'Our analysts initiate the investigation immediately. Receive your comprehensive PDF report via email within 30 days.',
+      step3ReportIncludes: 'Report includes:',
+      whyChooseTitle: 'Why Choose ScamNemesis for Advanced Business Intelligence?',
+      whyChooseDesc: 'Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations. Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.',
+      expertiseTitle: 'Intelligence-Grade Expertise',
+      expertiseDesc: 'Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations.',
+      certifiedTitle: 'Certified Specialists',
+      certifiedDesc: 'Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.',
+      osintTitle: 'Advanced OSINT Techniques',
+      osintDesc: 'We employ advanced Open-Source Intelligence (OSINT) and digital analysis techniques integrating hundreds of global databases, corporate registries, and proprietary sources.',
+      pricingTitle: 'Transparent Fixed Pricing',
+      pricingDesc: 'All data is handled according to strict confidentiality and security standards. Our service is transparent and free of hidden fees.',
+      certificationsLabel: 'Our team holds elite certifications:',
+      testimonialTitle: 'Comprehensive Due Diligence Report',
+      testimonialSubtitle: 'Protect your business interests.',
+      testimonialDesc: 'Order your Due Diligence report today. Take your next strategic step with confidence. Our expert analysis provides the clarity you need to avoid working with unsuitable partners and helps you save significant time and money.',
+      testimonialQuote: 'I paid $5,000 for the analysis and saved $1.5 million on a bad investment.',
+      testimonialAuthor: 'One of our satisfied clients',
+      testimonialFooter: 'This perfectly illustrates the value of our service. Business risk always exists, but with us, you can significantly reduce it.',
+      ctaTitle: 'Protect Your Business Today',
+      ctaDesc: 'Take your next strategic step with confidence. Our expert analysis provides the clarity you need to make informed decisions and protect your capital, reputation, and business interests.',
+      ctaConfidential: 'Confidential & Secure',
+      ctaNoHiddenFees: 'No Hidden Fees',
+      ctaExpertAnalysis: 'Expert Analysis',
+      // Arrays
+      useCases: [
+        { title: 'Evaluating Strategic Partnerships & Joint Ventures', description: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.', icon: Users },
+        { title: 'Onboarding Key Suppliers & Vendors', description: 'A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm.', icon: Building },
+        { title: 'Pre-Investment & M&A Screening', description: 'For private equity firms, venture capitalists, and corporate development teams, our service provides an essential layer of preliminary integrity and reputational due diligence. We identify critical red flags—such as undisclosed litigation, connections to sanctioned individuals, or a history of fraud.', icon: TrendingUp },
+        { title: 'Vetting High-Value Clients (KYB Compliance)', description: 'Protect your firm from financial crime and meet stringent regulatory requirements (e.g., AML/CFT). Our Know Your Business (KYB) verification process confirms the identity and legitimacy of new corporate clients.', icon: UserCheck },
+      ],
+      pillars: [
+        { number: '1', title: 'Corporate Identity & Legal Architecture', description: 'We dissect the legal structure of the entity down to the finest detail. Our team verifies its legal existence, ownership structure, and regulatory status across international business registries.', icon: Building },
+        { number: '2', title: 'Financial Integrity & Reputational Risks', description: 'We map the financial health and reputational profile of the target. Our analysts examine public records, court filings, data leaks, and deep-sourced media.', icon: Scale },
+        { number: '3', title: 'Digital Footprint & Asset Mapping', description: "Using advanced OSINT and cyber intelligence tools, we trace the entity's online presence, domain history, digital assets, and technical infrastructure.", icon: Globe },
+        { number: '4', title: 'Human Factor & Leadership Screening', description: 'Behind every company stand people — and this is where most risks originate. We conduct thorough background investigations into key individuals.', icon: Fingerprint },
+      ],
+      deliverables: [
+        'Verification of corporate identity and legal status',
+        'Analysis of ownership and management structure, including Ultimate Beneficial Owners (UBOs)',
+        'Assessment of financial integrity and solvency',
+        'Reputation and risk evaluation of your business partner or investment',
+        'Audit of digital footprint and online assets',
+      ],
+      whyChoose: [
+        { title: 'Intelligence-Grade Expertise', description: 'Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations.', icon: Award },
+        { title: 'Certified Specialists', description: 'Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®.', icon: BadgeCheck },
+        { title: 'Advanced OSINT Techniques', description: 'We employ advanced Open-Source Intelligence (OSINT) and digital analysis techniques integrating hundreds of global databases.', icon: Database },
+        { title: 'Transparent Fixed Pricing', description: 'All data is handled according to strict confidentiality and security standards. Our service is transparent and free of hidden fees.', icon: DollarSign },
+      ],
+    },
+    de: {
+      badge: 'Professionelle Due Diligence Dienste',
+      heroTitle: 'Investigative Due Diligence & Geschäftspartnerprüfung',
+      heroSubtitleStrong: 'Minimieren Sie das Risiko vor dem Engagement:',
+      heroSubtitle: 'Überprüfen Sie die Integrität Ihres nächsten Geschäftspartners, Lieferanten oder Investments',
+      orderService: 'Service Bestellen',
+      learnMore: 'Mehr Erfahren',
+      intro1: 'In der heutigen vernetzten Weltwirtschaft birgt jede neue Geschäftsbeziehung sowohl Chancen als auch Risiken. Nicht erkannte Verbindlichkeiten, Reputationsprobleme oder nicht konforme Praktiken im Betrieb eines Partners können zu erheblichen finanziellen Verlusten, rechtlichen Risiken und Markenschäden führen. Standardmäßige Hintergrundprüfungen reichen nicht mehr aus.',
+      intro2: 'ScamNemesis bietet umfassende, von Experten geleitete investigative Due Diligence, die Ihnen die kritischen Informationen liefert, die Sie benötigen, um strategische Entscheidungen mit Zuversicht zu treffen. Unsere schnelle, eingehende Analyse deckt die Fakten hinter den Zahlen auf und stellt sicher, dass die Unternehmen, mit denen Sie zusammenarbeiten, legitim, zuverlässig und mit Ihren Integritätsstandards vereinbar sind.',
+      confidentialityTitle: 'Garantierte Vertraulichkeit und Diskretion',
+      confidentialityDesc: 'Wir schützen Ihre Privatsphäre. Alle Informationen sind vertraulich und anonym. Wir geben sie niemals ohne Ihre Zustimmung weiter.',
+      useCasesTitle: 'Investigative Due Diligence für Geschäftspartner',
+      useCasesSubtitle: 'Wann ist professionelle Due Diligence unerlässlich?',
+      useCasesDesc: 'Unsere vertraulichen Ermittlungsdienste sind für Geschäftsszenarien mit hohem Einsatz konzipiert, bei denen eine gründliche Prüfung unverzichtbar ist. Wir liefern kritische Informationen für:',
+      processTitle: 'Unser Ermittlungsprozess: Elite Due Diligence auf 4 operativen Ebenen',
+      processDesc: 'Jede Untersuchung, die wir durchführen, wird als Präzisionsoperation ausgeführt — die Methodik von Geheimdiensten kombiniert mit der analytischen Disziplin erstklassiger Ermittler. Unser Ansatz basiert auf vier leistungsstarken Säulen und nutzt Hunderte globaler Datenquellen, fortschrittliche OSINT-Techniken und proprietäre Datenbanken.',
+      whatYouGetBadge: 'Was Sie erhalten',
+      reportTitle: 'Due Diligence Bericht',
+      reportDesc: 'Unsere Ermittlungseinheit vereint Experten mit Erfahrung in Big-4-Beratungsfirmen, militärischer Aufklärung und internationalen Sicherheitsagenturen. Jede Untersuchung wird von zertifizierten Spezialisten mit Qualifikationen wie CFE®, CAMS®, CISA®, CISM® und OSCP® durchgeführt.',
+      reportFeature1Title: 'Umfassender und praktischer Bericht',
+      reportFeature1Desc: 'Das Ergebnis unserer Arbeit ist ein detaillierter, klar strukturierter PDF-Bericht, der innerhalb von 30 Tagen geliefert wird. Das Dokument ist als praktischer Leitfaden für strategische Entscheidungsfindung konzipiert.',
+      reportFeature2Title: '360°-Intelligence-Profil',
+      reportFeature2Desc: 'Vollständiger Überblick über Unternehmensrisiken, finanzielle Integrität, Reputation und Vertrauenswürdigkeit. Unsere Due Diligence ist ein proaktives Instrument zum Schutz von Kapital, Reputation und Geschäftsinteressen.',
+      reportFeature3Title: 'Transparente Preisgestaltung ohne Überraschungen',
+      reportFeature3Desc: 'Unsere Dienstleistungen werden zu einem Festpreis angeboten, ohne zusätzliche oder versteckte Gebühren. Sie wissen genau, was Sie bekommen – keine unangenehmen Überraschungen.',
+      reportIncludesTitle: 'Der Bericht umfasst:',
+      reportIncludesFooter: 'Dieses 360°-Intelligence-Profil liefert kritische Einblicke für strategische Entscheidungsfindung, Kapitalschutz und Minimierung rechtlicher oder finanzieller Risiken.',
+      quoteText: 'Glück ist, wenn Vorbereitung auf Gelegenheit trifft.',
+      quoteAuthor: 'Seneca',
+      stepsTitle: 'Starten Sie Ihre vertrauliche Unternehmensermittlung & Due Diligence in 3 einfachen Schritten',
+      step1Title: 'Online-Formular ausfüllen',
+      step1Desc: 'Füllen Sie unser Online-Formular mit Informationen über das Zielunternehmen oder den Geschäftspartner aus. Das Formular ist schnell, minimalistisch und alle Daten werden streng vertraulich behandelt.',
+      step1AfterSubmitting: 'Nach dem Absenden:',
+      step1A: 'Wir erstellen einen sicheren und privaten Kommunikationskanal.',
+      step1B: 'Wir erklären den gesamten Due-Diligence-Prozess im Detail.',
+      step1C: 'Wir liefern ein genaues Angebot basierend auf Umfang und Komplexität.',
+      step2Title: 'Sichere Zahlung durchführen',
+      step2Desc: 'Schließen Sie Ihre Bestellung über unser sicheres Zahlungsgateway ab. Wir akzeptieren mehrere Zahlungsmethoden:',
+      step2CreditCards: 'Gängige Kreditkarten',
+      step2BankTransfers: 'Banküberweisungen',
+      step2Crypto: 'Kryptowährungen',
+      step2TransparentPricing: 'Transparente Festpreise ohne versteckte Gebühren.',
+      step3Title: 'Ihren Bericht erhalten',
+      step3Desc: 'Unsere Analysten beginnen sofort mit der Untersuchung. Erhalten Sie Ihren umfassenden PDF-Bericht per E-Mail innerhalb von 30 Tagen.',
+      step3ReportIncludes: 'Der Bericht enthält:',
+      whyChooseTitle: 'Warum ScamNemesis für fortgeschrittene Business Intelligence wählen?',
+      whyChooseDesc: 'Unsere Ermittlungseinheit kombiniert Experten mit Erfahrung in militärischer Aufklärung, OSINT/SOCMINT-Operationen und Big-4-Unternehmensermittlungen. Jede Untersuchung wird von zertifizierten Spezialisten durchgeführt.',
+      certificationsLabel: 'Unser Team verfügt über Elite-Zertifizierungen:',
+      testimonialTitle: 'Umfassender Due Diligence Bericht',
+      testimonialSubtitle: 'Schützen Sie Ihre Geschäftsinteressen.',
+      testimonialDesc: 'Bestellen Sie noch heute Ihren Due-Diligence-Bericht. Gehen Sie Ihren nächsten strategischen Schritt mit Zuversicht. Unsere Expertenanalyse liefert Ihnen die Klarheit, die Sie benötigen.',
+      testimonialQuote: 'Ich habe 5.000 € für die Analyse bezahlt und 1,5 Millionen € bei einer schlechten Investition gespart.',
+      testimonialAuthor: 'Einer unserer zufriedenen Kunden',
+      testimonialFooter: 'Dies veranschaulicht perfekt den Wert unseres Services. Geschäftsrisiken bestehen immer, aber mit uns können Sie sie erheblich reduzieren.',
+      ctaTitle: 'Schützen Sie Ihr Unternehmen heute',
+      ctaDesc: 'Gehen Sie Ihren nächsten strategischen Schritt mit Zuversicht. Unsere Expertenanalyse liefert Ihnen die Klarheit, die Sie benötigen, um fundierte Entscheidungen zu treffen.',
+      ctaConfidential: 'Vertraulich & Sicher',
+      ctaNoHiddenFees: 'Keine versteckten Gebühren',
+      ctaExpertAnalysis: 'Expertenanalyse',
+      useCases: [
+        { title: 'Bewertung strategischer Partnerschaften & Joint Ventures', description: 'Bevor Sie Kapital und Ressourcen einsetzen, ist es unerlässlich, die operative, finanzielle und reputationsbezogene Integrität eines potenziellen Partners zu überprüfen.', icon: Users },
+        { title: 'Onboarding wichtiger Lieferanten & Anbieter', description: 'Eine widerstandsfähige und ethische Lieferkette ist ein kritischer Geschäftswert. Wir prüfen Ihre wichtigsten Lieferanten auf finanzielle Stabilität und regulatorische Compliance.', icon: Building },
+        { title: 'Vor-Investment & M&A-Screening', description: 'Für Private-Equity-Firmen, Risikokapitalgeber und Corporate-Development-Teams bietet unser Service eine wesentliche Schicht vorläufiger Integritäts- und Reputations-Due-Diligence.', icon: TrendingUp },
+        { title: 'Prüfung hochwertiger Kunden (KYB-Compliance)', description: 'Schützen Sie Ihr Unternehmen vor Finanzkriminalität und erfüllen Sie strenge regulatorische Anforderungen (z.B. AML/CFT).', icon: UserCheck },
+      ],
+      pillars: [
+        { number: '1', title: 'Unternehmensidentität & Rechtsarchitektur', description: 'Wir analysieren die rechtliche Struktur des Unternehmens bis ins kleinste Detail. Unser Team überprüft die rechtliche Existenz und Eigentümerstruktur.', icon: Building },
+        { number: '2', title: 'Finanzielle Integrität & Reputationsrisiken', description: 'Wir kartieren die finanzielle Gesundheit und das Reputationsprofil des Ziels. Unsere Analysten untersuchen öffentliche Aufzeichnungen und Gerichtsakten.', icon: Scale },
+        { number: '3', title: 'Digitaler Fußabdruck & Asset-Mapping', description: 'Mit fortschrittlichen OSINT- und Cyber-Intelligence-Tools verfolgen wir die Online-Präsenz, Domain-Historie und digitalen Assets des Unternehmens.', icon: Globe },
+        { number: '4', title: 'Menschlicher Faktor & Führungskräfte-Screening', description: 'Hinter jedem Unternehmen stehen Menschen — und hier entstehen die meisten Risiken. Wir führen gründliche Hintergrunduntersuchungen durch.', icon: Fingerprint },
+      ],
+      deliverables: [
+        'Überprüfung der Unternehmensidentität und des rechtlichen Status',
+        'Analyse der Eigentümer- und Managementstruktur, einschließlich wirtschaftlich Berechtigter (UBOs)',
+        'Bewertung der finanziellen Integrität und Solvenz',
+        'Reputations- und Risikobewertung Ihres Geschäftspartners oder Investments',
+        'Prüfung des digitalen Fußabdrucks und der Online-Assets',
+      ],
+      whyChoose: [
+        { title: 'Nachrichtendienstliche Expertise', description: 'Unsere Ermittlungseinheit kombiniert Experten mit Erfahrung in militärischer Aufklärung, OSINT/SOCMINT-Operationen und Big-4-Unternehmensermittlungen.', icon: Award },
+        { title: 'Zertifizierte Spezialisten', description: 'Jede Untersuchung wird von zertifizierten Spezialisten mit Qualifikationen wie CFE®, CAMS®, CISA®, CISM®, OSCP® durchgeführt.', icon: BadgeCheck },
+        { title: 'Fortgeschrittene OSINT-Techniken', description: 'Wir setzen fortschrittliche Open-Source-Intelligence (OSINT) und digitale Analysetechniken ein, die Hunderte globaler Datenbanken integrieren.', icon: Database },
+        { title: 'Transparente Festpreise', description: 'Alle Daten werden nach strengen Vertraulichkeits- und Sicherheitsstandards behandelt. Unser Service ist transparent und frei von versteckten Gebühren.', icon: DollarSign },
+      ],
+    },
+    sk: {
+      badge: 'Profesionálne Due Diligence služby',
+      heroTitle: 'Investigatívna Due Diligence & Preverovanie obchodných partnerov',
+      heroSubtitleStrong: 'Minimalizujte riziko pred spoluprácou:',
+      heroSubtitle: 'Overte integritu vášho ďalšieho obchodného partnera, dodávateľa alebo investície',
+      orderService: 'Objednať službu',
+      learnMore: 'Viac informácií',
+      intro1: 'V dnešnej prepojenej globálnej ekonomike predstavuje každý nový obchodný vzťah príležitosť aj riziko. Neidentifikované záväzky, reputačné problémy alebo nekonformné praktiky v operáciách partnera môžu viesť k významným finančným stratám, právnym rizikám a poškodeniu značky.',
+      intro2: 'ScamNemesis poskytuje komplexnú, odborne vedenú investigatívnu due diligence, ktorá vám poskytuje kritické informácie potrebné na sebavedomé strategické rozhodnutia.',
+      confidentialityTitle: 'Garantovaná dôvernosť a diskrétnosť',
+      confidentialityDesc: 'Chránime vaše súkromie. Všetky informácie sú dôverné a anonymné. Nikdy ich nezdieľame bez vášho súhlasu.',
+      useCasesTitle: 'Investigatívna Due Diligence pre obchodných partnerov',
+      useCasesSubtitle: 'Kedy je profesionálna Due Diligence nevyhnutná?',
+      useCasesDesc: 'Naše dôverné vyšetrovacie služby sú navrhnuté pre obchodné scenáre s vysokými stávkami, kde je dôkladné preverenie nevyhnutné.',
+      processTitle: 'Náš vyšetrovací proces: Elitná Due Diligence na 4 operačných úrovniach',
+      processDesc: 'Každé vyšetrovanie, ktoré vykonávame, je realizované ako presná operácia — kombinujúca metodológiu spravodajských agentúr s analytickou disciplínou špičkových vyšetrovateľov.',
+      whatYouGetBadge: 'Čo získate',
+      reportTitle: 'Due Diligence Report',
+      reportDesc: 'Naša vyšetrovacia jednotka spája expertov so skúsenosťami z Big 4 poradenských firiem, vojenskej spravodajskej služby a medzinárodných bezpečnostných agentúr.',
+      reportFeature1Title: 'Komplexný a praktický report',
+      reportFeature1Desc: 'Výsledkom našej práce je podrobný, jasne štruktúrovaný PDF report, doručený do 30 dní.',
+      reportFeature2Title: '360° spravodajský profil',
+      reportFeature2Desc: 'Kompletný pohľad na firemné riziká, finančnú integritu, reputáciu a dôveryhodnosť.',
+      reportFeature3Title: 'Transparentné ceny bez prekvapení',
+      reportFeature3Desc: 'Naše služby sú ponúkané za fixnú cenu, bez dodatočných alebo skrytých poplatkov.',
+      reportIncludesTitle: 'Report obsahuje:',
+      reportIncludesFooter: 'Tento 360° spravodajský profil poskytuje kritické poznatky pre strategické rozhodovanie.',
+      quoteText: 'Šťastie je, keď sa príprava stretne s príležitosťou.',
+      quoteAuthor: 'Seneca',
+      stepsTitle: 'Spustite svoje dôverné firemné vyšetrovanie v 3 jednoduchých krokoch',
+      step1Title: 'Vyplňte online formulár',
+      step1Desc: 'Vyplňte náš online formulár s informáciami o cieľovej spoločnosti alebo obchodnom partnerovi.',
+      step1AfterSubmitting: 'Po odoslaní:',
+      step1A: 'Vytvoríme bezpečný a súkromný komunikačný kanál.',
+      step1B: 'Podrobne vysvetlíme celý proces due diligence.',
+      step1C: 'Poskytneme presnú cenovú ponuku na základe rozsahu a zložitosti.',
+      step2Title: 'Vykonajte bezpečnú platbu',
+      step2Desc: 'Dokončite objednávku prostredníctvom našej bezpečnej platobnej brány.',
+      step2CreditCards: 'Hlavné kreditné karty',
+      step2BankTransfers: 'Bankové prevody',
+      step2Crypto: 'Kryptomeny',
+      step2TransparentPricing: 'Transparentné fixné ceny bez skrytých poplatkov.',
+      step3Title: 'Dostanete svoj report',
+      step3Desc: 'Naši analytici okamžite začnú vyšetrovanie. Dostanete komplexný PDF report e-mailom do 30 dní.',
+      step3ReportIncludes: 'Report obsahuje:',
+      whyChooseTitle: 'Prečo si vybrať ScamNemesis pre pokročilú business intelligence?',
+      whyChooseDesc: 'Naša vyšetrovacia jednotka kombinuje expertov so skúsenosťami vo vojenskej spravodajskej službe a Big 4 firemných vyšetrovaniach.',
+      certificationsLabel: 'Náš tím má elitné certifikácie:',
+      testimonialTitle: 'Komplexný Due Diligence Report',
+      testimonialSubtitle: 'Chráňte svoje obchodné záujmy.',
+      testimonialDesc: 'Objednajte si ešte dnes svoj Due Diligence report.',
+      testimonialQuote: 'Zaplatil som 5 000 € za analýzu a ušetril 1,5 milióna € na zlej investícii.',
+      testimonialAuthor: 'Jeden z našich spokojných klientov',
+      testimonialFooter: 'Toto dokonale ilustruje hodnotu našej služby.',
+      ctaTitle: 'Chráňte svoje podnikanie ešte dnes',
+      ctaDesc: 'Urobte ďalší strategický krok s istotou.',
+      ctaConfidential: 'Dôverné a bezpečné',
+      ctaNoHiddenFees: 'Žiadne skryté poplatky',
+      ctaExpertAnalysis: 'Expertná analýza',
+      useCases: [
+        { title: 'Hodnotenie strategických partnerstiev a spoločných podnikov', description: 'Pred vynaložením kapitálu a zdrojov je nevyhnutné overiť prevádzkovú, finančnú a reputačnú integritu potenciálneho partnera.', icon: Users },
+        { title: 'Onboarding kľúčových dodávateľov a predajcov', description: 'Odolný a etický dodávateľský reťazec je kritickým obchodným aktívom.', icon: Building },
+        { title: 'Pred-investičný a M&A screening', description: 'Pre private equity firmy poskytuje naša služba základnú vrstvu predbežnej integritnej a reputačnej due diligence.', icon: TrendingUp },
+        { title: 'Preverovanie vysoko hodnotných klientov (KYB Compliance)', description: 'Chráňte svoju firmu pred finančnou kriminalitou a splňte prísne regulačné požiadavky.', icon: UserCheck },
+      ],
+      pillars: [
+        { number: '1', title: 'Firemná identita a právna architektúra', description: 'Analyzujeme právnu štruktúru subjektu do najmenších detailov.', icon: Building },
+        { number: '2', title: 'Finančná integrita a reputačné riziká', description: 'Mapujeme finančné zdravie a reputačný profil cieľa.', icon: Scale },
+        { number: '3', title: 'Digitálna stopa a mapovanie aktív', description: 'Pomocou pokročilých OSINT nástrojov sledujeme online prítomnosť subjektu.', icon: Globe },
+        { number: '4', title: 'Ľudský faktor a screening vedenia', description: 'Za každou spoločnosťou stoja ľudia — a práve tu vzniká väčšina rizík.', icon: Fingerprint },
+      ],
+      deliverables: [
+        'Overenie firemnej identity a právneho statusu',
+        'Analýza vlastníckej a riadiacej štruktúry vrátane konečných užívateľov výhod (UBOs)',
+        'Hodnotenie finančnej integrity a solventnosti',
+        'Reputačné a rizikové hodnotenie vášho obchodného partnera alebo investície',
+        'Audit digitálnej stopy a online aktív',
+      ],
+      whyChoose: [
+        { title: 'Spravodajská expertíza', description: 'Naša vyšetrovacia jednotka kombinuje expertov so skúsenosťami vo vojenskej spravodajskej službe.', icon: Award },
+        { title: 'Certifikovaní špecialisti', description: 'Každé vyšetrovanie vykonávajú certifikovaní špecialisti s kvalifikáciami ako CFE®, CAMS®, CISA®, CISM®, OSCP®.', icon: BadgeCheck },
+        { title: 'Pokročilé OSINT techniky', description: 'Využívame pokročilé Open-Source Intelligence (OSINT) a digitálne analytické techniky.', icon: Database },
+        { title: 'Transparentné fixné ceny', description: 'Naša služba je transparentná a bez skrytých poplatkov.', icon: DollarSign },
+      ],
+    },
+    cs: {
+      badge: 'Profesionální Due Diligence služby',
+      heroTitle: 'Investigativní Due Diligence & Prověřování obchodních partnerů',
+      heroSubtitleStrong: 'Minimalizujte riziko před spoluprací:',
+      heroSubtitle: 'Ověřte integritu vašeho dalšího obchodního partnera, dodavatele nebo investice',
+      orderService: 'Objednat službu',
+      learnMore: 'Více informací',
+      intro1: 'V dnešní propojené globální ekonomice představuje každý nový obchodní vztah příležitost i riziko. Neidentifikované závazky, reputační problémy nebo nekompatibilní praktiky mohou vést k finančním ztrátám a právním rizikům.',
+      intro2: 'ScamNemesis poskytuje komplexní, odborně vedenou investigativní due diligence, která vám přináší kritické informace potřebné k sebevědomému strategickému rozhodování.',
+      confidentialityTitle: 'Garantovaná důvěrnost a diskrétnost',
+      confidentialityDesc: 'Chráníme vaše soukromí. Všechny informace jsou důvěrné a anonymní. Nikdy je nesdílíme bez vašeho souhlasu.',
+      useCasesTitle: 'Investigativní Due Diligence pro obchodní partnery',
+      useCasesSubtitle: 'Kdy je profesionální Due Diligence nezbytná?',
+      useCasesDesc: 'Naše důvěrné vyšetřovací služby jsou navrženy pro obchodní scénáře s vysokými sázkami.',
+      processTitle: 'Náš vyšetřovací proces: Elitní Due Diligence na 4 operačních úrovních',
+      processDesc: 'Každé vyšetřování je realizováno jako přesná operace — kombinující metodologii zpravodajských služeb s analytickou disciplínou špičkových vyšetřovatelů.',
+      whatYouGetBadge: 'Co získáte',
+      reportTitle: 'Due Diligence Report',
+      reportDesc: 'Naše vyšetřovací jednotka spojuje experty se zkušenostmi z Big 4 firem, vojenského zpravodajství a mezinárodních bezpečnostních agentur.',
+      reportFeature1Title: 'Komplexní a praktický report',
+      reportFeature1Desc: 'Výsledkem je podrobný PDF report, doručený do 30 dnů.',
+      reportFeature2Title: '360° zpravodajský profil',
+      reportFeature2Desc: 'Kompletní pohled na firemní rizika a důvěryhodnost.',
+      reportFeature3Title: 'Transparentní ceny bez překvapení',
+      reportFeature3Desc: 'Naše služby jsou nabízeny za fixní cenu, bez dodatečných poplatků.',
+      reportIncludesTitle: 'Report obsahuje:',
+      reportIncludesFooter: 'Tento profil poskytuje kritické poznatky pro strategické rozhodování.',
+      quoteText: 'Štěstí je, když se příprava setká s příležitostí.',
+      quoteAuthor: 'Seneca',
+      stepsTitle: 'Spusťte své vyšetřování ve 3 jednoduchých krocích',
+      step1Title: 'Vyplňte online formulář',
+      step1Desc: 'Vyplňte formulář s informacemi o cílové společnosti.',
+      step1AfterSubmitting: 'Po odeslání:',
+      step1A: 'Vytvoříme bezpečný komunikační kanál.',
+      step1B: 'Vysvětlíme celý proces due diligence.',
+      step1C: 'Poskytneme přesnou cenovou nabídku.',
+      step2Title: 'Proveďte bezpečnou platbu',
+      step2Desc: 'Dokončete objednávku přes naši platební bránu.',
+      step2CreditCards: 'Hlavní kreditní karty',
+      step2BankTransfers: 'Bankovní převody',
+      step2Crypto: 'Kryptoměny',
+      step2TransparentPricing: 'Transparentní ceny bez skrytých poplatků.',
+      step3Title: 'Obdržíte svůj report',
+      step3Desc: 'Obdržíte komplexní PDF report e-mailem do 30 dnů.',
+      step3ReportIncludes: 'Report obsahuje:',
+      whyChooseTitle: 'Proč si vybrat ScamNemesis?',
+      whyChooseDesc: 'Naše jednotka kombinuje experty se zkušenostmi ve zpravodajství a Big 4 firemních vyšetřováních.',
+      certificationsLabel: 'Náš tým má elitní certifikace:',
+      testimonialTitle: 'Komplexní Due Diligence Report',
+      testimonialSubtitle: 'Chraňte své obchodní zájmy.',
+      testimonialDesc: 'Objednejte si ještě dnes svůj report.',
+      testimonialQuote: 'Zaplatil jsem 5 000 € a ušetřil 1,5 milionu €.',
+      testimonialAuthor: 'Jeden z našich spokojených klientů',
+      testimonialFooter: 'Toto ilustruje hodnotu naší služby.',
+      ctaTitle: 'Chraňte své podnikání ještě dnes',
+      ctaDesc: 'Udělejte další strategický krok s jistotou.',
+      ctaConfidential: 'Důvěrné a bezpečné',
+      ctaNoHiddenFees: 'Žádné skryté poplatky',
+      ctaExpertAnalysis: 'Expertní analýza',
+      useCases: [
+        { title: 'Hodnocení strategických partnerství a společných podniků', description: 'Před vynaložením kapitálu a zdrojů je nezbytné ověřit integritu potenciálního partnera.', icon: Users },
+        { title: 'Onboarding klíčových dodavatelů a prodejců', description: 'Odolný a etický dodavatelský řetězec je kritickým obchodním aktivem.', icon: Building },
+        { title: 'Před-investiční a M&A screening', description: 'Pro private equity firmy poskytuje naše služba základní vrstvu due diligence.', icon: TrendingUp },
+        { title: 'Prověřování vysoce hodnotných klientů (KYB Compliance)', description: 'Chraňte svou firmu před finanční kriminalitou.', icon: UserCheck },
+      ],
+      pillars: [
+        { number: '1', title: 'Firemní identita a právní architektura', description: 'Analyzujeme právní strukturu subjektu do nejmenších detailů.', icon: Building },
+        { number: '2', title: 'Finanční integrita a reputační rizika', description: 'Mapujeme finanční zdraví a reputační profil cíle.', icon: Scale },
+        { number: '3', title: 'Digitální stopa a mapování aktiv', description: 'Pomocí pokročilých OSINT nástrojů sledujeme online přítomnost subjektu.', icon: Globe },
+        { number: '4', title: 'Lidský faktor a screening vedení', description: 'Za každou společností stojí lidé — a právě zde vzniká většina rizik.', icon: Fingerprint },
+      ],
+      deliverables: [
+        'Ověření firemní identity a právního statusu',
+        'Analýza vlastnické struktury včetně UBOs',
+        'Hodnocení finanční integrity a solventnosti',
+        'Reputační a rizikové hodnocení',
+        'Audit digitální stopy a online aktiv',
+      ],
+      whyChoose: [
+        { title: 'Zpravodajská expertíza', description: 'Experty se zkušenostmi ve vojenské zpravodajské službě.', icon: Award },
+        { title: 'Certifikovaní specialisté', description: 'Specialisté s kvalifikacemi CFE®, CAMS®, CISA®, CISM®, OSCP®.', icon: BadgeCheck },
+        { title: 'Pokročilé OSINT techniky', description: 'Využíváme pokročilé OSINT a digitální analytické techniky.', icon: Database },
+        { title: 'Transparentní fixní ceny', description: 'Služba je transparentní a bez skrytých poplatků.', icon: DollarSign },
+      ],
+    },
+  };
+  return t[locale] || t.en;
+};
+
 export default function VerifyServiceProductPage() {
+  const params = useParams();
+  const pageLocale = (params?.locale as Locale) || 'en';
+  const t = getPageTranslations(pageLocale);
+
   return (
     <>
       {/* JSON-LD Schema Markup for SEO */}
@@ -381,27 +758,27 @@ export default function VerifyServiceProductPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8 hover:bg-[#0E74FF]/30 transition-colors duration-300">
               <Shield className="h-4 w-4 text-[#0E74FF]" />
-              <span className="text-sm font-semibold text-[#0E74FF]">Professional Due Diligence Services</span>
+              <span className="text-sm font-semibold text-[#0E74FF]">{t.badge}</span>
             </div>
 
             <h1 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-              Investigative Due Diligence & Business Partner Vetting
+              {t.heroTitle}
             </h1>
 
             <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-              <strong className="text-white">Mitigate Risk Before You Engage:</strong> Verify the Integrity of Your Next Business Partner, Supplier, or Investment
+              <strong className="text-white">{t.heroSubtitleStrong}</strong> {t.heroSubtitle}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-8 py-6 text-lg shadow-lg shadow-[#0E74FF]/30 hover:shadow-xl hover:shadow-[#0E74FF]/40 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
-                  Order Service Now
+                  {t.orderService}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-2 border-slate-500 text-white hover:bg-white/10 hover:border-white px-8 py-6 text-lg backdrop-blur-sm hover:scale-105 transition-all duration-300" asChild>
                 <Link href="#process">
-                  Learn More
+                  {t.learnMore}
                 </Link>
               </Button>
             </div>
@@ -415,11 +792,11 @@ export default function VerifyServiceProductPage() {
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8 text-center">
               <p className="text-lg md:text-xl text-[#64748b] leading-relaxed">
-                In today&apos;s interconnected global economy, every new business relationship presents both opportunity and risk. Unidentified liabilities, reputational issues, or non-compliant practices within a partner&apos;s operations can lead to significant financial loss, legal exposure, and brand damage. Standard background checks are no longer sufficient.
+                {t.intro1}
               </p>
               <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
               <p className="text-lg md:text-xl text-[#1e293b] leading-relaxed font-semibold">
-                ScamNemesis provides comprehensive, expert-led investigative due diligence that delivers the critical intelligence you need to make strategic decisions with confidence. Our rapid, in-depth analysis uncovers the facts behind the figures, ensuring the entities you engage with are legitimate, reliable, and aligned with your standards of integrity.
+                {t.intro2}
               </p>
             </div>
           </div>
@@ -442,8 +819,8 @@ export default function VerifyServiceProductPage() {
                 <Lock className="h-8 w-8" />
               </div>
               <div className="space-y-2">
-                <p className="font-bold text-xl md:text-2xl">Guaranteed Confidentiality and Discretion</p>
-                <p className="text-white/95 text-base md:text-lg leading-relaxed">We protect your privacy. All information is confidential and anonymous. We never share it without your consent.</p>
+                <p className="font-bold text-xl md:text-2xl">{t.confidentialityTitle}</p>
+                <p className="text-white/95 text-base md:text-lg leading-relaxed">{t.confidentialityDesc}</p>
               </div>
             </div>
           </div>
@@ -459,18 +836,18 @@ export default function VerifyServiceProductPage() {
                 <Briefcase className="h-8 w-8 text-[#0E74FF]" />
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
-                Investigative Due Diligence for Business Partners
+                {t.useCasesTitle}
               </h2>
               <p className="text-xl md:text-2xl text-[#64748b] max-w-3xl mx-auto mb-4 font-medium">
-                When is Professional Due Diligence Essential?
+                {t.useCasesSubtitle}
               </p>
               <p className="text-base md:text-lg text-[#64748b] max-w-3xl mx-auto leading-relaxed">
-                Our confidential investigative services are designed for high-stakes business scenarios where thorough vetting is non-negotiable. We provide critical intelligence for:
+                {t.useCasesDesc}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
-              {useCases.map((useCase) => {
+              {t.useCases.map((useCase) => {
                 const Icon = useCase.icon;
                 return (
                   <div key={useCase.title} className="group">
@@ -502,15 +879,15 @@ export default function VerifyServiceProductPage() {
                 <Eye className="h-8 w-8 text-[#0E74FF]" />
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
-                Our Investigative Process: Elite Due Diligence Across 4 Operational Layers
+                {t.processTitle}
               </h2>
               <p className="text-base md:text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
-                Every investigation we conduct is executed as a precision operation — combining the methodology of intelligence agencies with the analytical discipline of top-tier investigators. Our approach is built on four powerful pillars and leverages hundreds of global data sources, advanced OSINT techniques, and proprietary databases. The result goes far beyond standard &quot;verification&quot; — it&apos;s a comprehensive intelligence-driven risk analysis.
+                {t.processDesc}
               </p>
             </div>
 
             <div className="space-y-8">
-              {investigationPillars.map((pillar, index) => {
+              {t.pillars.map((pillar, index) => {
                 const Icon = pillar.icon;
                 const isEven = index % 2 === 0;
                 return (
@@ -562,39 +939,39 @@ export default function VerifyServiceProductPage() {
               <div>
                 <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E74FF]/20 backdrop-blur-sm border border-[#0E74FF]/30 mb-8 hover:bg-[#0E74FF]/30 transition-colors duration-300">
                   <FileCheck className="h-4 w-4 text-[#0E74FF]" />
-                  <span className="text-sm font-semibold text-[#0E74FF]">What You Get</span>
+                  <span className="text-sm font-semibold text-[#0E74FF]">{t.whatYouGetBadge}</span>
                 </div>
 
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                  Due Diligence Report
+                  {t.reportTitle}
                 </h2>
 
                 <p className="text-lg text-slate-300 mb-6 leading-relaxed">
-                  Our investigative unit brings together experts with experience in Big 4 consulting firms, military intelligence, and international security agencies. Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, and OSCP®, ensuring the highest level of accuracy, quality, and professional expertise.
+                  {t.reportDesc}
                 </p>
 
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
                     <FileText className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-2">Comprehensive and Practical Report</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">The result of our work is a detailed, clearly structured PDF report, delivered within 30 days. The document is designed as a practical guide for strategic decision-making.</p>
+                      <h4 className="font-semibold mb-2">{t.reportFeature1Title}</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">{t.reportFeature1Desc}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
                     <Target className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-2">360° Intelligence Profile</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">Complete view of corporate risks, financial integrity, reputation, and trustworthiness. Our due diligence is a proactive tool for protecting capital, reputation, and business interests.</p>
+                      <h4 className="font-semibold mb-2">{t.reportFeature2Title}</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">{t.reportFeature2Desc}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
                     <DollarSign className="h-6 w-6 text-[#0E74FF] flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300" />
                     <div>
-                      <h4 className="font-semibold mb-2">Transparent Pricing and No Surprises</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">Our services are offered at a fixed price, with no additional or hidden fees. You know exactly what you are getting – no unpleasant surprises.</p>
+                      <h4 className="font-semibold mb-2">{t.reportFeature3Title}</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">{t.reportFeature3Desc}</p>
                     </div>
                   </div>
                 </div>
@@ -605,10 +982,10 @@ export default function VerifyServiceProductPage() {
                   <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
                     <CheckCircle className="h-5 w-5 text-green-400" />
                   </div>
-                  Report Includes:
+                  {t.reportIncludesTitle}
                 </h3>
                 <ul className="space-y-4">
-                  {deliverables.map((item, index) => (
+                  {t.deliverables.map((item, index) => (
                     <li key={index} className="flex items-start gap-4 group">
                       <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1 group-hover:bg-green-500/30 transition-colors duration-300">
                         <CheckCircle className="h-4 w-4 text-green-400" />
@@ -620,7 +997,7 @@ export default function VerifyServiceProductPage() {
 
                 <div className="mt-8 pt-8 border-t border-white/10">
                   <p className="text-center text-slate-400 text-sm leading-relaxed">
-                    This 360° intelligence profile provides critical insights for strategic decision-making, capital protection, and minimizing legal or financial risks.
+                    {t.reportIncludesFooter}
                   </p>
                 </div>
               </div>
@@ -638,10 +1015,10 @@ export default function VerifyServiceProductPage() {
                 <span className="text-3xl text-white font-serif">&quot;</span>
               </div>
               <blockquote className="text-2xl md:text-3xl lg:text-4xl font-light text-[#1e293b] italic leading-relaxed text-center">
-                Luck is a matter of preparation meeting opportunity.
+                {t.quoteText}
               </blockquote>
               <cite className="block mt-8 text-lg md:text-xl font-semibold text-[#0E74FF] not-italic text-center">
-                — Seneca
+                — {t.quoteAuthor}
               </cite>
             </div>
           </div>
@@ -657,7 +1034,7 @@ export default function VerifyServiceProductPage() {
                 <Target className="h-8 w-8 text-[#0E74FF]" />
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-4 leading-tight">
-                Launch Your Confidential Corporate Investigation & Due Diligence in 3 Simple Steps
+                {t.stepsTitle}
               </h2>
             </div>
 
@@ -675,25 +1052,25 @@ export default function VerifyServiceProductPage() {
                     </div>
                     <div className="mt-8 text-center">
                       <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                        Complete the Online Form
+                        {t.step1Title}
                       </h3>
                       <p className="text-[#64748b] leading-relaxed mb-6">
-                        Fill out our online form with information about the target company or business partner. The form is quick, minimalistic, and all data is handled with strict confidentiality.
+                        {t.step1Desc}
                       </p>
                       <div className="bg-[#f8fafc] rounded-2xl p-6 text-left">
-                        <p className="font-semibold text-[#1e293b] mb-4 text-sm">After submitting:</p>
+                        <p className="font-semibold text-[#1e293b] mb-4 text-sm">{t.step1AfterSubmitting}</p>
                         <ul className="space-y-3">
                           <li className="flex items-start gap-3">
                             <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">A</span>
-                            <span className="text-[#64748b] text-sm leading-relaxed">We create a secure and private communication channel.</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">{t.step1A}</span>
                           </li>
                           <li className="flex items-start gap-3">
                             <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">B</span>
-                            <span className="text-[#64748b] text-sm leading-relaxed">We explain the entire due diligence process in detail.</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">{t.step1B}</span>
                           </li>
                           <li className="flex items-start gap-3">
                             <span className="w-6 h-6 rounded-full bg-[#0E74FF]/10 flex items-center justify-center flex-shrink-0 text-[#0E74FF] font-bold text-xs">C</span>
-                            <span className="text-[#64748b] text-sm leading-relaxed">We provide an exact quote based on scope and complexity.</span>
+                            <span className="text-[#64748b] text-sm leading-relaxed">{t.step1C}</span>
                           </li>
                         </ul>
                       </div>
@@ -709,10 +1086,10 @@ export default function VerifyServiceProductPage() {
                     </div>
                     <div className="mt-8 text-center">
                       <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                        Make a Secure Payment
+                        {t.step2Title}
                       </h3>
                       <p className="text-[#64748b] leading-relaxed mb-6">
-                        Finalize your order through our secure payment gateway. We accept multiple payment methods:
+                        {t.step2Desc}
                       </p>
                       <div className="bg-[#f8fafc] rounded-2xl p-6">
                         <div className="space-y-4">
@@ -720,23 +1097,23 @@ export default function VerifyServiceProductPage() {
                             <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
                               <CreditCard className="h-5 w-5 text-[#0E74FF]" />
                             </div>
-                            <span className="text-[#1e293b] font-medium">Major credit cards</span>
+                            <span className="text-[#1e293b] font-medium">{t.step2CreditCards}</span>
                           </div>
                           <div className="flex items-center justify-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
                               <Wallet className="h-5 w-5 text-[#0E74FF]" />
                             </div>
-                            <span className="text-[#1e293b] font-medium">Bank transfers</span>
+                            <span className="text-[#1e293b] font-medium">{t.step2BankTransfers}</span>
                           </div>
                           <div className="flex items-center justify-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-[#0E74FF]/10 flex items-center justify-center">
                               <Bitcoin className="h-5 w-5 text-[#0E74FF]" />
                             </div>
-                            <span className="text-[#1e293b] font-medium">Cryptocurrencies</span>
+                            <span className="text-[#1e293b] font-medium">{t.step2Crypto}</span>
                           </div>
                         </div>
                         <p className="text-[#64748b] text-sm mt-4 leading-relaxed">
-                          Transparent, fixed pricing with no hidden fees.
+                          {t.step2TransparentPricing}
                         </p>
                       </div>
                     </div>
@@ -751,15 +1128,15 @@ export default function VerifyServiceProductPage() {
                     </div>
                     <div className="mt-8 text-center">
                       <h3 className="text-xl font-bold text-[#1e293b] mb-4">
-                        Receive Your Report
+                        {t.step3Title}
                       </h3>
                       <p className="text-[#64748b] leading-relaxed mb-6">
-                        Our analysts initiate the investigation immediately. Receive your comprehensive PDF report via email within 30 days.
+                        {t.step3Desc}
                       </p>
                       <div className="bg-[#f8fafc] rounded-2xl p-6 text-left">
-                        <p className="font-semibold text-[#1e293b] mb-4 text-sm text-center">Report includes:</p>
+                        <p className="font-semibold text-[#1e293b] mb-4 text-sm text-center">{t.step3ReportIncludes}</p>
                         <ul className="space-y-2">
-                          {deliverables.map((item, index) => (
+                          {t.deliverables.map((item, index) => (
                             <li key={index} className="flex items-start gap-2">
                               <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                               <span className="text-[#64748b] text-sm leading-relaxed">{item}</span>
@@ -785,15 +1162,15 @@ export default function VerifyServiceProductPage() {
                 <ShieldCheck className="h-8 w-8 text-[#0E74FF]" />
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1e293b] mb-6 leading-tight">
-                Why Choose ScamNemesis for Advanced Business Intelligence?
+                {t.whyChooseTitle}
               </h2>
               <p className="text-base md:text-lg text-[#64748b] max-w-4xl mx-auto leading-relaxed">
-                Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations. Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.
+                {t.whyChooseDesc}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-              {whyChoose.map((item) => {
+              {t.whyChoose.map((item) => {
                 const Icon = item.icon;
                 return (
                   <div key={item.title} className="text-center group">
@@ -809,7 +1186,7 @@ export default function VerifyServiceProductPage() {
 
             {/* Certifications */}
             <div className="text-center">
-              <p className="text-sm text-[#64748b] mb-6 font-medium">Our team holds elite certifications:</p>
+              <p className="text-sm text-[#64748b] mb-6 font-medium">{t.certificationsLabel}</p>
               <div className="flex flex-wrap justify-center gap-4">
                 {certifications.map((cert) => (
                   <div
@@ -842,22 +1219,22 @@ export default function VerifyServiceProductPage() {
                 <div className="relative z-10">
                   <FileText className="h-12 w-12 mb-8 opacity-90" />
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                    Comprehensive Due Diligence Report
+                    {t.testimonialTitle}
                   </h2>
                   <h3 className="text-xl md:text-2xl mb-8 opacity-95">
-                    Protect your business interests.
+                    {t.testimonialSubtitle}
                   </h3>
                   <p className="text-lg leading-relaxed opacity-95 mb-8">
-                    Order your Due Diligence report today. Take your next strategic step with confidence. Our expert analysis provides the clarity you need to avoid working with unsuitable partners and helps you save significant time and money.
+                    {t.testimonialDesc}
                   </p>
                   <div className="bg-white/15 backdrop-blur-md rounded-2xl p-6 md:p-8 mb-8 border border-white/20 shadow-lg">
                     <p className="text-xl md:text-2xl italic leading-relaxed">
-                      &quot;I paid $5,000 for the analysis and saved $1.5 million on a bad investment.&quot;
+                      &quot;{t.testimonialQuote}&quot;
                     </p>
-                    <p className="text-sm md:text-base mt-4 opacity-90 font-medium">— One of our satisfied clients</p>
+                    <p className="text-sm md:text-base mt-4 opacity-90 font-medium">— {t.testimonialAuthor}</p>
                   </div>
                   <p className="text-base md:text-lg opacity-95 leading-relaxed">
-                    This perfectly illustrates the value of our service. Business risk always exists, but with us, you can significantly reduce it.
+                    {t.testimonialFooter}
                   </p>
                 </div>
               </div>
@@ -879,17 +1256,17 @@ export default function VerifyServiceProductPage() {
             </div>
 
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-              Protect Your Business Today
+              {t.ctaTitle}
             </h2>
 
             <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed max-w-2xl mx-auto">
-              Take your next strategic step with confidence. Our expert analysis provides the clarity you need to make informed decisions and protect your capital, reputation, and business interests.
+              {t.ctaDesc}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full mb-8">
               <Button size="lg" className="bg-[#0E74FF] hover:bg-[#0E74FF]/90 text-white px-10 py-7 text-lg font-semibold shadow-lg shadow-[#0E74FF]/40 hover:shadow-2xl hover:shadow-[#0E74FF]/50 hover:scale-105 transition-all duration-300" asChild>
                 <Link href={ORDER_FORM_URL} target="_blank" rel="noopener noreferrer">
-                  Order Service Now
+                  {t.orderService}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -898,15 +1275,15 @@ export default function VerifyServiceProductPage() {
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center items-center text-slate-400 text-sm">
               <div className="flex items-center gap-2">
                 <Lock className="h-4 w-4" />
-                <span>Confidential & Secure</span>
+                <span>{t.ctaConfidential}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
-                <span>No Hidden Fees</span>
+                <span>{t.ctaNoHiddenFees}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Award className="h-4 w-4" />
-                <span>Expert Analysis</span>
+                <span>{t.ctaExpertAnalysis}</span>
               </div>
             </div>
           </div>
