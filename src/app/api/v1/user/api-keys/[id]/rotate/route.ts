@@ -26,6 +26,17 @@ export async function POST(
   request: NextRequest,
   { params }: RouteParams
 ) {
+  // Quick check: return 401 immediately if no auth credentials present
+  const hasAuth = request.headers.get('authorization') ||
+                  request.cookies.get('access_token')?.value ||
+                  request.headers.get('x-api-key');
+  if (!hasAuth) {
+    return NextResponse.json(
+      { error: 'unauthorized', message: 'Authentication required' },
+      { status: 401 }
+    );
+  }
+
   try {
     const authResult = await requireAuth(request);
     if (authResult instanceof NextResponse) return authResult;
