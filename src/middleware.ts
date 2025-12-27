@@ -140,12 +140,13 @@ export const config = {
   matcher: [
     /*
      * Match API routes that require authentication pre-check.
-     * Using both exact match and wildcard to ensure all variations are caught.
+     * Using path-to-regexp syntax (NOT regex):
+     * - :path* means zero or more path segments
      * This ensures 401 is returned before route handlers try to load
      * and potentially fail due to import errors.
      */
     '/api/v1/user/api-keys',
-    '/api/v1/user/api-keys/(.*)',
+    '/api/v1/user/api-keys/:path*',
     /*
      * Match all locale-prefixed paths for i18n routing.
      */
