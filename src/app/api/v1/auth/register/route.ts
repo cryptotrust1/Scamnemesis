@@ -254,13 +254,27 @@ export async function POST(request: NextRequest) {
       extra: { requestId, failedStep: currentStep },
     });
 
+    // Extract detailed error info for debugging
+    let errorDetails = 'unknown';
+    let errorCode = '';
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      errorDetails = `Prisma ${error.code}: ${error.message}`;
+      errorCode = error.code;
+    } else if (error instanceof Error) {
+      errorDetails = error.message;
+    } else {
+      errorDetails = String(error);
+    }
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred during registration',
         request_id: requestId,
-        // Include step in response for debugging (remove in production if sensitive)
+        // Include step and error details for debugging
         debug_step: currentStep,
+        debug_error: errorDetails,
+        debug_code: errorCode,
       },
       { status: 500 }
     );
