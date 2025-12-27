@@ -717,8 +717,8 @@ const getPageTranslations = (locale: Locale) => {
   return t[locale] || t.en;
 };
 
-// Data Processing Features
-const dataProcessingFeatures = [
+// Data Processing Features (reserved for future use)
+const _dataProcessingFeatures = [
   {
     icon: BarChart3,
     title: 'Advanced Analytics',
@@ -741,8 +741,8 @@ const dataProcessingFeatures = [
   },
 ];
 
-// OSINT Features
-const osintFeatures = [
+// OSINT Features (reserved for future use)
+const _osintFeatures = [
   {
     icon: Search,
     title: 'Deep Web Analysis',
@@ -765,8 +765,8 @@ const osintFeatures = [
   },
 ];
 
-// Community Features
-const communityFeatures = [
+// Community Features (reserved for future use)
+const _communityFeatures = [
   {
     icon: MessageSquare,
     title: 'Interactive Reports',
@@ -789,8 +789,8 @@ const communityFeatures = [
   },
 ];
 
-// Partner Types
-const partnerTypes = [
+// Partner Types (reserved for future use)
+const _partnerTypes = [
   {
     icon: Building2,
     title: 'Law Enforcement',

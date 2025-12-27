@@ -13,16 +13,12 @@ import Link from 'next/link';
 import {
   Code,
   Copy,
-  CheckCircle,
-  ExternalLink,
-  Search,
   Shield,
   FileText,
   AlertTriangle,
   Key,
   Lock,
   Globe,
-  Zap,
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
@@ -86,7 +82,7 @@ const Endpoint = ({ method, path, description, auth = true, scopes }: EndpointPr
   );
 };
 
-const CodeBlock = ({ code, language = 'bash' }: { code: string; language?: string }) => {
+const CodeBlock = ({ code, language: _language = 'bash' }: { code: string; language?: string }) => {
   const copyCode = () => {
     navigator.clipboard.writeText(code);
     toast.success('Code copied to clipboard!');

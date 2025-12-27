@@ -36,11 +36,10 @@ const CreateApiKeySchema = z.object({
  * Create a new API key for the authenticated user
  */
 export async function POST(request: NextRequest) {
-  // Require authenticated user (not just API key)
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
   try {
+    // Require authenticated user (not just API key)
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
     // Check if user has reached the maximum number of API keys
     const existingKeysCount = await prisma.apiKey.count({
       where: {
@@ -140,11 +139,10 @@ export async function POST(request: NextRequest) {
  * List user's own API keys
  */
 export async function GET(request: NextRequest) {
-  // Require authenticated user
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
   try {
+    // Require authenticated user
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
     const { searchParams } = new URL(request.url);
     const includeRevoked = searchParams.get('include_revoked') === 'true';
 

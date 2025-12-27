@@ -38,12 +38,11 @@ export async function GET(
   request: NextRequest,
   { params }: RouteParams
 ) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
-  const { id } = await params;
-
   try {
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
+
+    const { id } = await params;
     const apiKey = await prisma.apiKey.findFirst({
       where: {
         id,
@@ -122,12 +121,11 @@ export async function PATCH(
   request: NextRequest,
   { params }: RouteParams
 ) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
-  const { id } = await params;
-
   try {
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
+
+    const { id } = await params;
     // Find the API key and verify ownership
     const existingKey = await prisma.apiKey.findFirst({
       where: {
@@ -239,12 +237,11 @@ export async function DELETE(
   request: NextRequest,
   { params }: RouteParams
 ) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
-  const { id } = await params;
-
   try {
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
+
+    const { id } = await params;
     // Find the API key and verify ownership
     const existingKey = await prisma.apiKey.findFirst({
       where: {
