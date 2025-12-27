@@ -49,8 +49,8 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Fetch comments and count (including attachments)
-    const [comments, total] = await Promise.all([
+    // Fetch comments, count, and stats (including attachments)
+    const [comments, total, pendingCount, reportedCount] = await Promise.all([
       prisma.comment.findMany({
         where,
         skip,
@@ -94,6 +94,8 @@ export async function GET(request: NextRequest) {
         },
       }),
       prisma.comment.count({ where }),
+      prisma.comment.count({ where: { status: 'PENDING_MODERATION' } }),
+      prisma.comment.count({ where: { isReported: true } }),
     ]);
 
     // Generate URLs for attachments
@@ -140,6 +142,11 @@ export async function GET(request: NextRequest) {
       page,
       pageSize,
       totalPages: Math.ceil(total / pageSize),
+      stats: {
+        pending: pendingCount,
+        reported: reportedCount,
+        total,
+      },
     });
   } catch (error) {
     return handleApiError(error, request, { route: 'GET /api/v1/admin/comments' });

@@ -151,6 +151,7 @@ export async function GET(
           user: {
             select: {
               displayName: true,
+              role: true,
             },
           },
           attachments: {
@@ -185,6 +186,10 @@ export async function GET(
         id: c.id,
         content: c.content,
         author: c.user?.displayName || 'Anonymous',
+        author_display_name: c.user?.displayName || 'Anonymous',
+        author_role: c.user?.role || 'BASIC',
+        status: 'APPROVED',
+        upvotes: c.upvotes,
         created_at: c.createdAt.toISOString(),
         attachments: c.attachments.map(a => ({
           id: a.id,
