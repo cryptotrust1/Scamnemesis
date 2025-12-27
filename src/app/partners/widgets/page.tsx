@@ -117,18 +117,20 @@ export default function PartnersWidgetsPage() {
               Help your users verify potential scams with a seamless, branded experience.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-indigo-600 hover:bg-indigo-50" asChild>
-                <Link href="/dashboard/widgets">
-                  <Code className="h-5 w-5 mr-2" />
-                  Create Widget
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-                <a href="#demo">
-                  See Demo
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </a>
-              </Button>
+              <Link
+                href="/dashboard/widgets"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium bg-white text-indigo-600 rounded-lg"
+              >
+                <Code className="h-5 w-5" />
+                Create Widget
+              </Link>
+              <a
+                href="#demo"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium bg-transparent border-2 border-white text-white rounded-lg"
+              >
+                See Demo
+                <ArrowRight className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </div>
@@ -219,10 +221,14 @@ export default function PartnersWidgetsPage() {
                 <span className="w-3 h-3 rounded-full bg-yellow-500" />
                 <span className="w-3 h-3 rounded-full bg-green-500" />
               </div>
-              <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white" onClick={copyCode}>
-                <Copy className="h-4 w-4 mr-2" />
+              <button
+                type="button"
+                onClick={copyCode}
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-300 rounded"
+              >
+                <Copy className="h-4 w-4" />
                 Copy
-              </Button>
+              </button>
             </div>
             <pre className="p-4 bg-slate-900 text-slate-100 overflow-x-auto text-sm">
               <code>{embedExample}</code>
@@ -389,18 +395,20 @@ export default function PartnersWidgetsPage() {
             Create your first widget in minutes and help your users stay safe from scams.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-indigo-600 hover:bg-indigo-50" asChild>
-              <Link href="/dashboard/widgets">
-                Create Your Widget
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-              <Link href="/developers">
-                Developers API
-                <ExternalLink className="h-5 w-5 ml-2" />
-              </Link>
-            </Button>
+            <Link
+              href="/dashboard/widgets"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium bg-white text-indigo-600 rounded-lg"
+            >
+              Create Your Widget
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link
+              href="/developers"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium bg-transparent border-2 border-white text-white rounded-lg"
+            >
+              Developers API
+              <ExternalLink className="h-5 w-5" />
+            </Link>
           </div>
         </div>
       </div>

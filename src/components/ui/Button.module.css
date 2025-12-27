@@ -1,4 +1,14 @@
 /* Button Component Styles */
+/*
+ * IMPORTANT: Uses CSS variables from globals.css (HSL format)
+ * Primary: hsl(var(--primary))
+ * Foreground: hsl(var(--foreground))
+ * Border: hsl(var(--border))
+ * Muted: hsl(var(--muted))
+ * Destructive: hsl(var(--destructive))
+ *
+ * FORBIDDEN: White text on white background - always ensure contrast!
+ */
 
 .button {
   display: inline-flex;
@@ -6,10 +16,10 @@
   justify-content: center;
   gap: 0.5rem;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius, 0.5rem);
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.15s ease-in-out;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -20,67 +30,67 @@
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
 }
 
 /* Variants */
 .default {
-  background-color: var(--color-background-secondary, #f3f4f6);
-  color: var(--color-text, #1f2937);
-  border: 1px solid var(--color-border, #d1d5db);
+  background-color: hsl(var(--secondary, 210 40% 96.1%));
+  color: hsl(var(--secondary-foreground, 215 25% 17%));
+  border: 1px solid hsl(var(--border, 214 32% 91%));
 }
 
 .default:hover:not(:disabled) {
-  background-color: var(--color-background-tertiary, #e5e7eb);
+  background-color: hsl(var(--muted, 210 40% 96.1%));
 }
 
 .primary {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: hsl(var(--primary, 214 100% 53%));
+  color: hsl(var(--primary-foreground, 0 0% 100%));
 }
 
 .primary:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
+  background-color: hsl(214 100% 45%);
 }
 
 .secondary {
-  background-color: var(--color-secondary);
-  color: white;
+  background-color: hsl(var(--secondary, 210 40% 96.1%));
+  color: hsl(var(--secondary-foreground, 215 25% 17%));
 }
 
 .secondary:hover:not(:disabled) {
-  background-color: var(--color-secondary-dark);
+  background-color: hsl(210 40% 90%);
 }
 
 .outline {
   background-color: transparent;
-  border: 1px solid var(--color-border-dark);
-  color: var(--color-text);
+  border: 1px solid hsl(var(--border, 214 32% 91%));
+  color: hsl(var(--foreground, 215 25% 17%));
 }
 
 .outline:hover:not(:disabled) {
-  background-color: var(--color-background-secondary);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background-color: hsl(var(--accent, 210 40% 96.1%));
+  border-color: hsl(var(--primary, 214 100% 53%));
+  color: hsl(var(--primary, 214 100% 53%));
 }
 
 .ghost {
   background-color: transparent;
-  color: var(--color-text);
+  color: hsl(var(--foreground, 215 25% 17%));
 }
 
 .ghost:hover:not(:disabled) {
-  background-color: var(--color-background-secondary);
+  background-color: hsl(var(--accent, 210 40% 96.1%));
 }
 
 .danger {
-  background-color: var(--color-danger);
-  color: white;
+  background-color: hsl(var(--destructive, 0 84.2% 60.2%));
+  color: hsl(var(--destructive-foreground, 0 0% 100%));
 }
 
 .danger:hover:not(:disabled) {
-  background-color: #dc2626;
+  background-color: hsl(0 84.2% 50%);
 }
 
 /* Sizes */

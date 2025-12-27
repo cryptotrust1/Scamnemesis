@@ -19,6 +19,7 @@ import {
   Search,
   FileEdit,
   Loader2,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -76,6 +77,11 @@ const sidebarItems = [
     title: 'Nastavenia',
     href: '/admin/settings',
     icon: Settings,
+  },
+  {
+    title: 'API Docs',
+    href: '/admin/docs',
+    icon: BookOpen,
   },
 ];
 
