@@ -31,99 +31,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-const useCases = [
-  {
-    title: 'Evaluating Strategic Partnerships & Joint Ventures',
-    description: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.',
-    icon: Users,
-  },
-  {
-    title: 'Onboarding Key Suppliers & Vendors',
-    description: 'A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm. Ensure your supply chain is a source of strength, not a vulnerability.',
-    icon: Building,
-  },
-  {
-    title: 'Pre-Investment & M&A Screening',
-    description: 'For private equity firms, venture capitalists, and corporate development teams, our service provides an essential layer of preliminary integrity and reputational due diligence. We identify critical red flags—such as undisclosed litigation, connections to sanctioned individuals, or a history of fraud—that may be missed in traditional financial audits, allowing you to proceed with your transaction with greater certainty.',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Vetting High-Value Clients (KYB Compliance)',
-    description: 'Protect your firm from financial crime and meet stringent regulatory requirements (e.g., AML/CFT). Our Know Your Business (KYB) verification process confirms the identity and legitimacy of new corporate clients, analyzes their ownership structure to identify Ultimate Beneficial Owners (UBOs), and screens for sanctions or criminal history.',
-    icon: UserCheck,
-  },
-];
-
-const investigationPillars = [
-  {
-    number: '1',
-    title: 'Corporate Identity & Legal Architecture',
-    description: 'We dissect the legal structure of the entity down to the finest detail. Our team verifies its legal existence, ownership structure, and regulatory status across international business registries — including those not commonly accessible.',
-    icon: Building,
-    image: '/images/corporate-identity.jpg',
-  },
-  {
-    number: '2',
-    title: 'Financial Integrity & Reputational Risks',
-    description: 'We map the financial health and reputational profile of the target. Our analysts examine public records, court filings, data leaks, and deep-sourced media to uncover potential financial risks, discrepancies, or red flags.',
-    icon: Scale,
-    image: '/images/financial-integrity.jpg',
-  },
-  {
-    number: '3',
-    title: 'Digital Footprint & Asset Mapping',
-    description: 'Using advanced OSINT and cyber intelligence tools, we trace the entity\'s online presence, domain history, digital assets, and technical infrastructure. This enables us to reveal hidden connections, undisclosed assets, or signs of fraudulent activity.',
-    icon: Globe,
-    image: '/images/digital-footprint.jpg',
-  },
-  {
-    number: '4',
-    title: 'Human Factor & Leadership Screening',
-    description: 'Behind every company stand people — and this is where most risks originate. We conduct thorough background investigations into the careers, reputations, and potential conflicts of interest of key individuals, including ultimate beneficial owners (UBOs), to identify threats others often miss.',
-    icon: Fingerprint,
-    image: '/images/leadership-screening.jpg',
-  },
-];
-
-const certifications = [
-  { name: 'CFE', full: 'Certified Fraud Examiner' },
-  { name: 'CAMS', full: 'Certified Anti-Money Laundering Specialist' },
-  { name: 'CISA', full: 'Certified Information Systems Auditor' },
-  { name: 'CISM', full: 'Certified Information Security Manager' },
-  { name: 'OSCP', full: 'Offensive Security Certified Professional' },
-];
-
-const deliverables = [
-  'Verification of corporate identity and legal status',
-  'Analysis of ownership and management structure, including Ultimate Beneficial Owners (UBOs)',
-  'Assessment of financial integrity and solvency',
-  'Reputation and risk evaluation of your business partner or investment',
-  'Audit of digital footprint and online assets',
-];
-
-const whyChoose = [
-  {
-    title: 'Intelligence-Grade Expertise',
-    description: 'Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations.',
-    icon: Award,
-  },
-  {
-    title: 'Certified Specialists',
-    description: 'Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.',
-    icon: BadgeCheck,
-  },
-  {
-    title: 'Advanced OSINT Techniques',
-    description: 'We employ advanced Open-Source Intelligence (OSINT) and digital analysis techniques integrating hundreds of global databases, corporate registries, and proprietary sources.',
-    icon: Database,
-  },
-  {
-    title: 'Transparent Fixed Pricing',
-    description: 'All data is handled according to strict confidentiality and security standards. Our service is transparent and free of hidden fees.',
-    icon: DollarSign,
-  },
-];
-
 const ORDER_FORM_URL = 'https://opnform.com/forms/contact-form-2qck1j';
 
 // JSON-LD Schema Markup for SEO
@@ -447,6 +354,13 @@ const getPageTranslations = (locale: Locale) => {
         { title: 'Advanced OSINT Techniques', description: 'We employ advanced Open-Source Intelligence (OSINT) and digital analysis techniques integrating hundreds of global databases.', icon: Database },
         { title: 'Transparent Fixed Pricing', description: 'All data is handled according to strict confidentiality and security standards. Our service is transparent and free of hidden fees.', icon: DollarSign },
       ],
+      certifications: [
+        { name: 'CFE', full: 'Certified Fraud Examiner' },
+        { name: 'CAMS', full: 'Certified Anti-Money Laundering Specialist' },
+        { name: 'CISA', full: 'Certified Information Systems Auditor' },
+        { name: 'CISM', full: 'Certified Information Security Manager' },
+        { name: 'OSCP', full: 'Offensive Security Certified Professional' },
+      ],
     },
     de: {
       badge: 'Professionelle Due Diligence Dienste',
@@ -531,6 +445,13 @@ const getPageTranslations = (locale: Locale) => {
         { title: 'Zertifizierte Spezialisten', description: 'Jede Untersuchung wird von zertifizierten Spezialisten mit Qualifikationen wie CFE®, CAMS®, CISA®, CISM®, OSCP® durchgeführt.', icon: BadgeCheck },
         { title: 'Fortgeschrittene OSINT-Techniken', description: 'Wir setzen fortschrittliche Open-Source-Intelligence (OSINT) und digitale Analysetechniken ein, die Hunderte globaler Datenbanken integrieren.', icon: Database },
         { title: 'Transparente Festpreise', description: 'Alle Daten werden nach strengen Vertraulichkeits- und Sicherheitsstandards behandelt. Unser Service ist transparent und frei von versteckten Gebühren.', icon: DollarSign },
+      ],
+      certifications: [
+        { name: 'CFE', full: 'Zertifizierter Betrugsprüfer' },
+        { name: 'CAMS', full: 'Zertifizierter Spezialist für Geldwäschebekämpfung' },
+        { name: 'CISA', full: 'Zertifizierter Informationssystem-Auditor' },
+        { name: 'CISM', full: 'Zertifizierter Informationssicherheitsmanager' },
+        { name: 'OSCP', full: 'Offensive Security Certified Professional' },
       ],
     },
     sk: {
@@ -617,6 +538,13 @@ const getPageTranslations = (locale: Locale) => {
         { title: 'Pokročilé OSINT techniky', description: 'Využívame pokročilé Open-Source Intelligence (OSINT) a digitálne analytické techniky.', icon: Database },
         { title: 'Transparentné fixné ceny', description: 'Naša služba je transparentná a bez skrytých poplatkov.', icon: DollarSign },
       ],
+      certifications: [
+        { name: 'CFE', full: 'Certifikovaný vyšetrovateľ podvodov' },
+        { name: 'CAMS', full: 'Certifikovaný špecialista na boj proti praniu špinavých peňazí' },
+        { name: 'CISA', full: 'Certifikovaný audítor informačných systémov' },
+        { name: 'CISM', full: 'Certifikovaný manažér informačnej bezpečnosti' },
+        { name: 'OSCP', full: 'Offensive Security Certified Professional' },
+      ],
     },
     cs: {
       badge: 'Profesionální Due Diligence služby',
@@ -701,6 +629,13 @@ const getPageTranslations = (locale: Locale) => {
         { title: 'Certifikovaní specialisté', description: 'Specialisté s kvalifikacemi CFE®, CAMS®, CISA®, CISM®, OSCP®.', icon: BadgeCheck },
         { title: 'Pokročilé OSINT techniky', description: 'Využíváme pokročilé OSINT a digitální analytické techniky.', icon: Database },
         { title: 'Transparentní fixní ceny', description: 'Služba je transparentní a bez skrytých poplatků.', icon: DollarSign },
+      ],
+      certifications: [
+        { name: 'CFE', full: 'Certifikovaný vyšetřovatel podvodů' },
+        { name: 'CAMS', full: 'Certifikovaný specialista na boj proti praní špinavých peněz' },
+        { name: 'CISA', full: 'Certifikovaný auditor informačních systémů' },
+        { name: 'CISM', full: 'Certifikovaný manažer informační bezpečnosti' },
+        { name: 'OSCP', full: 'Offensive Security Certified Professional' },
       ],
     },
   };
@@ -1188,7 +1123,7 @@ export default function VerifyServiceProductPage() {
             <div className="text-center">
               <p className="text-sm text-[#64748b] mb-6 font-medium">{t.certificationsLabel}</p>
               <div className="flex flex-wrap justify-center gap-4">
-                {certifications.map((cert) => (
+                {t.certifications.map((cert) => (
                   <div
                     key={cert.name}
                     className="px-6 py-3 bg-white text-[#0E74FF] rounded-xl font-semibold border-2 border-[#0E74FF]/20 hover:border-[#0E74FF] hover:bg-[#0E74FF]/5 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-default"
