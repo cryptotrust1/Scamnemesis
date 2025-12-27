@@ -1,8 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { i18n, type Locale } from '@/i18n/config';
 
+/**
+ * Check if request has any authentication credentials
+ * This is a lightweight check that doesn't require database access
+ */
+function hasAuthCredentials(request: NextRequest): boolean {
+  const authHeader = request.headers.get('authorization');
+  const apiKeyHeader = request.headers.get('x-api-key');
+  const accessToken = request.cookies.get('access_token')?.value;
+
+  return !!(authHeader || apiKeyHeader || accessToken);
+}
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // API routes that require authentication - check auth BEFORE route handler loads
+  // This prevents 500 errors from route handler module loading issues
+  if (pathname.startsWith('/api/v1/user/api-keys')) {
+    if (!hasAuthCredentials(request)) {
+      return NextResponse.json(
+        { error: 'unauthorized', message: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    // Has credentials - proceed to route handler for full validation
+    return NextResponse.next();
+  }
 
   // Check if pathname already has a locale
   const pathnameHasLocale = i18n.locales.some(
@@ -91,12 +116,14 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - files with extensions (.png, .jpg, .css, .js, etc.)
+     *
+     * Note: We now include /api/v1/user/api-keys/* routes for auth pre-check
      */
-    '/((?!api/|_next/|images/|favicon.ico).*)',
+    '/((?!_next/|images/|favicon.ico).*)',
+    '/api/v1/user/api-keys/:path*',
   ],
 };
