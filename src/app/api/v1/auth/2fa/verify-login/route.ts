@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import { verifyTOTP, verifyBackupCode } from '@/lib/auth/totp';
 import { verify2FATempToken, generateAccessToken, generateRefreshToken, getScopesForRole } from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
-import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
+import { getRateLimitKey } from '@/lib/auth/rate-limits';
 import { setAuthCookies } from '@/lib/auth/cookies';
 
 export const dynamic = 'force-dynamic';

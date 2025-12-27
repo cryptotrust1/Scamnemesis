@@ -813,8 +813,8 @@ const _partnerTypes = [
   },
 ];
 
-// Recovery Steps
-const recoverySteps = [
+// Recovery Steps (reserved for future use)
+const _recoverySteps = [
   {
     step: 1,
     title: 'Report Immediately',
