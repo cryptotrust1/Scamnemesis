@@ -26,12 +26,11 @@ export async function POST(
   request: NextRequest,
   { params }: RouteParams
 ) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
-  const { id } = await params;
-
   try {
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
+
+    const { id } = await params;
     // Find the API key and verify ownership
     const existingKey = await prisma.apiKey.findFirst({
       where: {

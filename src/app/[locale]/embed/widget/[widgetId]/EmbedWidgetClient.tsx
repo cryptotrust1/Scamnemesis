@@ -11,7 +11,6 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
 import { Search, AlertTriangle, ExternalLink, ChevronDown, ChevronUp, Sparkles, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
