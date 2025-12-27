@@ -328,97 +328,13 @@ const getTranslations = (locale: Locale) => {
   return translations[locale] || translations.en;
 };
 
-const useCases = [
-  {
-    title: 'Evaluating Strategic Partnerships & Joint Ventures',
-    description: 'Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner. Our analysis confirms the legitimacy of the entity and its key principals, ensuring you are building your venture on a solid foundation.',
-    icon: Users,
-  },
-  {
-    title: 'Onboarding Key Suppliers & Vendors',
-    description: 'A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability, regulatory compliance, adverse media history, and other red flags that could indicate a risk of disruption or reputational harm. Ensure your supply chain is a source of strength, not a vulnerability.',
-    icon: Building,
-  },
-  {
-    title: 'Pre-Investment & M&A Screening',
-    description: 'For private equity firms, venture capitalists, and corporate development teams, our service provides an essential layer of preliminary integrity and reputational due diligence. We identify critical red flags—such as undisclosed litigation, connections to sanctioned individuals, or a history of fraud—that may be missed in traditional financial audits, allowing you to proceed with your transaction with greater certainty.',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Vetting High-Value Clients (KYB Compliance)',
-    description: 'Protect your firm from financial crime and meet stringent regulatory requirements (e.g., AML/CFT). Our Know Your Business (KYB) verification process confirms the identity and legitimacy of new corporate clients, analyzes their ownership structure to identify Ultimate Beneficial Owners (UBOs), and screens for sanctions or criminal history.',
-    icon: UserCheck,
-  },
-];
-
-const investigationPillars = [
-  {
-    number: '1',
-    title: 'Corporate Identity & Legal Architecture',
-    description: 'We dissect the legal structure of the entity down to the finest detail. Our team verifies its legal existence, ownership structure, and regulatory status across international business registries — including those not commonly accessible.',
-    icon: Building,
-    image: '/images/corporate-identity.jpg',
-  },
-  {
-    number: '2',
-    title: 'Financial Integrity & Reputational Risks',
-    description: 'We map the financial health and reputational profile of the target. Our analysts examine public records, court filings, data leaks, and deep-sourced media to uncover potential financial risks, discrepancies, or red flags.',
-    icon: Scale,
-    image: '/images/financial-integrity.jpg',
-  },
-  {
-    number: '3',
-    title: 'Digital Footprint & Asset Mapping',
-    description: 'Using advanced OSINT and cyber intelligence tools, we trace the entity\'s online presence, domain history, digital assets, and technical infrastructure. This enables us to reveal hidden connections, undisclosed assets, or signs of fraudulent activity.',
-    icon: Globe,
-    image: '/images/digital-footprint.jpg',
-  },
-  {
-    number: '4',
-    title: 'Human Factor & Leadership Screening',
-    description: 'Behind every company stand people — and this is where most risks originate. We conduct thorough background investigations into the careers, reputations, and potential conflicts of interest of key individuals, including ultimate beneficial owners (UBOs), to identify threats others often miss.',
-    icon: Fingerprint,
-    image: '/images/leadership-screening.jpg',
-  },
-];
-
+// Certifications are universal abbreviations, kept as static array
 const certifications = [
   { name: 'CFE', full: 'Certified Fraud Examiner' },
   { name: 'CAMS', full: 'Certified Anti-Money Laundering Specialist' },
   { name: 'CISA', full: 'Certified Information Systems Auditor' },
   { name: 'CISM', full: 'Certified Information Security Manager' },
   { name: 'OSCP', full: 'Offensive Security Certified Professional' },
-];
-
-const deliverables = [
-  'Verification of corporate identity and legal status',
-  'Analysis of ownership and management structure, including Ultimate Beneficial Owners (UBOs)',
-  'Assessment of financial integrity and solvency',
-  'Reputation and risk evaluation of your business partner or investment',
-  'Audit of digital footprint and online assets',
-];
-
-const whyChoose = [
-  {
-    title: 'Intelligence-Grade Expertise',
-    description: 'Our investigative unit combines experts with experience in military intelligence, OSINT/SOCMINT operations, and Big 4 corporate investigations.',
-    icon: Award,
-  },
-  {
-    title: 'Certified Specialists',
-    description: 'Each investigation is conducted by certified specialists holding credentials such as CFE®, CAMS®, CISA®, CISM®, OSCP®, along with military certifications in intelligence and cybersecurity.',
-    icon: BadgeCheck,
-  },
-  {
-    title: 'Advanced OSINT Techniques',
-    description: 'We employ advanced Open-Source Intelligence (OSINT) and digital analysis techniques integrating hundreds of global databases, corporate registries, and proprietary sources.',
-    icon: Database,
-  },
-  {
-    title: 'Transparent Fixed Pricing',
-    description: 'All data is handled according to strict confidentiality and security standards. Our service is transparent and free of hidden fees.',
-    icon: DollarSign,
-  },
 ];
 
 const ORDER_FORM_URL = 'https://opnform.com/forms/contact-form-2qck1j';
@@ -647,10 +563,10 @@ export default function VerifyServiceProductPage() {
   const locale = mounted ? ((params?.locale as Locale) || 'en') : 'en';
   const t = getTranslations(locale);
 
-  // Create icons array for use cases (for future use when updating remaining sections)
-  const _useCaseIcons = [Users, Building, TrendingUp, UserCheck];
-  const _pillarIcons = [Building, Scale, Globe, Fingerprint];
-  const _whyChooseIcons = [Award, BadgeCheck, Database, DollarSign];
+  // Icons arrays for translated content
+  const useCaseIcons = [Users, Building, TrendingUp, UserCheck];
+  const pillarIcons = [Building, Scale, Globe, Fingerprint];
+  const whyChooseIcons = [Award, BadgeCheck, Database, DollarSign];
 
   return (
     <>
@@ -787,8 +703,8 @@ export default function VerifyServiceProductPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
-              {useCases.map((useCase) => {
-                const Icon = useCase.icon;
+              {t.useCases.map((useCase, index) => {
+                const Icon = useCaseIcons[index];
                 return (
                   <div key={useCase.title} className="group">
                     <div className="flex items-start gap-5 mb-4">
@@ -827,8 +743,8 @@ export default function VerifyServiceProductPage() {
             </div>
 
             <div className="space-y-8">
-              {investigationPillars.map((pillar, index) => {
-                const Icon = pillar.icon;
+              {t.pillars.map((pillar, index) => {
+                const Icon = pillarIcons[index];
                 const isEven = index % 2 === 0;
                 return (
                   <Card key={pillar.number} className="overflow-hidden border border-slate-200 hover:border-[#0E74FF]/30 shadow-xl hover:shadow-2xl transition-all duration-500 group">
@@ -925,7 +841,7 @@ export default function VerifyServiceProductPage() {
                   Report Includes:
                 </h3>
                 <ul className="space-y-4">
-                  {deliverables.map((item, index) => (
+                  {t.deliverables.map((item, index) => (
                     <li key={index} className="flex items-start gap-4 group">
                       <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1 group-hover:bg-green-500/30 transition-colors duration-300">
                         <CheckCircle className="h-4 w-4 text-green-400" />
@@ -1074,9 +990,9 @@ export default function VerifyServiceProductPage() {
                         Our analysts initiate the investigation immediately. Receive your comprehensive PDF report via email within 30 days.
                       </p>
                       <div className="bg-[#f8fafc] rounded-2xl p-6 text-left">
-                        <p className="font-semibold text-[#1e293b] mb-4 text-sm text-center">Report includes:</p>
+                        <p className="font-semibold text-[#1e293b] mb-4 text-sm text-center">{t.reportIncludes}</p>
                         <ul className="space-y-2">
-                          {deliverables.map((item, index) => (
+                          {t.deliverables.map((item, index) => (
                             <li key={index} className="flex items-start gap-2">
                               <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                               <span className="text-[#64748b] text-sm leading-relaxed">{item}</span>
@@ -1110,8 +1026,8 @@ export default function VerifyServiceProductPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-              {whyChoose.map((item) => {
-                const Icon = item.icon;
+              {t.whyChoose.map((item, index) => {
+                const Icon = whyChooseIcons[index];
                 return (
                   <div key={item.title} className="text-center group">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[#0E74FF] to-[#0a5ed4] flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform duration-300">

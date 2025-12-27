@@ -121,9 +121,13 @@ export const config = {
      * - favicon.ico (favicon file)
      * - files with extensions (.png, .jpg, .css, .js, etc.)
      *
-     * Note: We now include /api/v1/user/api-keys/* routes for auth pre-check
+     * Note: We include /api/v1/user/api-keys/* routes for auth pre-check
+     *
+     * Using valid path-to-regexp patterns instead of regex with lookahead
+     * which is not fully supported by Next.js middleware matchers.
      */
-    '/((?!_next/|images/|favicon.ico).*)',
+    '/api/v1/user/api-keys',
     '/api/v1/user/api-keys/:path*',
+    '/(en|sk|cs|de|ru|uk|pl|hu|ro|bg|hr|sl|sr|bs|mk|sq|el|tr|ar|he|zh|ja|ko|vi|th|id|ms|hi|bn|ta|te|ml|kn|gu|mr|pa|ur|fa|az|ka|hy|be|et|fi|lt|lv|nl|no|sv|da|pt|es|fr|it)/:path*',
   ],
 };
