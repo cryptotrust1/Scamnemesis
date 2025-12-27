@@ -12,10 +12,9 @@ export const AUTH_RATE_LIMITS = {
   /**
    * Token endpoint (login)
    * Stricter limit to prevent brute force attacks
-   * NOTE: Temporarily increased from 10 to 100 for debugging - revert after testing!
    */
   TOKEN: {
-    limit: 100,
+    limit: 10,
     windowMs: 15 * 60 * 1000, // 15 minutes
   },
 
