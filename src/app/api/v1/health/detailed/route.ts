@@ -6,6 +6,7 @@
  * Checks:
  * - Database connection
  * - Required tables existence
+ * - Required columns existence (prevents migration-related crashes)
  * - Redis connection (if configured)
  * - Email service configuration (Resend API key)
  */
@@ -29,6 +30,23 @@ const REQUIRED_TABLES = [
   'crypto_info',
 ];
 
+// Critical columns that MUST exist - prevents runtime errors from missing migrations
+const REQUIRED_COLUMNS: Record<string, string[]> = {
+  users: [
+    'id',
+    'email',
+    'password_hash',
+    'role',
+    'is_active',
+    // 2FA columns (migration: 20251226_add_totp_2fa)
+    'totp_secret',
+    'totp_enabled',
+    'backup_codes',
+  ],
+  reports: ['id', 'status', 'fraud_type', 'summary', 'reporter_id'],
+  refresh_tokens: ['id', 'user_id', 'token', 'expires_at'],
+};
+
 interface TableStatus {
   [key: string]: boolean | string;
 }
@@ -46,6 +64,11 @@ interface HealthCheckResult {
       status: 'ok' | 'missing' | 'error';
       details: TableStatus;
       missingTables?: string[];
+    };
+    schema: {
+      status: 'ok' | 'missing_columns' | 'error';
+      missingColumns?: string[];
+      error?: string;
     };
     redis: {
       status: 'ok' | 'error' | 'not_configured';
@@ -75,6 +98,7 @@ export async function GET() {
     checks: {
       database: { status: 'ok' },
       tables: { status: 'ok', details: {} },
+      schema: { status: 'ok' },
       redis: { status: 'not_configured' },
       email: { status: 'ok' },
       auth: { status: 'ok' },
@@ -128,6 +152,50 @@ export async function GET() {
     } catch (error) {
       result.checks.tables.status = 'error';
       result.checks.tables.details = { error: error instanceof Error ? error.message : 'Unknown error' };
+      result.status = 'unhealthy';
+    }
+  }
+
+  // Check required columns (schema validation) - CRITICAL for preventing migration-related crashes
+  if (result.checks.database.status === 'ok') {
+    try {
+      const missingColumns: string[] = [];
+
+      for (const [table, columns] of Object.entries(REQUIRED_COLUMNS)) {
+        const columnCheckQuery = `
+          SELECT column_name
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+          AND table_name = $1
+          AND column_name = ANY($2)
+        `;
+
+        const existingColumns = await prisma.$queryRawUnsafe<{ column_name: string }[]>(
+          columnCheckQuery,
+          table,
+          columns
+        );
+
+        const existingColumnNames = new Set(existingColumns.map((c) => c.column_name));
+
+        for (const column of columns) {
+          if (!existingColumnNames.has(column)) {
+            missingColumns.push(`${table}.${column}`);
+          }
+        }
+      }
+
+      if (missingColumns.length > 0) {
+        result.checks.schema.status = 'missing_columns';
+        result.checks.schema.missingColumns = missingColumns;
+        result.status = 'unhealthy';
+        // Log for debugging
+        console.error('[HEALTH] Missing database columns:', missingColumns);
+        console.error('[HEALTH] Run migrations: docker compose -f docker-compose.prod.yml exec postgres psql -U postgres -d scamnemesis');
+      }
+    } catch (error) {
+      result.checks.schema.status = 'error';
+      result.checks.schema.error = error instanceof Error ? error.message : 'Unknown error';
       result.status = 'unhealthy';
     }
   }
