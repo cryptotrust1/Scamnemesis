@@ -15,13 +15,10 @@
 import { useState, useCallback } from 'react';
 import {
   Share2,
-  Copy,
   Check,
   Facebook,
   Linkedin,
   Mail,
-  MessageCircle,
-  Send,
   Link2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

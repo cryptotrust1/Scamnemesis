@@ -487,7 +487,8 @@ describe('User API Keys', () => {
     });
 
     it('should verify ownership before operations', async () => {
-      const otherUserKey = {
+      // Example of key owned by another user (demonstrates ownership check)
+      const _otherUserKey = {
         id: 'key-123',
         userId: 'other-user-456',
         name: 'Other User Key',

@@ -80,8 +80,8 @@ export async function GET(request: NextRequest) {
     // Map to DuplicateCluster interface expected by frontend
     return NextResponse.json({
       duplicates: clusters.map((cluster) => {
-        // Get first perpetrator for simplified display
-        const firstPerp = cluster.reports[0]?.report?.perpetrators?.[0];
+        // Get first perpetrator for simplified display (reserved for future use)
+        const _firstPerp = cluster.reports[0]?.report?.perpetrators?.[0];
 
         return {
           id: cluster.id,
