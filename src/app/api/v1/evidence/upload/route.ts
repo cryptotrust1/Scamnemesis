@@ -191,10 +191,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Rate limiting - 20 uploads per minute
+    // Rate limiting - 50 uploads per hour (per IP/user)
     let rateLimitError = null;
     try {
-      rateLimitError = await requireRateLimit(request, 20);
+      rateLimitError = await requireRateLimit(request, 50);
     } catch (rateLimitErr) {
       console.error('[Evidence] Rate limit check failed:', rateLimitErr);
       // Continue without rate limiting if database is unavailable

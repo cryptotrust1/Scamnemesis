@@ -8,11 +8,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { randomBytes } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import { requireAuth, requireRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
 import { FraudType, EvidenceType, Blockchain } from '@prisma/client';
 import { runDuplicateDetection } from '@/lib/duplicate-detection/detector';
 import { emailService } from '@/lib/services/email';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 /**
  * Generate a unique case number in format: SN-YYYYMMDD-XXXX
@@ -87,13 +89,34 @@ const locationSchema = z.object({
 
 // Helper to validate datetime strings more leniently
 // Accepts ISO 8601 format with or without timezone, or just date
+// Also validates semantic correctness (not just format)
 const dateTimeString = z.string()
   .refine((val) => {
     if (!val) return true;
     // Accept ISO 8601 datetime or just date format
     const isoPattern = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|[+-]\d{2}:?\d{2})?)?$/;
-    return isoPattern.test(val);
-  }, { message: 'Invalid date format. Expected ISO 8601 format.' })
+    if (!isoPattern.test(val)) return false;
+
+    // Semantic validation: check if the date is actually valid
+    const parsed = new Date(val);
+    if (isNaN(parsed.getTime())) {
+      console.log(`[DateValidation] Invalid date (NaN): ${val}`);
+      return false;
+    }
+
+    // Additional semantic check: verify the parsed date matches the input
+    // This catches cases like "2024-02-30" which JS auto-corrects to March 1
+    const [datePart] = val.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    if (parsed.getUTCFullYear() !== year ||
+        parsed.getUTCMonth() + 1 !== month ||
+        parsed.getUTCDate() !== day) {
+      console.log(`[DateValidation] Date mismatch: input=${val}, parsed=${parsed.toISOString()}`);
+      return false;
+    }
+
+    return true;
+  }, { message: 'Invalid date format or semantically invalid date. Expected ISO 8601 format with valid date.' })
   .optional()
   .or(z.literal(''));
 
@@ -116,7 +139,7 @@ const perpetratorSchema = z.object({
   nickname: z.string().max(100).optional(),
   username: z.string().max(100).optional(),
   approx_age: z.number().int().min(0).max(150).optional(),
-  nationality: z.string().max(2).optional(),
+  nationality: z.string().max(50).optional(),
   physical_description: z.string().max(2000).optional(),
   phone: z.string().max(50).optional(),
   email: z.string().email().optional().or(z.literal('')),
@@ -212,6 +235,8 @@ const evidenceItemSchema = z.object({
   file_key: z.string().optional(),
   external_url: laxUrl,
   description: z.string().max(500).optional(),
+  mime_type: z.string().max(100).optional(),
+  file_size: z.number().int().positive().optional(),
 });
 
 const reporterSchema = z.object({
@@ -240,32 +265,40 @@ const createReportSchema = z.object({
  * POST /api/v1/reports - Create a new fraud report
  */
 export async function POST(request: NextRequest) {
-  const requestId = Math.random().toString(36).substring(7);
-  console.log(`[Reports API][${requestId}] ========== NEW REQUEST ==========`);
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'ReportsAPI');
+  log.info('New report submission request');
 
   try {
-    // Rate limiting
-    console.log(`[Reports API][${requestId}] Step 1: Checking rate limit...`);
-    const rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
+    // Rate limiting - wrapped in try-catch to prevent unhandled errors
+    log.debug('Step 1: Checking rate limit');
+    let rateLimitError: Response | null = null;
+    try {
+      rateLimitError = await requireRateLimit(request, 10); // 10 reports per hour
+    } catch (rateLimitException) {
+      log.error('Rate limit check failed', { error: rateLimitException instanceof Error ? rateLimitException.message : String(rateLimitException) });
+      // Continue without rate limiting if the check fails (fail-open for UX)
+      // This could happen if Redis is down or rate limit table doesn't exist
+    }
     if (rateLimitError) {
-      console.log(`[Reports API][${requestId}] Rate limited - returning 429`);
+      log.warn('Rate limited - returning 429');
       return rateLimitError;
     }
-    console.log(`[Reports API][${requestId}] Rate limit OK`);
+    log.debug('Rate limit OK');
 
     // Authentication (optional - allows anonymous submissions)
-    console.log(`[Reports API][${requestId}] Step 2: Checking authentication...`);
+    log.debug('Step 2: Checking authentication');
     const auth = await optionalAuth(request);
-    console.log(`[Reports API][${requestId}] Auth result: user=${auth.user?.sub || 'none'}, apiKey=${auth.apiKey?.id || 'none'}`);
+    log.debug('Auth result', { user: auth.user?.sub || 'none', apiKey: auth.apiKey?.id || 'none' });
 
     // Parse and validate body
-    console.log(`[Reports API][${requestId}] Step 3: Parsing JSON body...`);
+    log.debug('Step 3: Parsing JSON body');
     let body;
     try {
       body = await request.json();
-      console.log(`[Reports API][${requestId}] JSON parsed successfully`);
+      log.debug('JSON parsed successfully');
     } catch (parseError) {
-      console.error(`[Reports API][${requestId}] JSON parse error:`, parseError);
+      log.error('JSON parse error', { error: parseError instanceof Error ? parseError.message : String(parseError) });
       return NextResponse.json(
         { error: 'parse_error', message: 'Invalid JSON in request body' },
         { status: 400 }
@@ -273,33 +306,29 @@ export async function POST(request: NextRequest) {
     }
 
     // Log incoming request for debugging (sanitized - no sensitive data in logs)
-    console.log(`[Reports API][${requestId}] Incoming report:`, JSON.stringify({
-      incident: { fraud_type: body.incident?.fraud_type, date: body.incident?.date },
-      has_perpetrator: !!body.perpetrator,
-      has_digital_footprints: !!body.digital_footprints,
-      has_financial: !!body.financial,
-      has_crypto: !!body.crypto,
-      has_company: !!body.company,
-      has_vehicle: !!body.vehicle,
-      evidence_count: body.evidence?.length || 0,
-      reporter_email: body.reporter?.email ? '***@***' : 'none',
-    }));
+    log.info('Incoming report', {
+      fraudType: body.incident?.fraud_type,
+      date: body.incident?.date,
+      hasPerpetrator: !!body.perpetrator,
+      hasDigitalFootprints: !!body.digital_footprints,
+      hasFinancial: !!body.financial,
+      hasCrypto: !!body.crypto,
+      hasCompany: !!body.company,
+      hasVehicle: !!body.vehicle,
+      evidenceCount: body.evidence?.length || 0,
+      hasReporterEmail: !!body.reporter?.email,
+    });
 
-    console.log(`[Reports API][${requestId}] Step 4: Validating with Zod schema...`);
+    log.debug('Step 4: Validating with Zod schema');
     const parsed = createReportSchema.safeParse(body);
 
     if (!parsed.success) {
       const flattenedErrors = parsed.error.flatten();
-      console.error(`[Reports API][${requestId}] Validation failed:`, JSON.stringify({
+      log.warn('Validation failed', {
         fieldErrors: flattenedErrors.fieldErrors,
         formErrors: flattenedErrors.formErrors,
-        issues: parsed.error.issues.map(i => ({
-          path: i.path.join('.'),
-          code: i.code,
-          message: i.message,
-          received: 'received' in i ? i.received : undefined,
-        })),
-      }, null, 2));
+        issueCount: parsed.error.issues.length,
+      });
       return NextResponse.json(
         {
           error: 'validation_error',
@@ -314,38 +343,75 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Reports API][${requestId}] Validation passed`);
+    log.debug('Validation passed');
     const data = parsed.data;
     let userId = auth.user?.sub || auth.apiKey?.userId;
 
     // Handle anonymous submissions - create or get anonymous user
-    console.log(`[Reports API][${requestId}] Step 5: Processing user (current userId=${userId || 'none'})...`);
+    log.debug('Step 5: Processing user', { currentUserId: userId || 'none' });
     if (!userId) {
       // Find or create anonymous user for this session based on email
       const reporterEmail = data.reporter.email || 'anonymous@scamnemesis.com';
-      console.log(`[Reports API][${requestId}] Creating/finding anonymous user for email: ${reporterEmail ? '***@***' : 'anonymous'}`);
+      log.debug('Processing anonymous reporter', {
+        hasEmail: !!reporterEmail,
+        hasName: !!data.reporter.name,
+        hasPhone: !!data.reporter.phone,
+      });
 
       try {
-        // Use upsert to prevent race condition (P2002 unique constraint error)
-        const randomPasswordHash = randomBytes(32).toString('hex');
-        const anonymousUser = await prisma.user.upsert({
+        // First, test database connection
+        log.debug('Testing database connection');
+        const dbTest = await prisma.$queryRaw`SELECT 1 as test`;
+        log.debug('Database connection OK', { result: dbTest });
+
+        // Check if user already exists
+        log.debug('Checking if user exists');
+        const existingUser = await prisma.user.findUnique({
           where: { email: reporterEmail },
-          update: {}, // Don't update anything if exists
-          create: {
-            email: reporterEmail,
-            passwordHash: randomPasswordHash,
-            displayName: data.reporter.name || 'Anonymous Reporter',
-            role: 'BASIC',
-            emailVerified: null,
-            isActive: true,
-          },
+          select: { id: true, email: true },
         });
-        userId = anonymousUser.id;
-        console.log(`[Reports API][${requestId}] User created/found: ${userId}`);
+
+        if (existingUser) {
+          userId = existingUser.id;
+          log.debug('Found existing user', { userId });
+        } else {
+          // Create new user
+          log.debug('Creating new user');
+          const randomPasswordHash = randomBytes(32).toString('hex');
+          const newUser = await prisma.user.create({
+            data: {
+              email: reporterEmail,
+              passwordHash: randomPasswordHash,
+              displayName: data.reporter.name || 'Anonymous Reporter',
+              role: 'BASIC',
+              emailVerified: null,
+              isActive: true,
+            },
+          });
+          userId = newUser.id;
+          log.info('Created new anonymous user', { userId });
+        }
+
+        log.debug('User processing complete', { userId });
       } catch (userError) {
-        console.error(`[Reports API][${requestId}] Failed to create/find anonymous user:`, userError);
+        // Enhanced error logging for debugging
+        const userErrorDetails = {
+          name: userError instanceof Error ? userError.name : 'Unknown',
+          message: userError instanceof Error ? userError.message : String(userError),
+          code: userError && typeof userError === 'object' && 'code' in userError ? (userError as { code: string }).code : undefined,
+          meta: userError && typeof userError === 'object' && 'meta' in userError ? (userError as { meta: unknown }).meta : undefined,
+        };
+        log.error('Failed to create/find anonymous user', userErrorDetails);
         return NextResponse.json(
-          { error: 'user_error', message: 'Failed to process reporter information' },
+          {
+            error: 'user_error',
+            message: 'Failed to process reporter information',
+            request_id: requestId,
+            // Include error details for debugging
+            error_type: userErrorDetails.name,
+            error_code: userErrorDetails.code,
+            timestamp: new Date().toISOString(),
+          },
           { status: 500 }
         );
       }
@@ -354,12 +420,12 @@ export async function POST(request: NextRequest) {
     // Generate tracking token and case number
     const trackingToken = generateTrackingToken();
     const caseNumber = generateCaseNumber();
-    console.log(`[Reports API][${requestId}] Generated caseNumber=${caseNumber}, trackingToken=${trackingToken.substring(0, 8)}...`);
+    log.info('Generated tracking identifiers', { caseNumber, trackingTokenPrefix: trackingToken.substring(0, 8) });
 
     // Create report with relations
-    console.log(`[Reports API][${requestId}] Step 6: Creating report in database transaction...`);
+    log.debug('Step 6: Creating report in database transaction');
     const report = await prisma.$transaction(async (tx) => {
-      console.log(`[Reports API][${requestId}] Transaction: Creating main report...`);
+      log.debug('Transaction: Creating main report');
       // Create main report
       const newReport = await tx.report.create({
         data: {
@@ -389,11 +455,11 @@ export async function POST(request: NextRequest) {
           caseNumber,
         },
       });
-      console.log(`[Reports API][${requestId}] Transaction: Main report created id=${newReport.id}`);
+      log.debug('Transaction: Main report created', { reportId: newReport.id });
 
       // Create perpetrator if provided
       if (data.perpetrator) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating perpetrator...`);
+        log.debug('Transaction: Creating perpetrator');
         await tx.perpetrator.create({
           data: {
             reportId: newReport.id,
@@ -419,7 +485,7 @@ export async function POST(request: NextRequest) {
 
       // Create digital footprint if provided
       if (data.digital_footprints) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating digital footprint...`);
+        log.debug('Transaction: Creating digital footprint');
         await tx.digitalFootprint.create({
           data: {
             reportId: newReport.id,
@@ -445,7 +511,7 @@ export async function POST(request: NextRequest) {
 
       // Create financial info if provided
       if (data.financial) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating financial info...`);
+        log.debug('Transaction: Creating financial info');
         await tx.financialInfo.create({
           data: {
             reportId: newReport.id,
@@ -468,7 +534,7 @@ export async function POST(request: NextRequest) {
 
       // Create crypto info if provided
       if (data.crypto) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating crypto info...`);
+        log.debug('Transaction: Creating crypto info');
         await tx.cryptoInfo.create({
           data: {
             reportId: newReport.id,
@@ -484,7 +550,7 @@ export async function POST(request: NextRequest) {
 
       // Create company info if provided
       if (data.company) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating company info...`);
+        log.debug('Transaction: Creating company info');
         await tx.companyInfo.create({
           data: {
             reportId: newReport.id,
@@ -500,7 +566,7 @@ export async function POST(request: NextRequest) {
 
       // Create vehicle info if provided
       if (data.vehicle) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating vehicle info...`);
+        log.debug('Transaction: Creating vehicle info');
         await tx.vehicleInfo.create({
           data: {
             reportId: newReport.id,
@@ -516,7 +582,7 @@ export async function POST(request: NextRequest) {
 
       // Create evidence items
       if (data.evidence && data.evidence.length > 0) {
-        console.log(`[Reports API][${requestId}] Transaction: Creating ${data.evidence.length} evidence items...`);
+        log.debug('Transaction: Creating evidence items', { count: data.evidence.length });
         await tx.evidence.createMany({
           data: data.evidence.map((e) => ({
             reportId: newReport.id,
@@ -524,12 +590,14 @@ export async function POST(request: NextRequest) {
             fileKey: e.file_key,
             externalUrl: e.external_url,
             description: e.description,
+            mimeType: e.mime_type,
+            fileSize: e.file_size,
           })),
         });
       }
 
       // Create audit log
-      console.log(`[Reports API][${requestId}] Transaction: Creating audit log...`);
+      log.debug('Transaction: Creating audit log');
       await tx.auditLog.create({
         data: {
           userId,
@@ -541,13 +609,13 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      console.log(`[Reports API][${requestId}] Transaction: Complete, returning report`);
+      log.debug('Transaction: Complete');
       return newReport;
     });
-    console.log(`[Reports API][${requestId}] Step 6 complete: Report created id=${report.id}`);
+    log.info('Report created successfully', { reportId: report.id });
 
     // Run duplicate detection (async, non-blocking)
-    console.log(`[Reports API][${requestId}] Step 7: Running duplicate detection...`);
+    log.debug('Step 7: Running duplicate detection');
     let duplicateResult = {
       hasDuplicates: false,
       clusterId: null as string | null,
@@ -557,17 +625,20 @@ export async function POST(request: NextRequest) {
 
     try {
       duplicateResult = await runDuplicateDetection(report.id);
-      console.log(`[Reports API][${requestId}] Duplicate detection complete: ${duplicateResult.totalMatches} matches`);
+      log.info('Duplicate detection complete', { matches: duplicateResult.totalMatches });
     } catch (duplicateError) {
       // Log but don't fail the request - duplicate detection is not critical
-      console.error(`[Reports API][${requestId}] Duplicate detection error (non-fatal):`, duplicateError);
+      log.warn('Duplicate detection error (non-fatal)', { error: duplicateError instanceof Error ? duplicateError.message : String(duplicateError) });
     }
 
     // Send confirmation email if reporter provided a valid email (not anonymous)
-    console.log(`[Reports API][${requestId}] Step 8: Processing email...`);
+    log.debug('Step 8: Processing email');
     const reporterEmail = data.reporter.email;
+    let emailSentSuccessfully = false;
+    let emailError: string | undefined;
+
     if (reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com' && reporterEmail.includes('@')) {
-      console.log(`[Reports API][${requestId}] Sending confirmation email...`);
+      log.debug('Sending confirmation email');
       try {
         const emailResult = await emailService.sendReportConfirmation({
           reporterName: data.reporter.name || 'Reporter',
@@ -587,19 +658,63 @@ export async function POST(request: NextRequest) {
         });
 
         if (emailResult.success) {
-          console.log(`[Reports API][${requestId}] Confirmation email sent successfully`);
+          log.info('Confirmation email sent successfully');
+          emailSentSuccessfully = true;
         } else {
-          console.warn(`[Reports API][${requestId}] Failed to send confirmation email: ${emailResult.error}`);
+          log.warn('Failed to send confirmation email', { error: emailResult.error });
+          emailError = emailResult.error;
         }
-      } catch (emailError) {
+      } catch (emailException) {
         // Log but don't fail the request - email is not critical
-        console.error(`[Reports API][${requestId}] Email sending error (non-fatal):`, emailError);
+        log.warn('Email sending error (non-fatal)', { error: emailException instanceof Error ? emailException.message : String(emailException) });
+        emailError = emailException instanceof Error ? emailException.message : 'Unknown error';
       }
     } else {
-      console.log(`[Reports API][${requestId}] Skipping email (anonymous or no email)`);
+      log.debug('Skipping email (anonymous or no email)');
     }
 
-    console.log(`[Reports API][${requestId}] Step 9: Returning success response`);
+    // Send notification to admin users about new report
+    log.debug('Step 8b: Sending admin notifications');
+    try {
+      // Get all admin and super admin users
+      const adminUsers = await prisma.user.findMany({
+        where: {
+          role: { in: ['ADMIN', 'SUPER_ADMIN'] },
+          isActive: true,
+          emailVerified: { not: null },
+        },
+        select: { email: true },
+      });
+
+      if (adminUsers.length > 0) {
+        log.debug('Notifying admins', { count: adminUsers.length });
+
+        // Send notification to each admin (non-blocking)
+        const adminNotifications = adminUsers.map(admin =>
+          emailService.sendNewReportNotification(
+            admin.email,
+            report.id,
+            data.incident.summary.substring(0, 100),
+            data.incident.fraud_type
+          ).catch(err => {
+            log.warn('Failed to notify admin', { email: admin.email, error: err.message });
+            return { success: false, error: err.message };
+          })
+        );
+
+        // Wait for all notifications (but don't fail if some fail)
+        const results = await Promise.allSettled(adminNotifications);
+        const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as { success: boolean }).success).length;
+        log.info('Admin notifications sent', { success: successCount, total: adminUsers.length });
+      } else {
+        log.debug('No active admin users to notify');
+      }
+    } catch (adminNotifyError) {
+      // Log but don't fail - admin notification is not critical
+      log.warn('Admin notification error (non-fatal)', { error: adminNotifyError instanceof Error ? adminNotifyError.message : String(adminNotifyError) });
+    }
+
+    log.info('Request completed successfully');
     return NextResponse.json(
       {
         id: report.id,
@@ -612,24 +727,33 @@ export async function POST(request: NextRequest) {
           cluster_id: duplicateResult.clusterId,
           match_count: duplicateResult.totalMatches,
         },
-        email_sent: !!(reporterEmail && reporterEmail !== 'anonymous@scamnemesis.com'),
+        email_sent: emailSentSuccessfully,
+        ...(emailError && !emailSentSuccessfully ? {
+          email_warning: emailError,
+          email_note: 'Report was saved successfully, but confirmation email could not be sent. Please check server logs for details.'
+        } : {}),
       },
       { status: 201 }
     );
   } catch (error) {
+    // Send to Sentry for monitoring
+    Sentry.captureException(error, {
+      tags: { api: 'reports', method: 'POST' },
+      extra: { requestId },
+    });
+
     // Enhanced error logging for debugging
     const errorDetails = {
       name: error instanceof Error ? error.name : 'Unknown',
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    console.error(`[Reports API][${requestId}] ========== ERROR ==========`);
-    console.error(`[Reports API][${requestId}] Create report error:`, JSON.stringify(errorDetails, null, 2));
+    log.error('Create report error', errorDetails);
 
     // Prisma-specific error handling
     if (error && typeof error === 'object' && 'code' in error) {
       const prismaError = error as { code: string; meta?: unknown };
-      console.error(`[Reports API][${requestId}] Prisma error code:`, prismaError.code, 'meta:', prismaError.meta);
+      log.error('Prisma error', { code: prismaError.code, meta: prismaError.meta });
 
       // Handle specific Prisma errors
       if (prismaError.code === 'P2002') {
@@ -646,13 +770,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return detailed error in development, generic in production
+    // Return detailed error - include debug info for troubleshooting
+    // In production we still include error type and code for debugging
     const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json(
       {
         error: 'internal_error',
         message: isDev ? errorDetails.message : 'An unexpected error occurred',
-        ...(isDev && { details: errorDetails }),
+        // Always include request_id for log correlation
+        request_id: requestId,
+        // Include error type for debugging (safe, doesn't expose internals)
+        error_type: errorDetails.name,
+        // Include timestamp for debugging
+        timestamp: new Date().toISOString(),
+        ...(isDev ? { details: errorDetails } : {}),
       },
       { status: 500 }
     );
@@ -663,6 +794,9 @@ export async function POST(request: NextRequest) {
  * GET /api/v1/reports - List reports
  */
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'ReportsAPI');
+
   try {
     // Rate limiting
     const rateLimitError = await requireRateLimit(request, 100);
@@ -753,11 +887,18 @@ export async function GET(request: NextRequest) {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    console.error('[Reports API] List reports error:', JSON.stringify(errorDetails, null, 2));
+    log.error('List reports error', errorDetails);
+
+    Sentry.captureException(error, {
+      tags: { api: 'reports', method: 'GET' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
       },
       { status: 500 }
     );

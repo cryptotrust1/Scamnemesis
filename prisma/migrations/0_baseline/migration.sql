@@ -106,7 +106,7 @@ END $$;
 
 -- MediaStatus
 DO $$ BEGIN
-    CREATE TYPE "MediaStatus" AS ENUM ('PROCESSING', 'READY', 'FAILED', 'DELETED');
+    CREATE TYPE "MediaStatus" AS ENUM ('PROCESSING', 'READY', 'FAILED', 'DELETED', 'QUARANTINED');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
@@ -122,11 +122,12 @@ END $$;
 CREATE TABLE IF NOT EXISTS "users" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
     "email" TEXT NOT NULL,
-    "password_hash" TEXT NOT NULL,
+    "password_hash" TEXT,  -- Nullable for OAuth users
     "name" TEXT,
+    "image" TEXT,  -- Profile image from OAuth provider
     "role" "UserRole" NOT NULL DEFAULT 'BASIC',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "email_verified" BOOLEAN NOT NULL DEFAULT false,
+    "email_verified" TIMESTAMP(3),  -- DateTime for Auth.js compatibility
     "email_verified_at" TIMESTAMP(3),
     "last_login_at" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -135,6 +136,47 @@ CREATE TABLE IF NOT EXISTS "users" (
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "users_email_key" ON "users"("email");
+
+-- Auth.js Accounts (OAuth providers)
+CREATE TABLE IF NOT EXISTS "accounts" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
+    "user_id" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "provider_account_id" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+    CONSTRAINT "accounts_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "accounts_provider_provider_account_id_key" ON "accounts"("provider", "provider_account_id");
+CREATE INDEX IF NOT EXISTS "accounts_user_id_idx" ON "accounts"("user_id");
+
+-- Auth.js Sessions
+CREATE TABLE IF NOT EXISTS "sessions" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
+    "session_token" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "sessions_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "sessions_session_token_key" ON "sessions"("session_token");
+CREATE INDEX IF NOT EXISTS "sessions_user_id_idx" ON "sessions"("user_id");
+
+-- Auth.js Verification Tokens
+CREATE TABLE IF NOT EXISTS "verification_tokens" (
+    "identifier" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "verification_tokens_token_key" ON "verification_tokens"("token");
+CREATE UNIQUE INDEX IF NOT EXISTS "verification_tokens_identifier_token_key" ON "verification_tokens"("identifier", "token");
 
 -- API Keys
 CREATE TABLE IF NOT EXISTS "api_keys" (

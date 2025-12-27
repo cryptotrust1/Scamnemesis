@@ -11,6 +11,7 @@ import {
   Shield,
   Plus,
   Eye,
+  Pencil,
   Clock,
   CheckCircle,
   XCircle,
@@ -104,7 +105,7 @@ export default function DashboardPage() {
     } catch {
       // Ignore errors during logout
     } finally {
-      toast.success('Úspešne odhlásený');
+      toast.success('Successfully logged out');
       router.push('/');
     }
   };
@@ -122,12 +123,12 @@ export default function DashboardPage() {
       });
 
       if (response.ok) {
-        toast.success('Verifikačný email bol odoslaný');
+        toast.success('Verification email sent');
       } else {
-        toast.error('Nepodarilo sa odoslať verifikačný email');
+        toast.error('Failed to send verification email');
       }
     } catch {
-      toast.error('Chyba pri odosielaní');
+      toast.error('Error sending email');
     }
   };
 
@@ -137,42 +138,42 @@ export default function DashboardPage() {
         return (
           <Badge variant="warning" className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            Čaká na schválenie
+            Pending approval
           </Badge>
         );
       case 'UNDER_REVIEW':
         return (
           <Badge variant="secondary" className="flex items-center gap-1">
             <Search className="h-3 w-3" />
-            V procese
+            Under review
           </Badge>
         );
       case 'APPROVED':
         return (
           <Badge variant="success" className="flex items-center gap-1">
             <CheckCircle className="h-3 w-3" />
-            Schválené
+            Approved
           </Badge>
         );
       case 'REJECTED':
         return (
           <Badge variant="destructive" className="flex items-center gap-1">
             <XCircle className="h-3 w-3" />
-            Zamietnuté
+            Rejected
           </Badge>
         );
       case 'MERGED':
         return (
           <Badge variant="outline" className="flex items-center gap-1">
             <GitMerge className="h-3 w-3" />
-            Zlúčené
+            Merged
           </Badge>
         );
       case 'ARCHIVED':
         return (
           <Badge variant="outline" className="flex items-center gap-1 text-gray-500">
             <Archive className="h-3 w-3" />
-            Archivované
+            Archived
           </Badge>
         );
       default:
@@ -198,9 +199,9 @@ export default function DashboardPage() {
         <Card className="max-w-2xl mx-auto">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Nastala chyba</h3>
+            <h3 className="text-lg font-semibold mb-2">An error occurred</h3>
             <p className="text-sm text-muted-foreground mb-4">{error}</p>
-            <Button onClick={fetchUserData}>Skúsiť znova</Button>
+            <Button onClick={fetchUserData}>Try again</Button>
           </CardContent>
         </Card>
       </div>
@@ -218,11 +219,11 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Vitajte späť, {user.name || user.email}</p>
+            <p className="text-muted-foreground">Welcome back, {user.name || user.email}</p>
           </div>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="h-4 w-4 mr-2" />
-            Odhlásiť sa
+            Log out
           </Button>
         </div>
 
@@ -234,15 +235,15 @@ export default function DashboardPage() {
                 <Mail className="h-5 w-5 text-amber-600" />
                 <div>
                   <p className="font-medium text-amber-800 dark:text-amber-200">
-                    Váš email nie je overený
+                    Your email is not verified
                   </p>
                   <p className="text-sm text-amber-700 dark:text-amber-300">
-                    Overte svoj email pre plný prístup k funkciám
+                    Verify your email for full access to features
                   </p>
                 </div>
               </div>
               <Button variant="outline" size="sm" onClick={handleResendVerification}>
-                Odoslať verifikačný email
+                Send verification email
               </Button>
             </CardContent>
           </Card>
@@ -256,8 +257,8 @@ export default function DashboardPage() {
                 <div className="p-3 bg-primary/10 rounded-full mb-4">
                   <Plus className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold">Nové hlásenie</h3>
-                <p className="text-sm text-muted-foreground">Nahlásiť podvod</p>
+                <h3 className="font-semibold">New Report</h3>
+                <p className="text-sm text-muted-foreground">Report a scam</p>
               </Link>
             </CardContent>
           </Card>
@@ -268,20 +269,20 @@ export default function DashboardPage() {
                 <div className="p-3 bg-primary/10 rounded-full mb-4">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold">Vyhľadať</h3>
-                <p className="text-sm text-muted-foreground">Hľadať v databáze</p>
+                <h3 className="font-semibold">Search</h3>
+                <p className="text-sm text-muted-foreground">Search in database</p>
               </Link>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
-              <Link href="/dashboard/settings" className="flex flex-col items-center text-center">
+              <Link href="/settings" className="flex flex-col items-center text-center">
                 <div className="p-3 bg-primary/10 rounded-full mb-4">
                   <Settings className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold">Nastavenia</h3>
-                <p className="text-sm text-muted-foreground">Upraviť profil</p>
+                <h3 className="font-semibold">Settings</h3>
+                <p className="text-sm text-muted-foreground">Edit profile</p>
               </Link>
             </CardContent>
           </Card>
@@ -292,7 +293,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Informácie o účte
+              Account Information
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -302,17 +303,17 @@ export default function DashboardPage() {
                 <p className="font-medium">{user.email}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Meno</p>
+                <p className="text-sm text-muted-foreground">Name</p>
                 <p className="font-medium">{user.name || '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Rola</p>
+                <p className="text-sm text-muted-foreground">Role</p>
                 <Badge variant="outline">{user.role}</Badge>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Členstvo od</p>
+                <p className="text-sm text-muted-foreground">Member since</p>
                 <p className="font-medium">
-                  {new Date(user.created_at).toLocaleDateString('sk-SK')}
+                  {new Date(user.created_at).toLocaleDateString('en-US')}
                 </p>
               </div>
             </div>
@@ -325,14 +326,14 @@ export default function DashboardPage() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                Moje hlásenia
+                My Reports
               </CardTitle>
-              <CardDescription>Posledných 10 hlásení</CardDescription>
+              <CardDescription>Last 10 reports</CardDescription>
             </div>
             <Button variant="outline" size="sm" asChild>
               <Link href="/report/new">
                 <Plus className="h-4 w-4 mr-2" />
-                Nové hlásenie
+                New Report
               </Link>
             </Button>
           </CardHeader>
@@ -340,35 +341,52 @@ export default function DashboardPage() {
             {reports.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Zatiaľ nemáte žiadne hlásenia</p>
+                <p>You have no reports yet</p>
                 <Button className="mt-4" asChild>
-                  <Link href="/report/new">Vytvoriť prvé hlásenie</Link>
+                  <Link href="/report/new">Create your first report</Link>
                 </Button>
               </div>
             ) : (
               <div className="space-y-4">
-                {reports.map((report) => (
-                  <div
-                    key={report.id}
-                    className="flex items-center justify-between p-4 rounded-lg border"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{report.title}</p>
-                      <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                        <span>{new Date(report.createdAt).toLocaleDateString('sk-SK')}</span>
-                        <Badge variant="outline">{report.fraudType}</Badge>
+                {reports.map((report) => {
+                  // Safe date parsing
+                  const createdDate = report.createdAt ? new Date(report.createdAt) : null;
+                  const dateStr = createdDate && !isNaN(createdDate.getTime())
+                    ? createdDate.toLocaleDateString('en-US')
+                    : 'Unknown date';
+                  // Only allow editing for PENDING or APPROVED reports
+                  const canEdit = ['PENDING', 'APPROVED'].includes(report.status);
+
+                  return (
+                    <div
+                      key={report.id}
+                      className="flex items-center justify-between p-4 rounded-lg border"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{report.title}</p>
+                        <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                          <span>{dateStr}</span>
+                          <Badge variant="outline">{report.fraudType}</Badge>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        {getStatusBadge(report.status)}
+                        {canEdit && (
+                          <Button variant="ghost" size="icon" asChild title="Edit report">
+                            <Link href={`/dashboard/reports/${report.publicId || report.id}/edit`}>
+                              <Pencil className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="icon" asChild title="View report">
+                          <Link href={`/reports/${report.publicId || report.id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 ml-4">
-                      {getStatusBadge(report.status)}
-                      <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/reports/${report.publicId || report.id}`}>
-                          <Eye className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>

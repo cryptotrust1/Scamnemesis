@@ -1,7 +1,7 @@
 # AI Programming Rules for ScamNemesis
 
 > Pravidla a standardy pre AI asistentov pracujucich na projekte ScamNemesis.
-> Last updated: 16. December 2024
+> Last updated: 27. December 2024
 
 ---
 
@@ -216,6 +216,45 @@ for (const r of reports) {
 ---
 
 ## 5. Frontend Rules
+
+### 5.0 UI Styling Rules (KRITICKÉ)
+
+#### ZAKÁZANÉ - Biely text na bielom pozadí
+**NIKDY** nepoužívaj biely text alebo tlačidlá na bielom pozadí. Vždy zabezpeč dostatočný kontrast.
+
+```jsx
+// ZLE ❌ - biely text na svetlom pozadí
+<Button className="text-white bg-white">Click</Button>
+<button className="text-white hover:text-white">Click</button>
+
+// ZLE ❌ - hover efekt, ktorý spôsobí biely na bielom
+<Button className="hover:bg-white hover:text-white">Click</Button>
+
+// SPRÁVNE ✅ - dostatočný kontrast
+<Button className="bg-blue-600 text-white">Click</Button>
+<Button className="bg-white text-blue-600">Click</Button>
+<Button className="bg-transparent border-2 border-blue-600 text-blue-600">Click</Button>
+```
+
+#### Povolené farby textu na svetlom pozadí:
+- Čierna: `text-black`, `text-slate-900`, `text-gray-900`
+- Modrá: `text-blue-600`, `text-indigo-600`, `text-primary`
+- Sivá: `text-slate-600`, `text-gray-600`, `text-muted-foreground`
+
+#### Pravidlá pre tlačidlá:
+1. Na svetlom pozadí použij tmavý text
+2. Na tmavom pozadí môžeš použiť biely text
+3. Pri hover efektoch zachovaj kontrast
+4. **NEPOUŽÍVAJ hover** ak nie je nevyhnutný
+
+#### CSS Variables (Tailwind):
+```css
+/* Používaj HSL format z globals.css */
+.button {
+  color: hsl(var(--foreground));       /* Tmavý text */
+  background: hsl(var(--primary));     /* Modrá farba */
+}
+```
 
 ### 5.1 Language
 - Default locale: **sk** (slovenčina)

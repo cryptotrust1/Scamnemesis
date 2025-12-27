@@ -717,8 +717,8 @@ const getPageTranslations = (locale: Locale) => {
   return t[locale] || t.en;
 };
 
-// Data Processing Features
-const dataProcessingFeatures = [
+// Data Processing Features (reserved for future use)
+const _dataProcessingFeatures = [
   {
     icon: BarChart3,
     title: 'Advanced Analytics',
@@ -741,8 +741,8 @@ const dataProcessingFeatures = [
   },
 ];
 
-// OSINT Features
-const osintFeatures = [
+// OSINT Features (reserved for future use)
+const _osintFeatures = [
   {
     icon: Search,
     title: 'Deep Web Analysis',
@@ -765,8 +765,8 @@ const osintFeatures = [
   },
 ];
 
-// Community Features
-const communityFeatures = [
+// Community Features (reserved for future use)
+const _communityFeatures = [
   {
     icon: MessageSquare,
     title: 'Interactive Reports',
@@ -789,8 +789,8 @@ const communityFeatures = [
   },
 ];
 
-// Partner Types
-const partnerTypes = [
+// Partner Types (reserved for future use)
+const _partnerTypes = [
   {
     icon: Building2,
     title: 'Law Enforcement',
@@ -813,8 +813,8 @@ const partnerTypes = [
   },
 ];
 
-// Recovery Steps
-const recoverySteps = [
+// Recovery Steps (reserved for future use)
+const _recoverySteps = [
   {
     step: 1,
     title: 'Report Immediately',
@@ -972,14 +972,7 @@ export default function NewReportPage() {
           physicalDescription: formData.physicalDescription,
           phone: formData.phone,
           email: formData.email,
-          website: formData.website,
           socialMedia: formData.socialMedia,
-          signal: formData.signal,
-          tiktok: formData.tiktok,
-          twitter: formData.twitter,
-          iban: formData.iban,
-          bankAccount: formData.bankAccount,
-          cryptoWallet: formData.cryptoWallet,
           companyName: formData.companyName,
           companyId: formData.companyId,
           address: formData.address,
@@ -1102,6 +1095,12 @@ export default function NewReportPage() {
 
     setIsSubmitting(true);
 
+    // Debug: Log submission start
+    console.log('[ScamNemesis Debug] ========== REPORT SUBMISSION START ==========');
+    console.log('[ScamNemesis Debug] Timestamp:', new Date().toISOString());
+    console.log('[ScamNemesis Debug] Form data:', JSON.stringify(formData, null, 2));
+    console.log('[ScamNemesis Debug] Files count:', files.length);
+
     try {
       // Step 1: Upload evidence files to S3 and collect external URLs
       let uploadedEvidence: Array<{
@@ -1118,6 +1117,8 @@ export default function NewReportPage() {
 
         // Upload actual files to S3
         if (filesToUpload.length > 0) {
+          console.log('[ScamNemesis Debug] Step 1: Uploading files to S3');
+          console.log('[ScamNemesis Debug] Files to upload:', filesToUpload.map(f => ({ name: f.name, size: f.size, type: f.type })));
           toast.info('Nahrávanie súborov...');
 
           const uploadFormData = new FormData();
@@ -1148,8 +1149,11 @@ export default function NewReportPage() {
           }
           clearTimeout(uploadTimeoutId);
 
+          console.log('[ScamNemesis Debug] File upload response status:', uploadResponse.status);
+
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json().catch(() => ({}));
+            console.error('[ScamNemesis Debug] File upload error:', uploadResponse.status, uploadError);
             // S3 503 is critical - user selected files to upload, we cannot silently drop them
             if (uploadResponse.status === 503) {
               throw new Error('Služba nahrávania súborov je dočasne nedostupná. Skúste to prosím neskôr.');
@@ -1158,10 +1162,11 @@ export default function NewReportPage() {
             }
           } else {
             const uploadResult = await uploadResponse.json();
+            console.log('[ScamNemesis Debug] File upload success:', uploadResult);
 
             // Map uploaded files to evidence format
             uploadedEvidence = uploadResult.uploaded.map(
-              (uploaded: { fileKey: string; mimeType: string }, index: number) => {
+              (uploaded: { fileKey: string; mimeType: string; size: number }, index: number) => {
                 const originalFile = filesToUpload[index];
                 // Map MIME type and category to EvidenceType enum values (must match Prisma enum)
                 // Prisma enum: IMAGE, DOCUMENT, VIDEO, AUDIO, PAYMENT_EVIDENCE, FRAUDSTER_PHOTO,
@@ -1190,6 +1195,8 @@ export default function NewReportPage() {
                 return {
                   type: evidenceType,
                   file_key: uploaded.fileKey,
+                  mime_type: uploaded.mimeType,
+                  file_size: uploaded.size,
                   description: originalFile?.description,
                 };
               }
@@ -1265,12 +1272,12 @@ export default function NewReportPage() {
       const digitalFootprintsData = {
         telegram: formData.telegram,
         whatsapp: formData.whatsapp,
-        signal: formData.signalNumber || formData.signal,
+        signal: formData.signalNumber,
         instagram: formData.instagram,
         facebook: formData.facebook,
-        tiktok: formData.tiktokHandle || formData.tiktok,
-        twitter: formData.twitterHandle || formData.twitter,
-        website_url: formData.websiteUrl || formData.website,
+        tiktok: formData.tiktokHandle,
+        twitter: formData.twitterHandle,
+        website_url: formData.websiteUrl,
         domain_name: formData.domainName,
         domain_creation_date: toISODateTime(formData.domainCreationDate),
         ip_address: formData.ipAddress,
@@ -1285,7 +1292,7 @@ export default function NewReportPage() {
       const financialData = {
         iban: formData.iban,
         account_holder: formData.accountHolderName,
-        account_number: formData.accountNumber || formData.bankAccount,
+        account_number: formData.accountNumber,
         bank_name: formData.bankName,
         bank_country: formData.bankCountry?.trim().substring(0, 2).toUpperCase(),
         swift_bic: formData.swiftBic,
@@ -1299,7 +1306,7 @@ export default function NewReportPage() {
 
       // Build crypto object only if it has relevant data
       const cryptoData = {
-        wallet_address: formData.walletAddress || formData.cryptoWallet,
+        wallet_address: formData.walletAddress,
         blockchain: formData.blockchain?.toUpperCase() as typeof formData.blockchain,
         exchange_wallet_name: formData.exchangeName,
         transaction_hash: formData.transactionHash,
@@ -1382,6 +1389,9 @@ export default function NewReportPage() {
       };
 
       // Step 3: Submit report with timeout and AbortController
+      console.log('[ScamNemesis Debug] Step 3: Submitting report to API');
+      console.log('[ScamNemesis Debug] Report data being sent:', JSON.stringify(reportData, null, 2));
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 second (4 min) timeout
 
@@ -1397,9 +1407,11 @@ export default function NewReportPage() {
         });
 
         clearTimeout(timeoutId);
+        console.log('[ScamNemesis Debug] API response status:', response.status);
 
         if (response.ok) {
           const data = await response.json().catch(() => ({ id: 'unknown' }));
+          console.log('[ScamNemesis Debug] SUCCESS! Response data:', data);
           // Clear saved draft using secure storage
           secureStorageRemove('report-draft');
           // Reset all form state to prevent stale data if user navigates back
@@ -1410,6 +1422,11 @@ export default function NewReportPage() {
           router.push(`/${locale}/report/success?id=${data.publicId || data.id}`);
         } else {
           const errorData = await response.json().catch(() => null);
+          console.error('[ScamNemesis Debug] API ERROR!');
+          console.error('[ScamNemesis Debug] Status:', response.status);
+          console.error('[ScamNemesis Debug] Error data:', JSON.stringify(errorData, null, 2));
+          console.error('[ScamNemesis Debug] Request ID:', errorData?.request_id);
+          console.error('[ScamNemesis Debug] Error type:', errorData?.error_type);
           toast.error(errorData?.message || 'Chyba pri odosielaní hlásenia');
         }
       } catch (fetchError) {
@@ -1421,9 +1438,16 @@ export default function NewReportPage() {
         }
       }
     } catch (error) {
-      console.error('Submit error:', error);
+      console.error('[ScamNemesis Debug] ========== SUBMIT EXCEPTION ==========');
+      console.error('[ScamNemesis Debug] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+      console.error('[ScamNemesis Debug] Error message:', error instanceof Error ? error.message : String(error));
+      console.error('[ScamNemesis Debug] Full error:', error);
+      if (error instanceof Error && error.stack) {
+        console.error('[ScamNemesis Debug] Stack trace:', error.stack);
+      }
       toast.error(error instanceof Error ? error.message : 'Chyba pri odosielaní hlásenia');
     } finally {
+      console.log('[ScamNemesis Debug] ========== REPORT SUBMISSION END ==========');
       setIsSubmitting(false);
     }
   };

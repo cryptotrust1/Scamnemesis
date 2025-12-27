@@ -295,6 +295,25 @@ jobs:
           name: build-output
           path: .next
 
+      - name: Prepare standalone server
+        run: |
+          echo "=== Preparing standalone server ==="
+          # Standalone server needs public/ and .next/static/ in specific locations
+          if [ -d ".next/standalone" ]; then
+            echo "Copying public folder to standalone..."
+            cp -r public .next/standalone/public
+            echo "Copying static assets to standalone..."
+            mkdir -p .next/standalone/.next
+            cp -r .next/static .next/standalone/.next/static
+            echo "Standalone server prepared successfully"
+            ls -la .next/standalone/
+          else
+            echo "ERROR: .next/standalone directory not found!"
+            echo "Available in .next:"
+            ls -la .next/
+            exit 1
+          fi
+
       - name: Generate Prisma client
         run: pnpm prisma generate
 

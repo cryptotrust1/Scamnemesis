@@ -6,9 +6,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import { requireRateLimit, optionalAuth } from '@/lib/middleware/auth';
 import { generateSearchEmbedding, isEmbeddingServiceAvailable } from '@/lib/services/embeddings';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,7 +78,7 @@ function maskField(
 }
 
 const searchParamsSchema = z.object({
-  q: z.string().min(2).max(500),
+  q: z.string().min(0).max(500).optional().default(''),
   mode: z.enum(['auto', 'exact', 'fuzzy', 'semantic']).default('auto'),
   fields: z.string().optional(), // comma-separated
   country: z.string().max(2).optional(),
@@ -521,6 +523,9 @@ async function semanticSearch(
  * GET /api/v1/search - Search for fraud reports
  */
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'SearchAPI');
+
   try {
     // Rate limiting
     const rateLimitError = await requireRateLimit(request, 100);
@@ -597,13 +602,48 @@ export async function GET(request: NextRequest) {
     // Determine search types
     const searchTypes = fields
       ? fields.split(',').map((f) => f.trim())
-      : detectSearchType(q);
+      : q ? detectSearchType(q) : [];
 
     let results: SearchResult[] = [];
     let total = 0;
 
+    // If query is empty, return all reports with filters
+    if (!q || q.trim().length === 0) {
+      const where = {
+        status: 'APPROVED' as const,
+        ...filters,
+      };
+
+      const [totalCount, reports] = await Promise.all([
+        prisma.report.count({ where }),
+        prisma.report.findMany({
+          where,
+          include: {
+            perpetrators: true,
+          },
+          orderBy: buildOrderBy(sort, order),
+          take: limit,
+          skip: offset,
+        }),
+      ]);
+
+      total = totalCount;
+      results = reports.map((report) => ({
+        id: report.publicId,
+        score: 1.0,
+        source: 'exact' as const,
+        perpetrator: {
+          name: report.perpetrators[0]?.fullName,
+          phone: report.perpetrators[0]?.phone,
+          email: report.perpetrators[0]?.email,
+        },
+        fraud_type: report.fraudType?.toLowerCase() ?? 'unknown',
+        country: report.locationCountry || undefined,
+        incident_date: report.incidentDate?.toISOString()?.split('T')[0],
+      }));
+    }
     // Execute search based on mode
-    if (mode === 'auto') {
+    else if (mode === 'auto') {
       // Try exact search first
       const exactResults = await exactSearch(q, searchTypes, filters, limit, offset, sort, order);
 
@@ -695,11 +735,21 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Search error:', error);
+    log.error('Search error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    Sentry.captureException(error, {
+      tags: { api: 'search', method: 'GET' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
       },
       { status: 500 }
     );

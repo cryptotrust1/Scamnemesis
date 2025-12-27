@@ -9,37 +9,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/db';
 import { checkRateLimit, getClientIp, optionalAuth } from '@/lib/middleware/auth';
+import { clearAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 
 export const dynamic = 'force-dynamic';
-
-// Cookie configuration for clearing
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: IS_PRODUCTION,
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Clear all auth cookies from the response
- */
-function clearAuthCookies(response: NextResponse): void {
-  response.cookies.set('access_token', '', {
-    ...COOKIE_OPTIONS,
-    maxAge: 0, // Expire immediately
-  });
-
-  response.cookies.set('refresh_token', '', {
-    ...COOKIE_OPTIONS,
-    maxAge: 0,
-    path: '/api/v1/auth',
-  });
-}
-
-// Rate limit for logout endpoint
-const LOGOUT_RATE_LIMIT = 20; // 20 attempts per window
-const LOGOUT_RATE_WINDOW = 900000; // 15 minutes
 
 const logoutSchema = z.object({
   refresh_token: z.string().optional(),
@@ -49,8 +22,12 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:logout:${ip}`;
-    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, LOGOUT_RATE_LIMIT, LOGOUT_RATE_WINDOW);
+    const rateLimitKey = getRateLimitKey('logout', ip);
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      AUTH_RATE_LIMITS.LOGOUT.limit,
+      AUTH_RATE_LIMITS.LOGOUT.windowMs
+    );
 
     if (!allowed) {
       return NextResponse.json(

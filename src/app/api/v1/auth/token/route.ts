@@ -7,60 +7,28 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
 import prisma from '@/lib/db';
 import {
   verifyPassword,
   generateAccessToken,
   generateRefreshToken,
   getScopesForRole,
+  needsHashUpgrade,
+  hashPassword,
+  generate2FATempToken,
 } from '@/lib/auth/jwt';
+import { setAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import {
   isAccountLocked,
   recordFailedAttempt,
   clearFailedAttempts,
 } from '@/lib/services/brute-force';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
-
-// Cookie configuration
-// Note: secure should be true in production, but temporarily disabled
-// until valid SSL certificate is configured
-const _IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: false, // TODO: Set to _IS_PRODUCTION once SSL is properly configured
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Set auth tokens as HttpOnly cookies on the response
- */
-function setAuthCookies(
-  response: NextResponse,
-  accessToken: string,
-  refreshToken?: string
-): void {
-  // Access token cookie - 1 hour
-  response.cookies.set('access_token', accessToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  // Refresh token cookie - 7 days (only for password auth)
-  if (refreshToken) {
-    response.cookies.set('refresh_token', refreshToken, {
-      ...COOKIE_OPTIONS,
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/api/v1/auth', // Restrict to auth endpoints only
-    });
-  }
-}
-
-// Stricter rate limit for auth endpoints to prevent brute force
-const AUTH_RATE_LIMIT = 10; // 10 attempts per window
-const AUTH_RATE_WINDOW = 900000; // 15 minutes
 
 // Request schemas
 const passwordLoginSchema = z.object({
@@ -77,11 +45,22 @@ const apiKeyLoginSchema = z.object({
 const loginSchema = z.union([passwordLoginSchema, apiKeyLoginSchema]);
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'AuthToken');
+
+  // Track which step we're on for debugging 500 errors
+  let currentStep = 'init';
+
   try {
+    currentStep = 'rate-limiting';
     // Rate limiting to prevent brute force attacks
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:token:${ip}`;
-    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, AUTH_RATE_LIMIT, AUTH_RATE_WINDOW);
+    const rateLimitKey = getRateLimitKey('token', ip);
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      AUTH_RATE_LIMITS.TOKEN.limit,
+      AUTH_RATE_LIMITS.TOKEN.windowMs
+    );
 
     if (!allowed) {
       return NextResponse.json(
@@ -98,6 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'parse-body';
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
 
@@ -114,6 +94,7 @@ export async function POST(request: NextRequest) {
     const data = parsed.data;
 
     if (data.grant_type === 'password') {
+      currentStep = 'check-lock-status';
       // SECURITY: Check if account is locked due to brute force
       const lockStatus = await isAccountLocked(data.email);
       if (lockStatus.locked) {
@@ -136,15 +117,19 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      currentStep = 'find-user';
       // Password authentication
       const user = await prisma.user.findUnique({
-        where: { email: data.email },
+        where: { email: data.email.toLowerCase() },
         select: {
           id: true,
           email: true,
           passwordHash: true,
           role: true,
           isActive: true,
+          emailVerified: true,
+          totpEnabled: true,
+          displayName: true,
         },
       });
 
@@ -178,7 +163,36 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const validPassword = await verifyPassword(data.password, user.passwordHash!);
+      // SECURITY: Check if user has a password (OAuth users don't have one)
+      // This prevents crashes when OAuth users try password login
+      if (!user.passwordHash) {
+        // Log OAuth user attempting password login
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              reason: 'oauth_user_no_password',
+              email: data.email,
+              hint: 'User registered via OAuth and has no password set',
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json(
+          {
+            error: 'unauthorized',
+            message: 'Invalid email or password',
+          },
+          { status: 401 }
+        );
+      }
+
+      currentStep = 'verify-password';
+      const validPassword = await verifyPassword(data.password, user.passwordHash);
 
       if (!validPassword) {
         // SECURITY: Record failed attempt for brute force protection
@@ -221,6 +235,82 @@ export async function POST(request: NextRequest) {
       // SECURITY: Clear failed attempts on successful login
       await clearFailedAttempts(data.email);
 
+      // SECURITY: Upgrade legacy password hash if needed (v1 -> v2 with 600k iterations)
+      if (user.passwordHash && needsHashUpgrade(user.passwordHash)) {
+        try {
+          const upgradedHash = await hashPassword(data.password);
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash: upgradedHash },
+          });
+          log.info('Password hash upgraded to v2', { userId: user.id });
+        } catch (upgradeError) {
+          // Don't fail login if hash upgrade fails, just log it
+          log.warn('Failed to upgrade password hash', {
+            userId: user.id,
+            error: upgradeError instanceof Error ? upgradeError.message : String(upgradeError),
+          });
+        }
+      }
+
+      // Check if email is verified
+      if (!user.emailVerified) {
+        // Log unverified login attempt
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_FAILED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              reason: 'email_not_verified',
+              email: data.email,
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json(
+          {
+            error: 'email_not_verified',
+            message: 'Please verify your email address before logging in. Check your inbox for the verification link.',
+            email: user.email,
+          },
+          { status: 403 }
+        );
+      }
+
+      // Check if 2FA is enabled - if so, return temp token for 2FA verification
+      if (user.totpEnabled) {
+        // Clear failed attempts since password was correct
+        await clearFailedAttempts(data.email);
+
+        // Generate signed temporary token for 2FA verification (5 minute expiry)
+        const tempToken = await generate2FATempToken(user.id);
+
+        // Log 2FA required
+        await prisma.auditLog.create({
+          data: {
+            action: 'LOGIN_2FA_REQUIRED',
+            entityType: 'Auth',
+            entityId: user.id,
+            userId: user.id,
+            changes: {
+              email: data.email,
+              requires_2fa: true,
+            },
+            ipAddress: ip,
+          },
+        });
+
+        return NextResponse.json({
+          requires_2fa: true,
+          temp_token: tempToken,
+          message: 'Two-factor authentication required. Please enter your verification code.',
+        });
+      }
+
+      currentStep = 'generate-tokens';
       // Get scopes for role
       const scopes = getScopesForRole(user.role);
 
@@ -376,11 +466,28 @@ export async function POST(request: NextRequest) {
       return response;
     }
   } catch (error) {
-    console.error('Auth error:', error);
+    // Log detailed error with the step where it failed
+    log.error('Auth error', {
+      step: currentStep,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Also log to console for easier debugging
+    console.error(`[Login] FAILED at step '${currentStep}':`, error);
+
+    Sentry.captureException(error, {
+      tags: { api: 'auth', method: 'POST', endpoint: 'token', step: currentStep },
+      extra: { requestId, failedStep: currentStep },
+    });
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred',
+        request_id: requestId,
+        // Include step in response for debugging (remove in production if sensitive)
+        debug_step: currentStep,
       },
       { status: 500 }
     );

@@ -1,0 +1,58 @@
+/**
+ * Feature Flags Configuration
+ *
+ * Environment-based feature toggles for the application.
+ * All features can be enabled/disabled via environment variables.
+ */
+
+export const FEATURES = {
+  /**
+   * Swagger UI / API Documentation
+   *
+   * ENABLE_SWAGGER_UI: 'true' to enable /docs endpoint (default: false)
+   * SWAGGER_REQUIRE_AUTH: 'false' to disable auth requirement (default: true)
+   */
+  SWAGGER_UI: {
+    /** Whether Swagger UI is enabled */
+    enabled: process.env.ENABLE_SWAGGER_UI === 'true',
+    /** Whether authentication is required to access docs */
+    requireAuth: process.env.SWAGGER_REQUIRE_AUTH !== 'false',
+    /** Roles allowed to access docs (checked via scopes) */
+    allowedScopes: ['admin:read', '*'],
+    /** Enable "Try it out" only in development */
+    tryItOutEnabled: process.env.NODE_ENV === 'development',
+  },
+
+  /**
+   * Partner Widgets
+   *
+   * ENABLE_PARTNER_WIDGETS: 'true' to enable, 'false' to disable
+   * Default: enabled in development, disabled in production
+   *
+   * When enabled:
+   * - /dashboard/widgets page is accessible
+   * - Widget CRUD API endpoints are active
+   * - /embed/widget/[id] pages are rendered
+   * - Widgets menu item appears in header/footer
+   */
+  PARTNER_WIDGETS: {
+    /** Whether partner widgets feature is enabled */
+    // Default: enabled unless explicitly set to 'false'
+    enabled: process.env.ENABLE_PARTNER_WIDGETS !== 'false',
+    /** Maximum widgets per user */
+    maxWidgetsPerUser: 10,
+    /** Default rate limit for widget embed requests */
+    defaultRateLimit: 100,
+  },
+} as const;
+
+/**
+ * Check if user scopes include any of the allowed scopes
+ */
+export function hasAllowedScope(
+  userScopes: string[],
+  allowedScopes: string[]
+): boolean {
+  if (userScopes.includes('*')) return true;
+  return userScopes.some((scope) => allowedScopes.includes(scope));
+}

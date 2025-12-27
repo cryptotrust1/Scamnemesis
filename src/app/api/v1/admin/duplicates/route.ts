@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,46 +77,45 @@ export async function GET(request: NextRequest) {
       prisma.duplicateCluster.count({ where }),
     ]);
 
+    // Map to DuplicateCluster interface expected by frontend
     return NextResponse.json({
-      clusters: clusters.map((cluster) => ({
-        id: cluster.id,
-        status: cluster.status.toLowerCase(),
-        confidence: cluster.confidence,
-        match_type: cluster.matchType?.toLowerCase(),
-        reports: cluster.reports.map((clusterReport) => ({
-          id: clusterReport.report.id,
-          fraud_type: clusterReport.report.fraudType?.toLowerCase(),
-          summary: clusterReport.report.summary,
-          status: clusterReport.report.status.toLowerCase(),
-          financial_loss: clusterReport.report.financialLossAmount ? {
-            amount: Number(clusterReport.report.financialLossAmount),
-            currency: clusterReport.report.financialLossCurrency,
-          } : null,
-          perpetrators: clusterReport.report.perpetrators.map((p) => ({
-            id: p.id,
-            full_name: p.fullName,
-            email: p.email,
-            phone: p.phone,
-          })),
-          created_at: clusterReport.report.createdAt.toISOString(),
-          similarity: clusterReport.similarity,
-          is_primary: clusterReport.isPrimary,
-        })),
-        created_at: cluster.createdAt.toISOString(),
-        resolved_at: cluster.resolvedAt?.toISOString(),
-      })),
-      pagination: {
-        total,
-        limit,
-        offset,
-        has_more: offset + limit < total,
-      },
+      duplicates: clusters.map((cluster) => {
+        // Get first perpetrator for simplified display (reserved for future use)
+        const _firstPerp = cluster.reports[0]?.report?.perpetrators?.[0];
+
+        return {
+          id: cluster.id,
+          status: cluster.status,
+          confidence: cluster.confidence,
+          matchType: cluster.matchType || 'unknown',
+          createdAt: cluster.createdAt.toISOString(),
+          mergedAt: cluster.resolvedAt?.toISOString(),
+          reports: cluster.reports.map((clusterReport) => {
+            const report = clusterReport.report;
+            const perp = report.perpetrators?.[0];
+
+            return {
+              id: report.id,
+              publicId: report.publicId,
+              title: report.summary,
+              fraudType: report.fraudType,
+              perpetratorName: perp?.fullName || undefined,
+              perpetratorPhone: perp?.phone || undefined,
+              perpetratorEmail: perp?.email || undefined,
+              amount: report.financialLossAmount
+                ? Number(report.financialLossAmount)
+                : undefined,
+              currency: report.financialLossCurrency || undefined,
+              createdAt: report.createdAt.toISOString(),
+              isPrimary: clusterReport.isPrimary,
+              similarity: clusterReport.similarity,
+            };
+          }),
+        };
+      }),
+      total,
     });
   } catch (error) {
-    console.error('Error fetching duplicate clusters:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch duplicate clusters' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/duplicates' });
   }
 }

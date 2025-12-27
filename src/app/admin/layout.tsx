@@ -19,10 +19,12 @@ import {
   Search,
   FileEdit,
   Loader2,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { AdminAuthProvider, useAdminAuth } from '@/lib/admin/auth-context';
+import { I18nProvider } from '@/lib/i18n/context';
 
 const sidebarItems = [
   {
@@ -74,6 +76,11 @@ const sidebarItems = [
     title: 'Nastavenia',
     href: '/admin/settings',
     icon: Settings,
+  },
+  {
+    title: 'API Docs',
+    href: '/admin/docs',
+    icon: BookOpen,
   },
 ];
 
@@ -235,10 +242,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AdminAuthProvider>
-      <AdminLayoutContent>
-        {children}
-      </AdminLayoutContent>
-    </AdminAuthProvider>
+    <I18nProvider>
+      <AdminAuthProvider>
+        <AdminLayoutContent>
+          {children}
+        </AdminLayoutContent>
+      </AdminAuthProvider>
+    </I18nProvider>
   );
 }

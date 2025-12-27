@@ -1,22 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { emailService } from '@/lib/services/email';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import { generatePasswordResetToken } from '@/lib/auth/jwt';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
-
-// JWT_SECRET validation at runtime to avoid build-time failures
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required.');
-  }
-  return secret;
-}
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -29,10 +21,14 @@ const ForgotPasswordSchema = z.object({
  * Rate limited to prevent abuse.
  */
 export async function POST(request: NextRequest) {
-  // Rate limiting: 5 requests per hour per IP
+  // Rate limiting
   const ip = getClientIp(request);
-  const rateLimitKey = `forgot-password:${ip}`;
-  const rateLimit = await checkRateLimit(rateLimitKey, 5, 3600000); // 5 per hour
+  const rateLimitKey = getRateLimitKey('forgot-password', ip);
+  const rateLimit = await checkRateLimit(
+    rateLimitKey,
+    AUTH_RATE_LIMITS.FORGOT_PASSWORD.limit,
+    AUTH_RATE_LIMITS.FORGOT_PASSWORD.windowMs
+  );
 
   if (!rateLimit.allowed) {
     const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
@@ -81,16 +77,7 @@ export async function POST(request: NextRequest) {
     // But only send email if user exists and is active
     if (user && user.isActive) {
       // Generate password reset token (valid for 1 hour)
-      const secret = new TextEncoder().encode(getJwtSecret());
-      const resetToken = await new SignJWT({
-        sub: user.id,
-        email: user.email,
-        type: 'password_reset',
-      })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
-        .setExpirationTime('1h')
-        .sign(secret);
+      const resetToken = await generatePasswordResetToken(user.id, user.email);
 
       // Build reset URL
       const resetUrl = `${SITE_URL}/auth/reset-password?token=${resetToken}`;

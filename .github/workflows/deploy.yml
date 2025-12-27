@@ -34,13 +34,33 @@ jobs:
           TYPESENSE_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
           S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
           S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          ADMIN_SETUP_TOKEN: ${{ secrets.ADMIN_SETUP_TOKEN }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # CRITICAL: NEXT_PUBLIC_* variables for Docker build time
+          NEXT_PUBLIC_GOOGLE_ENABLED: ${{ secrets.NEXT_PUBLIC_GOOGLE_ENABLED }}
+          NEXT_PUBLIC_GITHUB_ENABLED: ${{ secrets.NEXT_PUBLIC_GITHUB_ENABLED }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+          # Swagger UI configuration
+          ENABLE_SWAGGER_UI: ${{ secrets.ENABLE_SWAGGER_UI }}
+          SWAGGER_REQUIRE_AUTH: ${{ secrets.SWAGGER_REQUIRE_AUTH }}
+          # Partner Widgets configuration
+          ENABLE_PARTNER_WIDGETS: ${{ secrets.ENABLE_PARTNER_WIDGETS }}
+          # NextAuth.js v5 session encryption (CRITICAL for auth to work)
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           command_timeout: 45m
-          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY
+          envs: POSTGRES_PASSWORD,JWT_SECRET,JWT_REFRESH_SECRET,DOMAIN,ACME_EMAIL,GRAFANA_ADMIN_PASSWORD,REDIS_PASSWORD,TYPESENSE_API_KEY,S3_ACCESS_KEY,S3_SECRET_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,RESEND_API_KEY,SENTRY_AUTH_TOKEN,ADMIN_SETUP_TOKEN,ADMIN_EMAIL,ADMIN_PASSWORD,CLOUDFLARE_API_TOKEN,NEXT_PUBLIC_GOOGLE_ENABLED,NEXT_PUBLIC_GITHUB_ENABLED,NEXT_PUBLIC_TURNSTILE_SITE_KEY,TURNSTILE_SECRET_KEY,ENABLE_SWAGGER_UI,SWAGGER_REQUIRE_AUTH,ENABLE_PARTNER_WIDGETS,AUTH_SECRET
           script: |
             set -e  # Exit on any error (replaces script_stop which breaks heredocs)
             cd /var/www/Scamnemesis
@@ -58,9 +78,10 @@ jobs:
             ENVEOF
 
             # Append secrets (with defaults for non-critical values)
-            # IMPORTANT: Strip newlines/carriage returns from all values to prevent Traefik errors
+            # IMPORTANT: Strip newlines/carriage returns and invisible chars from all values to prevent Traefik errors
             strip_newlines() {
-              echo -n "$1" | tr -d '\n\r'
+              # Use printf for reliability, remove ALL control characters (not just \n\r)
+              printf '%s' "$1" | tr -d '\n\r\t' | tr -d '[:cntrl:]'
             }
 
             POSTGRES_PASSWORD_VAL=$(strip_newlines "${POSTGRES_PASSWORD:-scamnemesis_prod_password}")
@@ -81,8 +102,107 @@ jobs:
             echo "S3_ACCESS_KEY=$(strip_newlines "${S3_ACCESS_KEY:-minioadmin}")" >> .env
             echo "S3_SECRET_KEY=$(strip_newlines "${S3_SECRET_KEY:-minioadmin}")" >> .env
 
+            # OAuth and Email secrets
+            echo "GOOGLE_CLIENT_ID=$(strip_newlines "${GOOGLE_CLIENT_ID:-}")" >> .env
+            echo "GOOGLE_CLIENT_SECRET=$(strip_newlines "${GOOGLE_CLIENT_SECRET:-}")" >> .env
+            echo "RESEND_API_KEY=$(strip_newlines "${RESEND_API_KEY:-}")" >> .env
+            echo "FROM_EMAIL=noreply@scamnemesis.com" >> .env
+            echo "SITE_NAME=ScamNemesis" >> .env
+            # CRITICAL: AUTH_SECRET must be persistent across deploys for session continuity
+            echo "AUTH_SECRET=$(strip_newlines "${AUTH_SECRET:-$(openssl rand -base64 32)}")" >> .env
+
+            # CRITICAL: NEXTAUTH_URL is required for NextAuth.js in production
+            # Must be the full URL (https://domain.com) for OAuth callbacks and session handling
+            echo "NEXTAUTH_URL=https://${DOMAIN_VAL}" >> .env
+            echo "AUTH_TRUST_HOST=true" >> .env
+
+            # Debug: Verify critical auth secrets are set
+            JWT_SECRET_CLEAN=$(strip_newlines "${JWT_SECRET:-}")
+            if [ -z "$JWT_SECRET_CLEAN" ]; then
+              echo "⚠ WARNING: JWT_SECRET not set in GitHub Secrets - using random value (tokens will be invalidated on redeploy)"
+            else
+              echo "✓ JWT_SECRET is set (${#JWT_SECRET_CLEAN} chars)"
+            fi
+            AUTH_SECRET_CLEAN=$(strip_newlines "${AUTH_SECRET:-}")
+            if [ -z "$AUTH_SECRET_CLEAN" ]; then
+              echo "⚠ WARNING: AUTH_SECRET not set in GitHub Secrets - using random value (sessions will be invalidated on redeploy)"
+            else
+              echo "✓ AUTH_SECRET is set (${#AUTH_SECRET_CLEAN} chars)"
+            fi
+
+            # Debug: Verify RESEND_API_KEY is set
+            RESEND_KEY_CLEAN=$(strip_newlines "${RESEND_API_KEY:-}")
+            if [ -n "$RESEND_KEY_CLEAN" ]; then
+              echo "✓ RESEND_API_KEY is set (${#RESEND_KEY_CLEAN} chars)"
+            else
+              echo "⚠ WARNING: RESEND_API_KEY is not set (emails will not be sent)"
+            fi
+
+            # Sentry configuration for source maps upload
+            echo "SENTRY_AUTH_TOKEN=$(strip_newlines "${SENTRY_AUTH_TOKEN:-}")" >> .env
+            echo "SENTRY_ORG=m0ne-sro" >> .env
+            echo "SENTRY_PROJECT=scamnemesis" >> .env
+
+            # Admin setup configuration
+            echo "ADMIN_SETUP_TOKEN=$(strip_newlines "${ADMIN_SETUP_TOKEN:-}")" >> .env
+            echo "ADMIN_EMAIL=$(strip_newlines "${ADMIN_EMAIL:-admin@scamnemesis.com}")" >> .env
+            echo "ADMIN_PASSWORD=$(strip_newlines "${ADMIN_PASSWORD:-}")" >> .env
+
+            # Cloudflare API token for DNS-01 ACME challenge (SSL certificates)
+            # CRITICAL: Must be clean without any newlines/control chars or Traefik will fail
+            CF_TOKEN_CLEAN=$(strip_newlines "${CLOUDFLARE_API_TOKEN:-}")
+            echo "CLOUDFLARE_API_TOKEN=\"${CF_TOKEN_CLEAN}\"" >> .env
+
+            # =====================================================================
+            # CRITICAL: NEXT_PUBLIC_* variables for Docker build time
+            # These MUST be in .env so docker-compose can pass them as build args
+            # Next.js embeds these at build time into the JavaScript bundle
+            # =====================================================================
+            echo "NEXT_PUBLIC_GOOGLE_ENABLED=$(strip_newlines "${NEXT_PUBLIC_GOOGLE_ENABLED:-false}")" >> .env
+            echo "NEXT_PUBLIC_GITHUB_ENABLED=$(strip_newlines "${NEXT_PUBLIC_GITHUB_ENABLED:-false}")" >> .env
+            echo "NEXT_PUBLIC_TURNSTILE_SITE_KEY=$(strip_newlines "${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}")" >> .env
+            echo "TURNSTILE_SECRET_KEY=$(strip_newlines "${TURNSTILE_SECRET_KEY:-}")" >> .env
+
+            # Swagger UI configuration
+            echo "ENABLE_SWAGGER_UI=$(strip_newlines "${ENABLE_SWAGGER_UI:-false}")" >> .env
+            echo "SWAGGER_REQUIRE_AUTH=$(strip_newlines "${SWAGGER_REQUIRE_AUTH:-true}")" >> .env
+
+            # Partner Widgets configuration
+            echo "ENABLE_PARTNER_WIDGETS=$(strip_newlines "${ENABLE_PARTNER_WIDGETS:-false}")" >> .env
+
+            # Debug: Verify NEXT_PUBLIC_* variables are set
+            echo "NEXT_PUBLIC_GOOGLE_ENABLED=${NEXT_PUBLIC_GOOGLE_ENABLED:-false}"
+            echo "NEXT_PUBLIC_GITHUB_ENABLED=${NEXT_PUBLIC_GITHUB_ENABLED:-false}"
+            if [ -n "${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}" ]; then
+              echo "✓ NEXT_PUBLIC_TURNSTILE_SITE_KEY is set"
+            else
+              echo "⚠ WARNING: NEXT_PUBLIC_TURNSTILE_SITE_KEY is not set (CAPTCHA will be disabled)"
+            fi
+
+            # Debug: Verify token was written correctly (show only last 4 chars for security)
+            TOKEN_LEN=${#CF_TOKEN_CLEAN}
+            if [ "$TOKEN_LEN" -gt 0 ]; then
+              TOKEN_LAST4="${CF_TOKEN_CLEAN: -4}"
+              echo "✓ CLOUDFLARE_API_TOKEN set (${TOKEN_LEN} chars, ends with: ...${TOKEN_LAST4})"
+            else
+              echo "⚠ WARNING: CLOUDFLARE_API_TOKEN is empty!"
+            fi
+
             # Verify .env file was created and validate it
             echo "Environment file created with $(wc -l < .env) lines"
+
+            # CRITICAL: Validate that CLOUDFLARE_API_TOKEN in .env has no control characters
+            # This check catches the newline issue that causes "invalid header field value" errors
+            if grep -q 'CLOUDFLARE_API_TOKEN=' .env; then
+              # Check for any control characters in the value
+              TOKEN_LINE=$(grep 'CLOUDFLARE_API_TOKEN=' .env)
+              if echo "$TOKEN_LINE" | grep -q $'[\x00-\x1f]'; then
+                echo "ERROR: CLOUDFLARE_API_TOKEN contains control characters!"
+                echo "Token line (hex): $(echo "$TOKEN_LINE" | xxd | head -2)"
+                exit 1
+              fi
+              echo "✓ CLOUDFLARE_API_TOKEN validation passed (no control characters)"
+            fi
 
             # CRITICAL: Validate that DOMAIN looks correct (no newlines, not empty)
             # Note: strip_newlines already removed \n\r, so just verify it's a valid domain
@@ -91,29 +211,44 @@ jobs:
             fi
             echo "DOMAIN validated: '${DOMAIN_VAL}'"
 
-            # CRITICAL: Force cleanup ALL scamnemesis containers (fixes "container already in use" errors)
-            echo "Force stopping and removing ALL scamnemesis containers..."
-            docker ps -aq --filter "name=scamnemesis" | xargs -r docker stop 2>/dev/null || true
-            docker ps -aq --filter "name=scamnemesis" | xargs -r docker rm -f 2>/dev/null || true
+            # ===========================================
+            # GRACEFUL SHUTDOWN (preserves SSL certificates)
+            # ===========================================
+            echo "Performing graceful shutdown..."
 
-            # Also remove any orphaned containers from previous runs
+            # First, use docker compose to gracefully stop services (respects stop_grace_period)
+            # NOTE: Do NOT use --volumes here! It deletes SSL certificates (traefik_certs)
+            docker compose -f docker-compose.prod.yml down --remove-orphans --timeout 30 2>/dev/null || true
+
+            # Wait for containers to fully stop
+            sleep 5
+
+            # Clean up any orphaned containers (but NOT force-kill running ones)
             docker container prune -f 2>/dev/null || true
 
             # Remove any dangling networks that might cause conflicts
             docker network prune -f 2>/dev/null || true
 
-            # Stop all containers via docker compose (in case any are still running)
-            docker compose -f docker-compose.prod.yml down --remove-orphans --volumes 2>/dev/null || true
-
-            # Final cleanup - ensure no scamnemesis containers exist
-            if docker ps -a --filter "name=scamnemesis" --format "{{.Names}}" | grep -q .; then
-              echo "WARNING: Some scamnemesis containers still exist, force removing..."
-              docker rm -f $(docker ps -a --filter "name=scamnemesis" -q) 2>/dev/null || true
-            fi
-
             # Remove old images to prevent conflicts
             docker rmi scamnemesis-app scamnemesis-ml-service scamnemesis-migrations 2>/dev/null || true
             docker builder prune -f || true
+
+            # ===========================================
+            # VERIFY SSL CERTIFICATE VOLUME EXISTS
+            # ===========================================
+            echo "Checking SSL certificate volume..."
+            if docker volume inspect scamnemesis_traefik_certs_prod >/dev/null 2>&1; then
+              echo "✓ SSL certificate volume exists"
+              # Check if acme.json has certificates
+              CERT_SIZE=$(docker run --rm -v scamnemesis_traefik_certs_prod:/certs alpine stat -c %s /certs/acme.json 2>/dev/null || echo "0")
+              if [ "$CERT_SIZE" -gt 100 ]; then
+                echo "✓ Certificate file has data (${CERT_SIZE} bytes)"
+              else
+                echo "⚠ Certificate file is empty or missing - will be created on startup"
+              fi
+            else
+              echo "⚠ SSL certificate volume does not exist - will be created on startup"
+            fi
 
             # Pull latest pre-built images from Docker Hub (traefik, postgres, redis, etc.)
             echo "Pulling latest images from Docker Hub..."
@@ -123,23 +258,67 @@ jobs:
             echo "Building local services..."
             docker compose -f docker-compose.prod.yml build --no-cache
 
-            # Start all services with forced recreation to apply new config
-            echo "Starting services with forced recreation..."
-            docker compose -f docker-compose.prod.yml up -d --force-recreate
+            # ===========================================
+            # START SERVICES (without --force-recreate to preserve state)
+            # ===========================================
+            echo "Starting services..."
+            docker compose -f docker-compose.prod.yml up -d
 
-            # Wait for services to be healthy
-            echo "Waiting for services to start..."
-            sleep 90
+            # Wait for Traefik to be healthy FIRST (it handles SSL)
+            echo "Waiting for Traefik to become healthy..."
+            TRAEFIK_HEALTHY=false
+            for i in {1..20}; do
+              if docker compose -f docker-compose.prod.yml ps traefik | grep -q "healthy"; then
+                echo "✓ Traefik is healthy!"
+                TRAEFIK_HEALTHY=true
+                break
+              fi
+              echo "Waiting for Traefik... ($i/20)"
+              sleep 5
+            done
+
+            if [ "$TRAEFIK_HEALTHY" = false ]; then
+              echo "ERROR: Traefik failed to become healthy!"
+              docker compose -f docker-compose.prod.yml logs traefik --tail=50
+              exit 1
+            fi
+
+            # CRITICAL: Check for Cloudflare API token errors IMMEDIATELY after Traefik starts
+            # This catches the "invalid header field value" error caused by newlines in the token
+            echo "Checking for Cloudflare API token errors..."
+            sleep 10  # Give Traefik a moment to try ACME
+            CF_API_ERRORS=$(docker compose -f docker-compose.prod.yml logs traefik 2>&1 | grep -i "invalid header field value" || true)
+            if [ -n "$CF_API_ERRORS" ]; then
+              echo "═══════════════════════════════════════════════════════════════"
+              echo "CRITICAL ERROR: Cloudflare API token is invalid!"
+              echo "═══════════════════════════════════════════════════════════════"
+              echo ""
+              echo "The token likely contains hidden characters (newline, tab, etc.)"
+              echo ""
+              echo "TO FIX: Update the CLOUDFLARE_API_TOKEN GitHub secret:"
+              echo "1. Go to GitHub repo Settings -> Secrets and variables -> Actions"
+              echo "2. Delete and recreate CLOUDFLARE_API_TOKEN"
+              echo "3. When pasting, make sure there are NO trailing spaces or newlines"
+              echo ""
+              echo "Traefik error log:"
+              echo "$CF_API_ERRORS"
+              exit 1
+            fi
+            echo "✓ No Cloudflare API token errors detected"
+
+            # Wait additional time for Let's Encrypt certificate acquisition
+            echo "Waiting for SSL certificate acquisition (50 seconds)..."
+            sleep 50
 
             # Check container status
             docker compose -f docker-compose.prod.yml ps
 
-            # Wait for app container to be healthy (with proper error handling)
+            # Wait for app container to be healthy
             echo "Waiting for app to become healthy..."
             APP_HEALTHY=false
             for i in {1..30}; do
               if docker compose -f docker-compose.prod.yml ps app | grep -q "healthy"; then
-                echo "App is healthy!"
+                echo "✓ App is healthy!"
                 APP_HEALTHY=true
                 break
               fi
@@ -154,36 +333,89 @@ jobs:
             fi
 
             # Migrations run automatically via the migrations service in docker-compose
-            # (depends_on: migrations: condition: service_completed_successfully)
             echo "Database migrations were executed by the migrations service"
 
-            # Verify app is responding (run curl INSIDE the container - port 3000 not exposed to host)
+            # Verify app is responding (run curl INSIDE the container)
             echo "Verifying app health via container network..."
             docker compose -f docker-compose.prod.yml exec -T app curl -f http://localhost:3000/api/v1/health || exit 1
 
-            # CRITICAL: Check Traefik logs for routing errors (this catches the newline bug)
+            # CRITICAL: Check Traefik logs for routing errors
             echo "Checking Traefik for routing errors..."
             TRAEFIK_ERRORS=$(docker compose -f docker-compose.prod.yml logs traefik --tail=50 2>&1 | grep -i "error.*hostname\|invalid.*host" || true)
             if [ -n "$TRAEFIK_ERRORS" ]; then
               echo "ERROR: Traefik has routing errors!"
               echo "$TRAEFIK_ERRORS"
-              echo ""
-              echo "This usually means DOMAIN in .env has newline characters."
-              echo "Current .env DOMAIN value:"
-              grep "^DOMAIN=" .env | od -c
               exit 1
             fi
-            echo "Traefik routing OK - no hostname errors found"
+            echo "✓ Traefik routing OK"
+
+            # ===========================================
+            # SSL CERTIFICATE VALIDATION (CRITICAL)
+            # ===========================================
+            echo "Validating SSL certificate..."
+
+            # Get certificate issuer from the actual HTTPS endpoint
+            CERT_ISSUER=$(echo | timeout 10 openssl s_client -servername ${DOMAIN_VAL} -connect ${DOMAIN_VAL}:443 2>/dev/null | openssl x509 -noout -issuer 2>/dev/null || echo "FAILED")
+
+            echo "Certificate issuer: $CERT_ISSUER"
+
+            # Check if certificate is from Let's Encrypt (not self-signed TRAEFIK DEFAULT CERT)
+            if echo "$CERT_ISSUER" | grep -qi "Let's Encrypt\|R3\|R10\|R11\|E1\|E2"; then
+              echo "✓ SSL certificate is valid (Let's Encrypt)"
+            elif echo "$CERT_ISSUER" | grep -qi "TRAEFIK DEFAULT CERT"; then
+              echo "⚠ WARNING: Using self-signed TRAEFIK DEFAULT CERT!"
+              echo ""
+              echo "This usually means Let's Encrypt ACME challenge failed."
+              echo "Common causes:"
+              echo "  1. Cloudflare is in 'Proxied' mode (orange cloud) - switch to DNS only"
+              echo "  2. Port 80 is blocked by firewall"
+              echo "  3. DNS not pointing to this server"
+              echo ""
+              echo "Checking Traefik ACME logs..."
+              docker compose -f docker-compose.prod.yml logs traefik --tail=100 2>&1 | grep -i "acme\|certificate\|letsencrypt" || true
+              echo ""
+              echo "Deploy continuing, but SSL may not work correctly!"
+              # Don't exit - let the deployment complete, user can fix SSL separately
+            elif echo "$CERT_ISSUER" | grep -qi "FAILED"; then
+              echo "⚠ Could not verify certificate (connection failed)"
+              echo "This may be normal if Cloudflare is proxying traffic."
+            else
+              echo "⚠ Unknown certificate issuer: $CERT_ISSUER"
+            fi
 
             # Final verification - check actual website response
             echo "Final check - testing HTTPS endpoint..."
-            sleep 5
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://${DOMAIN_VAL}/" || echo "000")
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 -k "https://${DOMAIN_VAL}/" || echo "000")
             if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
-              echo "SUCCESS: Website responding with HTTP $HTTP_CODE"
+              echo "✓ Website responding with HTTP $HTTP_CODE"
             else
-              echo "WARNING: Website returned HTTP $HTTP_CODE (might still be starting)"
+              echo "⚠ Website returned HTTP $HTTP_CODE"
               docker compose -f docker-compose.prod.yml logs traefik --tail=20
             fi
 
-            echo "Deployment successful!"
+            # ===========================================
+            # EMAIL SERVICE VALIDATION
+            # ===========================================
+            echo "Checking email service configuration..."
+            EMAIL_HEALTH=$(docker compose -f docker-compose.prod.yml exec -T app curl -s http://localhost:3000/api/v1/health/detailed 2>/dev/null | grep -o '"email":{[^}]*}' || echo "")
+            if echo "$EMAIL_HEALTH" | grep -q '"status":"ok"'; then
+              echo "✓ Email service is configured correctly"
+            elif echo "$EMAIL_HEALTH" | grep -q '"status":"not_configured"'; then
+              echo "⚠ WARNING: Email service is NOT configured!"
+              echo "  RESEND_API_KEY might be missing or empty in GitHub Secrets"
+              echo "  Users will NOT receive confirmation emails after report submission"
+              echo ""
+              echo "  To fix: Add RESEND_API_KEY to GitHub Secrets"
+              echo "  Get your key at: https://resend.com/api-keys"
+            else
+              echo "⚠ Could not determine email service status"
+            fi
+
+            echo ""
+            echo "=========================================="
+            echo "DEPLOYMENT COMPLETE!"
+            echo "=========================================="
+            echo "Domain: https://${DOMAIN_VAL}"
+            echo "SSL Status: Check above for certificate validation"
+            echo "Email: Check above for email service status"
+            echo ""

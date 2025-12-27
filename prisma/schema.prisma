@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
-  extensions = [pgvector(map: "vector"), pg_trgm]
+  // extensions = [pgvector(map: "vector"), pg_trgm]
 }
 
 // ==================== ENUMS ====================
@@ -144,8 +144,17 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  // Display name
+  // Display name (public nickname)
   displayName     String?         @map("display_name")
+
+  // User bio (optional, public)
+  bio             String?         @db.Text
+
+  // Two-Factor Authentication (TOTP)
+  totpSecret      String?         @map("totp_secret")  // Base32 encoded secret
+  totpEnabled     Boolean         @default(false) @map("totp_enabled")
+  totpVerifiedAt  DateTime?       @map("totp_verified_at")
+  backupCodes     String[]        @default([]) @map("backup_codes")
 
   // Auth.js OAuth Relations
   accounts         Account[]
@@ -172,26 +181,101 @@ model User {
   // Enrichment Relations
   reviewedEnrichments Enrichment[]
 
+  // Widget Relations
+  widgets          Widget[]
+
   @@map("users")
 }
 
+enum ApiKeyType {
+  PERSONAL    // For individual user access
+  PARTNER     // For partner organizations (read-only public data)
+  INTEGRATION // For system integrations
+}
+
 model ApiKey {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
-  key         String    @unique
-  name        String
-  scopes      String[]  @default([])
-  rateLimit   Int       @default(1000) @map("rate_limit")
-  isActive    Boolean   @default(true) @map("is_active")
-  lastUsedAt  DateTime? @map("last_used_at")
-  expiresAt   DateTime? @map("expires_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  key           String      @unique
+  name          String
+  description   String?     @db.Text
+  type          ApiKeyType  @default(PERSONAL)
+
+  // Partner-specific fields
+  organization  String?     // Partner organization name
+  contactEmail  String?     @map("contact_email")
+  website       String?     // Partner website URL
+
+  // Access control
+  scopes        String[]    @default([])
+  rateLimit     Int         @default(1000) @map("rate_limit")  // Requests per hour
+  dailyLimit    Int?        @map("daily_limit")                // Optional daily cap
+
+  // Status
+  isActive      Boolean     @default(true) @map("is_active")
+  lastUsedAt    DateTime?   @map("last_used_at")
+  requestCount  Int         @default(0) @map("request_count")  // Total requests made
+
+  // Validity
+  expiresAt     DateTime?   @map("expires_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])              // Added: for user API key queries
-  @@index([isActive, expiresAt]) // Added: for active key lookups
+  @@index([userId])
+  @@index([type])
+  @@index([isActive, expiresAt])
+  @@index([organization])
   @@map("api_keys")
+}
+
+// ==================== EMBEDDABLE WIDGETS ====================
+
+enum WidgetTheme {
+  LIGHT
+  DARK
+}
+
+enum WidgetSearchMode {
+  AUTO
+  FUZZY
+  EXACT
+}
+
+model Widget {
+  id                    String           @id @default(uuid())
+  userId                String           @map("user_id")
+  name                  String
+
+  // Locale & Theme
+  locale                String           @default("en")  // en, sk, cs, de
+  theme                 WidgetTheme      @default(LIGHT)
+
+  // Customization
+  primaryColor          String           @default("#4f46e5") @map("primary_color")
+  backgroundColor       String           @default("#ffffff") @map("background_color")
+  textColor             String           @default("#1f2937") @map("text_color")
+  borderRadius          Int              @default(8) @map("border_radius")  // in pixels
+
+  // Behavior
+  showReportButton      Boolean          @default(true) @map("show_report_button")
+  showAdvancedByDefault Boolean          @default(false) @map("show_advanced_by_default")
+  defaultSearchMode     WidgetSearchMode @default(AUTO) @map("default_search_mode")
+
+  // Status
+  isActive              Boolean          @default(true) @map("is_active")
+
+  // Timestamps
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("widgets")
 }
 
 model RefreshToken {
@@ -250,6 +334,7 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@index([expires])  // Added: for cleanup of expired tokens
   @@map("verification_tokens")
 }
 
@@ -368,8 +453,8 @@ model Perpetrator {
   // Enrichment data from external sources
   enrichedData      Json?   @map("enriched_data")
 
-  // Embeddings for similarity search
-  nameEmbedding     Unsupported("vector(384)")? @map("name_embedding")
+  // Embeddings for similarity search (requires pgvector extension)
+  // nameEmbedding     Unsupported("vector(384)")? @map("name_embedding")
 
   // One-to-many relation: one perpetrator belongs to one report
   report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
@@ -526,7 +611,7 @@ model FaceData {
   evidenceId String @map("evidence_id")
 
   boundingBox Json      @map("bounding_box")
-  embedding   Unsupported("vector(512)")? @map("embedding")
+  // embedding   Unsupported("vector(512)")? @map("embedding")  // requires pgvector
   quality     Float?
   cropKey     String?   @map("crop_key")
 
@@ -561,6 +646,7 @@ model Comment {
   report      Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   moderatedBy User?  @relation("ModeratedComments", fields: [moderatedById], references: [id], onDelete: SetNull)
+  attachments CommentAttachment[]
 
   @@index([reportId])
   @@index([status])
@@ -568,7 +654,24 @@ model Comment {
   @@index([moderatedById])       // Added: for moderator queries
   @@index([reportId, status])   // Added: composite for report comments
   @@index([isReported])         // Added: for reported comment filtering
+  @@index([status, createdAt])  // Added: for dashboard comment filtering
   @@map("comments")
+}
+
+// Comment file attachments (PNG, JPEG, PDF)
+model CommentAttachment {
+  id         String   @id @default(uuid())
+  commentId  String   @map("comment_id")
+  fileKey    String   @map("file_key")      // S3 storage key
+  fileName   String   @map("file_name")     // Original filename
+  fileSize   Int      @map("file_size")     // Size in bytes
+  mimeType   String   @map("mime_type")     // MIME type
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId])
+  @@map("comment_attachments")
 }
 
 // ==================== DUPLICATE DETECTION ====================
@@ -717,6 +820,7 @@ model ReportView {
   @@unique([reportId, ipHash])
   @@index([reportId])
   @@index([createdAt])
+  @@index([ipHash])  // Added: for IP-based view deduplication
   @@map("report_views")
 }
 
@@ -728,6 +832,7 @@ model SearchIndex {
   searchText    String   @map("search_text") @db.Text
   lastIndexedAt DateTime @default(now()) @map("last_indexed_at")
 
+  @@index([lastIndexedAt])  // Added: for index maintenance queries
   @@map("search_index")
 }
 

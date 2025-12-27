@@ -5,8 +5,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
 import { sendEmail } from '@/lib/services/email';
 import { requireRateLimit } from '@/lib/middleware/auth';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +46,9 @@ const reasonLabels: Record<string, string> = {
 };
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'ContactAPI');
+
   try {
     // Rate limiting - 5 contact submissions per minute
     const rateLimitError = await requireRateLimit(request, 5);
@@ -178,21 +183,31 @@ Tím ${SITE_NAME}
 
     // Log results
     if (!adminEmailResult.success) {
-      console.error('[Contact] Failed to send admin email:', adminEmailResult.error);
+      log.warn('Failed to send admin email', { error: adminEmailResult.error });
     }
     if (!userEmailResult.success) {
-      console.error('[Contact] Failed to send confirmation email:', userEmailResult.error);
+      log.warn('Failed to send confirmation email', { error: userEmailResult.error });
     }
 
     // Return success even if email fails (we still received the message)
+    log.info('Contact form submitted successfully');
     return NextResponse.json({
       success: true,
       message: 'Správa bola úspešne odoslaná',
     });
   } catch (error) {
-    console.error('Contact form error:', error);
+    log.error('Contact form error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    Sentry.captureException(error, {
+      tags: { api: 'contact', method: 'POST' },
+      extra: { requestId },
+    });
+
     return NextResponse.json(
-      { error: 'internal_error', message: 'Nastala chyba pri odosielaní správy' },
+      { error: 'internal_error', message: 'Nastala chyba pri odosielaní správy', request_id: requestId },
       { status: 500 }
     );
   }

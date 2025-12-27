@@ -9,17 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-
-const passwordRequirements = [
-  { label: 'Aspoň 8 znakov', test: (pwd: string) => pwd.length >= 8 },
-  { label: 'Obsahuje veľké písmeno', test: (pwd: string) => /[A-Z]/.test(pwd) },
-  { label: 'Obsahuje malé písmeno', test: (pwd: string) => /[a-z]/.test(pwd) },
-  { label: 'Obsahuje číslo', test: (pwd: string) => /[0-9]/.test(pwd) },
-];
+import { useTranslation } from '@/lib/i18n/context';
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
+  const { t } = useTranslation();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -31,24 +26,31 @@ function ResetPasswordContent() {
     confirmPassword: '',
   });
 
+  const passwordRequirements = [
+    { label: t('auth.resetPassword.requirements.minLength'), test: (pwd: string) => pwd.length >= 8 },
+    { label: t('auth.resetPassword.requirements.uppercase'), test: (pwd: string) => /[A-Z]/.test(pwd) },
+    { label: t('auth.resetPassword.requirements.lowercase'), test: (pwd: string) => /[a-z]/.test(pwd) },
+    { label: t('auth.resetPassword.requirements.number'), test: (pwd: string) => /[0-9]/.test(pwd) },
+  ];
+
   useEffect(() => {
     if (!token) {
-      setError('Neplatný alebo chýbajúci token. Skúste požiadať o nový reset link.');
+      setError(t('auth.resetPassword.errors.invalidToken'));
     }
-  }, [token]);
+  }, [token, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Heslá sa nezhodujú');
+      toast.error(t('auth.resetPassword.errors.passwordMismatch'));
       return;
     }
 
     const allRequirementsMet = passwordRequirements.every((req) => req.test(formData.password));
     if (!allRequirementsMet) {
-      toast.error('Heslo nespĺňa všetky požiadavky');
+      toast.error(t('auth.resetPassword.errors.requirementsNotMet'));
       return;
     }
 
@@ -69,17 +71,17 @@ function ResetPasswordContent() {
 
       if (response.ok) {
         setIsSuccess(true);
-        toast.success('Heslo bolo úspešne zmenené!');
+        toast.success(t('auth.resetPassword.success.description'));
       } else {
         const data = await response.json();
         if (data.error === 'invalid_token') {
-          setError('Token vypršal alebo je neplatný. Požiadajte o nový reset link.');
+          setError(t('auth.resetPassword.errors.tokenExpired'));
         } else {
-          setError(data.message || 'Chyba pri zmene hesla');
+          setError(data.message || t('auth.resetPassword.errors.serverError'));
         }
       }
     } catch {
-      setError('Chyba pri komunikácii so serverom. Skúste to znova.');
+      setError(t('auth.resetPassword.errors.serverError'));
     } finally {
       setIsLoading(false);
     }
@@ -93,14 +95,14 @@ function ResetPasswordContent() {
             <div className="flex items-center justify-center mb-4">
               <CheckCircle className="h-12 w-12 text-green-600" />
             </div>
-            <CardTitle className="text-2xl text-center">Heslo zmenené</CardTitle>
+            <CardTitle className="text-2xl text-center">{t('auth.resetPassword.success.title')}</CardTitle>
             <CardDescription className="text-center">
-              Vaše heslo bolo úspešne zmenené. Teraz sa môžete prihlásiť s novým heslom.
+              {t('auth.resetPassword.success.description')}
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button className="w-full" asChild>
-              <Link href="/auth/login">Prihlásiť sa</Link>
+              <Link href="/auth/login">{t('auth.resetPassword.success.signIn')}</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -116,15 +118,15 @@ function ResetPasswordContent() {
             <div className="flex items-center justify-center mb-4">
               <AlertTriangle className="h-12 w-12 text-destructive" />
             </div>
-            <CardTitle className="text-2xl text-center">Neplatný link</CardTitle>
+            <CardTitle className="text-2xl text-center">{t('auth.resetPassword.invalidLink.title')}</CardTitle>
             <CardDescription className="text-center">{error}</CardDescription>
           </CardHeader>
           <CardFooter className="flex flex-col space-y-2">
             <Button className="w-full" asChild>
-              <Link href="/auth/forgot-password">Požiadať o nový link</Link>
+              <Link href="/auth/forgot-password">{t('auth.resetPassword.invalidLink.requestNew')}</Link>
             </Button>
             <Button variant="outline" className="w-full" asChild>
-              <Link href="/auth/login">Späť na prihlásenie</Link>
+              <Link href="/auth/login">{t('auth.resetPassword.backToLogin')}</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -139,8 +141,8 @@ function ResetPasswordContent() {
           <div className="flex items-center justify-center mb-4">
             <Shield className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl text-center">Nové heslo</CardTitle>
-          <CardDescription className="text-center">Zadajte nové heslo pre váš účet</CardDescription>
+          <CardTitle className="text-2xl text-center">{t('auth.resetPassword.title')}</CardTitle>
+          <CardDescription className="text-center">{t('auth.resetPassword.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -153,7 +155,7 @@ function ResetPasswordContent() {
             {/* New Password */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
-                Nové heslo
+                {t('auth.resetPassword.newPassword')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -194,7 +196,7 @@ function ResetPasswordContent() {
             {/* Confirm Password */}
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="text-sm font-medium">
-                Potvrďte heslo
+                {t('auth.resetPassword.confirmPassword')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -216,20 +218,20 @@ function ResetPasswordContent() {
                 </button>
               </div>
               {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                <p className="text-xs text-destructive">Heslá sa nezhodujú</p>
+                <p className="text-xs text-destructive">{t('auth.resetPassword.errors.passwordMismatch')}</p>
               )}
             </div>
 
             {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Mením heslo...' : 'Zmeniť heslo'}
+              {isLoading ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submit')}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-sm text-center text-muted-foreground">
             <Link href="/auth/login" className="text-primary hover:underline font-medium">
-              Späť na prihlásenie
+              {t('auth.resetPassword.backToLogin')}
             </Link>
           </div>
         </CardFooter>

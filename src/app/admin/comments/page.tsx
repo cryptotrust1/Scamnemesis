@@ -78,14 +78,12 @@ export default function AdminCommentsPage() {
       setTotalPages(Math.ceil(data.total / itemsPerPage));
       setTotalCount(data.total);
 
-      // Update stats on first load
-      if (statusFilter === 'all' && !reportedOnly && !search) {
-        const pendingCount = data.comments.filter((c: Comment) => c.status === 'PENDING').length;
-        const reportedCount = data.comments.filter((c: Comment) => c.reported).length;
+      // Update stats from API response (always accurate counts)
+      if (data.stats) {
         setStats({
-          pending: pendingCount,
-          reported: reportedCount,
-          total: data.total,
+          pending: data.stats.pending,
+          reported: data.stats.reported,
+          total: data.stats.total,
         });
       }
     } catch (err) {

@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { jwtVerify, SignJWT } from 'jose';
 import { prisma } from '@/lib/db';
 import { emailService } from '@/lib/services/email';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import {
+  verifySpecialToken,
+  generateEmailVerificationToken,
+} from '@/lib/auth/jwt';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
-
-// JWT_SECRET validation at runtime to avoid build-time failures
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required.');
-  }
-  return secret;
-}
 
 const VerifyEmailSchema = z.object({
   token: z.string().min(1, 'Verification token is required'),
@@ -34,9 +29,13 @@ const ResendVerificationSchema = z.object({
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
-  // Rate limiting: 20 attempts per hour
-  const rateLimitKey = `verify-email:${ip}`;
-  const rateLimit = await checkRateLimit(rateLimitKey, 20, 3600000); // 20 per hour
+  // Rate limiting
+  const rateLimitKey = getRateLimitKey('verify-email', ip);
+  const rateLimit = await checkRateLimit(
+    rateLimitKey,
+    AUTH_RATE_LIMITS.VERIFY_EMAIL.limit,
+    AUTH_RATE_LIMITS.VERIFY_EMAIL.windowMs
+  );
 
   if (!rateLimit.allowed) {
     const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
@@ -68,12 +67,9 @@ export async function POST(request: NextRequest) {
     const { token } = validated.data;
 
     // Verify the token
-    let payload;
-    try {
-      const secret = new TextEncoder().encode(getJwtSecret());
-      const result = await jwtVerify(token, secret);
-      payload = result.payload;
-    } catch {
+    const payload = await verifySpecialToken(token, 'email_verification');
+
+    if (!payload) {
       return NextResponse.json(
         {
           error: 'invalid_token',
@@ -83,18 +79,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate token payload
-    if (payload.type !== 'email_verification' || !payload.sub || typeof payload.sub !== 'string') {
+    const userId = payload.sub;
+
+    // Validate userId exists
+    if (!userId) {
+      console.error('[VerifyEmail] Token payload missing sub (userId)');
       return NextResponse.json(
         {
           error: 'invalid_token',
-          message: 'Invalid verification token format.',
+          message: 'Invalid verification token. Please request a new verification email.',
         },
         { status: 400 }
       );
     }
-
-    const userId = payload.sub;
 
     // Find user
     const user = await prisma.user.findUnique({
@@ -166,9 +163,13 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const ip = getClientIp(request);
 
-  // Strict rate limiting: 3 resends per hour
-  const rateLimitKey = `resend-verification:${ip}`;
-  const rateLimit = await checkRateLimit(rateLimitKey, 3, 3600000); // 3 per hour
+  // Strict rate limiting for resending verification emails
+  const rateLimitKey = getRateLimitKey('resend-verification', ip);
+  const rateLimit = await checkRateLimit(
+    rateLimitKey,
+    AUTH_RATE_LIMITS.RESEND_VERIFICATION.limit,
+    AUTH_RATE_LIMITS.RESEND_VERIFICATION.windowMs
+  );
 
   if (!rateLimit.allowed) {
     const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
@@ -209,16 +210,7 @@ export async function PUT(request: NextRequest) {
     // Always return success to prevent email enumeration
     if (user && user.isActive && !user.emailVerified) {
       // Generate verification token (valid for 24 hours)
-      const secret = new TextEncoder().encode(getJwtSecret());
-      const verificationToken = await new SignJWT({
-        sub: user.id,
-        email: user.email,
-        type: 'email_verification',
-      })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
-        .setExpirationTime('24h')
-        .sign(secret);
+      const verificationToken = await generateEmailVerificationToken(user.id, user.email);
 
       // Build verification URL
       const verificationUrl = `${SITE_URL}/auth/verify-email?token=${verificationToken}`;

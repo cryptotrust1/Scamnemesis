@@ -1,17 +1,52 @@
 /**
  * JWT Authentication Utilities
+ *
+ * This module provides centralized JWT handling for the authentication system.
+ * All auth endpoints should use these functions for token generation and verification.
  */
 
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { UserRole } from '@prisma/client';
 
-const JWT_ISSUER = 'scamnemesis';
-const JWT_AUDIENCE = 'scamnemesis-api';
+// JWT Configuration Constants
+export const JWT_ISSUER = 'scamnemesis';
+export const JWT_AUDIENCE = 'scamnemesis-api';
+
+/**
+ * Password validation regex
+ * Requires: 9+ chars, uppercase, lowercase, number, and special character
+ */
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
+
+/**
+ * Password requirements message for user feedback
+ */
+export const PASSWORD_REQUIREMENTS =
+  'Password must be at least 9 characters and contain at least one uppercase letter, ' +
+  'one lowercase letter, one number, and one special character (!@#$%^&*...)';
+
+/**
+ * Validate password against requirements
+ *
+ * @param password - Password to validate
+ * @returns true if password meets requirements
+ */
+export function validatePassword(password: string): boolean {
+  return PASSWORD_REGEX.test(password);
+}
 
 // Lazy initialization of JWT secret to avoid build-time errors
 let _jwtSecret: Uint8Array | null = null;
+let _jwtSecretString: string | null = null;
 
-function getJwtSecret(): Uint8Array {
+/**
+ * Get JWT secret as Uint8Array (for jose library)
+ * Use this for token generation and verification with jose
+ *
+ * @throws Error if JWT_SECRET is not set
+ * @returns JWT secret as Uint8Array
+ */
+export function getJwtSecret(): Uint8Array {
   if (_jwtSecret) return _jwtSecret;
 
   const jwtSecretString = process.env.JWT_SECRET;
@@ -24,9 +59,36 @@ function getJwtSecret(): Uint8Array {
     );
   }
 
+  _jwtSecretString = jwtSecretString;
   _jwtSecret = new TextEncoder().encode(jwtSecretString);
 
   return _jwtSecret;
+}
+
+/**
+ * Get JWT secret as string
+ * Use this for cases where you need the raw string (e.g., manual JWT operations)
+ *
+ * @throws Error if JWT_SECRET is not set
+ * @returns JWT secret as string
+ */
+export function getJwtSecretString(): string {
+  if (_jwtSecretString) return _jwtSecretString;
+
+  const jwtSecretString = process.env.JWT_SECRET;
+
+  // JWT_SECRET is required in all environments for security
+  if (!jwtSecretString) {
+    throw new Error(
+      'JWT_SECRET environment variable is required. ' +
+      'Please set JWT_SECRET in your .env file with a secure random string (min 32 characters).'
+    );
+  }
+
+  _jwtSecretString = jwtSecretString;
+  _jwtSecret = new TextEncoder().encode(jwtSecretString);
+
+  return _jwtSecretString;
 }
 
 export interface TokenPayload extends JWTPayload {
@@ -148,8 +210,16 @@ export function hasScope(userScopes: string[], requiredScope: string): boolean {
   return userScopes.includes(requiredScope);
 }
 
+// PBKDF2 Configuration
+// v1 (legacy): 310,000 iterations - for backward compatibility
+// v2 (current): 600,000 iterations - OWASP 2023 recommendation for SHA-256
+const PBKDF2_ITERATIONS_V1 = 310000;
+const PBKDF2_ITERATIONS_V2 = 600000;
+const CURRENT_HASH_VERSION = 'v2';
+
 /**
- * Hash password using bcrypt-like approach with crypto
+ * Hash password using PBKDF2-SHA256 with OWASP-recommended iterations
+ * Returns versioned hash format: v2:salt:hash
  */
 export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -168,7 +238,7 @@ export async function hashPassword(password: string): Promise<string> {
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
+      iterations: PBKDF2_ITERATIONS_V2, // OWASP 2023: 600k for SHA-256
       hash: 'SHA-256',
     },
     key,
@@ -179,14 +249,36 @@ export async function hashPassword(password: string): Promise<string> {
   const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
   const hashHex = Array.from(hashArray).map(b => b.toString(16).padStart(2, '0')).join('');
 
-  return `${saltHex}:${hashHex}`;
+  // New versioned format: v2:salt:hash
+  return `${CURRENT_HASH_VERSION}:${saltHex}:${hashHex}`;
 }
 
 /**
- * Verify password
+ * Verify password - supports both legacy (v1) and current (v2) hash formats
+ * Legacy format: salt:hash (310k iterations)
+ * Current format: v2:salt:hash (600k iterations)
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  const [saltHex, storedHashHex] = hash.split(':');
+  // Detect hash version
+  const parts = hash.split(':');
+  let saltHex: string;
+  let storedHashHex: string;
+  let iterations: number;
+
+  if (parts.length === 3 && parts[0] === 'v2') {
+    // New v2 format: v2:salt:hash
+    saltHex = parts[1];
+    storedHashHex = parts[2];
+    iterations = PBKDF2_ITERATIONS_V2;
+  } else if (parts.length === 2) {
+    // Legacy v1 format: salt:hash
+    saltHex = parts[0];
+    storedHashHex = parts[1];
+    iterations = PBKDF2_ITERATIONS_V1;
+  } else {
+    return false; // Invalid hash format
+  }
+
   if (!saltHex || !storedHashHex) return false;
 
   const salt = new Uint8Array(
@@ -208,7 +300,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     {
       name: 'PBKDF2',
       salt: salt,
-      iterations: 310000, // OWASP 2023: min 600k for SHA-256, using 310k for performance balance
+      iterations: iterations,
       hash: 'SHA-256',
     },
     key,
@@ -222,6 +314,13 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 /**
+ * Check if a password hash needs to be upgraded to the latest version
+ */
+export function needsHashUpgrade(hash: string): boolean {
+  return !hash.startsWith(`${CURRENT_HASH_VERSION}:`);
+}
+
+/**
  * Generate API key
  */
 export function generateApiKey(): string {
@@ -229,4 +328,169 @@ export function generateApiKey(): string {
   const randomBytes = crypto.getRandomValues(new Uint8Array(32));
   const key = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
   return prefix + key;
+}
+
+/**
+ * Generate email verification token
+ *
+ * @param userId - User ID
+ * @param email - User email
+ * @param expiresIn - Token expiration time (default: 24h)
+ * @returns Signed JWT token
+ */
+export async function generateEmailVerificationToken(
+  userId: string,
+  email: string,
+  expiresIn: string = '24h'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    email,
+    type: 'email_verification',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Generate password reset token
+ *
+ * @param userId - User ID
+ * @param email - User email
+ * @param expiresIn - Token expiration time (default: 1h)
+ * @returns Signed JWT token
+ */
+export async function generatePasswordResetToken(
+  userId: string,
+  email: string,
+  expiresIn: string = '1h'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    email,
+    type: 'password_reset',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Generate a short-lived 2FA temp token for login flow
+ * This token is issued after successful password verification
+ * and before 2FA code verification
+ *
+ * @param userId - User ID
+ * @param expiresIn - Token expiration time (default: 5m)
+ * @returns Signed JWT token
+ */
+export async function generate2FATempToken(
+  userId: string,
+  expiresIn: string = '5m'
+): Promise<string> {
+  const token = await new SignJWT({
+    sub: userId,
+    type: '2fa_temp',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer(JWT_ISSUER)
+    .setExpirationTime(expiresIn)
+    .sign(getJwtSecret());
+
+  return token;
+}
+
+/**
+ * Verify a 2FA temp token
+ *
+ * @param token - Token to verify
+ * @returns User ID or null if invalid/expired
+ */
+export async function verify2FATempToken(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      issuer: JWT_ISSUER,
+    });
+
+    if (payload.type !== '2fa_temp') {
+      console.warn('[JWT] 2FA temp token type mismatch');
+      return null;
+    }
+
+    return payload.sub as string;
+  } catch (error) {
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      if (errorMessage.includes('expired')) {
+        console.warn('[JWT] 2FA temp token expired');
+      } else {
+        console.warn(`[JWT] 2FA temp token verification failed: ${error.message}`);
+      }
+    }
+    return null;
+  }
+}
+
+/**
+ * Verify a special-purpose token (email verification, password reset)
+ *
+ * @param token - Token to verify
+ * @param expectedType - Expected token type
+ * @returns Token payload or null if invalid
+ */
+export async function verifySpecialToken(
+  token: string,
+  expectedType: 'email_verification' | 'password_reset'
+): Promise<{ sub: string; email: string; type: string } | null> {
+  const tokenPreview = token ? `${token.substring(0, 20)}...` : 'empty';
+
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      issuer: JWT_ISSUER,
+    });
+
+    if (payload.type !== expectedType) {
+      console.warn(`[JWT] Token type mismatch: expected ${expectedType}, got ${payload.type}`, { tokenPreview });
+      return null;
+    }
+
+    console.log(`[JWT] Special token verified successfully`, {
+      type: expectedType,
+      sub: payload.sub,
+      exp: payload.exp ? new Date(payload.exp * 1000).toISOString() : 'none'
+    });
+
+    return {
+      sub: payload.sub as string,
+      email: payload.email as string,
+      type: payload.type as string,
+    };
+  } catch (error) {
+    // Log detailed error for debugging
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      if (errorMessage.includes('expired')) {
+        console.warn(`[JWT] Token expired`, { tokenPreview, expectedType });
+      } else if (errorMessage.includes('signature')) {
+        console.warn(`[JWT] Invalid signature`, { tokenPreview, expectedType });
+      } else if (errorMessage.includes('malformed')) {
+        console.warn(`[JWT] Malformed token`, { tokenPreview, expectedType });
+      } else {
+        console.warn(`[JWT] Verification failed: ${error.message}`, { tokenPreview, expectedType });
+      }
+    } else {
+      console.warn(`[JWT] Unknown verification error`, { tokenPreview, expectedType, error });
+    }
+    return null;
+  }
 }

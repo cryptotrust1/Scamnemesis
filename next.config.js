@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Standalone output for better CI/CD and Docker deployments
@@ -14,6 +16,8 @@ const nextConfig = {
     missingSuspenseWithCSRBailout: false,
     // Optimize memory usage during builds
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    // Enable instrumentation for Sentry
+    instrumentationHook: true,
   },
 
   // Compiler options
@@ -46,6 +50,27 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
 
+  // Redirects for non-localized routes
+  async redirects() {
+    return [
+      {
+        source: '/report/new',
+        destination: '/sk/report/new',
+        permanent: false,
+      },
+      {
+        source: '/report/:path*',
+        destination: '/sk/report/:path*',
+        permanent: false,
+      },
+      {
+        source: '/scam-prevention',
+        destination: '/sk/scam-prevention',
+        permanent: false,
+      },
+    ];
+  },
+
   // Security headers
   async headers() {
     // Content Security Policy
@@ -54,8 +79,8 @@ const nextConfig = {
     const isProduction = process.env.NODE_ENV === 'production';
 
     const scriptSrc = isProduction
-      ? "script-src 'self' 'unsafe-inline'" // Production: no unsafe-eval
-      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"; // Development: needs eval for hot reload
+      ? "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com" // Production: no unsafe-eval
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com"; // Development: needs eval for hot reload
 
     const cspHeader = [
       "default-src 'self'",
@@ -63,7 +88,9 @@ const nextConfig = {
       "style-src 'self' 'unsafe-inline'", // Next.js uses inline styles
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.resend.com", // API endpoints
+      "connect-src 'self' https://api.resend.com https://*.ingest.de.sentry.io https://challenges.cloudflare.com", // API endpoints + Sentry + Turnstile
+      "frame-src 'self' https://challenges.cloudflare.com", // Turnstile CAPTCHA iframe
+      "worker-src 'self' blob:", // Allow Web Workers from blob URLs (needed for Sentry and other libraries)
       "frame-ancestors 'self'",
       "form-action 'self'",
       "base-uri 'self'",
@@ -72,6 +99,34 @@ const nextConfig = {
     ].join('; ');
 
     return [
+      // API Documentation - noindex + private cache
+      {
+        source: '/docs/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'private, no-store',
+          },
+        ],
+      },
+      {
+        source: '/api/docs/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'private, max-age=300',
+          },
+        ],
+      },
+      // Global security headers
       {
         source: '/:path*',
         headers: [
@@ -107,6 +162,15 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: cspHeader,
           },
+          // Additional security headers
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
+          },
         ],
       },
     ];
@@ -128,4 +192,28 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  // Sentry webpack plugin options
+  org: "m0ne-sro",
+  project: "scamnemesis",
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Upload source maps for better stack traces
+  widenClientFileUpload: true,
+
+  // Automatically tree-shake Sentry logger statements
+  disableLogger: true,
+
+  // Hide source maps from client bundles
+  hideSourceMaps: true,
+
+  // Automatically instrument React components
+  reactComponentAnnotation: {
+    enabled: true,
+  },
+
+  // NOTE: tunnelRoute removed - sending directly to Sentry
+  // CSP already allows https://*.ingest.de.sentry.io
+});

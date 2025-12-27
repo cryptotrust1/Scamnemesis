@@ -60,6 +60,31 @@ CMD ["pnpm", "dev"]
 # ===========================================================================
 FROM base AS builder
 
+# Sentry build args for source map upload
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG=m0ne-sro
+ARG SENTRY_PROJECT=scamnemesis
+
+# =======================================================================
+# CRITICAL: NEXT_PUBLIC_* variables MUST be available at BUILD TIME
+# Next.js statically embeds these into the JavaScript bundle during build
+# Runtime environment variables do NOT work for NEXT_PUBLIC_* prefixed vars!
+# =======================================================================
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_DOMAIN
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_GOOGLE_ENABLED=false
+ARG NEXT_PUBLIC_GITHUB_ENABLED=false
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
+# Set NEXT_PUBLIC_* as ENV so they're available during pnpm build
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_DOMAIN=${NEXT_PUBLIC_DOMAIN}
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_PUBLIC_GOOGLE_ENABLED=${NEXT_PUBLIC_GOOGLE_ENABLED}
+ENV NEXT_PUBLIC_GITHUB_ENABLED=${NEXT_PUBLIC_GITHUB_ENABLED}
+ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+
 # Copy dependencies
 COPY --from=dependencies /app/node_modules ./node_modules
 
@@ -69,8 +94,11 @@ COPY . .
 # Generate Prisma client
 RUN pnpm prisma generate
 
-# Build Next.js application
+# Build Next.js application with Sentry source maps
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG=${SENTRY_ORG}
+ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 RUN pnpm build
 
 # ===========================================================================

@@ -59,6 +59,101 @@
       "oldest": "Oldest",
       "amountHigh": "Highest Amount",
       "amountLow": "Lowest Amount"
+    },
+    "filtersPanel": {
+      "title": "Search & Filters",
+      "reset": "Reset",
+      "searchPlaceholder": "Name, phone, email, IBAN, website...",
+      "searchButton": "Search",
+      "searchMode": "Search Mode",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Exact",
+      "modeAutoDesc": "Automatically selects the best mode for your query",
+      "modeFuzzyDesc": "Tolerates typos and similar terms",
+      "modeExactDesc": "Searches for exact matches",
+      "selectFraudType": "Select type",
+      "selectCountry": "Select country",
+      "selectStatus": "Select status",
+      "countryLocation": "Country / Location",
+      "showAdvanced": "Date & Amount",
+      "hideAdvanced": "Hide advanced filters",
+      "amountFrom": "Amount from (EUR)",
+      "amountTo": "Amount to (EUR)",
+      "activeFilters": "Active filters:",
+      "from": "From:",
+      "to": "To:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "All types",
+      "INVESTMENT_FRAUD": "Investment Fraud",
+      "ROMANCE_SCAM": "Romance Scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Identity Theft",
+      "ONLINE_SHOPPING_FRAUD": "E-commerce Fraud",
+      "CRYPTOCURRENCY_SCAM": "Crypto Scam",
+      "EMPLOYMENT_SCAM": "Employment Scam",
+      "RENTAL_SCAM": "Rental Scam",
+      "ADVANCE_FEE_FRAUD": "Advance Fee Fraud",
+      "FAKE_CHARITY": "Fake Charity",
+      "TECH_SUPPORT_SCAM": "Tech Support Scam",
+      "LOTTERY_PRIZE_SCAM": "Lottery Scam",
+      "PYRAMID_MLM_SCHEME": "Pyramid/MLM Scheme",
+      "INSURANCE_FRAUD": "Insurance Fraud",
+      "CREDIT_CARD_FRAUD": "Credit Card Fraud",
+      "WIRE_FRAUD": "Wire Fraud",
+      "MONEY_MULE": "Money Mule",
+      "BUSINESS_EMAIL_COMPROMISE": "Business Email Compromise",
+      "SOCIAL_ENGINEERING": "Social Engineering",
+      "GOVERNMENT_IMPERSONATION": "Government Impersonation",
+      "UTILITY_SCAM": "Utility Scam",
+      "GRANDPARENT_SCAM": "Grandparent Scam",
+      "SEXTORTION": "Sextortion",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Account Takeover",
+      "SIM_SWAPPING": "SIM Swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Ponzi Scheme",
+      "OTHER": "Other"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Individual",
+      "COMPANY": "Company / Organization",
+      "UNKNOWN": "Unknown"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Other blockchain"
+    },
+    "countries": {
+      "all": "All countries",
+      "SK": "Slovakia",
+      "CZ": "Czech Republic",
+      "PL": "Poland",
+      "HU": "Hungary",
+      "AT": "Austria",
+      "DE": "Germany",
+      "OTHER": "Other"
+    },
+    "statuses": {
+      "all": "All statuses",
+      "PENDING": "Pending approval",
+      "UNDER_REVIEW": "Under review",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "MERGED": "Merged",
+      "ARCHIVED": "Archived"
     }
   },
   "report": {
@@ -120,6 +215,20 @@
       "reporterEmail": "Your Email",
       "reporterPhone": "Your Phone"
     },
+    "placeholders": {
+      "title": "Brief and descriptive title (e.g., 'Bitcoin Investment Scam')",
+      "description": "Describe what happened, how you were contacted, amounts involved, etc...",
+      "city": "For example London",
+      "postalCode": "For example SW1A 1AA",
+      "amount": "0.00",
+      "selectCountry": "Select country",
+      "selectCurrency": "Select currency"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10,000 characters (minimum 50)",
+      "allCountries": "All countries",
+      "allCurrencies": "All currencies"
+    },
     "consent": {
       "terms": "I agree to the Terms of Service",
       "gdpr": "I agree to data processing",
@@ -130,6 +239,325 @@
     "success": {
       "title": "Report submitted successfully!",
       "description": "Thank you for your contribution to protecting others."
+    },
+    "financialDetails": {
+      "title": "Financial Details",
+      "subtitle": "Enter details about financial accounts where you sent money",
+      "infoTitle": "Important Information",
+      "infoItems": [
+        "Fill in at least one section (banking, crypto, or PayPal)",
+        "This information will help identify scammers",
+        "All sensitive information is encrypted and masked"
+      ],
+      "banking": {
+        "title": "Banking Information",
+        "description": "IBAN, account number, SWIFT/BIC code and other banking details"
+      },
+      "iban": "IBAN (International Bank Account Number)",
+      "ibanHint": "IBAN starts with country code (e.g., GB, DE, FR) and contains 15-34 characters",
+      "accountHolder": "Account Holder Name",
+      "accountHolderPlaceholder": "For example: John Scammer",
+      "accountNumber": "Account Number",
+      "accountNumberPlaceholder": "For example: 12345678",
+      "accountNumberHint": "Bank account number",
+      "bankName": "Bank Name",
+      "bankNamePlaceholder": "For example: HSBC",
+      "bankCountry": "Bank Country",
+      "bankCountryPlaceholder": "Select bank country",
+      "allCountries": "All countries",
+      "swiftBic": "SWIFT/BIC Code",
+      "swiftBicPlaceholder": "For example: HSBCGB2L",
+      "swiftBicHint": "8 or 11 characters (e.g., HSBCGB2L or HSBCGB2LXXX)",
+      "regionalCodes": "Regional Banking Codes (optional)",
+      "routingNumber": "Routing Number (ABA)",
+      "routingNumberPlaceholder": "9-digit number (e.g., 021000021)",
+      "bsbCode": "BSB Code",
+      "bsbCodePlaceholder": "6-digit code (e.g., 123-456)",
+      "sortCode": "Sort Code",
+      "sortCodePlaceholder": "6-digit code (e.g., 12-34-56)",
+      "ifscCode": "IFSC Code",
+      "ifscCodePlaceholder": "11-character code (e.g., SBIN0001234)",
+      "cnapsCode": "CNAPS Code",
+      "cnapsCodePlaceholder": "12-digit Chinese central bank code",
+      "otherBankingDetails": "Other Banking Details",
+      "otherBankingDetailsPlaceholder": "Additional notes or banking information that may be useful...",
+      "crypto": {
+        "title": "Cryptocurrency Details",
+        "description": "Wallet addresses, blockchain, exchanges and transactions"
+      },
+      "blockchain": "Blockchain / Cryptocurrency",
+      "blockchainPlaceholder": "Select blockchain",
+      "blockchainHint": "Select the blockchain where the wallet is located",
+      "walletAddress": "Wallet Address",
+      "walletAddressPlaceholder": "Wallet address",
+      "exchangeName": "Exchange / Wallet Name",
+      "exchangeNamePlaceholder": "For example: Binance, Coinbase, Trust Wallet, MetaMask",
+      "exchangeNameHint": "If an exchange or known wallet was used",
+      "transactionHash": "Transaction Hash (TX ID)",
+      "transactionHashPlaceholder": "0x1234567890abcdef...",
+      "transactionHashHint": "Unique transaction identifier in blockchain (if available)",
+      "paypal": {
+        "title": "PayPal",
+        "description": "PayPal account or email"
+      },
+      "paypalAccount": "PayPal Account / Email",
+      "paypalAccountPlaceholder": "scammer@example.com",
+      "paypalAccountHint": "Email address or PayPal account username",
+      "tipTitle": "Tip: How to get this information?",
+      "tipItems": [
+        "Check transaction history in your bank or wallet",
+        "For crypto transactions use block explorer (e.g., etherscan.io)",
+        "Look at emails with payment confirmations",
+        "Every detail can help identify the scammer"
+      ]
+    },
+    "contact": {
+      "title": "Contact Information & Consents",
+      "subtitle": "Your details are optional but will help us contact you if needed",
+      "contactInfo": "Contact Information (optional)",
+      "yourName": "Your Name",
+      "yourNamePlaceholder": "Full name",
+      "yourNameHint": "Your name will not be published and will only be used for internal communication",
+      "yourEmail": "Email",
+      "yourEmailPlaceholder": "your@email.com",
+      "yourPhone": "Phone",
+      "yourPhonePlaceholder": "+1 555 123 4567",
+      "notifications": "Notifications",
+      "wantUpdates": "I want to receive updates",
+      "wantUpdatesDesc": "We will inform you about the status of your report and similar scams",
+      "consents": "Required Consents",
+      "agreeToTerms": "I agree to the Terms of Service",
+      "agreeToTermsDesc": "I confirm that the information in this report is true and that I have read the",
+      "termsLink": "Terms of Service",
+      "agreeToGDPR": "I agree to data processing",
+      "agreeToGDPRDesc": "I agree to the processing of my personal data in accordance with the",
+      "gdprLink": "Privacy Policy (GDPR)",
+      "infoTitle": "What happens after submission?",
+      "infoItems": [
+        "Your report will be reviewed by an administrator",
+        "After approval it will be published with masked data",
+        "It will help warn others about similar scams",
+        "If you provide email, you will receive confirmation"
+      ]
+    },
+    "review": {
+      "title": "Review Report",
+      "subtitle": "Check all details before submitting. Click \"Edit\" to change information.",
+      "edit": "Edit",
+      "fraudType": "Fraud Type",
+      "notSelected": "Not selected",
+      "basicInfo": "Basic Information",
+      "noTitle": "No title",
+      "noDescription": "No description",
+      "incidentDate": "Incident Date",
+      "location": "Location",
+      "damageAmount": "Damage Amount",
+      "perpetratorInfo": "Perpetrator Information",
+      "unknown": "Unknown",
+      "nameTitle": "Name / Title",
+      "phone": "Phone",
+      "email": "Email",
+      "socialMedia": "Social Media",
+      "address": "Address",
+      "noPerpetratorData": "No perpetrator information provided",
+      "digitalFootprints": "Digital Footprints",
+      "website": "Website",
+      "domain": "Domain",
+      "ipAddress": "IP Address",
+      "ipCountry": "IP Country",
+      "noDigitalData": "No digital footprints provided",
+      "financialData": "Financial Details",
+      "bankingData": "Banking Details",
+      "accountHolder": "Account Holder",
+      "accountNumber": "Account Number",
+      "bank": "Bank",
+      "bankCountry": "Bank Country",
+      "cryptoData": "Cryptocurrency Details",
+      "walletAddress": "Wallet Address",
+      "exchange": "Exchange",
+      "transactionHash": "Transaction Hash",
+      "paypalAccount": "PayPal Account",
+      "noFinancialData": "No financial details provided",
+      "companyVehicle": "Company & Vehicle",
+      "companyInfo": "Company Information",
+      "companyName": "Company Name",
+      "vatTaxId": "VAT / Tax ID",
+      "street": "Street",
+      "city": "City",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "vehicleInfo": "Vehicle Information",
+      "vehicleMake": "Make",
+      "vehicleModel": "Model",
+      "vehicleColor": "Color",
+      "licensePlate": "License Plate",
+      "vin": "VIN",
+      "registeredOwner": "Registered Owner",
+      "noCompanyVehicleData": "No company or vehicle information provided",
+      "evidence": "Evidence & Attachments",
+      "noEvidence": "No attachments added",
+      "contactData": "Contact Information",
+      "yourName": "Your Name",
+      "yourEmail": "Your Email",
+      "yourPhone": "Your Phone",
+      "wantUpdates": "I want to receive updates",
+      "agreeToTerms": "Agreement to Terms of Service",
+      "agreeToGDPR": "Agreement to data processing",
+      "anonymousReport": "Anonymous report - no contact details",
+      "warningTitle": "Before submitting, verify:",
+      "warningItems": [
+        "All information provided is true",
+        "You have not included sensitive data of third parties without their consent",
+        "You have the right to share attached evidence"
+      ]
+    },
+    "digitalFootprints": {
+      "title": "Digital Footprints",
+      "subtitle": "Enter online profiles and technical information about the perpetrator",
+      "socialMedia": {
+        "title": "Social Media Accounts",
+        "description": "Perpetrator's profiles on social platforms"
+      },
+      "telegram": "Telegram",
+      "telegramHint": "Enter username starting with @",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "Phone number including country code",
+      "signal": "Signal",
+      "signalHint": "Phone number including country code",
+      "instagram": "Instagram",
+      "instagramHint": "Enter username starting with @",
+      "facebook": "Facebook",
+      "facebookPlaceholder": "Profile name or URL",
+      "facebookHint": "Enter profile name or full URL",
+      "tiktok": "TikTok",
+      "tiktokHint": "Enter username starting with @",
+      "twitter": "X / Twitter",
+      "twitterHint": "Enter username starting with @",
+      "usernamePlaceholder": "@username",
+      "phonePlaceholder": "+1234567890",
+      "website": {
+        "title": "Website & Domain",
+        "description": "Information about websites used in the fraud"
+      },
+      "websiteUrl": "Website URL",
+      "websiteUrlPlaceholder": "https://example.com",
+      "websiteUrlHint": "Enter full URL including https://",
+      "domainName": "Domain Name",
+      "domainNamePlaceholder": "example.com",
+      "domainNameHint": "Just the domain name without http://",
+      "domainCreationDate": "Domain Creation Date",
+      "domainCreationDateHint": "When was the domain registered (if known)",
+      "ip": {
+        "title": "IP Address Information",
+        "description": "Technical details about the origin of the fraud"
+      },
+      "ipAddress": "IP Address",
+      "ipAddressPlaceholder": "192.168.1.1",
+      "ipAddressHint": "IPv4 address in format xxx.xxx.xxx.xxx",
+      "ipCountry": "IP Country",
+      "ipCountryPlaceholder": "Select country",
+      "ipCountryHint": "Which country did the IP address originate from",
+      "allCountries": "All countries",
+      "ispProvider": "Internet Service Provider (ISP)",
+      "ispProviderPlaceholder": "For example: Comcast, Verizon, Deutsche Telekom...",
+      "ispProviderHint": "Name of the internet provider",
+      "ipAbuseScore": "IP Abuse Score (0-100)",
+      "ipAbuseScorePlaceholder": "50",
+      "ipAbuseScoreHint": "IP risk rating (higher = more dangerous)",
+      "infoTitle": "Why are digital footprints important?",
+      "infoText": "This information helps create a digital profile of the perpetrator and allows law enforcement to track and identify scammers across multiple platforms. All sensitive data is protected and masked according to your access level."
+    },
+    "perpetrator": {
+      "title": "Perpetrator Information",
+      "subtitle": "Enter all available information about the person or company that committed the fraud",
+      "typeLabel": "Perpetrator Type",
+      "types": {
+        "individual": "Individual",
+        "individualDesc": "A person who committed the fraud",
+        "company": "Company / Organization",
+        "companyDesc": "A company or organization",
+        "unknown": "Unknown",
+        "unknownDesc": "Could not identify the perpetrator"
+      },
+      "nameLabel": "Full Name",
+      "companyNameLabel": "Company Name",
+      "namePlaceholder": "For example: John Scammer",
+      "companyNamePlaceholder": "For example: Scam Company Ltd.",
+      "businessName": "Business Name (if different)",
+      "businessNamePlaceholder": "For example: Scam Trading",
+      "companyId": "Company ID (optional)",
+      "companyIdPlaceholder": "For example: 12345678",
+      "nickname": "Nickname / Alias",
+      "nicknamePlaceholder": "Nickname or fake name",
+      "username": "Username",
+      "usernamePlaceholder": "Used on websites/apps",
+      "approxAge": "Approximate Age",
+      "approxAgePlaceholder": "For example: 35",
+      "nationality": "Nationality",
+      "nationalityPlaceholder": "For example: American, British...",
+      "physicalDescription": "Physical Description",
+      "physicalDescriptionPlaceholder": "Describe the perpetrator's appearance - height, build, hair/eye color, distinctive features...",
+      "physicalDescriptionHint": "If you saw the perpetrator in person or on video, describe their appearance",
+      "contactInfo": "Perpetrator Contact Information",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+1 555 123 4567",
+      "email": "Email",
+      "emailPlaceholder": "scammer@example.com",
+      "socialMedia": "Social Media (Facebook, Instagram, WhatsApp)",
+      "socialMediaPlaceholder": "Facebook: xyz, Instagram: @handle, WhatsApp: +1...",
+      "socialMediaHint": "Enter profile links separated by comma (format: Platform: handle)",
+      "address": "Address (if known)",
+      "addressPlaceholder": "Street, number, city, postal code",
+      "tip": "The more information you provide, the better we can warn others. All sensitive data is protected and masked according to your access level."
+    },
+    "companyVehicle": {
+      "title": "Company & Vehicle Information",
+      "subtitle": "Enter details about the company and vehicle related to the fraud",
+      "companySection": {
+        "title": "Company Information"
+      },
+      "companyName": "Company Name",
+      "companyNamePlaceholder": "For example: Example Trading Ltd.",
+      "vatTaxId": "VAT / Tax ID / Company Number",
+      "vatTaxIdPlaceholder": "For example: GB123456789 or 12345678",
+      "vatTaxIdHint": "Organization identification number or tax identification number",
+      "companyAddress": {
+        "title": "Company Address"
+      },
+      "street": "Street and Number",
+      "streetPlaceholder": "For example: 123 Main Street",
+      "city": "City",
+      "cityPlaceholder": "For example: London",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "For example: SW1A 1AA",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "allCountries": "All countries",
+      "vehicleSection": {
+        "title": "Vehicle Information"
+      },
+      "vehicleMake": "Make",
+      "vehicleMakePlaceholder": "For example: Toyota, BMW, Ford",
+      "vehicleModel": "Model",
+      "vehicleModelPlaceholder": "For example: Camry, X5, Focus",
+      "vehicleColor": "Color",
+      "vehicleColorPlaceholder": "For example: Silver, Black, White",
+      "licensePlate": "License Plate Number",
+      "licensePlatePlaceholder": "For example: AB12 CDE",
+      "vin": "VIN (Vehicle Identification Number)",
+      "vinPlaceholder": "17-character vehicle identifier",
+      "vinError": "VIN must contain exactly 17 characters (letters A-Z except I, O, Q and numbers 0-9)",
+      "registeredOwner": "Registered Owner",
+      "registeredOwnerPlaceholder": "Full name or company name",
+      "registeredOwnerHint": "Enter the owner's name as shown on vehicle registration",
+      "importantInfo": {
+        "title": "Important Information:",
+        "items": [
+          "Company and vehicle details are optional but can significantly help identify the scammer",
+          "All sensitive data is protected and only shown to authorized persons",
+          "If you have documents (invoices, contracts), add them in the Evidence section"
+        ]
+      }
     },
     "evidence": {
       "title": "Evidence & Attachments",
@@ -214,6 +642,58 @@
       "invalidCredentials": "Invalid credentials",
       "emailExists": "Email already exists",
       "weakPassword": "Password is too weak"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "submit": "Reset Password",
+      "submitting": "Sending...",
+      "rememberPassword": "Remember your password?",
+      "signIn": "Sign in",
+      "success": {
+        "title": "Email Sent",
+        "description": "If an account exists with email {{email}}, you will receive password reset instructions.",
+        "checkSpam": "Please also check your SPAM folder. The link is valid for 1 hour.",
+        "backToLogin": "Back to login",
+        "tryAnotherEmail": "Try another email"
+      },
+      "errors": {
+        "tooManyAttempts": "Too many attempts. Please try again later.",
+        "sendError": "Error sending email. Please try again."
+      }
+    },
+    "resetPassword": {
+      "title": "New Password",
+      "subtitle": "Enter a new password for your account",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Change Password",
+      "submitting": "Changing password...",
+      "backToLogin": "Back to login",
+      "requirements": {
+        "minLength": "At least 8 characters",
+        "uppercase": "Contains uppercase letter",
+        "lowercase": "Contains lowercase letter",
+        "number": "Contains number"
+      },
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "requirementsNotMet": "Password does not meet all requirements",
+        "invalidToken": "Invalid or missing token. Please request a new reset link.",
+        "tokenExpired": "Token expired or invalid. Please request a new reset link.",
+        "serverError": "Error communicating with server. Please try again."
+      },
+      "success": {
+        "title": "Password Changed",
+        "description": "Your password has been successfully changed. You can now sign in with your new password.",
+        "signIn": "Sign In"
+      },
+      "invalidLink": {
+        "title": "Invalid Link",
+        "requestNew": "Request new link"
+      }
     }
   },
   "admin": {
@@ -228,13 +708,35 @@
       "reject": "Reject",
       "merge": "Merge",
       "ban": "Ban"
+    },
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "Sign in to the admin panel to manage the system",
+      "email": "Email",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "error": "Login failed. Please check your credentials.",
+      "backToHome": "Back to home page"
     }
   },
   "errors": {
     "notFound": "Page not found",
     "serverError": "Server error",
     "unauthorized": "Unauthorized",
-    "forbidden": "Access denied"
+    "forbidden": "Access denied",
+    "errorPage": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "tryAgain": "Try Again"
+    },
+    "notFoundPage": {
+      "title": "Page Not Found",
+      "description": "The page you are looking for does not exist.",
+      "goHome": "Go Home"
+    }
   },
   "footer": {
     "about": "About",
@@ -242,5 +744,827 @@
     "terms": "Terms of Service",
     "contact": "Contact",
     "copyright": "All rights reserved"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Support Our Mission –",
+      "titleHighlight": "Help Us Bring Justice and Safety to Everyone",
+      "description": "Our vision is that justice and safety should not be reserved only for those who can afford them financially. We want our services to be available free of charge to everyone – because every person deserves protection, a chance for a new beginning, and fair treatment.",
+      "subdescription": "To remain independent and sustainable, some of our services must be paid. However, we do everything possible to ensure that the majority of our activities remain completely free for victims of fraud and for those seeking a second chance."
+    },
+    "howToHelp": {
+      "badge": "How You Can Help",
+      "title": "Your contribution allows us to continue work that makes a",
+      "titleHighlight": "real impact",
+      "description": "You can support us with a one-time or recurring donation – by credit card or cryptocurrency – and choose which of our two programs you would like to support:"
+    },
+    "program1": {
+      "badge": "PROGRAM 1",
+      "title": "Public Protection and Fighting Fraudsters",
+      "features": [
+        "Development and improvement of our free fraud detection system",
+        "Marketing and awareness campaigns to reach as many people as possible",
+        "Legal services that help us create a safe and effective environment"
+      ],
+      "impact": "Your support in this fund means fewer victims of fraud and stronger public protection."
+    },
+    "program2": {
+      "badge": "PROGRAM 2",
+      "title": "A Second Chance for People Who Want to Leave Crime Behind",
+      "features": [
+        "Retraining courses and educational programs for people released from prison",
+        "Financial support to help them find jobs and reintegrate into society",
+        "Assistance with basic needs when starting a new life"
+      ],
+      "impact": "Your support here changes lives – giving a chance to those who want to leave criminal environments and live honestly."
+    },
+    "buttons": {
+      "payByCard": "Pay by Card",
+      "payWithCrypto": "Pay with Crypto"
+    },
+    "cta": {
+      "title": "Support us today and become part of the change.",
+      "description": "Your contribution – no matter how big or small – means more than you can imagine. Together we can build a world where justice is accessible to everyone.",
+      "transparent": "100% Transparent",
+      "securePayments": "Secure Payments",
+      "everyDonationCounts": "Every Donation Counts",
+      "haveQuestions": "Have questions?",
+      "contactUs": "Contact us",
+      "learnMore": "to learn more about our work."
+    }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Request for Database Deletion",
+      "titleHighlight": "A Second Chance",
+      "subtitle": "Help for a New Beginning in Life",
+      "description": "We believe in privacy and second chances. Our platform offers individuals with criminal pasts an opportunity to request deletion from our scammer database and receive support for life reintegration.",
+      "submitRequest": "Submit Removal Request",
+      "learnMore": "Learn More"
+    },
+    "quote": {
+      "text": "Everyone deserves a second chance. It's not where you started that matters, but where you're going.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Requirements & Conditions",
+      "title": "Terms and Conditions",
+      "subtitle": "Please review these requirements carefully before submitting your request",
+      "basicRequirements": {
+        "title": "Basic Requirements",
+        "items": [
+          "Your case/scammer ID from our database",
+          "Valid identification documents",
+          "Detailed explanation of your situation",
+          "Commitment statement for future lawful behavior"
+        ]
+      },
+      "importantNotices": {
+        "title": "Important Notices",
+        "items": [
+          "One opportunity per person — use it wisely",
+          "Any future criminal activity permanently closes this door",
+          "Review period: 14-30 days",
+          "All requests are evaluated individually based on case severity"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Step-by-Step Process",
+      "title": "How to Request Deletion",
+      "subtitle": "Follow these simple steps to submit your database removal request",
+      "steps": [
+        { "title": "Contact Us", "description": "Send your request to info@scamnemesis.com" },
+        { "title": "Submit Documents", "description": "Provide required documentation and explanation" },
+        { "title": "Wait for Review", "description": "Our team will evaluate your case (14-30 days)" },
+        { "title": "Receive Decision", "description": "Get notified about the outcome of your request" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Free Resource",
+      "title": "PDF Guide: The Path Out of Criminality",
+      "subtitle": "Practical guidance for those seeking to leave criminal environments",
+      "insideTitle": "What's Inside the Guide",
+      "features": [
+        "Step-by-step guide for leaving criminal environments safely",
+        "Resources for mental health and addiction recovery",
+        "Employment strategies for individuals with criminal records",
+        "Legal rights and reintegration information by country"
+      ],
+      "downloadButton": "Download Free PDF Guide"
+    },
+    "breakCycle": {
+      "badge": "Breaking Free",
+      "title": "Break the Cycle",
+      "importantMessage": "Important Message",
+      "content": "If you are currently part of a criminal organization and want to leave, know that there is always a way out. Your first step is to seek help — whether from law enforcement, support organizations, or trusted individuals. The path to a new life begins with a single decision.",
+      "reminder": "Remember: It's never too late to change your path."
+    },
+    "vision": {
+      "badge": "Future Plans",
+      "title": "Our Vision of Help",
+      "subtitle": "We are developing comprehensive programs to assist individuals seeking to leave their criminal past behind. Here are three initiatives we plan to implement:",
+      "plannedInitiative": "Planned Initiative",
+      "initiatives": [
+        { "title": "Financial Support", "description": "Assistance for released individuals during the transition period" },
+        { "title": "Family Assistance", "description": "Support services for families of those seeking a fresh start" },
+        { "title": "Education & Retraining", "description": "Opportunities for skill development and career change" }
+      ]
+    },
+    "donation": {
+      "title": "Support the Second Chance Program",
+      "description": "Your contribution helps us provide resources, guidance, and support to individuals seeking to leave criminal lifestyles behind and build a better future.",
+      "cryptoButton": "Donate with Cryptocurrency",
+      "cardButton": "Donate by Card",
+      "securePayment": "Secure Payment",
+      "goesToPrograms": "100% Goes to Programs",
+      "makeDifference": "Make a Difference"
+    },
+    "contact": {
+      "badge": "Get in Touch",
+      "title": "Ready to Start Your New Journey?",
+      "description": "Contact us at",
+      "descriptionEnd": "to begin your removal request process. We're here to help you every step of the way.",
+      "submitRequest": "Submit Removal Request",
+      "contactPage": "Contact Page"
+    },
+    "finalMessage": {
+      "quote": "The past is your lesson. The present is your gift. The future is your motivation.",
+      "message": "Everyone deserves a second chance."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "World-class, expert-led cybersecurity training from the world's",
+      "titleHighlight": "top security professionals.",
+      "description": "Prevent fraud and attacks—secure your environment and strengthen cyber resilience with Scamnemesis.",
+      "comingSoon": "Coming Soon",
+      "comingSoonText": "Our training courses are currently in development. Contact us at",
+      "comingSoonTextEnd": "to be notified when they launch."
+    },
+    "programs": {
+      "badge": "Our Programs",
+      "title": "Cybersecurity Courses",
+      "description": "We offer training and educational content tailored for different audiences — from the general public seeking basic protection to specialized professionals and organizations requiring advanced instruction."
+    },
+    "freeCourses": {
+      "badge": "FREE",
+      "title": "Free Courses for the Public",
+      "description": "Short, practical lessons to protect yourself and your loved ones online:",
+      "items": [
+        "How to recognize a scam — key red flags and warning signals",
+        "What to do if you've been scammed — a quick, effective response guide",
+        "How to set up your phone and computer securely",
+        "How to behave safely online — practical habits and guidelines",
+        "How to protect your children online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONAL",
+      "title": "Professional Videos",
+      "description": "OPSEC and cybersecurity for professionals — training for specialists who need to recognize, prevent, and respond to threats:",
+      "audiences": [
+        { "title": "AML Specialists", "description": "In-depth modules on transaction monitoring, red flags, and investigative techniques." },
+        { "title": "Police Officers", "description": "Focused on investigation methodology, evidence collection, and cyber-enabled crime response." },
+        { "title": "Accountants", "description": "Fraud indicators in financial records, internal controls, and whistleblower best practices." },
+        { "title": "IT and Security Personnel", "description": "Network defense, phishing simulations, secure infrastructure configuration." },
+        { "title": "Investigators", "description": "OSINT techniques, digital forensics fundamentals, and case documentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "CUSTOM",
+      "title": "Company Training and Security Methodology",
+      "description1": "We train staff and help implement a complete security methodology — so every team member knows what to do and who to contact in case of a threat.",
+      "description2": "Our corporate programs include policy implementation, role clarification, incident response procedures, and ongoing support.",
+      "button": "Request Custom Training"
+    },
+    "differentiators": {
+      "badge": "Why Choose Us",
+      "title": "What makes our training unique?",
+      "items": [
+        { "emoji": "📡", "title": "Live threat intelligence", "description": "We work daily on active crypto and investment fraud cases, so our content always reflects the latest tactics used by criminals." },
+        { "emoji": "🔄", "title": "Continuously updated curriculum", "description": "As new scam methods emerge, our courses evolve, ensuring you're never behind." },
+        { "emoji": "🛡️", "title": "Practical, not just theoretical", "description": "We teach actual protection strategies, not just abstract concepts." },
+        { "emoji": "💡", "title": "From victims to experts", "description": "Our perspective includes deep insight into both victim psychology and scammer behavior, giving you a 360° understanding." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifications and Credentials",
+      "description": "Our instructors and content creators hold recognized certifications in cybersecurity, fraud investigation, and compliance — bringing credibility and expertise to every lesson."
+    },
+    "cta": {
+      "title": "Book a Free Consultation",
+      "description": "Whether you're an individual looking to learn, a professional seeking certification-track training, or an organization interested in a tailored security program, we're here to help.",
+      "button": "Book a Free Consultation",
+      "freeConsultation": "Free Consultation",
+      "expertInstructors": "Expert Instructors",
+      "updatedContent": "Updated Content"
+    }
+  },
+  "scamPrevention": {
+    "hero": {
+      "badge": "Complete Security Resource",
+      "title": "Comprehensive Anti-Scam Guide",
+      "description": "Your practical security guide to identifying threats, preventing financial losses, and responding effectively to fraud. Knowledge and preparation are your strongest defenses.",
+      "sections": "Sections",
+      "scamTypes": "Scam Types",
+      "warningSigns": "Warning Signs",
+      "actionSteps": "Action Steps",
+      "checkButton": "Check Someone Now"
+    },
+    "toc": {
+      "title": "Table of Contents",
+      "subtitle": "Jump to any section of this guide",
+      "items": [
+        "Emergency Response: File a ScamNemesis Report",
+        "60-Second Risk Assessment",
+        "Understanding Scams: Definition and Mechanics",
+        "Psychology of Scam Victimization",
+        "12 Most Prevalent Scam Categories",
+        "Immediate Action Protocol: First 24 Hours",
+        "Evidence Collection and Documentation Standards",
+        "Fund Recovery Procedures by Payment Method",
+        "Support Resources and Reporting Channels"
+      ]
+    },
+    "emergency": {
+      "title": "Emergency Response: File a ScamNemesis Report",
+      "subtitle": "If you suspect you are currently being scammed or have been victimized, take immediate action.",
+      "actions": [
+        { "title": "Stop All Communication Immediately", "description": "Cease contact with the suspected scammer. Do not respond to calls, emails, or messages." },
+        { "title": "Halt All Financial Transactions", "description": "Stop any pending transfers, payments, or shipments immediately. Contact your bank or payment provider." },
+        { "title": "File a ScamNemesis Report", "description": "Document the incident in our system to warn others and create an official record." }
+      ],
+      "fileReportButton": "File Report Now"
+    },
+    "riskAssessment": {
+      "badge": "Quick Assessment",
+      "title": "60-Second Risk Assessment",
+      "subtitle": "If you encounter any of these 8 warning signs, proceed with extreme caution or walk away completely. Trust your instincts.",
+      "signs": [
+        "Pressure to act quickly or maintain secrecy",
+        "Requests for unconventional payment methods",
+        "Unrealistic promises or guarantees",
+        "Missing regulatory verification or credentials",
+        "Communication red flags (grammar errors, suspicious domains)",
+        "Insistence on specific communication channels",
+        "Requests for sensitive information",
+        "Resistance to independent verification or third-party involvement"
+      ]
+    },
+    "understanding": {
+      "badge": "Knowledge is Power",
+      "title": "Understanding Scams: Definition and Mechanics",
+      "subtitle": "Understanding how scams work is the first step in protecting yourself and others.",
+      "whatIsScam": {
+        "title": "What is a Scam?",
+        "content1": "A scam is a fraudulent scheme designed to deceive individuals into parting with money, personal information, or assets through false promises, misrepresentation, or manipulation.",
+        "content2": "Scams exploit human psychology, trust, and emotional vulnerabilities to bypass rational decision-making."
+      },
+      "howScamsWork": {
+        "title": "How Scams Work",
+        "steps": [
+          { "step": "Contact", "desc": "Initial outreach via phone, email, social media, or in person" },
+          { "step": "Hook", "desc": "Offer something desirable or create fear/urgency" },
+          { "step": "Build Trust", "desc": "Establish credibility through fake credentials or emotional connection" },
+          { "step": "The Ask", "desc": "Request money, information, or access" },
+          { "step": "Disappear", "desc": "Cut contact after obtaining what they want" }
+        ]
+      }
+    },
+    "psychology": {
+      "badge": "Psychology",
+      "title": "Psychology of Scam Victimization",
+      "subtitle": "Scammers use 6 primary psychological manipulation methods to exploit human behavior and bypass critical thinking.",
+      "tactics": [
+        { "title": "Authority Impersonation", "description": "Pretending to be officials, banks, or experts to exploit trust in legitimate institutions." },
+        { "title": "Artificial Time Pressure", "description": "Creating false urgency to prevent careful thought and rational decision-making." },
+        { "title": "False Social Proof", "description": "Fabricating testimonials, reviews, and success stories to create illusion of legitimacy." },
+        { "title": "Emotional Manipulation", "description": "Exploiting fear, greed, loneliness, or compassion to override logical thinking." },
+        { "title": "Trust-Building Deception", "description": "Investing weeks or months building relationships before making fraudulent requests." },
+        { "title": "Information Asymmetry", "description": "Using technical jargon and complexity to confuse victims and discourage questions." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Know Your Enemy",
+      "title": "12 Most Prevalent Scam Categories",
+      "subtitle": "Familiarize yourself with these common fraud schemes to recognize and avoid them.",
+      "protectionTip": "Protection Tip:",
+      "types": [
+        { "name": "Investment Fraud", "description": "Fake investment opportunities promising guaranteed high returns with little to no risk.", "tip": "Verify all investments through official regulatory databases before committing funds." },
+        { "name": "Romance Scams", "description": "Criminals build fake romantic relationships over time to extract money from victims.", "tip": "Never send money to someone you have not met in person, regardless of the story." },
+        { "name": "Phishing Attacks", "description": "Fake emails, texts, or websites designed to steal login credentials and personal data.", "tip": "Always verify sender addresses and navigate directly to official websites, never via links." },
+        { "name": "E-commerce Fraud", "description": "Fake online stores, non-delivery of goods, or counterfeit product sales.", "tip": "Research sellers, check reviews from multiple sources, and use secure payment methods." },
+        { "name": "Technical Support Fraud", "description": "Scammers pose as tech support claiming your computer has problems requiring immediate fixes.", "tip": "Legitimate companies do not call unsolicited. Hang up and contact official support directly." },
+        { "name": "Employment Scams", "description": "Fake job offers requiring upfront payment for training, equipment, or background checks.", "tip": "Real employers never ask you to pay for the opportunity to work for them." },
+        { "name": "Rental Fraud", "description": "Fake property listings with below-market rates requiring deposits before viewing.", "tip": "Always view properties in person and verify ownership before transferring any money." },
+        { "name": "Lottery/Prize Scams", "description": "Notifications of fake winnings requiring fees or taxes to be paid before receiving the prize.", "tip": "Legitimate lotteries deduct fees from winnings. You cannot win contests you did not enter." },
+        { "name": "Charity Fraud", "description": "Fake charitable organizations exploiting disasters, holidays, or emotional causes.", "tip": "Research charities through official databases and donate directly through verified websites." },
+        { "name": "Government Impersonation", "description": "Criminals posing as IRS, Social Security, immigration, or law enforcement officials.", "tip": "Government agencies communicate via official mail, not threatening phone calls demanding immediate payment." },
+        { "name": "Healthcare Fraud", "description": "Fake medical treatments, miracle cures, or fraudulent health insurance schemes.", "tip": "Consult licensed healthcare providers and verify insurance through official company channels." },
+        { "name": "Home Service Scams", "description": "Fake contractors demanding large advance payments then disappearing without completing work.", "tip": "Verify licenses, check references, and never pay the full amount upfront." }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Act Fast",
+      "title": "Immediate Action Protocol: First 24 Hours",
+      "subtitle": "If you've been scammed, take these 5 critical steps within 24 hours to maximize recovery chances and prevent further damage.",
+      "steps": [
+        { "title": "Stop all communication and transfers immediately", "description": "Cease contact with the suspected scammer and halt any ongoing transactions." },
+        { "title": "Contact your financial institution within 24 hours", "description": "Report fraudulent transactions and request holds, reversals, or account freezes as needed." },
+        { "title": "Secure all accounts with new passwords", "description": "Change passwords for all potentially compromised accounts using strong, unique credentials." },
+        { "title": "Document everything comprehensively", "description": "Save all communications, receipts, screenshots, and transaction records before they disappear." },
+        { "title": "File official reports with authorities", "description": "Report to local police, FBI IC3, FTC, and relevant regulatory bodies to create official record." }
+      ],
+      "fileReportButton": "File a ScamNemesis Report"
+    },
+    "evidence": {
+      "badge": "Documentation",
+      "title": "Evidence Collection and Documentation Standards",
+      "subtitle": "Proper documentation is critical for law enforcement investigations and potential fund recovery. Preserve everything.",
+      "types": [
+        { "title": "All Communications", "items": ["Emails, texts, chat logs", "Phone call records", "Social media messages", "Voicemails (record/save)"] },
+        { "title": "Visual Documentation", "items": ["Screenshots of websites", "Photos of documents received", "Account statements", "Profile screenshots"] },
+        { "title": "Transaction Records", "items": ["Bank statements", "Wire transfer receipts", "Cryptocurrency transaction IDs", "Gift card receipts and codes"] },
+        { "title": "Identity Information", "items": ["Names used by scammer", "Phone numbers and email addresses", "Website URLs", "Social media profiles"] }
+      ],
+      "bestPractices": {
+        "title": "Documentation Best Practices",
+        "items": [
+          "Create timestamped backups of all evidence",
+          "Organize files by date and category",
+          "Keep both digital and physical copies",
+          "Do not edit original files (make copies for notes)",
+          "Store evidence securely with restricted access"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Recovery Guide",
+      "title": "Fund Recovery Procedures by Payment Method",
+      "subtitle": "Recovery success depends heavily on how you paid and how quickly you act. Time is critical.",
+      "methods": [
+        { "method": "Credit/Debit Cards", "timeline": "Act within 60 days", "steps": ["Contact card issuer immediately", "Dispute charges as unauthorized", "Request chargeback under Regulation Z", "File police report if required"] },
+        { "method": "Bank Transfers/Wire", "timeline": "Act within 24 hours", "steps": ["Contact sending and receiving banks", "Request wire recall", "File fraud claim with bank", "Contact SWIFT if international transfer"] },
+        { "method": "Cryptocurrency", "timeline": "Act immediately", "steps": ["Contact exchange/wallet provider", "Report transaction IDs", "File with FBI IC3 and FTC", "Monitor blockchain for fund movement"] },
+        { "method": "Gift Cards", "timeline": "Very limited recovery", "steps": ["Contact card issuer immediately", "Provide card numbers and receipts", "File police report", "Report to FTC (recovery unlikely)"] },
+        { "method": "Cash/Money Orders", "timeline": "Extremely difficult", "steps": ["Contact money transfer service", "File police report immediately", "Request investigation", "Recovery highly unlikely"] }
+      ]
+    },
+    "supportResources": {
+      "badge": "Get Help",
+      "title": "Support Resources and Reporting Channels",
+      "subtitle": "Report scams to multiple authorities to create an official record and contribute to investigations.",
+      "channels": [
+        { "name": "Federal Trade Commission (FTC)", "url": "ReportFraud.ftc.gov", "description": "Primary federal agency for fraud reporting" },
+        { "name": "FBI Internet Crime Complaint Center (IC3)", "url": "ic3.gov", "description": "For cybercrimes and online fraud" },
+        { "name": "Local Police Department", "url": "N/A", "description": "File official report for legal proceedings" },
+        { "name": "State Attorney General", "url": "Varies by state", "description": "State-level consumer protection" },
+        { "name": "AARP Fraud Watch Network", "url": "877-908-3360", "description": "Support for older adults" },
+        { "name": "Better Business Bureau Scam Tracker", "url": "bbb.org/scamtracker", "description": "Report and research scams" }
+      ],
+      "additionalSupport": {
+        "title": "Additional Support",
+        "items": [
+          "National Suicide Prevention Lifeline: 988 (if experiencing crisis)",
+          "Credit Bureaus: Place fraud alerts with Equifax, Experian, TransUnion",
+          "Identity Theft Resource Center: 888-400-5530",
+          "Elder Abuse Hotline: 1-800-677-1116"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Stay Vigilant, Stay Protected",
+      "description": "Use our free Scam Checker before engaging with anyone online. A few seconds of verification can save you thousands of dollars and immense emotional distress.",
+      "scamCheckerButton": "Use Scam Checker",
+      "freeTrainingButton": "Free Training"
+    }
+  },
+  "iWasScammed": {
+    "hero": {
+      "badges": {
+        "urgent": "Urgent Help",
+        "expert": "Expert Guidance",
+        "timeCritical": "Time-Critical Steps"
+      },
+      "title": "Was Scammed: Get Your Money Back.",
+      "titleHighlight": "Report Fraud Now.",
+      "description": "If you've become a victim of an online scam, investment fraud, or any form of deception, you're not alone. The first moments after realizing you've been scammed are critical. Our system was created specifically for such cases to provide you with effective help.",
+      "followGuide": "Please follow the step-by-step guide below first, and only then contact us.",
+      "contactButton": "Contact Us",
+      "fillFormButton": "Fill out the form",
+      "stats": {
+        "steps": { "value": "7", "label": "Critical Steps" },
+        "time": { "value": "24h", "label": "Time-Critical" },
+        "report": { "value": "Free", "label": "PDF Report" },
+        "database": { "value": "612M+", "label": "Database" }
+      }
+    },
+    "intro": {
+      "title": "What to Do After a Scam? A Practical Guide",
+      "description": "If you've become a victim of a scam, it's important to act quickly and systematically. Below, you'll find the exact step-by-step procedure you should follow — it was specifically developed by experts, and every step has a purpose and is crucial.",
+      "findBelow": "— find it below."
+    },
+    "steps": {
+      "step1": {
+        "label": "Step 1",
+        "title": "Immediately Block the Scammer's Access to Your Money",
+        "description": "The first and most crucial step is to stop further losses as quickly as possible.",
+        "actions": [
+          { "icon": "card", "text": "If your card details were stolen, block the card immediately — through your bank's mobile app or by calling their hotline." },
+          { "icon": "lock", "text": "If your crypto account was hacked, contact the exchange right away via email and ask them to freeze your account." },
+          { "icon": "shield", "text": "Take every possible action to ensure the scammer can no longer access your funds." }
+        ],
+        "tip": {
+          "title": "⚠️ Important tip:",
+          "text": "If you are still in contact with the scammer, do not reveal that you know you've been scammed. Pretend you don't understand why something isn't working (e.g., a payment attempt). This keeps the scammer engaged and gives you more time to act."
+        },
+        "imageAlt": "I Was Scammed – Immediate Action and Blocking the Scammer",
+        "imageCaption": "Speed is everything when it comes to fraud recovery. The faster you act, the higher your chances of stopping further damage and potentially recovering your funds."
+      },
+      "step2": {
+        "label": "Step 2",
+        "title": "Create a Focused Environment to Solve the Problem",
+        "description": "Dealing with a scam requires your full attention and a clear mind.",
+        "actions": [
+          { "icon": "users", "text": "If you have children, ask relatives or friends to look after them for a few hours" },
+          { "icon": "clock", "text": "If you are at work, talk to your employer and request to leave early or take a short leave." }
+        ],
+        "note": "The fewer distractions you have, the faster and more effectively you can act. In cases like this, every minute counts — the sooner you respond, the higher the chance of blocking transfers and stopping the scammer.",
+        "imageCaption": "How to Focus and Act Effectively After a Scam"
+      },
+      "step3": {
+        "label": "Step 3",
+        "title": "Officially Report the Incident",
+        "description": "Even if you have already blocked your card or account via the app, you must also report the incident officially:",
+        "actions": [
+          { "icon": "phone", "text": "Contact your bank or exchange directly by phone or email" },
+          { "icon": "file", "text": "Describe the entire situation in detail" },
+          { "icon": "check", "text": "Request written confirmation of your report" }
+        ],
+        "important": "Complete this step even if the scammer already has your money, but you haven't reported it yet.",
+        "imageCaption": "Officially Reporting a Scam to the Police and Bank"
+      },
+      "step4": {
+        "label": "STEP 4",
+        "title": "Start Collecting Evidence and Fill Out Our Form",
+        "description": "Once you have stopped further payments, start systematically gathering all available evidence — this will significantly increase your chances of identifying the scammer and recovering your money. Follow these steps:",
+        "evidenceItems": [
+          { "icon": "file", "title": "Fill out our form as thoroughly as possible.", "text": "It serves as a practical guide to help you capture all essential information and automatically generates a complete PDF report, which can be provided to the police or other relevant authorities." },
+          { "icon": "camera", "title": "Preserve all conversations:", "text": "take screenshots of chats, emails (remember to include the full email header), and other text messages, including dates and times of communication." },
+          { "icon": "card", "title": "Secure bank records:", "text": "archive all relevant bank statements, payment confirmations, and transaction details." },
+          { "icon": "phone", "title": "Document phone calls or app calls:", "text": "record the date, time, and a brief summary of the conversation. (Note: always check local laws before recording calls.)" },
+          { "icon": "video", "title": "Collect video evidence in original quality.", "text": "If you met the scammer in person and it is safe, create a video record of the meeting. If you met in a public place with cameras, request the operator to archive the footage. Even if they do not provide it directly, the police can officially request it after you report the case." },
+          { "icon": "fingerprint", "title": "Record the scammer's identifiers:", "text": "save all available data such as domains, email addresses, phone numbers, social media profiles, IP addresses (if known), and any other relevant information." },
+          { "icon": "ban", "title": "Do not reveal to the scammer that you are aware of the fraud.", "text": "Maintain contact only if strategically necessary and safe. Never give them information that could help them escape with your money, and do not disclose any personal details — such as your home address or location." },
+          { "icon": "harddrive", "title": "Preserve metadata:", "text": "when saving screenshots and files, keep the originals to retain timestamps and other forensic details. If you need to highlight or edit something (e.g., mark important details), make a copy and edit the copy — otherwise, you may overwrite critical metadata that is essential for forensic analysis." },
+          { "icon": "filecheck", "title": "Handle all evidence with maximum care:", "text": "each case may involve different types of evidence — digital (screenshots, emails, logs, IP data, videos) and physical (documents, paper confirmations, SIM cards, hardware wallets). Document everything thoroughly while preserving the integrity of the original materials. If any handling occurs, record who handled it and when (chain of custody principle)." },
+          { "icon": "scale", "title": "Legal and security note:", "text": "if you encounter sensitive or potentially dangerous information, consult an experienced lawyer or investigators to minimize the risk of further issues." }
+        ],
+        "whyUseForm": {
+          "title": "Why use the ScamNemesis form?",
+          "text": "Our form collects your data into a clear, downloadable PDF report and simultaneously scans our database for similar cases. If connections are found, your case is linked with other records and an analytical report is generated — completely free of charge. The complete report helps police, banks, and investigators act faster, more purposefully, and more effectively.",
+          "button": "Fill Out the Form Now"
+        },
+        "imageCaption": "Collecting Evidence and Filling Out the ScamNemesis Form"
+      },
+      "step5": {
+        "label": "Step 5",
+        "title": "Report the Fraud to the Police and Obtain Official Documents",
+        "paragraphs": [
+          "Visit the police immediately and bring all the documents and evidence you have collected so far. When reporting the incident, request a confirmation of the report and a copy of the official record – you will need these documents in the next steps.",
+          "If communication in English is required (for example, if the fraud involved a foreign bank), have the police report officially translated into English. Most banks, crypto exchanges, and institutions accept only certified translations, so it is best to arrange this as early as possible. Once you have the translation, send it to all involved parties – the bank, crypto exchange, and any other relevant institutions."
+        ],
+        "note": "Keep in mind that the police, especially in EU countries and the United States, are often overwhelmed with fraud cases. Therefore, it may be necessary to be persistent and actively request that your case be handled more thoroughly."
+      },
+      "step6": {
+        "label": "Step 6",
+        "title": "Continue Targeted Actions and Evidence Collection",
+        "paragraphs": [
+          "The next steps are more specific to your individual case and depend on your options, situation, and available resources. One thing always applies: keep collecting evidence and closely monitor the scammer's activities.",
+          "If the scammer knows that you will not send any more money and that you are aware of the fraud, you may consider sharing your story on online forums and trying to find publicly available information about them. However, do this only if you are no longer in contact with the scammer.",
+          "If the scammer is still communicating with you, try to maintain the conversation and use it as an opportunity to gather more information — for example, about their identity, location, or methods. In more complex cases, consider working with professionals who can help uncover the scammer's identity, obtain a confession, or secure additional evidence."
+        ],
+        "platformNote": "On the ScamNemesis platform, your case is automatically linked with other victims of the same scammer, and the evidence is continuously updated — you can even communicate with other victims. The more victims are connected and the larger and more detailed the case becomes, the higher priority the police are likely to assign to it.",
+        "imageCaption": "Professional Assistance for Recovering Money After a Scam"
+      },
+      "step7": {
+        "label": "Step 7",
+        "title": "The Truth About \"Money Recovery\" Services – Do You Need Professional Help?",
+        "paragraphs": [
+          "The reality of so-called \"money recovery\" services – companies that promise to help you get your stolen money back – is often very different from their marketing claims. Based on our experience with the largest providers and analysis of client feedback, we can say clearly: in most cases, these are scams or highly unethical practices.",
+          "The truth is that no service can give you a 100% guarantee that your money will be returned – whether it's a traditional scam or cryptocurrency fraud. What you can influence is the likelihood of success. Thorough analysis, collected evidence, and proper legal and technical steps can significantly increase this probability.",
+          "In response to the exploitation of victims by these companies, we created our own Money Recovery service, which is ethical, based on real legal and investigative procedures, and most importantly, affordable – not built on empty promises."
+        ],
+        "warning": "These companies typically charge $3,000 to $10,000, yet their \"work\" often consists only of basic assistance with reporting the fraud – something you can handle yourself. Most do not analyze evidence, use intelligence or OSINT techniques critical for investigations, and do not link related cases or victims. Often, they even know or suspect that your case is unrecoverable, yet they still take your money and make false promises of refunds – which no one can truly guarantee.",
+        "readMore": "Read more about our approach"
+      }
+    },
+    "whatElse": {
+      "title": "What else can I do?",
+      "optionA": {
+        "title": "Use the Scam Checker service",
+        "description": "Try to identify the scammer using our Scam Checker. This can help you gather intelligence and connect with other victims.",
+        "button": "Open Scam Checker"
+      },
+      "optionB": {
+        "title": "Consult a qualified lawyer",
+        "description": "Contact an experienced attorney in your home country and request an initial consultation. This will help you determine whether legal action is possible and what level of assistance to expect."
+      },
+      "lawyerTips": {
+        "title": "Important tips about lawyers:",
+        "intro": "Be cautious and choose a truly experienced professional. A competent lawyer will review all legal options to recover your funds, including tailored approaches depending on your specific situation.",
+        "examples": [
+          { "type": "info", "title": "Example 1:", "text": "If your credit card was stolen but the SMS verification code was not used, the bank will most likely refund your money." },
+          { "type": "warning", "title": "Example 2:", "text": "If the scammer obtained your card and tricked you into giving the verification code (phishing), alternative recovery methods will be required, because the bank or card issuer may refuse a refund." },
+          { "type": "error", "title": "Example 3:", "text": "If you made a standard bank transfer to an online shop but did not receive the goods or services, the bank may treat this as a commercial dispute and refuse to refund you. In such cases, other recovery methods are necessary." }
+        ]
+      }
+    },
+    "cta": {
+      "title": "By following these steps, you can maximize your chances of recovering stolen funds.",
+      "description": "Start by filling out our comprehensive reporting form. It's free, it will help you organize your evidence, and it generates a professional PDF report you can use with police and banks.",
+      "fillFormButton": "Fill Out Report Form",
+      "contactButton": "Contact Us for Help"
+    }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Get in Touch",
+      "title": "Contact",
+      "titleHighlight": "us",
+      "description": "You can contact us by email. But if you want to report a scam, please click the button below and fill out the form — without it, we won't be able to help you effectively.",
+      "emailLabel": "Email us at",
+      "reportPrompt": "Need to report fraud?",
+      "reportButton": "Report scam",
+      "quickResponse": {
+        "title": "Quick Response",
+        "description": "We respond to all inquiries within 24-48 hours"
+      },
+      "confidential": {
+        "title": "Confidential",
+        "description": "Your information is protected and kept strictly confidential"
+      },
+      "expertSupport": {
+        "title": "Expert Support",
+        "description": "Our team of specialists is here to assist you"
+      },
+      "cta": {
+        "title": "Ready to take action?",
+        "description": "If you've been affected by fraud, don't wait. Submit a detailed report so our team can begin investigating your case.",
+        "button": "Report scam"
+      }
+    },
+    "verifyService": {
+      "badge": "Professional Due Diligence Services",
+      "heroTitle": "Investigative Due Diligence & Business Partner Vetting",
+      "heroSubtitle": "Mitigate Risk Before You Engage",
+      "heroDescription": "Verify the Integrity of Your Next Business Partner, Supplier, or Investment",
+      "orderNow": "Order Service Now",
+      "learnMore": "Learn More",
+      "useCasesTitle": "When Is This Service Essential?",
+      "useCases": [
+        {
+          "title": "Evaluating Strategic Partnerships & Joint Ventures",
+          "description": "Before committing capital and resources, it is imperative to verify the operational, financial, and reputational integrity of a potential partner."
+        },
+        {
+          "title": "Onboarding Key Suppliers & Vendors",
+          "description": "A resilient and ethical supply chain is a critical business asset. We vet your key suppliers for financial stability and regulatory compliance."
+        },
+        {
+          "title": "Pre-Investment & M&A Screening",
+          "description": "For private equity firms and venture capitalists, our service provides essential preliminary integrity and reputational due diligence."
+        },
+        {
+          "title": "Vetting High-Value Clients (KYB Compliance)",
+          "description": "Protect your firm from financial crime and meet stringent regulatory requirements with our Know Your Business verification."
+        }
+      ],
+      "pillarsTitle": "Our Four Pillars of Investigation",
+      "pillars": [
+        {
+          "number": "1",
+          "title": "Corporate Identity & Legal Architecture",
+          "description": "We verify legal existence, ownership structure, and regulatory status across international business registries."
+        },
+        {
+          "number": "2",
+          "title": "Financial Integrity & Reputational Risks",
+          "description": "We examine public records, court filings, and media sources to uncover potential risks."
+        },
+        {
+          "number": "3",
+          "title": "Digital Footprint & Asset Mapping",
+          "description": "Using advanced OSINT tools, we trace online presence, domain history, and digital assets."
+        },
+        {
+          "number": "4",
+          "title": "Human Factor & Leadership Screening",
+          "description": "We conduct thorough background investigations into careers and potential conflicts of interest."
+        }
+      ],
+      "whatYouGet": "What You Get",
+      "reportTitle": "Due Diligence Report",
+      "reportDescription": "Comprehensive and Practical Report",
+      "reportDetails": "You will receive a comprehensive PDF report via email within 30 days.",
+      "reportIncludes": "Report Includes:",
+      "deliverables": [
+        "Verification of corporate identity and legal status",
+        "Analysis of ownership and management structure, including UBOs",
+        "Assessment of financial integrity and solvency",
+        "Reputation and risk evaluation",
+        "Audit of digital footprint and online assets"
+      ],
+      "transparentPricing": "Transparent Pricing",
+      "noSurprises": "No hidden fees. Fixed price for complete investigation.",
+      "processTitle": "Simple 3-Step Process",
+      "steps": [
+        { "title": "Complete the Online Form", "description": "Provide basic information about the entity you want to investigate." },
+        { "title": "Make a Secure Payment", "description": "Pay securely online. We accept all major payment methods." },
+        { "title": "Receive Your Report", "description": "Get your comprehensive due diligence report within 30 days." }
+      ],
+      "whyChooseTitle": "Why Choose ScamNemesis?",
+      "whyChoose": [
+        { "title": "Intelligence-Grade Expertise", "description": "Our team combines military intelligence, OSINT operations, and corporate investigations experience." },
+        { "title": "Certified Specialists", "description": "CFE®, CAMS®, CISA®, CISM®, OSCP® certified professionals conduct every investigation." },
+        { "title": "Advanced OSINT Techniques", "description": "We employ cutting-edge Open-Source Intelligence integrating hundreds of global databases." },
+        { "title": "Transparent Fixed Pricing", "description": "No hidden fees. All data handled according to strict confidentiality standards." }
+      ],
+      "ctaTitle": "Protect Your Business Today",
+      "ctaDescription": "Take your next strategic step with confidence. Order your due diligence report now.",
+      "ctaButton": "Order Due Diligence Report"
+    },
+    "about": {
+      "hero": {
+        "title": "About ScamNemesis",
+        "description": "We are a team of lawyers, forensic analysts, and ethical hackers dedicated to helping victims of crypto scams and investment frauds. Our mission is to protect people from fraud and help those who have been victimized."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "text1": "To create a safer digital environment by providing accessible fraud prevention tools, professional investigation services, and support for victims of online scams.",
+        "text2": "We believe everyone deserves protection from fraud, regardless of their financial situation. That's why we offer free tools alongside our professional services.",
+        "imageAlt": "Our Team"
+      },
+      "values": {
+        "title": "Our Values",
+        "items": [
+          { "title": "Transparency", "description": "We are honest about what we can and cannot do. No false promises, just professional investigation." },
+          { "title": "Expertise", "description": "Our team includes certified fraud examiners, OSINT specialists, and legal professionals." },
+          { "title": "Accessibility", "description": "Justice and safety should not be reserved only for those who can afford them financially." },
+          { "title": "Compassion", "description": "We understand the emotional impact of being scammed and treat every victim with respect." }
+        ]
+      },
+      "team": {
+        "title": "Expert Team",
+        "description": "Our team holds certifications from leading institutions with backgrounds in financial crime investigation, military intelligence, and Big 4 consulting.",
+        "credentials": [
+          "Certified Fraud Examiners (CFE®)",
+          "Certified Anti-Money Laundering Specialists (CAMS®)",
+          "Certified Information Systems Auditors (CISA®)",
+          "Certified Information Security Managers (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Military Intelligence Background",
+          "Big 4 Consulting Experience"
+        ]
+      },
+      "services": {
+        "title": "What We Offer",
+        "items": [
+          { "name": "Scam Checker", "description": "Free tool to verify identities and check for fraud indicators" },
+          { "name": "Scam Reporting", "description": "Comprehensive form to document and report fraud incidents" },
+          { "name": "Money Recovery", "description": "Professional investigation and fund recovery services" },
+          { "name": "Due Diligence", "description": "Business partner vetting and corporate verification" },
+          { "name": "Training", "description": "Cybersecurity and fraud prevention courses (coming soon)" },
+          { "name": "Second Chance Program", "description": "Rehabilitation support for former offenders" }
+        ]
+      },
+      "certifications": { "title": "Our Certifications" },
+      "cta": {
+        "title": "Need Help?",
+        "description": "Whether you want to check someone's legitimacy, report a scam, or need help recovering your money — we're here for you.",
+        "scamChecker": "Use Scam Checker",
+        "contact": "Contact Us"
+      }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Access the fraud database programmatically. Our API provides secure access to approved fraud reports for your application or service.",
+      "features": {
+        "fraudData": {
+          "title": "Fraud Data",
+          "description": "Access thousands of approved fraud reports with detailed information."
+        },
+        "secureApi": {
+          "title": "Secure API",
+          "description": "API keys with limited scopes, rate limiting, and encrypted communication."
+        },
+        "fastResponses": {
+          "title": "Fast Responses",
+          "description": "Optimized endpoints with average response time under 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Standard REST API with JSON responses. Easy to use in any language."
+        }
+      },
+      "quickStart": {
+        "title": "Quick Start",
+        "description": "Get started using the API in a few minutes",
+        "step1": {
+          "title": "1. Get an API Key",
+          "description": "Contact us at",
+          "descriptionEnd": "to obtain a partner agreement and API key."
+        },
+        "step2": {
+          "title": "2. Authentication",
+          "description": "Use your API key in the"
+        },
+        "step3": {
+          "title": "3. Your First Request"
+        },
+        "codeComment": "// JavaScript / Node.js example",
+        "arrayComment": "// Array of reports"
+      },
+      "apiReference": {
+        "title": "API Reference",
+        "description": "Complete documentation of all endpoints",
+        "tabs": {
+          "reports": "Reports",
+          "search": "Search",
+          "stats": "Stats"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Get a list of approved fraud reports. Sensitive data is masked.",
+          "queryParams": "Query Parameters",
+          "columns": {
+            "parameter": "Parameter",
+            "type": "Type",
+            "description": "Description"
+          },
+          "params": {
+            "limit": "Number of results (1-100, default: 20)",
+            "offset": "Offset for pagination",
+            "fraudType": "Filter by fraud type",
+            "country": "Filter by country (ISO 3166-1 alpha-2)",
+            "dateFrom": "Filter from date",
+            "dateTo": "Filter to date"
+          },
+          "exampleResponse": "Example Response"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Search the fraud database by email, phone, IBAN, website, or name.",
+          "queryParams": "Query Parameters",
+          "params": {
+            "q": "Search term (min. 3 characters)",
+            "qRequired": "required",
+            "field": "Field to search: email, phone, iban, website, name, all"
+          },
+          "example": "Example"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Get aggregated fraud statistics - counts, types, countries, financial losses.",
+          "exampleResponse": "Example Response"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API has limits set to protect against abuse:",
+        "columns": {
+          "endpoint": "Endpoint",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 req/hour",
+          "search": "50 req/hour",
+          "stats": "100 req/hour"
+        },
+        "note": "When exceeded, you will receive HTTP 429. Check the"
+      },
+      "errors": {
+        "title": "Error Responses",
+        "columns": {
+          "code": "Code",
+          "description": "Description"
+        },
+        "codes": {
+          "400": "Invalid request (validation error)",
+          "401": "Missing or invalid API key",
+          "403": "Insufficient permissions (scope)",
+          "429": "Rate limit exceeded",
+          "500": "Internal server error"
+        }
+      },
+      "cta": {
+        "title": "Want to Become a Partner?",
+        "description": "If you are interested in integrating our fraud database into your service, contact us to get an API key and partner agreement.",
+        "contactButton": "Contact Us",
+        "swaggerButton": "Swagger Documentation"
+      }
+    }
   }
 }

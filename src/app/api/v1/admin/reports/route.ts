@@ -3,6 +3,7 @@ import { Prisma, ReportStatus, Severity, FraudType } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -219,10 +220,6 @@ export async function GET(request: NextRequest) {
       stats,
     });
   } catch (error) {
-    console.error('Error fetching reports:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch reports' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/reports' });
   }
 }

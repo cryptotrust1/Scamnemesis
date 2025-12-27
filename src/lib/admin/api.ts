@@ -19,11 +19,34 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 401) {
-    // Token expired or not authenticated - redirect to login
+    // Token expired or not authenticated - clear localStorage and redirect to login
     if (typeof window !== 'undefined') {
+      // CRITICAL: Clear cached user to prevent redirect loop
+      localStorage.removeItem('admin_user');
       window.location.href = '/admin/login';
     }
     throw new Error('Relácia vypršala. Prihláste sa znova.');
+  }
+
+  if (response.status === 429) {
+    // Rate limited - provide helpful message
+    const retryAfter = response.headers.get('Retry-After');
+    const resetTime = response.headers.get('X-RateLimit-Reset');
+    let waitTime = 'niekoľko minút';
+
+    if (retryAfter) {
+      const seconds = parseInt(retryAfter, 10);
+      if (seconds < 60) {
+        waitTime = `${seconds} sekúnd`;
+      } else {
+        waitTime = `${Math.ceil(seconds / 60)} minút`;
+      }
+    } else if (resetTime) {
+      const resetDate = new Date(parseInt(resetTime, 10) * 1000);
+      waitTime = resetDate.toLocaleTimeString('sk-SK');
+    }
+
+    throw new Error(`Príliš veľa požiadaviek. Skúste znova o ${waitTime}. Ak problém pretrváva, kontaktujte administrátora.`);
   }
 
   const data = await response.json();
@@ -40,22 +63,35 @@ async function handleResponse<T>(response: Response): Promise<T> {
 export interface Report {
   id: string;
   publicId: string;
-  title: string;
+  caseNumber?: string;
+  summary: string;
   description?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'DRAFT';
+  status: string; // lowercase: 'pending' | 'approved' | 'rejected' | 'under_review' | 'merged' | 'archived'
   fraudType: string;
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  reporterEmail?: string;
-  perpetratorName?: string;
-  perpetratorEmail?: string;
-  perpetratorPhone?: string;
-  perpetratorIban?: string;
-  amount?: number;
-  currency?: string;
+  severity: string; // lowercase: 'low' | 'medium' | 'high' | 'critical'
+  financialLoss?: {
+    amount: number;
+    currency: string;
+  } | null;
   country?: string;
+  reporter?: {
+    id?: string;
+    email?: string;
+    displayName?: string;
+  } | null;
+  moderatedBy?: {
+    id: string;
+    displayName?: string;
+  } | null;
+  counts?: {
+    perpetrators: number;
+    evidence: number;
+    comments: number;
+  };
   createdAt: string;
+  updatedAt?: string;
   publishedAt?: string;
-  similarCount?: number;
+  moderatedAt?: string;
 }
 
 export interface ReportsResponse {
@@ -78,13 +114,14 @@ export interface ReportFilters {
 export async function fetchReports(filters: ReportFilters = {}): Promise<ReportsResponse> {
   const params = new URLSearchParams();
   if (filters.status && filters.status !== 'all') params.append('status', filters.status);
-  if (filters.fraudType && filters.fraudType !== 'all') params.append('fraud_type', filters.fraudType);
+  if (filters.fraudType && filters.fraudType !== 'all') params.append('fraudType', filters.fraudType);
   if (filters.severity && filters.severity !== 'all') params.append('severity', filters.severity);
   if (filters.search) params.append('q', filters.search);
   params.append('page', String(filters.page || 1));
-  params.append('page_size', String(filters.pageSize || 10));
+  params.append('pageSize', String(filters.pageSize || 10));
 
-  const response = await fetch(`${API_BASE}/reports?${params}`, {
+  // Use admin endpoint for full access to all reports
+  const response = await fetch(`${API_BASE}/admin/reports?${params}`, {
     ...fetchOptions,
     headers: getHeaders(),
   });
@@ -230,6 +267,11 @@ export interface CommentsResponse {
   total: number;
   page: number;
   pageSize: number;
+  stats?: {
+    pending: number;
+    reported: number;
+    total: number;
+  };
 }
 
 export interface CommentFilters {

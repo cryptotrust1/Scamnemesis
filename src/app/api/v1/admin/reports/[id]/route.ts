@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -136,11 +137,7 @@ export async function PATCH(
       updated_at: updatedReport.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error('Error updating report:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to update report' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'PATCH /api/v1/admin/reports/[id]' });
   }
 }
 
@@ -217,12 +214,31 @@ export async function GET(
         email: p.email,
         phone: p.phone,
       })),
-      evidence: report.evidence.map(e => ({
-        id: e.id,
-        type: e.type.toLowerCase(),
-        url: e.url,
-        hash: e.hash,
-      })),
+      evidence: report.evidence.map((e) => {
+        // Generate URL from fileKey (same logic as public API)
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+        let fileUrl = e.url || e.externalUrl || '';
+
+        if (e.fileKey && !fileUrl) {
+          fileUrl = siteUrl
+            ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`
+            : `/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`;
+        }
+
+        return {
+          id: e.id,
+          type: e.type.toLowerCase(),
+          url: fileUrl,
+          fileKey: e.fileKey,
+          externalUrl: e.externalUrl,
+          description: e.description,
+          mimeType: e.mimeType,
+          fileSize: e.fileSize,
+          thumbnailUrl: e.thumbnailUrl || (fileUrl && e.mimeType?.startsWith('image/') ? fileUrl : null),
+          hash: e.hash,
+          createdAt: e.createdAt.toISOString(),
+        };
+      }),
       comments: report.comments.map(c => ({
         id: c.id,
         content: c.content,
@@ -250,10 +266,6 @@ export async function GET(
       moderated_at: report.moderatedAt?.toISOString(),
     });
   } catch (error) {
-    console.error('Error fetching report:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to fetch report' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'GET /api/v1/admin/reports/[id]' });
   }
 }

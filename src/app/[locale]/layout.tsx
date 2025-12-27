@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { i18n, type Locale } from '@/i18n/config';
 import '../globals.css';
 import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Footer } from '@/components/layout';
 import { I18nProvider } from '@/lib/i18n/context';
+import { Providers } from '@/components/providers';
+import { Toaster } from '@/components/ui/toaster';
 
 // Use system font stack for reliability - avoids build failures due to font fetch issues
 const fontClass = 'font-sans';
@@ -41,6 +43,10 @@ export async function generateMetadata({
     description: descriptions[locale] || descriptions.en,
     keywords: locale === 'sk'
       ? ['kontrola podvodov', 'prevencia podvodov', 'overenie webu', 'kontrola podvodníka', 'overenie e-mailu', 'kontrola telefónneho čísla', 'nahlásenie podvodu', 'ochrana pred podvodmi', 'kybernetická bezpečnosť', 'kryptomenové podvody', 'phishing', 'romantické podvody', 'investičné podvody', 'krádeže identity', 'overenie firmy', 'online bezpečnosť', 'kontrola IBAN', 'sledovanie blockchainu', 'vymáhanie peňazí', 'digitálna forenzná analýza', 'OSINT', 'due diligence', 'firemné vyšetrovania', 'bezpečnostné školenia']
+      : locale === 'cs'
+      ? ['kontrola podvodů', 'prevence podvodů', 'ověření webu', 'kontrola podvodníka', 'ověření e-mailu', 'kontrola telefonního čísla', 'nahlášení podvodu', 'ochrana před podvody', 'kybernetická bezpečnost', 'kryptoměnové podvody', 'phishing', 'romantické podvody', 'investiční podvody', 'krádeže identity', 'ověření firmy', 'online bezpečnost', 'kontrola IBAN', 'sledování blockchainu', 'vymáhání peněz', 'digitální forenzní analýza', 'OSINT', 'due diligence', 'firemní vyšetřování', 'bezpečnostní školení']
+      : locale === 'de'
+      ? ['Betrugscheck', 'Betrugsprävention', 'Website überprüfen', 'Betrüger prüfen', 'E-Mail-Verifizierung', 'Telefonnummer prüfen', 'Betrug melden', 'Betrugsschutz', 'Cybersicherheit', 'Kryptowährungsbetrug', 'Phishing', 'Romance Scam', 'Investitionsbetrug', 'Identitätsdiebstahl', 'Firmenverifizierung', 'Online-Sicherheit', 'IBAN-Prüfung', 'Blockchain-Verfolgung', 'Geldwiederherstellung', 'Digitale Forensik', 'OSINT', 'Due Diligence', 'Unternehmensermittlungen', 'Sicherheitsschulung']
       : ['scam checker', 'fraud prevention', 'verify website', 'scammer check', 'email verification', 'phone number check', 'report scam', 'fraud protection', 'cybersecurity', 'cryptocurrency scams', 'phishing', 'romance scams', 'investment fraud', 'identity theft', 'company verification', 'online safety', 'IBAN check', 'blockchain tracing', 'money recovery', 'digital forensics', 'OSINT', 'due diligence', 'corporate investigations', 'security training'],
     authors: [{ name: 'ScamNemesis Team' }],
     creator: 'ScamNemesis',
@@ -56,12 +62,15 @@ export async function generateMetadata({
       languages: {
         'en': 'https://scamnemesis.com/en',
         'sk': 'https://scamnemesis.com/sk',
+        'cs': 'https://scamnemesis.com/cs',
+        'de': 'https://scamnemesis.com/de',
+        'x-default': 'https://scamnemesis.com/en',
       },
     },
     openGraph: {
       type: 'website',
-      locale: locale === 'sk' ? 'sk_SK' : 'en_US',
-      alternateLocale: locale === 'sk' ? 'en_US' : 'sk_SK',
+      locale: locale === 'sk' ? 'sk_SK' : locale === 'cs' ? 'cs_CZ' : locale === 'de' ? 'de_DE' : 'en_US',
+      alternateLocale: ['en_US', 'sk_SK', 'cs_CZ', 'de_DE'].filter(l => !l.startsWith(locale)),
       url: `https://scamnemesis.com/${locale}`,
       siteName: 'ScamNemesis',
       title: titles[locale] || titles.en,
@@ -111,12 +120,15 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${fontClass} antialiased`}>
-        <I18nProvider initialLocale={locale as 'sk' | 'en' | 'cs' | 'de'}>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </I18nProvider>
+      <body className={`${fontClass} antialiased min-h-screen flex flex-col`}>
+        <Providers>
+          <I18nProvider initialLocale={locale as 'sk' | 'en' | 'cs' | 'de'}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <Toaster />
+          </I18nProvider>
+        </Providers>
       </body>
     </html>
   );

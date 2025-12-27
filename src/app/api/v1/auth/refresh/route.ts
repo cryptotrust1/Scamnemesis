@@ -12,63 +12,15 @@ import {
   generateAccessToken,
   generateRefreshToken,
   getScopesForRole,
+  getJwtSecret,
+  JWT_ISSUER,
 } from '@/lib/auth/jwt';
+import { setAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { jwtVerify } from 'jose';
 
 export const dynamic = 'force-dynamic';
-
-// Cookie configuration
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: IS_PRODUCTION,
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Set auth tokens as HttpOnly cookies on the response
- */
-function setAuthCookies(
-  response: NextResponse,
-  accessToken: string,
-  refreshToken: string
-): void {
-  response.cookies.set('access_token', accessToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  response.cookies.set('refresh_token', refreshToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 7 * 24 * 60 * 60, // 7 days
-    path: '/api/v1/auth',
-  });
-}
-
-// Rate limit for refresh endpoint
-const REFRESH_RATE_LIMIT = 20; // 20 attempts per window
-const REFRESH_RATE_WINDOW = 900000; // 15 minutes
-
-// Lazy initialization of JWT secret to avoid build-time errors
-let _jwtSecret: Uint8Array | null = null;
-
-function getJwtSecret(): Uint8Array {
-  if (_jwtSecret) return _jwtSecret;
-
-  const jwtSecretString = process.env.JWT_SECRET;
-
-  if (!jwtSecretString && process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET environment variable is required in production');
-  }
-
-  _jwtSecret = new TextEncoder().encode(
-    jwtSecretString || 'dev-jwt-secret-not-for-production'
-  );
-
-  return _jwtSecret;
-}
 
 const refreshSchema = z.object({
   refresh_token: z.string().min(1),
@@ -78,8 +30,12 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:refresh:${ip}`;
-    const { allowed, resetAt } = await checkRateLimit(rateLimitKey, REFRESH_RATE_LIMIT, REFRESH_RATE_WINDOW);
+    const rateLimitKey = getRateLimitKey('refresh', ip);
+    const { allowed, resetAt } = await checkRateLimit(
+      rateLimitKey,
+      AUTH_RATE_LIMITS.REFRESH.limit,
+      AUTH_RATE_LIMITS.REFRESH.windowMs
+    );
 
     if (!allowed) {
       return NextResponse.json(
@@ -130,7 +86,7 @@ export async function POST(request: NextRequest) {
     let payload;
     try {
       const result = await jwtVerify(refresh_token, getJwtSecret(), {
-        issuer: 'scamnemesis',
+        issuer: JWT_ISSUER,
       });
       payload = result.payload;
     } catch {

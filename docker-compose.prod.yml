@@ -41,10 +41,13 @@ services:
       - "--entrypoints.websecure.address=:443"
 
       # =======================================================================
-      # Let's Encrypt Certificate Configuration
+      # Let's Encrypt Certificate Configuration (DNS-01 Challenge)
+      # DNS-01 works with Cloudflare proxy mode (orange cloud) enabled!
       # =======================================================================
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=10"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
       - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       # IMPORTANT: Uncomment line below for testing to avoid Let's Encrypt rate limits
@@ -60,6 +63,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      # Cloudflare API for DNS-01 challenge (required for SSL certificates)
+      # IMPORTANT: Must be CF_DNS_API_TOKEN (not CF_API_TOKEN) - this is what lego/Traefik expects
+      CF_DNS_API_TOKEN: "${CLOUDFLARE_API_TOKEN}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_certs:/letsencrypt
@@ -89,6 +96,7 @@ services:
       dockerfile: Dockerfile
       target: production
     container_name: scamnemesis-migrations
+    user: root  # Required for apt-get install fallback
     logging: *default-logging
     environment:
       - NODE_ENV=production
@@ -106,28 +114,67 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        echo "=== Running Prisma migrations ==="
+        echo "=== Running Database Migrations ==="
         # Construct DATABASE_URL with encoded password
         ENCODED_PASSWORD=$$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$$POSTGRES_PASSWORD")
         export DATABASE_URL="postgresql://$$POSTGRES_USER:$$ENCODED_PASSWORD@postgres:5432/$$POSTGRES_DB"
+
+        # Install psql client (always needed for fallback/verification)
+        echo "Installing PostgreSQL client..."
+        apt-get update -qq && apt-get install -y -qq postgresql-client > /dev/null 2>&1
 
         # Use direct path to Prisma CLI (npx not available in production image)
         PRISMA_BIN="/app/node_modules/.bin/prisma"
 
         # Try migrate deploy first (production-safe)
+        echo "Attempting Prisma migrate deploy..."
         if $$PRISMA_BIN migrate deploy 2>&1; then
           echo "=== Prisma migrations applied successfully! ==="
           exit 0
         fi
 
-        # Fallback to db push for fresh installs
-        echo "migrate deploy failed, trying db push..."
-        if $$PRISMA_BIN db push --skip-generate 2>&1; then
-          echo "=== Database schema synchronized! ==="
-          exit 0
+        echo "=== Prisma failed (expected in production), running ALL migration SQL files ==="
+
+        # Run ALL migration SQL files in order (sorted by directory name)
+        MIGRATIONS_DIR="/app/prisma/migrations"
+        MIGRATION_COUNT=0
+        MIGRATION_ERRORS=0
+
+        for migration_dir in $$(ls -d $$MIGRATIONS_DIR/*/ 2>/dev/null | sort); do
+          migration_sql="$$migration_dir/migration.sql"
+          if [ -f "$$migration_sql" ]; then
+            migration_name=$$(basename $$migration_dir)
+            echo "Running migration: $$migration_name"
+
+            # Run the migration SQL (ignore errors for idempotent migrations)
+            PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f "$$migration_sql" 2>&1 || true
+            MIGRATION_COUNT=$$((MIGRATION_COUNT + 1))
+          fi
+        done
+
+        if [ $$MIGRATION_COUNT -eq 0 ]; then
+          echo "ERROR: No migration files found in $$MIGRATIONS_DIR!"
+          exit 1
         fi
 
-        echo "WARNING: Migrations may have failed, app will retry on startup"
+        echo "=== Applied $$MIGRATION_COUNT migration files ==="
+
+        # Verify critical columns exist after migrations
+        echo "Verifying critical schema elements..."
+        VERIFICATION_FAILED=0
+
+        # Check for 2FA columns (common migration issue)
+        TOTP_CHECK=$$(PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -t -c "SELECT COUNT(*) FROM information_schema.columns WHERE table_name='users' AND column_name='backup_codes';" 2>/dev/null | tr -d ' ')
+
+        if [ "$$TOTP_CHECK" = "0" ]; then
+          echo "WARNING: backup_codes column missing, adding..."
+          PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -c "ALTER TABLE users ADD COLUMN IF NOT EXISTS backup_codes TEXT[] DEFAULT ARRAY[]::TEXT[];"
+          PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -c "ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_secret TEXT;"
+          PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -c "ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_enabled BOOLEAN NOT NULL DEFAULT false;"
+          PGPASSWORD="$$POSTGRES_PASSWORD" psql -h postgres -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -c "ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_verified_at TIMESTAMP(3);"
+        fi
+
+        echo "=== Database migrations completed successfully! ==="
         exit 0
     networks:
       - scamnemesis
@@ -141,6 +188,20 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
+      args:
+        - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN:-}
+        - SENTRY_ORG=${SENTRY_ORG:-m0ne-sro}
+        - SENTRY_PROJECT=${SENTRY_PROJECT:-scamnemesis}
+        # =====================================================================
+        # CRITICAL: NEXT_PUBLIC_* must be passed as BUILD ARGS, not just ENV!
+        # Next.js embeds these at build time into the JavaScript bundle.
+        # =====================================================================
+        - NEXT_PUBLIC_API_URL=https://${DOMAIN:-localhost}
+        - NEXT_PUBLIC_DOMAIN=${DOMAIN:-localhost}
+        - NEXT_PUBLIC_SITE_URL=https://${DOMAIN:-localhost}
+        - NEXT_PUBLIC_GOOGLE_ENABLED=${NEXT_PUBLIC_GOOGLE_ENABLED:-false}
+        - NEXT_PUBLIC_GITHUB_ENABLED=${NEXT_PUBLIC_GITHUB_ENABLED:-false}
+        - NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
     container_name: scamnemesis-app
     restart: always
     logging: *default-logging
@@ -176,6 +237,32 @@ services:
       # Admin setup (generate secure values!)
       - ADMIN_SETUP_TOKEN=${ADMIN_SETUP_TOKEN}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@scamnemesis.com}
+      # Auth.js (NextAuth v5) - CRITICAL for authentication
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
+      - NEXTAUTH_URL=https://${DOMAIN:-localhost}
+      # Sentry error tracking (runtime)
+      - SENTRY_ORG=${SENTRY_ORG:-m0ne-sro}
+      - SENTRY_PROJECT=${SENTRY_PROJECT:-scamnemesis}
+      # =======================================================================
+      # Email Service (Resend) - REQUIRED for email verification
+      # =======================================================================
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - FROM_EMAIL=${FROM_EMAIL:-noreply@scamnemesis.com}
+      # =======================================================================
+      # OAuth Providers (Google, GitHub) - Optional
+      # =======================================================================
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - NEXT_PUBLIC_GOOGLE_ENABLED=${NEXT_PUBLIC_GOOGLE_ENABLED:-false}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-}
+      - NEXT_PUBLIC_GITHUB_ENABLED=${NEXT_PUBLIC_GITHUB_ENABLED:-false}
+      # =======================================================================
+      # CAPTCHA (Cloudflare Turnstile) - Required in production
+      # =======================================================================
+      - NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy

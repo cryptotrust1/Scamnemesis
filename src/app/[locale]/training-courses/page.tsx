@@ -29,92 +29,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Script from 'next/script';
+import { useTranslation } from '@/lib/i18n/context';
 
-// Free Public Courses Data
-const freeCourses = [
-  {
-    title: 'How to recognize a scam — key red flags and warning signals',
-    icon: AlertTriangle,
-    color: 'red',
-  },
-  {
-    title: 'What to do if you\'ve been scammed — a quick, effective response guide',
-    icon: Shield,
-    color: 'blue',
-  },
-  {
-    title: 'How to set up your phone and computer securely',
-    icon: Smartphone,
-    color: 'purple',
-  },
-  {
-    title: 'How to behave safely online — practical habits and guidelines',
-    icon: Monitor,
-    color: 'cyan',
-  },
-  {
-    title: 'How to protect your children online',
-    icon: Baby,
-    color: 'pink',
-  },
-];
+// Free course icons
+const freeCourseIcons = [AlertTriangle, Shield, Smartphone, Monitor, Baby];
+const freeCourseColors = ['red', 'blue', 'purple', 'cyan', 'pink'];
 
-// Professional Audience Data
-const professionalAudiences = [
-  {
-    title: 'AML Specialists',
-    description: 'In-depth modules on transaction monitoring, red flags, and investigative techniques.',
-    icon: Scale,
-    color: 'blue',
-  },
-  {
-    title: 'Police Officers',
-    description: 'Focused on investigation methodology, evidence collection, and cyber-enabled crime response.',
-    icon: ShieldCheck,
-    color: 'emerald',
-  },
-  {
-    title: 'Accountants',
-    description: 'Fraud indicators in financial records, internal controls, and whistleblower best practices.',
-    icon: Calculator,
-    color: 'purple',
-  },
-  {
-    title: 'IT and Security Personnel',
-    description: 'Network defense, phishing simulations, secure infrastructure configuration.',
-    icon: Lock,
-    color: 'cyan',
-  },
-  {
-    title: 'Investigators',
-    description: 'OSINT techniques, digital forensics fundamentals, and case documentation.',
-    icon: FileSearch,
-    color: 'amber',
-  },
-];
-
-// Differentiators Data
-const differentiators = [
-  {
-    emoji: '📡',
-    title: 'Live threat intelligence',
-    description: 'We work daily on active crypto and investment fraud cases, so our content always reflects the latest tactics used by criminals.',
-  },
-  {
-    emoji: '🔄',
-    title: 'Continuously updated curriculum',
-    description: 'As new scam methods emerge, our courses evolve, ensuring you\'re never behind.',
-  },
-  {
-    emoji: '🛡️',
-    title: 'Practical, not just theoretical',
-    description: 'We teach actual protection strategies, not just abstract concepts.',
-  },
-  {
-    emoji: '💡',
-    title: 'From victims to experts',
-    description: 'Our perspective includes deep insight into both victim psychology and scammer behavior, giving you a 360° understanding.',
-  },
+// Professional audience icons and colors
+const professionalConfig = [
+  { icon: Scale, color: 'blue' },
+  { icon: ShieldCheck, color: 'emerald' },
+  { icon: Calculator, color: 'purple' },
+  { icon: Lock, color: 'cyan' },
+  { icon: FileSearch, color: 'amber' },
 ];
 
 // JSON-LD Schemas for SEO
@@ -226,6 +153,13 @@ const itemListSchema = {
 };
 
 export default function TrainingCoursesPage() {
+  const { t, tv, locale } = useTranslation();
+
+  // Get translations as arrays - use tv() for arrays
+  const freeCourseItems = tv<string[]>('trainingCourses.freeCourses.items') || [];
+  const professionalAudiences = tv<{ title: string; description: string }[]>('trainingCourses.professionalVideos.audiences') || [];
+  const differentiators = tv<{ emoji: string; title: string; description: string }[]>('trainingCourses.differentiators.items') || [];
+
   return (
     <>
       {/* JSON-LD Schemas */}
@@ -279,14 +213,14 @@ export default function TrainingCoursesPage() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-10 leading-tight tracking-tight">
-                World-class, expert-led cybersecurity training from the world&apos;s{' '}
+                {t('trainingCourses.hero.title')}{' '}
                 <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                  top security professionals.
+                  {t('trainingCourses.hero.titleHighlight')}
                 </span>
               </h1>
 
               <p className="text-lg md:text-xl lg:text-2xl text-slate-300/90 max-w-4xl mx-auto mb-14 leading-relaxed">
-                Prevent fraud and attacks—secure your environment and strengthen cyber resilience with Scamnemesis.
+                {t('trainingCourses.hero.description')}
               </p>
 
               {/* Coming Soon Badge */}
@@ -297,17 +231,19 @@ export default function TrainingCoursesPage() {
                       <div className="p-3 rounded-xl bg-amber-500/20">
                         <Clock className="h-7 w-7 text-amber-400" />
                       </div>
-                      <span className="text-2xl md:text-3xl font-bold text-amber-400">Coming Soon</span>
+                      <span className="text-2xl md:text-3xl font-bold text-amber-400">
+                        {t('trainingCourses.hero.comingSoon')}
+                      </span>
                     </div>
                     <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
-                      Our training courses are currently in development. Contact us at{' '}
+                      {t('trainingCourses.hero.comingSoonText')}{' '}
                       <a
                         href="mailto:info@scamnemesis.com"
                         className="text-blue-400 hover:text-blue-300 underline underline-offset-4 font-semibold transition-colors"
                       >
                         info@scamnemesis.com
                       </a>{' '}
-                      to be notified when they launch.
+                      {t('trainingCourses.hero.comingSoonTextEnd')}
                     </p>
                   </CardContent>
                 </Card>
@@ -322,16 +258,15 @@ export default function TrainingCoursesPage() {
             <div className="max-w-5xl mx-auto text-center">
               <div className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-base font-medium mb-10">
                 <Sparkles className="h-5 w-5" />
-                Our Programs
+                {t('trainingCourses.programs.badge')}
               </div>
 
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-10 leading-tight">
-                Cybersecurity Courses
+                {t('trainingCourses.programs.title')}
               </h2>
 
               <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-4xl mx-auto">
-                We offer training and educational content tailored for different audiences — from the general public
-                seeking basic protection to specialized professionals and organizations requiring advanced instruction.
+                {t('trainingCourses.programs.description')}
               </p>
             </div>
           </div>
@@ -352,22 +287,23 @@ export default function TrainingCoursesPage() {
                         <Play className="h-10 w-10 text-white" />
                       </div>
                       <div className="inline-flex px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
-                        FREE
+                        {t('trainingCourses.freeCourses.badge')}
                       </div>
                     </div>
                     <CardTitle className="text-2xl md:text-3xl text-slate-900 dark:text-white leading-tight">
-                      Free Courses for the Public
+                      {t('trainingCourses.freeCourses.title')}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="px-10 pb-10 space-y-8">
                     <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                      Short, practical lessons to protect yourself and your loved ones online:
+                      {t('trainingCourses.freeCourses.description')}
                     </p>
 
                     <ul className="space-y-5">
-                      {freeCourses.map((course, index) => {
-                        const Icon = course.icon;
+                      {freeCourseItems.map((item, index) => {
+                        const Icon = freeCourseIcons[index] || AlertTriangle;
+                        const color = freeCourseColors[index] || 'red';
                         const colorClasses: Record<string, string> = {
                           red: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
                           blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
@@ -377,11 +313,11 @@ export default function TrainingCoursesPage() {
                         };
                         return (
                           <li key={index} className="flex items-start gap-4">
-                            <div className={`flex-shrink-0 p-2.5 rounded-xl ${colorClasses[course.color]}`}>
+                            <div className={`flex-shrink-0 p-2.5 rounded-xl ${colorClasses[color]}`}>
                               <Icon className="h-5 w-5" />
                             </div>
                             <span className="text-base text-slate-700 dark:text-slate-300 leading-relaxed pt-1">
-                              {course.title}
+                              {item}
                             </span>
                           </li>
                         );
@@ -400,23 +336,23 @@ export default function TrainingCoursesPage() {
                         <Lock className="h-10 w-10 text-white" />
                       </div>
                       <div className="inline-flex px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-sm font-semibold">
-                        PROFESSIONAL
+                        {t('trainingCourses.professionalVideos.badge')}
                       </div>
                     </div>
                     <CardTitle className="text-2xl md:text-3xl text-slate-900 dark:text-white leading-tight">
-                      Professional Videos
+                      {t('trainingCourses.professionalVideos.title')}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="px-10 pb-10 space-y-8">
                     <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                      OPSEC and cybersecurity for professionals — training for specialists who need to recognize,
-                      prevent, and respond to threats:
+                      {t('trainingCourses.professionalVideos.description')}
                     </p>
 
                     <ul className="space-y-5">
                       {professionalAudiences.map((audience, index) => {
-                        const Icon = audience.icon;
+                        const config = professionalConfig[index] || professionalConfig[0];
+                        const Icon = config.icon;
                         const colorClasses: Record<string, string> = {
                           blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
                           emerald: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
@@ -426,7 +362,7 @@ export default function TrainingCoursesPage() {
                         };
                         return (
                           <li key={index} className="flex items-start gap-4">
-                            <div className={`flex-shrink-0 p-2.5 rounded-xl ${colorClasses[audience.color]}`}>
+                            <div className={`flex-shrink-0 p-2.5 rounded-xl ${colorClasses[config.color]}`}>
                               <Icon className="h-5 w-5" />
                             </div>
                             <div className="pt-0.5">
@@ -451,23 +387,21 @@ export default function TrainingCoursesPage() {
                         <Building className="h-10 w-10 text-white" />
                       </div>
                       <div className="inline-flex px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm font-semibold">
-                        CUSTOM
+                        {t('trainingCourses.companyTraining.badge')}
                       </div>
                     </div>
                     <CardTitle className="text-2xl md:text-3xl text-slate-900 dark:text-white leading-tight">
-                      Company Training and Security Methodology
+                      {t('trainingCourses.companyTraining.title')}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="px-10 pb-10 space-y-8">
                     <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                      We train staff and help implement a complete security methodology — so every team member knows
-                      what to do and who to contact in case of a threat.
+                      {t('trainingCourses.companyTraining.description1')}
                     </p>
 
                     <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                      Our corporate programs include policy implementation, role clarification, incident response
-                      procedures, and ongoing support.
+                      {t('trainingCourses.companyTraining.description2')}
                     </p>
 
                     <div className="pt-4">
@@ -476,9 +410,9 @@ export default function TrainingCoursesPage() {
                         className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/25 text-lg py-7 font-semibold"
                         asChild
                       >
-                        <Link href="/contact-us">
+                        <Link href={`/${locale}/contact-us`}>
                           <Mail className="mr-3 h-5 w-5" />
-                          Request Custom Training
+                          {t('trainingCourses.companyTraining.button')}
                         </Link>
                       </Button>
                     </div>
@@ -497,10 +431,10 @@ export default function TrainingCoursesPage() {
               <div className="text-center mb-20 md:mb-24">
                 <div className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-base font-medium mb-10">
                   <Target className="h-5 w-5" />
-                  Why Choose Us
+                  {t('trainingCourses.differentiators.badge')}
                 </div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-10 leading-tight">
-                  What makes our training unique?
+                  {t('trainingCourses.differentiators.title')}
                 </h2>
               </div>
 
@@ -513,7 +447,7 @@ export default function TrainingCoursesPage() {
                     { border: 'border-purple-200 dark:border-purple-800/50', bg: 'from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20' },
                     { border: 'border-amber-200 dark:border-amber-800/50', bg: 'from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20' },
                   ];
-                  const colors = colorSchemes[index];
+                  const colors = colorSchemes[index] || colorSchemes[0];
 
                   return (
                     <Card
@@ -573,11 +507,10 @@ export default function TrainingCoursesPage() {
                     {/* Content */}
                     <div className="flex-1 text-center lg:text-left space-y-6">
                       <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
-                        Certifications and Credentials
+                        {t('trainingCourses.certifications.title')}
                       </h2>
                       <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
-                        Our instructors and content creators hold recognized certifications in cybersecurity,
-                        fraud investigation, and compliance — bringing credibility and expertise to every lesson.
+                        {t('trainingCourses.certifications.description')}
                       </p>
                     </div>
                   </div>
@@ -606,12 +539,11 @@ export default function TrainingCoursesPage() {
               </div>
 
               <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
-                Book a Free Consultation
+                {t('trainingCourses.cta.title')}
               </h2>
 
               <p className="text-lg md:text-xl lg:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                Whether you&apos;re an individual looking to learn, a professional seeking certification-track
-                training, or an organization interested in a tailored security program, we&apos;re here to help.
+                {t('trainingCourses.cta.description')}
               </p>
 
               <div className="pt-6">
@@ -620,9 +552,9 @@ export default function TrainingCoursesPage() {
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl shadow-blue-500/25 transition-all duration-300 hover:scale-105 text-xl px-14 py-8 font-semibold"
                   asChild
                 >
-                  <Link href="/contact-us">
+                  <Link href={`/${locale}/contact-us`}>
                     <Zap className="mr-4 h-7 w-7" />
-                    Book a Free Consultation
+                    {t('trainingCourses.cta.button')}
                     <ArrowRight className="ml-4 h-6 w-6" />
                   </Link>
                 </Button>
@@ -632,15 +564,15 @@ export default function TrainingCoursesPage() {
               <div className="flex flex-wrap justify-center gap-10 pt-10 text-slate-400">
                 <div className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5" />
-                  <span className="text-base">Free Consultation</span>
+                  <span className="text-base">{t('trainingCourses.cta.freeConsultation')}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="h-5 w-5" />
-                  <span className="text-base">Expert Instructors</span>
+                  <span className="text-base">{t('trainingCourses.cta.expertInstructors')}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <RefreshCw className="h-5 w-5" />
-                  <span className="text-base">Updated Content</span>
+                  <span className="text-base">{t('trainingCourses.cta.updatedContent')}</span>
                 </div>
               </div>
             </div>

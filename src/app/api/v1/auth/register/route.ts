@@ -6,68 +6,28 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z, type ZodIssue } from 'zod';
-import { SignJWT } from 'jose';
+import * as Sentry from '@sentry/nextjs';
+import { Prisma } from '@prisma/client';
 import prisma from '@/lib/db';
 import {
   hashPassword,
   generateAccessToken,
   generateRefreshToken,
   getScopesForRole,
+  PASSWORD_REGEX,
+  PASSWORD_REQUIREMENTS,
+  generateEmailVerificationToken,
 } from '@/lib/auth/jwt';
+import { setAuthCookies } from '@/lib/auth/cookies';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
+import { verifyCaptcha, isCaptchaEnabled } from '@/lib/captcha';
+import { createRequestLogger, generateRequestId } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scamnemesis.com';
-
-// Cookie configuration (must match token endpoint)
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: IS_PRODUCTION,
-  sameSite: 'lax' as const,
-  path: '/',
-};
-
-/**
- * Set auth tokens as HttpOnly cookies on the response
- */
-function setAuthCookies(
-  response: NextResponse,
-  accessToken: string,
-  refreshToken: string
-): void {
-  // Access token cookie - 1 hour
-  response.cookies.set('access_token', accessToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  // Refresh token cookie - 7 days
-  response.cookies.set('refresh_token', refreshToken, {
-    ...COOKIE_OPTIONS,
-    maxAge: 7 * 24 * 60 * 60, // 7 days
-    path: '/api/v1/auth', // Restrict to auth endpoints only
-  });
-}
-
-// JWT_SECRET validation at runtime to avoid build-time failures
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required.');
-  }
-  return secret;
-}
-
-// Rate limit: 5 registrations per hour per IP
-const REGISTER_RATE_LIMIT = 5;
-const REGISTER_RATE_WINDOW = 3600000; // 1 hour in milliseconds
-
-// Password validation regex
-// Requires: 9+ chars, uppercase, lowercase, number, and special character
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
 
 // Request schema
 const registerSchema = z.object({
@@ -75,22 +35,27 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(9, 'Password must be at least 9 characters')
-    .regex(
-      PASSWORD_REGEX,
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
-    ),
+    .regex(PASSWORD_REGEX, PASSWORD_REQUIREMENTS),
   name: z.string().optional(),
+  captchaToken: z.string().optional(), // Turnstile CAPTCHA token
 });
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  const log = createRequestLogger(requestId, 'AuthRegister');
+
+  // Track which step we're on for debugging 500 errors
+  let currentStep = 'init';
+
   try {
+    currentStep = 'rate-limiting';
     // Rate limiting to prevent abuse
     const ip = getClientIp(request);
-    const rateLimitKey = `auth:register:${ip}`;
+    const rateLimitKey = getRateLimitKey('register', ip);
     const { allowed, resetAt } = await checkRateLimit(
       rateLimitKey,
-      REGISTER_RATE_LIMIT,
-      REGISTER_RATE_WINDOW
+      AUTH_RATE_LIMITS.REGISTER.limit,
+      AUTH_RATE_LIMITS.REGISTER.windowMs
     );
 
     if (!allowed) {
@@ -108,6 +73,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'parse-body';
     // Parse and validate request body
     const body = await request.json();
     const parsed = registerSchema.safeParse(body);
@@ -128,8 +94,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, password, name } = parsed.data;
+    const { email, password, name, captchaToken } = parsed.data;
 
+    currentStep = 'captcha-check';
+    // Verify CAPTCHA if enabled
+    if (isCaptchaEnabled()) {
+      const captchaResult = await verifyCaptcha(captchaToken, ip);
+      if (!captchaResult.success) {
+        return NextResponse.json(
+          {
+            error: 'captcha_failed',
+            message: 'CAPTCHA verification failed. Please try again.',
+            errors: captchaResult.errors,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    currentStep = 'check-existing-user';
     // Check if email already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
@@ -146,9 +129,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    currentStep = 'hash-password';
     // Hash password
     const passwordHash = await hashPassword(password);
 
+    currentStep = 'create-user';
     // Create user in database
     const user = await prisma.user.create({
       data: {
@@ -166,6 +151,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    currentStep = 'generate-tokens';
     // Get scopes for role
     const scopes = getScopesForRole(user.role);
 
@@ -173,6 +159,7 @@ export async function POST(request: NextRequest) {
     const accessToken = await generateAccessToken(user.id, user.email, user.role, scopes);
     const refreshToken = await generateRefreshToken(user.id);
 
+    currentStep = 'store-refresh-token';
     // Store refresh token and create audit log
     await prisma.$transaction([
       prisma.refreshToken.create({
@@ -198,17 +185,9 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
+    currentStep = 'generate-email-token';
     // Generate email verification token (valid for 24 hours)
-    const secret = new TextEncoder().encode(getJwtSecret());
-    const verificationToken = await new SignJWT({
-      sub: user.id,
-      email: user.email,
-      type: 'email_verification',
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('24h')
-      .sign(secret);
+    const verificationToken = await generateEmailVerificationToken(user.id, user.email);
 
     // Build verification URL
     const verificationUrl = `${SITE_URL}/auth/verify-email?token=${verificationToken}`;
@@ -245,11 +224,57 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Registration error:', error);
+    // Handle Prisma unique constraint violation (race condition: same email registered twice)
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      log.warn('Registration race condition - email already exists', {
+        step: currentStep,
+        requestId,
+      });
+      return NextResponse.json(
+        {
+          error: 'email_exists',
+          message: 'An account with this email already exists',
+        },
+        { status: 409 }
+      );
+    }
+
+    // Log detailed error with the step where it failed
+    log.error('Registration error', {
+      step: currentStep,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Also log to console for easier debugging
+    console.error(`[Register] FAILED at step '${currentStep}':`, error);
+
+    Sentry.captureException(error, {
+      tags: { api: 'auth', method: 'POST', endpoint: 'register', step: currentStep },
+      extra: { requestId, failedStep: currentStep },
+    });
+
+    // Extract detailed error info for debugging
+    let errorDetails = 'unknown';
+    let errorCode = '';
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      errorDetails = `Prisma ${error.code}: ${error.message}`;
+      errorCode = error.code;
+    } else if (error instanceof Error) {
+      errorDetails = error.message;
+    } else {
+      errorDetails = String(error);
+    }
+
     return NextResponse.json(
       {
         error: 'internal_error',
         message: 'An unexpected error occurred during registration',
+        request_id: requestId,
+        // Include step and error details for debugging
+        debug_step: currentStep,
+        debug_error: errorDetails,
+        debug_code: errorCode,
       },
       { status: 500 }
     );

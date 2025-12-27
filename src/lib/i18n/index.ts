@@ -35,7 +35,7 @@ const translations: Record<Locale, typeof sk> = {
   de,
 };
 
-export const defaultLocale: Locale = 'sk';
+export const defaultLocale: Locale = 'en'; // Standardized: English is default for international platform
 
 /**
  * Get the browser's preferred locale
@@ -82,9 +82,17 @@ export function getInitialLocale(): Locale {
 }
 
 /**
- * Get translation value by dot-notation path
+ * Get translation value by dot-notation path (returns string only)
  */
 export function getTranslation(locale: Locale, path: string): string {
+  const value = getTranslationValue(locale, path);
+  return typeof value === 'string' ? value : path;
+}
+
+/**
+ * Get any translation value by dot-notation path (returns string, array, or object)
+ */
+export function getTranslationValue(locale: Locale, path: string): unknown {
   const keys = path.split('.');
   let value: unknown = translations[locale];
 
@@ -98,14 +106,14 @@ export function getTranslation(locale: Locale, path: string): string {
         if (value && typeof value === 'object' && k in value) {
           value = (value as Record<string, unknown>)[k];
         } else {
-          return path; // Return path if not found
+          return undefined; // Return undefined if not found
         }
       }
       break;
     }
   }
 
-  return typeof value === 'string' ? value : path;
+  return value;
 }
 
 /**

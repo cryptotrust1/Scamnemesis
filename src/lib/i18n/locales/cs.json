@@ -59,6 +59,101 @@
       "oldest": "Nejstarší",
       "amountHigh": "Nejvyšší částka",
       "amountLow": "Nejnižší částka"
+    },
+    "filtersPanel": {
+      "title": "Vyhledávání a filtry",
+      "reset": "Zrušit",
+      "searchPlaceholder": "Jméno, telefon, email, IBAN, web...",
+      "searchButton": "Vyhledat",
+      "searchMode": "Režim vyhledávání",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Přesné",
+      "modeAutoDesc": "Automaticky zvolí nejlepší režim pro váš dotaz",
+      "modeFuzzyDesc": "Toleruje překlepy a podobné výrazy",
+      "modeExactDesc": "Hledá přesné shody",
+      "selectFraudType": "Vyberte typ",
+      "selectCountry": "Vyberte zemi",
+      "selectStatus": "Vyberte status",
+      "countryLocation": "Země / Lokalita",
+      "showAdvanced": "Datum a částka",
+      "hideAdvanced": "Skrýt pokročilé filtry",
+      "amountFrom": "Částka od (EUR)",
+      "amountTo": "Částka do (EUR)",
+      "activeFilters": "Aktivní filtry:",
+      "from": "Od:",
+      "to": "Do:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "Všechny typy",
+      "INVESTMENT_FRAUD": "Investiční podvod",
+      "ROMANCE_SCAM": "Romance scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Krádež identity",
+      "ONLINE_SHOPPING_FRAUD": "E-commerce podvod",
+      "CRYPTOCURRENCY_SCAM": "Krypto podvod",
+      "EMPLOYMENT_SCAM": "Pracovní podvod",
+      "RENTAL_SCAM": "Podvod s pronájmem",
+      "ADVANCE_FEE_FRAUD": "Podvod s půjčkou",
+      "FAKE_CHARITY": "Falešná charita",
+      "TECH_SUPPORT_SCAM": "Tech support scam",
+      "LOTTERY_PRIZE_SCAM": "Loterijní podvod",
+      "PYRAMID_MLM_SCHEME": "Pyramidové/MLM schéma",
+      "INSURANCE_FRAUD": "Pojistný podvod",
+      "CREDIT_CARD_FRAUD": "Podvod s platební kartou",
+      "WIRE_FRAUD": "Telegrafní podvod",
+      "MONEY_MULE": "Peněžní mezek",
+      "BUSINESS_EMAIL_COMPROMISE": "Kompromitace firemního emailu",
+      "SOCIAL_ENGINEERING": "Sociální inženýrství",
+      "GOVERNMENT_IMPERSONATION": "Napodobení úřadu",
+      "UTILITY_SCAM": "Podvod s energiemi",
+      "GRANDPARENT_SCAM": "Podvod na prarodiče",
+      "SEXTORTION": "Sexuální vydírání",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Převzetí účtu",
+      "SIM_SWAPPING": "SIM swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Ponziho schéma",
+      "OTHER": "Jiný typ"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Fyzická osoba",
+      "COMPANY": "Firma / Organizace",
+      "UNKNOWN": "Neznámý"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Jiný blockchain"
+    },
+    "countries": {
+      "all": "Všechny země",
+      "SK": "Slovensko",
+      "CZ": "Česká republika",
+      "PL": "Polsko",
+      "HU": "Maďarsko",
+      "AT": "Rakousko",
+      "DE": "Německo",
+      "OTHER": "Jiné"
+    },
+    "statuses": {
+      "all": "Všechny stavy",
+      "PENDING": "Čeká na schválení",
+      "UNDER_REVIEW": "V procesu schvalování",
+      "APPROVED": "Schváleno",
+      "REJECTED": "Zamítnuto",
+      "MERGED": "Sloučeno",
+      "ARCHIVED": "Archivováno"
     }
   },
   "report": {
@@ -120,6 +215,20 @@
       "reporterEmail": "Váš email",
       "reporterPhone": "Váš telefon"
     },
+    "placeholders": {
+      "title": "Stručný a výstižný název (např. 'Investiční podvod s Bitcoinem')",
+      "description": "Popište, co se stalo, jak vás kontaktovali, jaké částky byly zahrnuty atd...",
+      "city": "Například Praha",
+      "postalCode": "Například 11000",
+      "amount": "0.00",
+      "selectCountry": "Vyberte zemi",
+      "selectCurrency": "Vyberte měnu"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10 000 znaků (minimum 50)",
+      "allCountries": "Všechny země",
+      "allCurrencies": "Všechny měny"
+    },
     "consent": {
       "terms": "Souhlasím s podmínkami používání",
       "gdpr": "Souhlasím se zpracováním osobních údajů",
@@ -130,6 +239,216 @@
     "success": {
       "title": "Hlášení bylo úspěšně odesláno!",
       "description": "Děkujeme za váš příspěvek k ochraně ostatních."
+    },
+    "financialDetails": {
+      "title": "Finanční údaje",
+      "subtitle": "Zadejte podrobnosti o finančních účtech, kam jste posílali peníze",
+      "infoTitle": "Důležité informace",
+      "infoItems": ["Vyplňte alespoň jednu sekci", "Údaje pomohou identifikovat podvodníky", "Citlivé informace jsou šifrovány"],
+      "banking": { "title": "Bankovní informace", "description": "IBAN, číslo účtu, SWIFT/BIC kód" },
+      "iban": "IBAN", "ibanHint": "IBAN začíná kódem země",
+      "accountHolder": "Jméno majitele účtu", "accountHolderPlaceholder": "Např. Jan Podvodník",
+      "accountNumber": "Číslo účtu", "accountNumberPlaceholder": "Číslo účtu", "accountNumberHint": "Číslo účtu",
+      "bankName": "Název banky", "bankNamePlaceholder": "Název banky",
+      "bankCountry": "Země banky", "bankCountryPlaceholder": "Vyberte zemi", "allCountries": "Všechny země",
+      "swiftBic": "SWIFT/BIC kód", "swiftBicPlaceholder": "SWIFT kód", "swiftBicHint": "8-11 znaků",
+      "regionalCodes": "Regionální kódy",
+      "routingNumber": "Routing Number", "routingNumberPlaceholder": "9místné číslo",
+      "bsbCode": "BSB Code", "bsbCodePlaceholder": "6místný kód",
+      "sortCode": "Sort Code", "sortCodePlaceholder": "6místný kód",
+      "ifscCode": "IFSC Code", "ifscCodePlaceholder": "11místný kód",
+      "cnapsCode": "CNAPS Code", "cnapsCodePlaceholder": "12místný kód",
+      "otherBankingDetails": "Další údaje", "otherBankingDetailsPlaceholder": "Další poznámky",
+      "crypto": { "title": "Kryptoměnové údaje", "description": "Adresy peněženek, blockchain, burzy" },
+      "blockchain": "Blockchain", "blockchainPlaceholder": "Vyberte blockchain", "blockchainHint": "Vyberte blockchain",
+      "walletAddress": "Adresa peněženky", "walletAddressPlaceholder": "Adresa peněženky",
+      "exchangeName": "Burza", "exchangeNamePlaceholder": "Binance, Coinbase...", "exchangeNameHint": "Použitá burza",
+      "transactionHash": "Hash transakce", "transactionHashPlaceholder": "0x...", "transactionHashHint": "ID transakce",
+      "paypal": { "title": "PayPal", "description": "PayPal účet" },
+      "paypalAccount": "PayPal účet", "paypalAccountPlaceholder": "email@example.com", "paypalAccountHint": "Email PayPalu",
+      "tipTitle": "Tip: Jak získat tyto údaje?", "tipItems": ["Zkontrolujte historii transakcí", "Použijte block explorer", "Podívejte se do emailů"]
+    },
+    "contact": {
+      "title": "Kontaktní údaje a souhlasy", "subtitle": "Údaje jsou volitelné",
+      "contactInfo": "Kontaktní údaje", "yourName": "Vaše jméno", "yourNamePlaceholder": "Jméno a příjmení",
+      "yourNameHint": "Jméno nebude zveřejněno", "yourEmail": "Email", "yourEmailPlaceholder": "vas@email.cz",
+      "yourPhone": "Telefon", "yourPhonePlaceholder": "+420 900 123 456",
+      "notifications": "Notifikace", "wantUpdates": "Chci dostávat aktualizace", "wantUpdatesDesc": "Budeme vás informovat",
+      "consents": "Povinné souhlasy", "agreeToTerms": "Souhlasím s podmínkami", "agreeToTermsDesc": "Potvrzuji pravdivost",
+      "termsLink": "podmínky používání", "agreeToGDPR": "Souhlasím se zpracováním údajů", "agreeToGDPRDesc": "Souhlasím s GDPR",
+      "gdprLink": "ochrana údajů (GDPR)", "infoTitle": "Co se stane po odeslání?", "infoItems": ["Hlášení bude zkontrolováno", "Bude zveřejněno", "Pomůže ostatním"]
+    },
+    "review": {
+      "title": "Kontrola hlášení", "subtitle": "Zkontrolujte údaje před odesláním", "edit": "Upravit",
+      "fraudType": "Typ podvodu", "notSelected": "Nevybráno", "basicInfo": "Základní informace",
+      "noTitle": "Bez názvu", "noDescription": "Bez popisu", "incidentDate": "Datum incidentu",
+      "location": "Místo", "damageAmount": "Výše škody", "perpetratorInfo": "Informace o pachateli",
+      "unknown": "Neznámý", "nameTitle": "Jméno / Název", "phone": "Telefon", "email": "Email",
+      "socialMedia": "Sociální sítě", "address": "Adresa", "noPerpetratorData": "Žádné údaje o pachateli",
+      "digitalFootprints": "Digitální stopy", "website": "Webová stránka", "domain": "Doména",
+      "ipAddress": "IP adresa", "ipCountry": "Země IP", "noDigitalData": "Žádné digitální stopy",
+      "financialData": "Finanční údaje", "bankingData": "Bankovní údaje", "accountHolder": "Majitel účtu",
+      "accountNumber": "Číslo účtu", "bank": "Banka", "bankCountry": "Země banky",
+      "cryptoData": "Kryptoměnové údaje", "walletAddress": "Adresa peněženky", "exchange": "Burza",
+      "transactionHash": "Hash transakce", "paypalAccount": "PayPal účet", "noFinancialData": "Žádné finanční údaje",
+      "companyVehicle": "Firma a vozidlo", "companyInfo": "Informace o firmě", "companyName": "Název firmy",
+      "vatTaxId": "IČO / DIČ", "street": "Ulice", "city": "Město", "postalCode": "PSČ", "country": "Země",
+      "vehicleInfo": "Informace o vozidle", "vehicleMake": "Značka", "vehicleModel": "Model",
+      "vehicleColor": "Barva", "licensePlate": "SPZ", "vin": "VIN", "registeredOwner": "Registrovaný vlastník",
+      "noCompanyVehicleData": "Žádné údaje o firmě nebo vozidle", "evidence": "Důkazy a přílohy",
+      "noEvidence": "Žádné přílohy", "contactData": "Kontaktní údaje", "yourName": "Vaše jméno",
+      "yourEmail": "Váš email", "yourPhone": "Váš telefon", "wantUpdates": "Chci dostávat aktualizace",
+      "agreeToTerms": "Souhlas s podmínkami", "agreeToGDPR": "Souhlas se zpracováním údajů",
+      "anonymousReport": "Anonymní hlášení", "warningTitle": "Před odesláním si ověřte:",
+      "warningItems": ["Informace jsou pravdivé", "Neuvádíte údaje třetích osob", "Máte právo sdílet důkazy"]
+    },
+    "digitalFootprints": {
+      "title": "Digitální stopy",
+      "subtitle": "Zadejte online profily a technické informace o pachateli",
+      "socialMedia": {
+        "title": "Účty na sociálních sítích",
+        "description": "Profily pachatele na sociálních platformách"
+      },
+      "telegram": "Telegram",
+      "telegramHint": "Zadejte uživatelské jméno začínající znakem @",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "Telefonní číslo včetně kódu země",
+      "signal": "Signal",
+      "signalHint": "Telefonní číslo včetně kódu země",
+      "instagram": "Instagram",
+      "instagramHint": "Zadejte uživatelské jméno začínající znakem @",
+      "facebook": "Facebook",
+      "facebookPlaceholder": "Název profilu nebo URL",
+      "facebookHint": "Zadejte název profilu nebo celou URL adresu",
+      "tiktok": "TikTok",
+      "tiktokHint": "Zadejte uživatelské jméno začínající znakem @",
+      "twitter": "X / Twitter",
+      "twitterHint": "Zadejte uživatelské jméno začínající znakem @",
+      "usernamePlaceholder": "@username",
+      "phonePlaceholder": "+1234567890",
+      "website": {
+        "title": "Webová stránka a doména",
+        "description": "Informace o webových stránkách použitých při podvodu"
+      },
+      "websiteUrl": "URL webové stránky",
+      "websiteUrlPlaceholder": "https://example.com",
+      "websiteUrlHint": "Zadejte celou URL adresu včetně https://",
+      "domainName": "Název domény",
+      "domainNamePlaceholder": "example.com",
+      "domainNameHint": "Pouze samotný název domény bez http://",
+      "domainCreationDate": "Datum vytvoření domény",
+      "domainCreationDateHint": "Kdy byla doména zaregistrována (pokud je známo)",
+      "ip": {
+        "title": "Informace o IP adrese",
+        "description": "Technické detaily o původu podvodu"
+      },
+      "ipAddress": "IP adresa",
+      "ipAddressPlaceholder": "192.168.1.1",
+      "ipAddressHint": "IPv4 adresa ve formátu xxx.xxx.xxx.xxx",
+      "ipCountry": "Země IP adresy",
+      "ipCountryPlaceholder": "Vyberte zemi",
+      "ipCountryHint": "Ze které země pocházela IP adresa",
+      "allCountries": "Všechny země",
+      "ispProvider": "Poskytovatel internetu (ISP)",
+      "ispProviderPlaceholder": "Například: Comcast, Verizon, Deutsche Telekom...",
+      "ispProviderHint": "Název internetového poskytovatele",
+      "ipAbuseScore": "IP skóre zneužití (0-100)",
+      "ipAbuseScorePlaceholder": "50",
+      "ipAbuseScoreHint": "Hodnocení rizika IP (vyšší = nebezpečnější)",
+      "infoTitle": "Proč jsou digitální stopy důležité?",
+      "infoText": "Tyto informace pomáhají vytvořit digitální profil pachatele a umožňují orgánům činným v trestním řízení sledovat a identifikovat podvodníky napříč více platformami. Všechny citlivé údaje jsou chráněné a maskované podle vaší úrovně přístupu."
+    },
+    "perpetrator": {
+      "title": "Informace o pachateli",
+      "subtitle": "Zadejte všechny dostupné informace o osobě nebo firmě, která se dopustila podvodu",
+      "typeLabel": "Typ pachatele",
+      "types": {
+        "individual": "Fyzická osoba",
+        "individualDesc": "Jednotlivec, který se dopustil podvodu",
+        "company": "Firma / Organizace",
+        "companyDesc": "Společnost nebo organizace",
+        "unknown": "Neznámý",
+        "unknownDesc": "Nepodařilo se identifikovat pachatele"
+      },
+      "nameLabel": "Jméno a příjmení",
+      "companyNameLabel": "Název firmy",
+      "namePlaceholder": "Například: Jan Podvodník",
+      "companyNamePlaceholder": "Například: Scam Company s.r.o.",
+      "businessName": "Obchodní jméno (pokud se liší)",
+      "businessNamePlaceholder": "Například: Scam Trading",
+      "companyId": "IČO (volitelné)",
+      "companyIdPlaceholder": "Například: 12345678",
+      "nickname": "Přezdívka / Alias",
+      "nicknamePlaceholder": "Přezdívka nebo falešné jméno",
+      "username": "Uživatelské jméno",
+      "usernamePlaceholder": "Používané na webech/aplikacích",
+      "approxAge": "Přibližný věk",
+      "approxAgePlaceholder": "Například: 35",
+      "nationality": "Národnost",
+      "nationalityPlaceholder": "Například: Česká, Slovenská...",
+      "physicalDescription": "Fyzický popis",
+      "physicalDescriptionPlaceholder": "Popište vzhled pachatele - výšku, postavu, barvu vlasů/očí, zvláštní znaky...",
+      "physicalDescriptionHint": "Pokud jste pachatele viděli osobně nebo na videu, popište jeho vzhled",
+      "contactInfo": "Kontaktní údaje pachatele",
+      "phone": "Telefonní číslo",
+      "phonePlaceholder": "+420 900 123 456",
+      "email": "Email",
+      "emailPlaceholder": "podvodnik@example.com",
+      "socialMedia": "Sociální sítě (Facebook, Instagram, WhatsApp)",
+      "socialMediaPlaceholder": "Facebook: xyz, Instagram: @handle, WhatsApp: +420...",
+      "socialMediaHint": "Zadejte odkazy na profily oddělené čárkou (formát: Platforma: handle)",
+      "address": "Adresa (pokud je známá)",
+      "addressPlaceholder": "Ulice, číslo, město, PSČ",
+      "tip": "Čím více informací poskytnete, tím lépe budeme moci varovat ostatní. Všechny citlivé údaje jsou chráněné a maskované podle vaší úrovně přístupu."
+    },
+    "companyVehicle": {
+      "title": "Informace o firmě a vozidle",
+      "subtitle": "Zadejte údaje o firmě a vozidle souvisejících s podvodem",
+      "companySection": {
+        "title": "Informace o firmě"
+      },
+      "companyName": "Název firmy",
+      "companyNamePlaceholder": "Například: Example Trading s.r.o.",
+      "vatTaxId": "IČO / DIČ / VAT ID",
+      "vatTaxIdPlaceholder": "Například: CZ12345678 nebo 12345678",
+      "vatTaxIdHint": "Identifikační číslo organizace nebo daňové identifikační číslo",
+      "companyAddress": {
+        "title": "Adresa firmy"
+      },
+      "street": "Ulice a číslo",
+      "streetPlaceholder": "Například: Hlavní 123",
+      "city": "Město",
+      "cityPlaceholder": "Například: Praha",
+      "postalCode": "PSČ",
+      "postalCodePlaceholder": "Například: 11000",
+      "country": "Země",
+      "countryPlaceholder": "Vyberte zemi",
+      "allCountries": "Všechny země",
+      "vehicleSection": {
+        "title": "Informace o vozidle"
+      },
+      "vehicleMake": "Značka",
+      "vehicleMakePlaceholder": "Například: Toyota, BMW, Škoda",
+      "vehicleModel": "Model",
+      "vehicleModelPlaceholder": "Například: Camry, X5, Octavia",
+      "vehicleColor": "Barva",
+      "vehicleColorPlaceholder": "Například: Stříbrná, Černá, Bílá",
+      "licensePlate": "SPZ (Státní poznávací značka)",
+      "licensePlatePlaceholder": "Například: 1A2 3456",
+      "vin": "VIN číslo (Vehicle Identification Number)",
+      "vinPlaceholder": "17znakový identifikátor vozidla",
+      "vinError": "VIN musí obsahovat přesně 17 znaků (písmena A-Z kromě I, O, Q a číslice 0-9)",
+      "registeredOwner": "Registrovaný vlastník",
+      "registeredOwnerPlaceholder": "Jméno a příjmení nebo název firmy",
+      "registeredOwnerHint": "Zadejte jméno vlastníka podle technického průkazu vozidla",
+      "importantInfo": {
+        "title": "Důležité informace:",
+        "items": [
+          "Údaje o firmě a vozidle jsou volitelné, ale mohou výrazně pomoci při identifikaci podvodníka",
+          "Všechny citlivé údaje jsou chráněné a zobrazované pouze oprávněným osobám",
+          "Pokud máte dokumenty (faktury, smlouvy), přidejte je v sekci Důkazy"
+        ]
+      }
     },
     "evidence": {
       "title": "Důkazy a přílohy",
@@ -214,6 +533,58 @@
       "invalidCredentials": "Nesprávné přihlašovací údaje",
       "emailExists": "Email již existuje",
       "weakPassword": "Heslo je příliš slabé"
+    },
+    "forgotPassword": {
+      "title": "Zapomenuté heslo",
+      "subtitle": "Zadejte svůj email a pošleme vám odkaz na obnovení hesla",
+      "email": "Email",
+      "emailPlaceholder": "vas@email.cz",
+      "submit": "Obnovit heslo",
+      "submitting": "Odesílání...",
+      "rememberPassword": "Vzpomněli jste si na heslo?",
+      "signIn": "Přihlaste se",
+      "success": {
+        "title": "Email odeslán",
+        "description": "Pokud existuje účet s emailem {{email}}, obdržíte email s instrukcemi pro reset hesla.",
+        "checkSpam": "Zkontrolujte si také složku SPAM. Odkaz platí 1 hodinu.",
+        "backToLogin": "Zpět na přihlášení",
+        "tryAnotherEmail": "Zkusit jiný email"
+      },
+      "errors": {
+        "tooManyAttempts": "Příliš mnoho pokusů. Zkuste to později.",
+        "sendError": "Chyba při odesílání. Zkuste to znovu."
+      }
+    },
+    "resetPassword": {
+      "title": "Nové heslo",
+      "subtitle": "Zadejte nové heslo pro váš účet",
+      "newPassword": "Nové heslo",
+      "confirmPassword": "Potvrďte heslo",
+      "submit": "Změnit heslo",
+      "submitting": "Měním heslo...",
+      "backToLogin": "Zpět na přihlášení",
+      "requirements": {
+        "minLength": "Alespoň 8 znaků",
+        "uppercase": "Obsahuje velké písmeno",
+        "lowercase": "Obsahuje malé písmeno",
+        "number": "Obsahuje číslo"
+      },
+      "errors": {
+        "passwordMismatch": "Hesla se neshodují",
+        "requirementsNotMet": "Heslo nesplňuje všechny požadavky",
+        "invalidToken": "Neplatný nebo chybějící token. Zkuste požádat o nový odkaz pro reset.",
+        "tokenExpired": "Token vypršel nebo je neplatný. Požádejte o nový odkaz pro reset.",
+        "serverError": "Chyba při komunikaci se serverem. Zkuste to znovu."
+      },
+      "success": {
+        "title": "Heslo změněno",
+        "description": "Vaše heslo bylo úspěšně změněno. Nyní se můžete přihlásit s novým heslem.",
+        "signIn": "Přihlásit se"
+      },
+      "invalidLink": {
+        "title": "Neplatný odkaz",
+        "requestNew": "Požádat o nový odkaz"
+      }
     }
   },
   "admin": {
@@ -223,6 +594,18 @@
     "duplicates": "Duplikáty",
     "comments": "Komentáře",
     "settings": "Nastavení",
+    "login": {
+      "title": "Přihlášení do administrace",
+      "subtitle": "Přihlaste se do administračního rozhraní pro správu systému",
+      "email": "Email",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Heslo",
+      "passwordPlaceholder": "Zadejte heslo",
+      "submit": "Přihlásit se",
+      "submitting": "Přihlašuji...",
+      "error": "Přihlášení se nezdařilo. Zkontrolujte své přihlašovací údaje.",
+      "backToHome": "Zpět na hlavní stránku"
+    },
     "actions": {
       "approve": "Schválit",
       "reject": "Zamítnout",
@@ -234,7 +617,17 @@
     "notFound": "Stránka nebyla nalezena",
     "serverError": "Chyba serveru",
     "unauthorized": "Neautorizovaný přístup",
-    "forbidden": "Přístup odepřen"
+    "forbidden": "Přístup odepřen",
+    "errorPage": {
+      "title": "Něco se pokazilo",
+      "description": "Nastala neočekávaná chyba. Zkuste to prosím znovu.",
+      "tryAgain": "Zkusit znovu"
+    },
+    "notFoundPage": {
+      "title": "Stránka nebyla nalezena",
+      "description": "Stránka, kterou hledáte, neexistuje.",
+      "goHome": "Zpět domů"
+    }
   },
   "footer": {
     "about": "O nás",
@@ -242,5 +635,780 @@
     "terms": "Podmínky používání",
     "contact": "Kontakt",
     "copyright": "Všechna práva vyhrazena"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Podpořte naši misi –",
+      "titleHighlight": "Pomozte nám přinést spravedlnost a bezpečnost pro všechny",
+      "description": "Naší vizí je, že spravedlnost a bezpečnost by neměly být vyhrazeny pouze těm, kteří si je mohou finančně dovolit. Chceme, aby naše služby byly dostupné zdarma pro každého – protože každý člověk si zaslouží ochranu, šanci na nový začátek a spravedlivé zacházení.",
+      "subdescription": "Abychom zůstali nezávislí a udržitelní, některé naše služby musí být placené. Děláme však vše pro to, aby většina našich aktivit zůstala zcela bezplatná pro oběti podvodů a pro ty, kteří hledají druhou šanci."
+    },
+    "howToHelp": {
+      "badge": "Jak můžete pomoci",
+      "title": "Váš příspěvek nám umožňuje pokračovat v práci, která má",
+      "titleHighlight": "skutečný dopad",
+      "description": "Můžete nás podpořit jednorázovým nebo pravidelným darem – kreditní kartou nebo kryptoměnou – a vybrat si, který z našich dvou programů chcete podpořit:"
+    },
+    "program1": {
+      "badge": "PROGRAM 1",
+      "title": "Ochrana veřejnosti a boj proti podvodníkům",
+      "features": [
+        "Vývoj a zlepšování našeho bezplatného systému detekce podvodů",
+        "Marketingové a osvětové kampaně k oslovení co největšího počtu lidí",
+        "Právní služby, které nám pomáhají vytvářet bezpečné a efektivní prostředí"
+      ],
+      "impact": "Vaše podpora v tomto fondu znamená méně obětí podvodů a silnější ochranu veřejnosti."
+    },
+    "program2": {
+      "badge": "PROGRAM 2",
+      "title": "Druhá šance pro lidi, kteří chtějí zanechat kriminality",
+      "features": [
+        "Rekvalifikační kurzy a vzdělávací programy pro lidi propuštěné z vězení",
+        "Finanční podpora pro pomoc při hledání práce a opětovném začlenění do společnosti",
+        "Pomoc se základními potřebami při začátku nového života"
+      ],
+      "impact": "Vaše podpora zde mění životy – dává šanci těm, kteří chtějí opustit kriminální prostředí a žít poctivě."
+    },
+    "buttons": {
+      "payByCard": "Zaplatit kartou",
+      "payWithCrypto": "Zaplatit kryptoměnou"
+    },
+    "cta": {
+      "title": "Podpořte nás ještě dnes a staňte se součástí změny.",
+      "description": "Váš příspěvek – bez ohledu na to, jak je velký nebo malý – znamená více, než si dokážete představit. Společně můžeme vybudovat svět, kde je spravedlnost dostupná pro každého.",
+      "transparent": "100% Transparentní",
+      "securePayments": "Bezpečné platby",
+      "everyDonationCounts": "Každý dar se počítá",
+      "haveQuestions": "Máte otázky?",
+      "contactUs": "Kontaktujte nás",
+      "learnMore": "a dozvíte se více o naší práci."
+    }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Žádost o smazání z databáze",
+      "titleHighlight": "Druhá šance",
+      "subtitle": "Pomoc pro nový začátek v životě",
+      "description": "Věříme v soukromí a druhé šance. Naše platforma nabízí jednotlivcům s kriminální minulostí možnost požádat o smazání z naší databáze podvodníků a získat podporu pro opětovné začlenění do života.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "learnMore": "Dozvědět se více"
+    },
+    "quote": {
+      "text": "Každý si zaslouží druhou šanci. Nezáleží na tom, kde jste začali, ale kam směřujete.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Požadavky a podmínky",
+      "title": "Podmínky",
+      "subtitle": "Před odesláním žádosti si pečlivě přečtěte tyto požadavky",
+      "basicRequirements": {
+        "title": "Základní požadavky",
+        "items": [
+          "Vaše ID případu/podvodníka z naší databáze",
+          "Platné identifikační doklady",
+          "Podrobné vysvětlení vaší situace",
+          "Prohlášení o závazku k budoucímu zákonnému chování"
+        ]
+      },
+      "importantNotices": {
+        "title": "Důležitá upozornění",
+        "items": [
+          "Jedna příležitost na osobu — využijte ji moudře",
+          "Jakákoli budoucí kriminální činnost natrvalo zavře tyto dveře",
+          "Doba posouzení: 14-30 dní",
+          "Všechny žádosti jsou posuzovány individuálně na základě závažnosti případu"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Postup krok za krokem",
+      "title": "Jak požádat o smazání",
+      "subtitle": "Postupujte podle těchto jednoduchých kroků k odeslání žádosti o smazání z databáze",
+      "steps": [
+        { "title": "Kontaktujte nás", "description": "Pošlete svou žádost na info@scamnemesis.com" },
+        { "title": "Odešlete dokumenty", "description": "Poskytněte požadovanou dokumentaci a vysvětlení" },
+        { "title": "Čekejte na posouzení", "description": "Náš tým posoudí váš případ (14-30 dní)" },
+        { "title": "Obdržíte rozhodnutí", "description": "Budete informováni o výsledku vaší žádosti" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Bezplatný zdroj",
+      "title": "PDF průvodce: Cesta z kriminality",
+      "subtitle": "Praktické pokyny pro ty, kteří chtějí opustit kriminální prostředí",
+      "insideTitle": "Co je v průvodci",
+      "features": [
+        "Návod krok za krokem pro bezpečné opuštění kriminálního prostředí",
+        "Zdroje pro duševní zdraví a zotavení ze závislostí",
+        "Strategie zaměstnání pro osoby s kriminální minulostí",
+        "Právní práva a informace o reintegraci podle země"
+      ],
+      "downloadButton": "Stáhnout bezplatného PDF průvodce"
+    },
+    "breakCycle": {
+      "badge": "Osvobodit se",
+      "title": "Přerušte bludný kruh",
+      "importantMessage": "Důležitá zpráva",
+      "content": "Pokud jste v současné době součástí kriminální organizace a chcete odejít, vězte, že vždy existuje cesta ven. Váš první krok je vyhledat pomoc — ať už od orgánů činných v trestním řízení, podpůrných organizací nebo důvěryhodných osob. Cesta k novému životu začíná jediným rozhodnutím.",
+      "reminder": "Pamatujte: Nikdy není pozdě změnit svou cestu."
+    },
+    "vision": {
+      "badge": "Budoucí plány",
+      "title": "Naše vize pomoci",
+      "subtitle": "Vyvíjíme komplexní programy na pomoc jednotlivcům, kteří chtějí zanechat svou kriminální minulost. Zde jsou tři iniciativy, které plánujeme implementovat:",
+      "plannedInitiative": "Plánovaná iniciativa",
+      "initiatives": [
+        { "title": "Finanční podpora", "description": "Pomoc pro propuštěné během přechodného období" },
+        { "title": "Pomoc rodinám", "description": "Podpůrné služby pro rodiny těch, kteří hledají nový začátek" },
+        { "title": "Vzdělávání a rekvalifikace", "description": "Příležitosti pro rozvoj dovedností a změnu kariéry" }
+      ]
+    },
+    "donation": {
+      "title": "Podpořte program Druhá šance",
+      "description": "Váš příspěvek nám pomáhá poskytovat zdroje, pokyny a podporu jednotlivcům, kteří chtějí zanechat kriminální životní styl a vybudovat lepší budoucnost.",
+      "cryptoButton": "Přispět kryptoměnou",
+      "cardButton": "Přispět kartou",
+      "securePayment": "Bezpečná platba",
+      "goesToPrograms": "100% jde na programy",
+      "makeDifference": "Udělejte rozdíl"
+    },
+    "contact": {
+      "badge": "Kontaktujte nás",
+      "title": "Jste připraveni začít svou novou cestu?",
+      "description": "Kontaktujte nás na",
+      "descriptionEnd": "a začněte proces žádosti o smazání. Jsme zde, abychom vám pomohli na každém kroku.",
+      "submitRequest": "Odeslat žádost o smazání",
+      "contactPage": "Kontaktní stránka"
+    },
+    "finalMessage": {
+      "quote": "Minulost je vaše lekce. Přítomnost je váš dar. Budoucnost je vaše motivace.",
+      "message": "Každý si zaslouží druhou šanci."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Světová třída, odborná školení kybernetické bezpečnosti od světových",
+      "titleHighlight": "špičkových bezpečnostních profesionálů.",
+      "description": "Předcházejte podvodům a útokům — zabezpečte své prostředí a posílte kybernetickou odolnost se Scamnemesis.",
+      "comingSoon": "Již brzy",
+      "comingSoonText": "Naše školící kurzy jsou momentálně ve vývoji. Kontaktujte nás na",
+      "comingSoonTextEnd": "a budete informováni o jejich spuštění."
+    },
+    "programs": {
+      "badge": "Naše programy",
+      "title": "Kurzy kybernetické bezpečnosti",
+      "description": "Nabízíme školení a vzdělávací obsah přizpůsobený různým cílovým skupinám — od široké veřejnosti hledající základní ochranu po specializované profesionály a organizace vyžadující pokročilé instrukce."
+    },
+    "freeCourses": {
+      "badge": "ZDARMA",
+      "title": "Bezplatné kurzy pro veřejnost",
+      "description": "Krátké, praktické lekce na ochranu sebe a svých blízkých online:",
+      "items": [
+        "Jak rozpoznat podvod — klíčové varovné signály a červené vlajky",
+        "Co dělat, když jste byli podvedeni — rychlý a efektivní průvodce reakcí",
+        "Jak bezpečně nastavit telefon a počítač",
+        "Jak se bezpečně chovat online — praktické návyky a pokyny",
+        "Jak chránit své děti online"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESIONÁLNÍ",
+      "title": "Profesionální videa",
+      "description": "OPSEC a kybernetická bezpečnost pro profesionály — školení pro specialisty, kteří potřebují rozpoznat, předcházet a reagovat na hrozby:",
+      "audiences": [
+        { "title": "AML specialisté", "description": "Hloubkové moduly o monitorování transakcí, červených vlajkách a vyšetřovacích technikách." },
+        { "title": "Policisté", "description": "Zaměřeno na metodologii vyšetřování, shromažďování důkazů a reakci na kyberneticky podporovanou trestnou činnost." },
+        { "title": "Účetní", "description": "Indikátory podvodů ve finančních záznamech, interní kontroly a nejlepší postupy pro whistleblowery." },
+        { "title": "IT a bezpečnostní personál", "description": "Obrana sítě, simulace phishingu, bezpečná konfigurace infrastruktury." },
+        { "title": "Vyšetřovatelé", "description": "OSINT techniky, základy digitální forenziky a dokumentace případů." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "VLASTNÍ",
+      "title": "Firemní školení a bezpečnostní metodologie",
+      "description1": "Školíme zaměstnance a pomáháme implementovat kompletní bezpečnostní metodologii — aby každý člen týmu věděl, co má dělat a koho kontaktovat v případě hrozby.",
+      "description2": "Naše firemní programy zahrnují implementaci politik, objasnění rolí, postupy reakce na incidenty a průběžnou podporu.",
+      "button": "Požádat o vlastní školení"
+    },
+    "differentiators": {
+      "badge": "Proč si vybrat nás",
+      "title": "Čím jsou naše školení jedinečná?",
+      "items": [
+        { "emoji": "📡", "title": "Živé zpravodajství o hrozbách", "description": "Denně pracujeme na aktivních případech krypto a investičních podvodů, takže náš obsah vždy odráží nejnovější taktiky používané zločinci." },
+        { "emoji": "🔄", "title": "Průběžně aktualizovaný učební plán", "description": "Jak se objevují nové metody podvodů, naše kurzy se vyvíjejí, čímž zajistíme, že nikdy nezaostanete." },
+        { "emoji": "🛡️", "title": "Praktické, nejen teoretické", "description": "Učíme skutečné ochranné strategie, nejen abstraktní koncepty." },
+        { "emoji": "💡", "title": "Od obětí k expertům", "description": "Naše perspektiva zahrnuje hluboký vhled do psychologie obětí i chování podvodníků, což vám dává 360° porozumění." }
+      ]
+    },
+    "certifications": {
+      "title": "Certifikace a pověření",
+      "description": "Naši instruktoři a tvůrci obsahu mají uznávané certifikace v oblasti kybernetické bezpečnosti, vyšetřování podvodů a compliance — přinášejíce důvěryhodnost a odbornost do každé lekce."
+    },
+    "cta": {
+      "title": "Rezervujte si bezplatnou konzultaci",
+      "description": "Ať už jste jednotlivec, který se chce učit, profesionál hledající školení s certifikací, nebo organizace se zájmem o přizpůsobený bezpečnostní program, jsme zde, abychom vám pomohli.",
+      "button": "Rezervovat bezplatnou konzultaci",
+      "freeConsultation": "Bezplatná konzultace",
+      "expertInstructors": "Expertní instruktoři",
+      "updatedContent": "Aktualizovaný obsah"
+    }
+  },
+  "scamPrevention": {
+    "hero": {
+      "badge": "Kompletní bezpečnostní zdroj",
+      "title": "Komplexní průvodce proti podvodům",
+      "description": "Vaše praktická bezpečnostní příručka pro identifikaci hrozeb, prevenci finančních ztrát a efektivní reakci na podvody. Znalosti a příprava jsou vaší nejsilnější obranou.",
+      "sections": "Sekcí",
+      "scamTypes": "Typů podvodů",
+      "warningSigns": "Varovných signálů",
+      "actionSteps": "Kroků",
+      "checkButton": "Zkontrolovat někoho nyní"
+    },
+    "toc": {
+      "title": "Obsah",
+      "subtitle": "Přeskočte na libovolnou sekci tohoto průvodce",
+      "items": [
+        "Nouzová reakce",
+        "Hodnocení rizik",
+        "Porozumění podvodům",
+        "Psychologie podvodníků",
+        "Kategorie podvodů",
+        "Okamžitá opatření",
+        "Shromažďování důkazů",
+        "Obnova prostředků",
+        "Podpůrné zdroje"
+      ]
+    },
+    "emergency": {
+      "title": "Nouzová reakce: Podejte hlášení ScamNemesis",
+      "subtitle": "Pokud máte podezření, že jste právě obětí podvodu nebo jste byli podvedeni, jednejte okamžitě.",
+      "actions": [
+        { "title": "Okamžitě zastavte veškerou komunikaci", "description": "Přerušte kontakt s podezřelým podvodníkem. Neodpovídejte na hovory, e-maily ani zprávy." },
+        { "title": "Zastavte všechny finanční transakce", "description": "Okamžitě zastavte všechny čekající převody, platby nebo zásilky. Kontaktujte svou banku nebo poskytovatele platebních služeb." },
+        { "title": "Podejte hlášení ScamNemesis", "description": "Zdokumentujte incident v našem systému, abyste varovali ostatní a vytvořili oficiální záznam." }
+      ],
+      "fileReportButton": "Podat hlášení nyní"
+    },
+    "riskAssessment": {
+      "badge": "Rychlé hodnocení",
+      "title": "60sekundové hodnocení rizik",
+      "subtitle": "Pokud narazíte na některý z těchto 8 varovných signálů, postupujte s maximální opatrností nebo úplně odejděte. Důvěřujte svým instinktům.",
+      "signs": [
+        "Tlak na rychlé jednání nebo zachování tajemství",
+        "Požadavky na nekonvenční platební metody",
+        "Nerealistické sliby nebo záruky",
+        "Chybějící regulační ověření nebo pověření",
+        "Varovné signály v komunikaci (gramatické chyby, podezřelé domény)",
+        "Trvání na konkrétních komunikačních kanálech",
+        "Požadavky na citlivé informace",
+        "Odpor vůči nezávislému ověření nebo zapojení třetí strany"
+      ]
+    },
+    "understanding": {
+      "badge": "Znalosti jsou síla",
+      "title": "Porozumění podvodům: Definice a mechanismy",
+      "subtitle": "Pochopení toho, jak podvody fungují, je prvním krokem k ochraně sebe a ostatních.",
+      "whatIsScam": {
+        "title": "Co je podvod?",
+        "content1": "Podvod je podvodné schéma určené k oklamání jednotlivců, aby se vzdali peněz, osobních údajů nebo majetku prostřednictvím falešných slibů, zavádění nebo manipulace.",
+        "content2": "Podvody zneužívají lidskou psychologii, důvěru a emocionální zranitelnosti k obejití racionálního rozhodování."
+      },
+      "howScamsWork": {
+        "title": "Jak podvody fungují",
+        "steps": [
+          { "step": "Kontakt", "desc": "Prvotní oslovení přes telefon, e-mail, sociální média nebo osobně" },
+          { "step": "Háček", "desc": "Nabídka něčeho žádoucího nebo vytvoření strachu/naléhavosti" },
+          { "step": "Budování důvěry", "desc": "Vytvoření důvěryhodnosti prostřednictvím falešných pověření nebo emocionálního spojení" },
+          { "step": "Požadavek", "desc": "Žádost o peníze, informace nebo přístup" },
+          { "step": "Zmizení", "desc": "Přerušení kontaktu po získání toho, co chtěli" }
+        ]
+      }
+    },
+    "psychology": {
+      "badge": "Psychologie",
+      "title": "Psychologie obětí podvodů",
+      "subtitle": "Podvodníci používají 6 primárních psychologických manipulačních metod k zneužití lidského chování a obejití kritického myšlení.",
+      "tactics": [
+        { "title": "Budování důvěry", "description": "Podvodníci investují čas do budování vztahu a důvěryhodnosti, než požádají o peníze." },
+        { "title": "Vytváření naléhavosti", "description": "Vytvářejí umělou naléhavost, aby zabránili obětem pečlivě přemýšlet." },
+        { "title": "Manipulace se vzácností", "description": "Používají taktiky jako \"omezená nabídka\" nebo \"exkluzivní příležitost\"." },
+        { "title": "Zneužívání autority", "description": "Předstírají, že jsou důvěryhodné osoby – policisté, bankovní úředníci nebo úředníci." },
+        { "title": "Sociální důkaz", "description": "Ukazují falešné recenze, reference nebo testimonials." },
+        { "title": "Strach a zastrašování", "description": "Vyhrožují právními kroky, zatčením nebo ztrátou příležitosti." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Poznej svého nepřítele",
+      "title": "12 nejrozšířenějších kategorií podvodů",
+      "subtitle": "Seznamte se s těmito běžnými podvodnými schématy, abyste je rozpoznali a vyhnuli se jim.",
+      "protectionTip": "Tip na ochranu:",
+      "types": [
+        { "name": "Investiční podvod", "description": "Falešné investiční příležitosti slibující garantované vysoké výnosy s malým nebo žádným rizikem.", "tip": "Ověřte všechny investice prostřednictvím oficiálních regulačních databází před investováním prostředků." },
+        { "name": "Romantické podvody", "description": "Zločinci budují falešné romantické vztahy, aby z obětí získali peníze.", "tip": "Nikdy neposílejte peníze někomu, koho jste osobně nepotkali, bez ohledu na příběh." },
+        { "name": "Phishingové útoky", "description": "Falešné e-maily, textové zprávy nebo webové stránky určené ke krádeži přihlašovacích údajů a osobních údajů.", "tip": "Vždy ověřte adresy odesílatelů a navigujte přímo na oficiální webové stránky, nikdy přes odkazy." },
+        { "name": "Podvody v e-commerce", "description": "Falešné online obchody, nedoručení zboží nebo prodej padělaných produktů.", "tip": "Prozkoumejte prodejce, zkontrolujte recenze z více zdrojů a použijte bezpečné platební metody." },
+        { "name": "Podvody s technickou podporou", "description": "Podvodníci se vydávají za technickou podporu a tvrdí, že váš počítač má problémy vyžadující okamžitou opravu.", "tip": "Legitimní společnosti nevolají nevyžádaně. Zavěste a kontaktujte oficiální podporu přímo." },
+        { "name": "Pracovní podvody", "description": "Falešné pracovní nabídky vyžadující platbu předem za školení, vybavení nebo prověrku.", "tip": "Skuteční zaměstnavatelé nikdy nežádají, abyste platili za příležitost pro ně pracovat." },
+        { "name": "Podvody s pronájmem", "description": "Falešné inzeráty na nemovitosti s cenami pod tržními sazbami vyžadující zálohy před prohlídkou.", "tip": "Vždy si prohlédněte nemovitost osobně a ověřte vlastnictví před převodem jakýchkoli peněz." },
+        { "name": "Loterijní/výherní podvody", "description": "Oznámení o falešných výhrách vyžadující poplatky nebo daně před přijetím ceny.", "tip": "Legitimní loterie odečítají poplatky z výher. Nemůžete vyhrát v soutěžích, do kterých jste se nepřihlásili." },
+        { "name": "Charitativní podvody", "description": "Falešné charitativní organizace zneužívající katastrofy, svátky nebo emocionální příčiny.", "tip": "Prozkoumejte charity prostřednictvím oficiálních databází a přispívejte přímo na ověřené webové stránky." },
+        { "name": "Vydávání se za vládu", "description": "Zločinci se vydávají za finanční úřad, správu sociálního zabezpečení, imigrační úřad nebo policii.", "tip": "Vládní agentury komunikují prostřednictvím oficiální pošty, ne výhružnými telefonáty požadujícími okamžitou platbu." },
+        { "name": "Zdravotnické podvody", "description": "Falešné léčebné postupy, zázračné léky nebo podvodné systémy zdravotního pojištění.", "tip": "Konzultujte s licencovanými poskytovateli zdravotní péče a ověřte pojištění prostřednictvím oficiálních kanálů společnosti." },
+        { "name": "Podvody s domácími službami", "description": "Falešní dodavatelé požadující velké zálohy a pak mizící bez dokončení práce.", "tip": "Ověřte licence, zkontrolujte reference a nikdy neplaťte celou částku předem." }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Jednejte rychle",
+      "title": "Protokol okamžité akce: Prvních 24 hodin",
+      "subtitle": "Pokud jste byli podvedeni, proveďte těchto 5 kritických kroků do 24 hodin pro maximalizaci šancí na vymožení a zabránění dalším škodám.",
+      "steps": [
+        { "title": "Okamžitě zastavte veškerou komunikaci a převody", "description": "Přerušte kontakt s podezřelým podvodníkem a zastavte všechny probíhající transakce." },
+        { "title": "Kontaktujte svou finanční instituci do 24 hodin", "description": "Nahlaste podvodné transakce a požádejte o pozastavení, zrušení nebo zmrazení účtu podle potřeby." },
+        { "title": "Zabezpečte všechny účty novými hesly", "description": "Změňte hesla pro všechny potenciálně kompromitované účty pomocí silných, jedinečných přihlašovacích údajů." },
+        { "title": "Komplexně zdokumentujte vše", "description": "Uložte veškerou komunikaci, potvrzení, snímky obrazovky a záznamy transakcí, než zmizí." },
+        { "title": "Podejte oficiální hlášení úřadům", "description": "Nahlaste místní policii a příslušným regulačním orgánům pro vytvoření oficiálního záznamu." }
+      ],
+      "fileReportButton": "Podat hlášení ScamNemesis"
+    },
+    "evidence": {
+      "badge": "Dokumentace",
+      "title": "Standardy sběru důkazů a dokumentace",
+      "subtitle": "Správná dokumentace je kritická pro vyšetřování orgánů činných v trestním řízení a potenciální vymáhání prostředků. Uchovejte vše.",
+      "types": [
+        { "title": "Veškerá komunikace", "items": ["E-maily, textové zprávy, záznamy chatů", "Záznamy telefonátů", "Zprávy na sociálních sítích", "Hlasové zprávy (nahrát/uložit)"] },
+        { "title": "Vizuální dokumentace", "items": ["Snímky obrazovky webových stránek", "Fotografie přijatých dokumentů", "Výpisy z účtů", "Snímky profilů"] },
+        { "title": "Záznamy transakcí", "items": ["Bankovní výpisy", "Potvrzení o bankovních převodech", "ID kryptoměnových transakcí", "Potvrzení a kódy dárkových karet"] },
+        { "title": "Informace o identitě", "items": ["Jména použitá podvodníkem", "Telefonní čísla a e-mailové adresy", "URL adresy webových stránek", "Profily na sociálních sítích"] }
+      ],
+      "bestPractices": {
+        "title": "Osvědčené postupy dokumentace",
+        "items": [
+          "Vytvořte zálohy všech důkazů s časovým razítkem",
+          "Organizujte soubory podle data a kategorie",
+          "Uchovávejte digitální i fyzické kopie",
+          "Neupravujte původní soubory (dělejte kopie pro poznámky)",
+          "Ukládejte důkazy bezpečně s omezeným přístupem"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Průvodce vymáháním",
+      "title": "Postupy vymáhání prostředků podle platební metody",
+      "subtitle": "Úspěch vymáhání závisí velmi na tom, jak jste platili a jak rychle jednáte. Čas je kritický.",
+      "methods": [
+        { "method": "Kreditní/debetní karty", "timeline": "Jednejte do 60 dnů", "steps": ["Okamžitě kontaktujte vydavatele karty", "Napadněte poplatky jako neoprávněné", "Požádejte o chargeback", "V případě potřeby podejte policejní hlášení"] },
+        { "method": "Bankovní převody", "timeline": "Jednejte do 24 hodin", "steps": ["Kontaktujte odesílající i přijímající banku", "Požádejte o stažení převodu", "Podejte reklamaci na podvod v bance", "Při mezinárodním převodu kontaktujte SWIFT"] },
+        { "method": "Kryptoměny", "timeline": "Jednejte okamžitě", "steps": ["Kontaktujte burzu/poskytovatele peněženky", "Nahlaste ID transakcí", "Podejte hlášení policii", "Monitorujte blockchain pro pohyb prostředků"] },
+        { "method": "Dárkové karty", "timeline": "Velmi omezené vymáhání", "steps": ["Okamžitě kontaktujte vydavatele karty", "Poskytněte čísla karet a potvrzení", "Podejte policejní hlášení", "Nahlaste (vymáhání nepravděpodobné)"] },
+        { "method": "Hotovost/peněžní poukázky", "timeline": "Mimořádně obtížné", "steps": ["Kontaktujte službu převodu peněz", "Okamžitě podejte policejní hlášení", "Požádejte o vyšetřování", "Vymáhání velmi nepravděpodobné"] }
+      ]
+    },
+    "supportResources": {
+      "badge": "Získejte pomoc",
+      "title": "Podpůrné zdroje a kanály hlášení",
+      "subtitle": "Nahlaste podvody více orgánům pro vytvoření oficiálního záznamu a přispění k vyšetřování.",
+      "channels": [
+        { "name": "Česká obchodní inspekce", "url": "coi.cz", "description": "Hlavní orgán pro hlášení podvodů" },
+        { "name": "Policie ČR - Kybernetická kriminalita", "url": "policie.cz", "description": "Pro počítačovou kriminalitu a online podvody" },
+        { "name": "Místní policejní oddělení", "url": "N/A", "description": "Podejte oficiální hlášení pro právní řízení" },
+        { "name": "Česká národní banka", "url": "cnb.cz", "description": "Pro finanční podvody" },
+        { "name": "Linka bezpečí", "url": "116 111", "description": "Podpora pro oběti" },
+        { "name": "Evropské spotřebitelské centrum", "url": "evropskyspotrebitel.cz", "description": "Pro přeshraniční podvody v EU" }
+      ],
+      "additionalSupport": {
+        "title": "Další podpora",
+        "items": [
+          "Linka bezpečí: 116 111 (pokud procházíte krizí)",
+          "Úvěrové registry: Umístěte upozornění na podvod",
+          "Centrum právní pomoci: bezplatná právní pomoc",
+          "SOS linka pro seniory: 800 200 007"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Zůstaňte ostražití, zůstaňte chráněni",
+      "description": "Použijte náš bezplatný Kontrolor podvodů před zapojením se s kýmkoliv online. Několik sekund ověření vám může ušetřit tisíce eur a obrovské emocionální trápení.",
+      "scamCheckerButton": "Použít kontrolor podvodů",
+      "freeTrainingButton": "Bezplatné školení"
+    }
+  },
+  "iWasScammed": {
+    "hero": {
+      "badges": {
+        "urgent": "Urgentní pomoc",
+        "expert": "Expertní poradenství",
+        "timeCritical": "Časově kritické kroky"
+      },
+      "title": "Byl jsem podveden: Získejte peníze zpět.",
+      "titleHighlight": "Nahlaste podvod nyní.",
+      "description": "Pokud jste se stali obětí online podvodu, investičního podvodu nebo jakékoli formy podvodu, nejste sami. První okamžiky po zjištění, že jste byli podvedeni, jsou kritické. Náš systém byl vytvořen speciálně pro takové případy, aby vám poskytl efektivní pomoc.",
+      "followGuide": "Nejprve prosím postupujte podle níže uvedeného průvodce krok za krokem a teprve potom nás kontaktujte.",
+      "contactButton": "Kontaktujte nás",
+      "fillFormButton": "Vyplňte formulář",
+      "stats": {
+        "steps": { "value": "7", "label": "Kritických kroků" },
+        "time": { "value": "24h", "label": "Časově kritické" },
+        "report": { "value": "Zdarma", "label": "PDF zpráva" },
+        "database": { "value": "612M+", "label": "Databáze" }
+      }
+    },
+    "intro": {
+      "title": "Co dělat po podvodu? Praktický průvodce",
+      "description": "Pokud jste se stali obětí podvodu, je důležité jednat rychle a systematicky. Níže najdete přesný postup krok za krokem, který byste měli dodržovat — byl speciálně vyvinut odborníky a každý krok má svůj účel a je klíčový.",
+      "findBelow": "— najdete ho níže."
+    },
+    "steps": {
+      "step1": {
+        "label": "Krok 1",
+        "title": "Okamžitě zablokujte podvodníkovi přístup k vašim penězům",
+        "description": "První a nejdůležitější krok je co nejrychleji zastavit další ztráty.",
+        "actions": [
+          { "icon": "card", "text": "Pokud byly odcizeny údaje vaší karty, okamžitě kartu zablokujte — přes mobilní aplikaci banky nebo zavoláním na infolinku." },
+          { "icon": "lock", "text": "Pokud byl napaden váš krypto účet, ihned kontaktujte burzu e-mailem a požádejte o zmrazení účtu." },
+          { "icon": "shield", "text": "Udělejte vše možné, aby podvodník již neměl přístup k vašim finančním prostředkům." }
+        ],
+        "tip": {
+          "title": "⚠️ Důležitý tip:",
+          "text": "Pokud jste stále v kontaktu s podvodníkem, neprozrazujte, že víte, že jste byli podvedeni. Předstírejte, že nerozumíte, proč něco nefunguje (např. pokus o platbu). Tím podvodníka udržíte v kontaktu a získáte více času na jednání."
+        },
+        "imageAlt": "Byl jsem podveden – Okamžitá akce a zablokování podvodníka",
+        "imageCaption": "Rychlost je vše, když jde o zotavení se z podvodu. Čím rychleji jednáte, tím vyšší jsou vaše šance na zastavení dalších škod a případné získání peněz zpět."
+      },
+      "step2": {
+        "label": "Krok 2",
+        "title": "Vytvořte si soustředěnou atmosféru k řešení problému",
+        "description": "Řešení podvodu vyžaduje vaši plnou pozornost a jasnou mysl.",
+        "actions": [
+          { "icon": "users", "text": "Pokud máte děti, požádejte příbuzné nebo přátele, aby se o ně několik hodin postarali" },
+          { "icon": "clock", "text": "Pokud jste v práci, promluvte si se zaměstnavatelem a požádejte o dřívější odchod nebo krátké volno." }
+        ],
+        "note": "Čím méně rušivých vlivů máte, tím rychleji a efektivněji můžete jednat. V takových případech počítá každá minuta — čím dříve zareagujete, tím vyšší je šance na zablokování převodů a zastavení podvodníka.",
+        "imageCaption": "Jak se soustředit a efektivně jednat po podvodu"
+      },
+      "step3": {
+        "label": "Krok 3",
+        "title": "Oficiálně nahlaste incident",
+        "description": "I když jste již zablokovali kartu nebo účet přes aplikaci, musíte incident nahlásit i oficiálně:",
+        "actions": [
+          { "icon": "phone", "text": "Kontaktujte banku nebo burzu přímo telefonicky nebo e-mailem" },
+          { "icon": "file", "text": "Popište celou situaci podrobně" },
+          { "icon": "check", "text": "Vyžádejte si písemné potvrzení vašeho hlášení" }
+        ],
+        "important": "Tento krok dokončete, i když podvodník již má vaše peníze, ale ještě jste to nenahlásili.",
+        "imageCaption": "Oficiální nahlášení podvodu policii a bance"
+      },
+      "step4": {
+        "label": "KROK 4",
+        "title": "Začněte sbírat důkazy a vyplňte náš formulář",
+        "description": "Když jste zastavili další platby, začněte systematicky shromažďovat všechny dostupné důkazy — to výrazně zvýší vaše šance na identifikaci podvodníka a získání peněz zpět. Postupujte následovně:",
+        "evidenceItems": [
+          { "icon": "file", "title": "Vyplňte náš formulář co nejpodrobněji.", "text": "Slouží jako praktický průvodce, který vám pomůže zachytit všechny podstatné informace a automaticky vygeneruje kompletní PDF zprávu, kterou můžete poskytnout policii nebo jiným příslušným orgánům." },
+          { "icon": "camera", "title": "Uchovejte všechny konverzace:", "text": "udělejte snímky obrazovky chatů, e-mailů (nezapomeňte zahrnout celou hlavičku e-mailu) a dalších textových zpráv včetně dat a časů komunikace." },
+          { "icon": "card", "title": "Zabezpečte bankovní záznamy:", "text": "archivujte všechny relevantní bankovní výpisy, potvrzení o platbách a detaily transakcí." },
+          { "icon": "phone", "title": "Zdokumentujte telefonní hovory:", "text": "zaznamenejte datum, čas a stručný souhrn rozhovoru. (Poznámka: před nahráváním hovorů si vždy ověřte místní zákony.)" },
+          { "icon": "video", "title": "Shromážděte video důkazy v původní kvalitě.", "text": "Pokud jste se s podvodníkem setkali osobně a je to bezpečné, vytvořte videozáznam setkání. Pokud jste se setkali na veřejném místě s kamerami, požádejte provozovatele o archivaci záznamu." },
+          { "icon": "fingerprint", "title": "Zaznamenejte identifikátory podvodníka:", "text": "uložte všechny dostupné údaje jako domény, e-mailové adresy, telefonní čísla, profily na sociálních sítích, IP adresy (pokud jsou známy) a jakékoli další relevantní informace." },
+          { "icon": "ban", "title": "Neprozrazujte podvodníkovi, že víte o podvodu.", "text": "Kontakt udržujte pouze pokud je to strategicky nutné a bezpečné. Nikdy mu neposkytujte informace, které by mu mohly pomoci uniknout s vašimi penězi." },
+          { "icon": "harddrive", "title": "Uchovejte metadata:", "text": "při ukládání snímků obrazovky a souborů si ponechte originály, abyste zachovali časové pečeti a další forenzní detaily." },
+          { "icon": "filecheck", "title": "Se všemi důkazy zacházejte maximálně opatrně:", "text": "každý případ může zahrnovat různé typy důkazů — digitální a fyzické. Vše důkladně zdokumentujte při zachování integrity původních materiálů." },
+          { "icon": "scale", "title": "Právní a bezpečnostní poznámka:", "text": "pokud narazíte na citlivé nebo potenciálně nebezpečné informace, konzultujte se zkušeným právníkem nebo vyšetřovateli." }
+        ],
+        "whyUseForm": {
+          "title": "Proč použít formulář ScamNemesis?",
+          "text": "Náš formulář shromažďuje vaše údaje do přehledné, stahovatelné PDF zprávy a současně prohledává naši databázi podobných případů. Pokud se najdou spojení, váš případ je propojen s jinými záznamy a vygeneruje se analytická zpráva — zcela zdarma.",
+          "button": "Vyplnit formulář nyní"
+        },
+        "imageCaption": "Shromažďování důkazů a vyplnění formuláře ScamNemesis"
+      },
+      "step5": {
+        "label": "Krok 5",
+        "title": "Nahlaste podvod policii a získejte oficiální dokumenty",
+        "paragraphs": [
+          "Okamžitě navštivte policii a přineste všechny dokumenty a důkazy, které jste dosud shromáždili. Při nahlášení incidentu požádejte o potvrzení o podání hlášení a kopii úředního záznamu.",
+          "Pokud je potřeba komunikace v angličtině, nechte policejní zprávu oficiálně přeložit do angličtiny. Většina bank a institucí přijímá pouze certifikované překlady."
+        ],
+        "note": "Mějte na paměti, že policie, zejména v zemích EU, je často zahlcena případy podvodů. Proto může být nutné být vytrvalý."
+      },
+      "step6": {
+        "label": "Krok 6",
+        "title": "Pokračujte v cílených akcích a sbírání důkazů",
+        "paragraphs": [
+          "Další kroky jsou specifičtější pro váš individuální případ a závisí na vašich možnostech, situaci a dostupných zdrojích. Jedno vždy platí: pokračujte ve sbírání důkazů a pozorně sledujte aktivity podvodníka.",
+          "Pokud podvodník ví, že mu již nepošlete žádné peníze, můžete zvážit sdílení svého příběhu na online fórech. Dělejte to však pouze pokud již nejste v kontaktu s podvodníkem.",
+          "Pokud s vámi podvodník stále komunikuje, zkuste udržet konverzaci a využijte ji jako příležitost získat více informací."
+        ],
+        "platformNote": "Na platformě ScamNemesis je váš případ automaticky propojen s jinými oběťmi stejného podvodníka a důkazy se průběžně aktualizují.",
+        "imageCaption": "Profesionální pomoc při získávání peněz po podvodu"
+      },
+      "step7": {
+        "label": "Krok 7",
+        "title": "Pravda o službách \"vrácení peněz\" – Potřebujete profesionální pomoc?",
+        "paragraphs": [
+          "Realita takzvaných služeb \"vrácení peněz\" je často velmi odlišná od jejich marketingových tvrzení. Ve většině případů jde o podvody nebo vysoce neetické praktiky.",
+          "Pravdou je, že žádná služba vám nemůže dát 100% záruku, že vaše peníze budou vráceny. Co můžete ovlivnit, je pravděpodobnost úspěchu.",
+          "V reakci na zneužívání obětí těmito společnostmi jsme vytvořili vlastní službu Money Recovery, která je etická a cenově dostupná."
+        ],
+        "warning": "Tyto společnosti si obvykle účtují 3 000 až 10 000 dolarů, ale jejich \"práce\" často spočívá pouze v základní pomoci s nahlášením podvodu — něco, co zvládnete sami.",
+        "readMore": "Přečtěte si více o našem přístupu"
+      }
+    },
+    "whatElse": {
+      "title": "Co dalšího mohu udělat?",
+      "optionA": {
+        "title": "Použijte službu Kontrolor podvodů",
+        "description": "Zkuste identifikovat podvodníka pomocí našeho Kontroloru podvodů. Může vám to pomoci získat informace a spojit se s jinými oběťmi.",
+        "button": "Otevřít Kontrolor podvodů"
+      },
+      "optionB": {
+        "title": "Konzultujte s kvalifikovaným právníkem",
+        "description": "Kontaktujte zkušeného právníka ve vaší zemi a požádejte o úvodní konzultaci."
+      },
+      "lawyerTips": {
+        "title": "Důležité tipy o právnících:",
+        "intro": "Buďte opatrní a vyberte si skutečně zkušeného odborníka.",
+        "examples": [
+          { "type": "info", "title": "Příklad 1:", "text": "Pokud byla vaše kreditní karta odcizena, ale SMS ověřovací kód nebyl použit, banka vám peníze s největší pravděpodobností vrátí." },
+          { "type": "warning", "title": "Příklad 2:", "text": "Pokud podvodník získal vaši kartu a nalomil vás na poskytnutí ověřovacího kódu, budou potřeba alternativní metody vrácení." },
+          { "type": "error", "title": "Příklad 3:", "text": "Pokud jste provedli standardní bankovní převod do internetového obchodu, ale nedostali jste zboží, banka to může považovat za obchodní spor." }
+        ]
+      }
+    },
+    "cta": {
+      "title": "Dodržováním těchto kroků můžete maximalizovat své šance na získání ukradených peněz.",
+      "description": "Začněte vyplněním našeho komplexního formuláře pro nahlášení. Je zdarma a pomůže vám uspořádat důkazy.",
+      "fillFormButton": "Vyplnit formulář hlášení",
+      "contactButton": "Kontaktujte nás pro pomoc"
+    }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Kontaktujte nás",
+      "title": "Kontaktujte",
+      "titleHighlight": "nás",
+      "description": "Můžete nás kontaktovat e-mailem. Pokud však chcete nahlásit podvod, klikněte na tlačítko níže a vyplňte formulář.",
+      "emailLabel": "Napište nám na",
+      "reportPrompt": "Potřebujete nahlásit podvod?",
+      "reportButton": "Nahlásit podvod",
+      "quickResponse": { "title": "Rychlá odpověď", "description": "Na všechny dotazy odpovídáme do 24-48 hodin" },
+      "confidential": { "title": "Důvěrné", "description": "Vaše informace jsou chráněny a přísně důvěrné" },
+      "expertSupport": { "title": "Odborná podpora", "description": "Náš tým specialistů je tu, aby vám pomohl" },
+      "cta": { "title": "Jste připraveni jednat?", "description": "Pokud jste se stali obětí podvodu, nečekejte.", "button": "Nahlásit podvod" }
+    },
+    "verifyService": {
+      "badge": "Profesionální Due Diligence Služby",
+      "heroTitle": "Investigativní Due Diligence & Prověřování Obchodních Partnerů",
+      "heroSubtitle": "Minimalizujte Riziko Před Vstupem do Obchodu",
+      "heroDescription": "Ověřte Integritu Vašeho Budoucího Obchodního Partnera",
+      "orderNow": "Objednat Službu",
+      "learnMore": "Zjistit Více",
+      "useCasesTitle": "Kdy Je Tato Služba Nezbytná?",
+      "useCases": [
+        { "title": "Hodnocení Strategických Partnerství", "description": "Před investováním kapitálu je nezbytné ověřit integritu partnera." },
+        { "title": "Onboarding Klíčových Dodavatelů", "description": "Prověřujeme vaše dodavatele na finanční stabilitu." },
+        { "title": "Pre-investiční & M&A Screening", "description": "Poskytujeme vrstvu předběžné integrity a reputační due diligence." },
+        { "title": "Prověřování Klientů (KYB)", "description": "Náš KYB proces potvrzuje identitu klientů." }
+      ],
+      "pillarsTitle": "Čtyři Pilíře Našeho Vyšetřování",
+      "pillars": [
+        { "number": "1", "title": "Firemní Identita & Právní Struktura", "description": "Rozkládáme právní strukturu subjektu." },
+        { "number": "2", "title": "Finanční Integrita & Reputační Rizika", "description": "Mapujeme finanční zdraví." },
+        { "number": "3", "title": "Digitální Stopa & Mapování Aktiv", "description": "Pomocí OSINT nástrojů sledujeme online přítomnost." },
+        { "number": "4", "title": "Lidský Faktor & Screening Vedení", "description": "Provádíme důkladné prověřování." }
+      ],
+      "whatYouGet": "Co Získáte",
+      "reportTitle": "Due Diligence Zpráva",
+      "reportDescription": "Komplexní a Praktická Zpráva",
+      "reportDetails": "Dostanete komplexní PDF zprávu do 30 dnů.",
+      "reportIncludes": "Zpráva Obsahuje:",
+      "deliverables": ["Ověření firemní identity", "Analýza vlastnické struktury", "Hodnocení finanční integrity", "Reputační analýza", "Audit digitální stopy"],
+      "transparentPricing": "Transparentní Ceny",
+      "noSurprises": "Žádné skryté poplatky.",
+      "processTitle": "Jednoduchý 3-Krokový Proces",
+      "steps": [
+        { "title": "Vyplňte Formulář", "description": "Poskytněte základní informace." },
+        { "title": "Bezpečně Zaplaťte", "description": "Zaplaťte bezpečně online." },
+        { "title": "Dostanete Zprávu", "description": "Získejte zprávu do 30 dnů." }
+      ],
+      "whyChooseTitle": "Proč Si Vybrat ScamNemesis?",
+      "whyChoose": [
+        { "title": "Zpravodajská Expertíza", "description": "Kombinujeme zkušenosti z vojenské zpravodajské služby." },
+        { "title": "Certifikovaní Specialisté", "description": "CFE®, CAMS®, CISA® certifikovaní profesionálové." },
+        { "title": "Pokročilé OSINT Techniky", "description": "Používáme nejmodernější Open-Source Intelligence." },
+        { "title": "Transparentní Ceny", "description": "Žádné skryté poplatky." }
+      ],
+      "ctaTitle": "Chraňte Svůj Byznys",
+      "ctaDescription": "Udělejte další strategický krok s jistotou.",
+      "ctaButton": "Objednat Due Diligence Zprávu"
+    },
+    "about": {
+      "hero": {
+        "title": "O ScamNemesis",
+        "description": "Jsme tým právníků, forenzních analytiků a etických hackerů, kteří se věnují pomoci obětem krypto podvodů a investičních podvodů. Naším posláním je chránit lidi před podvody a pomáhat těm, kteří se stali oběťmi."
+      },
+      "mission": {
+        "title": "Naše poslání",
+        "text1": "Vytvořit bezpečnější digitální prostředí poskytováním dostupných nástrojů pro prevenci podvodů, profesionálních vyšetřovacích služeb a podpory pro oběti online podvodů.",
+        "text2": "Věříme, že každý si zaslouží ochranu před podvody, bez ohledu na svou finanční situaci. Proto nabízíme bezplatné nástroje vedle našich profesionálních služeb.",
+        "imageAlt": "Náš tým"
+      },
+      "values": {
+        "title": "Naše hodnoty",
+        "items": [
+          { "title": "Transparentnost", "description": "Jsme upřímní v tom, co můžeme a nemůžeme udělat. Žádné falešné sliby, jen profesionální vyšetřování." },
+          { "title": "Odbornost", "description": "Náš tým zahrnuje certifikované vyšetřovatele podvodů, OSINT specialisty a právní profesionály." },
+          { "title": "Dostupnost", "description": "Spravedlnost a bezpečnost by neměly být vyhrazeny pouze těm, kteří si je mohou finančně dovolit." },
+          { "title": "Soucit", "description": "Chápeme emocionální dopad podvodu a ke každé oběti přistupujeme s respektem." }
+        ]
+      },
+      "team": {
+        "title": "Expertní tým",
+        "description": "Náš tým má certifikace od předních institucí se zkušenostmi ve vyšetřování finanční kriminality, vojenském zpravodajství a Big 4 konzultingu.",
+        "credentials": [
+          "Certifikovaní vyšetřovatelé podvodů (CFE®)",
+          "Certifikovaní specialisté na boj proti praní špinavých peněz (CAMS®)",
+          "Certifikovaní auditoři informačních systémů (CISA®)",
+          "Certifikovaní manažeři informační bezpečnosti (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Zkušenosti z vojenského zpravodajství",
+          "Zkušenosti z Big 4 konzultingu"
+        ]
+      },
+      "services": {
+        "title": "Co nabízíme",
+        "items": [
+          { "name": "Kontrola podvodů", "description": "Bezplatný nástroj pro ověření identity a kontrolu indikátorů podvodu" },
+          { "name": "Nahlášení podvodu", "description": "Komplexní formulář pro dokumentaci a nahlášení incidentů podvodu" },
+          { "name": "Vymáhání peněz", "description": "Profesionální vyšetřování a služby pro vymáhání prostředků" },
+          { "name": "Due Diligence", "description": "Prověřování obchodních partnerů a firemní verifikace" },
+          { "name": "Školení", "description": "Kurzy kybernetické bezpečnosti a prevence podvodů (již brzy)" },
+          { "name": "Program druhé šance", "description": "Podpora rehabilitace pro bývalé pachatele" }
+        ]
+      },
+      "certifications": { "title": "Naše certifikace" },
+      "cta": {
+        "title": "Potřebujete pomoc?",
+        "description": "Ať už chcete ověřit něčí legitimitu, nahlásit podvod nebo potřebujete pomoc s vrácením peněz — jsme tu pro vás.",
+        "scamChecker": "Použít kontrolu podvodů",
+        "contact": "Kontaktujte nás"
+      }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Přistupujte k databázi podvodů programově. Naše API poskytuje bezpečný přístup ke schváleným hlášením podvodů pro vaši aplikaci nebo službu.",
+      "features": {
+        "fraudData": {
+          "title": "Data o podvodech",
+          "description": "Přistupujte k tisícům schválených hlášení podvodů s detailními informacemi."
+        },
+        "secureApi": {
+          "title": "Bezpečné API",
+          "description": "API klíče s omezenými scope, rate limiting a šifrovaná komunikace."
+        },
+        "fastResponses": {
+          "title": "Rychlé odpovědi",
+          "description": "Optimalizované endpointy s průměrnou odezvou pod 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Standardní REST API s JSON odpověďmi. Jednoduché použití v jakémkoli jazyce."
+        }
+      },
+      "quickStart": {
+        "title": "Rychlý start",
+        "description": "Začněte používat API za pár minut",
+        "step1": {
+          "title": "1. Získejte API klíč",
+          "description": "Kontaktujte nás na",
+          "descriptionEnd": "pro získání partnerské smlouvy a API klíče."
+        },
+        "step2": {
+          "title": "2. Autentifikace",
+          "description": "Použijte váš API klíč v hlavičce"
+        },
+        "step3": {
+          "title": "3. Váš první request"
+        },
+        "codeComment": "// JavaScript / Node.js příklad",
+        "arrayComment": "// Pole reportů"
+      },
+      "apiReference": {
+        "title": "API Reference",
+        "description": "Kompletní dokumentace všech endpointů",
+        "tabs": {
+          "reports": "Reports",
+          "search": "Search",
+          "stats": "Stats"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Získejte seznam schválených hlášení podvodů. Citlivá data jsou maskována.",
+          "queryParams": "Query parametry",
+          "columns": {
+            "parameter": "Parametr",
+            "type": "Typ",
+            "description": "Popis"
+          },
+          "params": {
+            "limit": "Počet výsledků (1-100, default: 20)",
+            "offset": "Offset pro stránkování",
+            "fraudType": "Filtr podle typu podvodu",
+            "country": "Filtr podle země (ISO 3166-1 alpha-2)",
+            "dateFrom": "Filtr od data",
+            "dateTo": "Filtr do data"
+          },
+          "exampleResponse": "Příklad odpovědi"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Vyhledávejte v databázi podvodů podle emailu, telefonu, IBAN, webstránky nebo jména.",
+          "queryParams": "Query parametry",
+          "params": {
+            "q": "Vyhledávací výraz (min. 3 znaky)",
+            "qRequired": "povinný",
+            "field": "Pole pro vyhledávání: email, phone, iban, website, name, all"
+          },
+          "example": "Příklad"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Získejte agregované statistiky o podvodech - počty, typy, země, finanční ztráty.",
+          "exampleResponse": "Příklad odpovědi"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API má nastavené limity na ochranu před zneužitím:",
+        "columns": {
+          "endpoint": "Endpoint",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 req/hod",
+          "search": "50 req/hod",
+          "stats": "100 req/hod"
+        },
+        "note": "Při překročení dostanete HTTP 429. Zkontrolujte hlavičky"
+      },
+      "errors": {
+        "title": "Chybové odpovědi",
+        "columns": {
+          "code": "Kód",
+          "description": "Popis"
+        },
+        "codes": {
+          "400": "Neplatný request (validation error)",
+          "401": "Chybí nebo neplatný API klíč",
+          "403": "Nedostatečná oprávnění (scope)",
+          "429": "Rate limit překročen",
+          "500": "Interní chyba serveru"
+        }
+      },
+      "cta": {
+        "title": "Chcete se stát partnerem?",
+        "description": "Pokud máte zájem o integraci naší databáze podvodů do vaší služby, kontaktujte nás pro získání API klíče a partnerské smlouvy.",
+        "contactButton": "Kontaktujte nás",
+        "swaggerButton": "Swagger dokumentace"
+      }
+    }
   }
 }

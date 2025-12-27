@@ -175,6 +175,123 @@ Platba: kartou`,
       website_url: 'https://super-deals-sk.com',
     },
   },
+  // Additional fraud types for comprehensive testing
+  {
+    summary: 'Lottery scam - falšná výhra',
+    description: `Email tvrdil, že som vyhral 500,000 EUR v medzinárodnej lotérii. Pre vyplatenie som mal zaplatiť "poplatky" 2,000 EUR.`,
+    fraudType: FraudType.LOTTERY_PRIZE_SCAM,
+    severity: Severity.MEDIUM,
+    status: ReportStatus.UNDER_REVIEW,
+    financialLossAmount: 2000,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Wien',
+    locationCountry: 'AT',
+    perpetrator: {
+      fullName: 'European Lottery Commission',
+      email: 'winner@euro-lottery-fake.com',
+    },
+    digitalFootprint: {
+      website_url: 'https://euro-lottery-fake.com',
+    },
+  },
+  {
+    summary: 'Pyramídová schéma - MLM podvod',
+    description: `Firma Super Wealth sľubovala pasívny príjem 10,000 EUR mesačne za nábor nových členov. Zaplatil som vstupný poplatok 5,000 EUR.`,
+    fraudType: FraudType.PYRAMID_MLM_SCHEME,
+    severity: Severity.HIGH,
+    status: ReportStatus.REJECTED,
+    rejectionReason: 'Nedostatočné dôkazy - chýba dokumentácia',
+    financialLossAmount: 5000,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Praha',
+    locationCountry: 'CZ',
+    perpetrator: {
+      fullName: 'Super Wealth International',
+      nickname: 'SuperWealth',
+      perpetratorType: 'COMPANY',
+    },
+  },
+  {
+    summary: 'Sextortion - vydieranie',
+    description: `Po komunikácii na dating stránke mi bolo vyhrážané zverejnením kompromitujúcich materiálov. Požadovali 1,500 EUR v Bitcoin.`,
+    fraudType: FraudType.SEXTORTION,
+    severity: Severity.CRITICAL,
+    status: ReportStatus.APPROVED,
+    financialLossAmount: 1500,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Berlin',
+    locationCountry: 'DE',
+    cryptoInfo: {
+      walletAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+      blockchain: 'BITCOIN',
+    },
+  },
+  {
+    summary: 'BEC - Business Email Compromise',
+    description: `Hacker získal prístup k emailu nášho CEO a poslal falošnú faktúru na 25,000 EUR. Účtovníctvo zaplatilo na podvodný účet.`,
+    fraudType: FraudType.BUSINESS_EMAIL_COMPROMISE,
+    severity: Severity.CRITICAL,
+    status: ReportStatus.APPROVED,
+    financialLossAmount: 25000,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Budapest',
+    locationCountry: 'HU',
+    perpetrator: {
+      email: 'ceo-fake@company-spoofed.com',
+    },
+    financialInfo: {
+      iban: 'HU42117730161111101800000000',
+      bankName: 'Unknown Hungarian Bank',
+      bankCountry: 'HU',
+    },
+  },
+  {
+    summary: 'Falošná charita - zbierka pre Ukrajinu',
+    description: `Webstránka sa tvárila ako oficiálna zbierka pre vojnových utečencov. Daroval som 300 EUR, neskôr som zistil, že stránka je falošná.`,
+    fraudType: FraudType.FAKE_CHARITY,
+    severity: Severity.LOW,
+    status: ReportStatus.APPROVED,
+    financialLossAmount: 300,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Warszawa',
+    locationCountry: 'PL',
+    digitalFootprint: {
+      website_url: 'https://help-ukraine-fake.org',
+      facebook: 'fb.com/fake-ukraine-help',
+    },
+  },
+  {
+    summary: 'SIM swapping - krádež identity',
+    description: `Útočník presvedčil operátora na vydanie novej SIM karty. Získal prístup k môjmu bankovníctvu cez SMS verifikáciu.`,
+    fraudType: FraudType.SIM_SWAPPING,
+    severity: Severity.CRITICAL,
+    status: ReportStatus.ARCHIVED,
+    financialLossAmount: 8500,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Bratislava',
+    locationCountry: 'SK',
+    perpetrator: {
+      phone: '+421-900-XXX-XXX',
+    },
+  },
+  {
+    summary: 'Catfishing - falošná identita',
+    description: `Osoba na sociálnej sieti používala ukradnuté fotografie a vytvorila falošnú identitu. Po mesiacoch "vzťahu" požiadala o 4,000 EUR.`,
+    fraudType: FraudType.CATFISHING,
+    severity: Severity.MEDIUM,
+    status: ReportStatus.MERGED,
+    financialLossAmount: 4000,
+    financialLossCurrency: 'EUR',
+    locationCity: 'Brno',
+    locationCountry: 'CZ',
+    perpetrator: {
+      nickname: 'maria_love_2024',
+    },
+    digitalFootprint: {
+      instagram: '@maria_love_2024',
+      facebook: 'fb.com/maria.love.fake',
+    },
+  },
 ];
 
 async function main() {
@@ -198,7 +315,7 @@ async function main() {
   await prisma.companyInfo.deleteMany();
   await prisma.vehicleInfo.deleteMany();
   await prisma.perpetrator.deleteMany();
-  await prisma.duplicateMatch.deleteMany();
+  await prisma.duplicateClusterReport.deleteMany();
   await prisma.duplicateCluster.deleteMany();
   await prisma.report.deleteMany();
   await prisma.refreshToken.deleteMany();
@@ -235,6 +352,7 @@ async function main() {
   const basicId = createdUsers['basic@scamnemesis.com'];
 
   for (const reportData of SAMPLE_REPORTS) {
+    const isModerated = [ReportStatus.APPROVED, ReportStatus.REJECTED, ReportStatus.MERGED, ReportStatus.ARCHIVED].includes(reportData.status);
     const report = await prisma.report.create({
       data: {
         summary: reportData.summary,
@@ -250,37 +368,42 @@ async function main() {
         reporterEmail: 'reporter@example.com',
         reporterConsent: true,
         reporterLang: 'sk',
-        moderatedById: reportData.status === ReportStatus.APPROVED ? adminId : null,
-        moderatedAt: reportData.status === ReportStatus.APPROVED ? new Date() : null,
+        moderatedById: isModerated ? adminId : null,
+        moderatedAt: isModerated ? new Date() : null,
         publishedAt: reportData.status === ReportStatus.APPROVED ? new Date() : null,
+        rejectionReason: (reportData as any).rejectionReason || null,
       },
     });
 
     // Create perpetrator if exists
     if (reportData.perpetrator) {
+      const perp = reportData.perpetrator as any;
       await prisma.perpetrator.create({
         data: {
           reportId: report.id,
-          fullName: reportData.perpetrator.fullName,
-          fullNameNormalized: reportData.perpetrator.fullName?.toLowerCase(),
-          nickname: reportData.perpetrator.nickname,
-          email: reportData.perpetrator.email,
-          emailNormalized: reportData.perpetrator.email?.toLowerCase(),
-          phone: reportData.perpetrator.phone,
-          phoneNormalized: reportData.perpetrator.phone?.replace(/\D/g, ''),
+          perpetratorType: perp.perpetratorType || 'INDIVIDUAL',
+          fullName: perp.fullName,
+          fullNameNormalized: perp.fullName?.toLowerCase(),
+          nickname: perp.nickname,
+          email: perp.email,
+          emailNormalized: perp.email?.toLowerCase(),
+          phone: perp.phone,
+          phoneNormalized: perp.phone?.replace(/\D/g, ''),
         },
       });
     }
 
     // Create digital footprint if exists
     if (reportData.digitalFootprint) {
+      const df = reportData.digitalFootprint as any;
       await prisma.digitalFootprint.create({
         data: {
           reportId: report.id,
-          telegram: reportData.digitalFootprint.telegram,
-          whatsapp: reportData.digitalFootprint.whatsapp,
-          instagram: reportData.digitalFootprint.instagram,
-          websiteUrl: reportData.digitalFootprint.website_url,
+          telegram: df.telegram,
+          whatsapp: df.whatsapp,
+          instagram: df.instagram,
+          facebook: df.facebook,
+          websiteUrl: df.website_url,
         },
       });
     }

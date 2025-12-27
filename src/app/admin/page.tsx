@@ -58,18 +58,20 @@ export default function AdminDashboard() {
   }, [loadStats]);
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'PENDING':
+    // API returns lowercase status
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case 'pending':
         return <Badge variant="warning">Čaká</Badge>;
-      case 'UNDER_REVIEW':
+      case 'under_review':
         return <Badge variant="secondary">V procese</Badge>;
-      case 'APPROVED':
+      case 'approved':
         return <Badge variant="success">Schválené</Badge>;
-      case 'REJECTED':
+      case 'rejected':
         return <Badge variant="destructive">Zamietnuté</Badge>;
-      case 'MERGED':
+      case 'merged':
         return <Badge variant="outline">Zlúčené</Badge>;
-      case 'ARCHIVED':
+      case 'archived':
         return <Badge variant="outline" className="text-gray-500">Archivované</Badge>;
       default:
         return <Badge>{status}</Badge>;
@@ -231,12 +233,12 @@ export default function AdminDashboard() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
-                      <h4 className="font-medium truncate">{report.title}</h4>
+                      <h4 className="font-medium truncate">{report.summary || 'Bez názvu'}</h4>
                       {getStatusBadge(report.status)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span>{new Date(report.createdAt).toLocaleString('sk-SK')}</span>
-                      {report.reporterEmail && <span>{report.reporterEmail}</span>}
+                      {report.reporter?.email && <span>{report.reporter.email}</span>}
                       <Badge variant="outline">{report.fraudType}</Badge>
                     </div>
                   </div>
@@ -286,12 +288,14 @@ export default function AdminDashboard() {
               <div className="space-y-3">
                 {stats.fraudTypeDistribution.map((item, index) => {
                   const colors = ['bg-red-500', 'bg-pink-500', 'bg-orange-500', 'bg-amber-500', 'bg-gray-500'];
+                  // Handle both uppercase (from stats API) and lowercase (from other APIs)
+                  const typeKey = item.type?.toUpperCase() || item.type;
                   return (
                     <div key={item.type} className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${colors[index] || colors[4]}`} />
                       <div className="flex-1 flex items-center justify-between">
-                        <span className="text-sm">{FRAUD_TYPE_LABELS[item.type] || item.type}</span>
-                        <span className="text-sm font-medium">{item.count.toLocaleString()}</span>
+                        <span className="text-sm truncate">{FRAUD_TYPE_LABELS[typeKey] || item.type}</span>
+                        <span className="text-sm font-medium flex-shrink-0">{item.count.toLocaleString()}</span>
                       </div>
                     </div>
                   );

@@ -1,0 +1,21 @@
+# ScamNemesis Robots.txt
+# https://scamnemesis.com
+
+User-agent: *
+Allow: /
+
+# Disallow API documentation
+Disallow: /docs
+Disallow: /docs/
+Disallow: /api/docs
+Disallow: /api/docs/
+
+# Disallow admin area
+Disallow: /admin
+Disallow: /admin/
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://scamnemesis.com/sitemap.xml

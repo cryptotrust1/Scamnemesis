@@ -719,6 +719,7 @@ export default function SearchPage() {
     dateTo: '',
     amountMin: '',
     amountMax: '',
+    searchMode: 'auto',
   });
 
   const [reports, setReports] = useState<Report[]>([]);
@@ -737,8 +738,8 @@ export default function SearchPage() {
   }, [currentPage, sortBy]);
 
   const handleSearch = async () => {
-    // Require at least 2 characters for search
-    if (filters.query && filters.query.length < 2) {
+    // Require at least 2 characters for search (query is optional when using filters)
+    if (filters.query && filters.query.length > 0 && filters.query.length < 2) {
       setSearchError('Zadajte aspoň 2 znaky pre vyhľadávanie');
       return;
     }
@@ -755,7 +756,7 @@ export default function SearchPage() {
       }
 
       // Set search mode
-      params.set('mode', 'auto');
+      params.set('mode', filters.searchMode || 'auto');
 
       // Pagination - API expects offset, not page
       const pageSize = 10;
@@ -849,6 +850,7 @@ export default function SearchPage() {
       dateTo: '',
       amountMin: '',
       amountMax: '',
+      searchMode: 'auto',
     });
     setCurrentPage(1);
   };

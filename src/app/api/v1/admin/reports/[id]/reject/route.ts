@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { prisma } from '@/lib/db';
 import { requireAuth, requireRateLimit } from '@/lib/middleware/auth';
 import { emailService } from '@/lib/services/email';
+import { handleApiError } from '@/lib/api/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -127,10 +128,6 @@ export async function POST(
       rejected_at: updatedReport.moderatedAt?.toISOString(),
     });
   } catch (error) {
-    console.error('Error rejecting report:', error);
-    return NextResponse.json(
-      { error: 'internal_error', message: 'Failed to reject report' },
-      { status: 500 }
-    );
+    return handleApiError(error, request, { route: 'POST /api/v1/admin/reports/[id]/reject' });
   }
 }

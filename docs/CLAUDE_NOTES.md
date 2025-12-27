@@ -279,4 +279,104 @@ Používateľ komunikuje **po slovensky**. Je **amatér** v programovaní, takž
 
 ---
 
-**Posledný update:** Claude Opus 4, 13. December 2024 (Session Review)
+## 🔐 AUTH SYSTEM ARCHITECTURE (25. December 2024)
+
+### Architektonický prehľad:
+
+Systém používa **HYBRIDNÝ AUTH**:
+1. **Custom JWT API** (`/api/v1/auth/*`) - pre password login a user management
+2. **NextAuth v5** (`/api/auth/*`) - pre OAuth (Google, GitHub)
+
+### Kľúčové súbory:
+
+| Súbor | Účel |
+|-------|------|
+| `src/auth.ts` | NextAuth v5 konfigurácia (OAuth providers) |
+| `src/lib/auth/jwt.ts` | JWT generation, verification, password hashing |
+| `src/lib/auth/user-context.tsx` | React context pre user state (`useUser()`) |
+| `src/lib/admin/auth-context.tsx` | Admin auth context (`useAdminAuth()`) |
+| `src/app/api/v1/auth/*` | Custom auth endpoints |
+
+### Auth Flow:
+
+1. **Password Login**: `/auth/login` → `POST /api/v1/auth/token` → HttpOnly cookies
+2. **Google OAuth**: `/auth/login` → `signIn('google')` → NextAuth → callback → session
+3. **Registration**: `/auth/register` → `POST /api/v1/auth/register` → verification email
+4. **Email Verification**: `/auth/verify-email?token=X` → `POST /api/v1/auth/verify-email`
+
+### ⚠️ DÔLEŽITÉ:
+
+1. **NEPOUŽÍVAJ** `useAuth()` z `src/hooks/use-auth.tsx` - je deprecated (mŕtvy kód)
+2. **POUŽÍVAJ** `useUser()` z `src/lib/auth/user-context.tsx` pre user state
+3. **JWT_SECRET** musí byť rovnaký pri build aj runtime
+4. **RESEND_API_KEY** musí byť nastavený pre email verification
+
+### Opravy z 25. December 2024 (Part 1 - Auth System):
+
+- ✅ Pridaná `/auth/error` stránka pre OAuth chyby
+- ✅ Opravený signIn callback - vracia redirect namiesto `false`
+- ✅ Pridaná null check pre `payload.sub` v verify-email route
+- ✅ Konvertovaná verify-email stránka na angličtinu
+- ✅ Zjednodušený login - odstránený dual auth flow
+- ✅ Pridaná migrácia pre chýbajúci `bio` stĺpec
+
+### Opravy z 25. December 2024 (Part 2 - UI/UX Fixes):
+
+- ✅ **Google OAuth 404 fix**: Odstránená `newUser: '/auth/welcome'` z NextAuth config (stránka neexistovala)
+- ✅ **Settings redirect**: Vytvorená `/settings` stránka, ktorá redirectuje na `/profile`
+- ✅ **Middleware update**: Pridané `/settings` a `/profile` do `rootRoutes` v middleware.ts
+- ✅ **SDK null-check fix**: Pridané null checky pre `querySelector` v `scamnemesis.js` SDK (SearchWidget, ReportWidget, VerifyWidget)
+- ✅ **Dashboard English**: Konvertované všetky Slovak stringy na English
+- ✅ **Profile English**: Konvertované všetky Slovak stringy na English
+
+### Súbory upravené (Part 2):
+
+| Súbor | Zmena |
+|-------|-------|
+| `src/auth.ts` | Odstránená `newUser: '/auth/welcome'` |
+| `src/middleware.ts` | Pridané `/settings`, `/profile` do rootRoutes |
+| `src/app/settings/page.tsx` | NOVÝ - redirect na /profile |
+| `sdk/js/src/scamnemesis.js` | Null checky v bindEvents() metódach |
+| `src/app/dashboard/page.tsx` | Konvertované na English |
+| `src/app/profile/page.tsx` | Konvertované na English |
+
+---
+
+## 🌐 LOCALE ROUTING (25. December 2024)
+
+### Cesty ktoré NEPOUŽÍVAJÚ locale prefix:
+
+Tieto cesty existujú na root úrovni a NEsú prefixované locale (`/en/`, `/sk/`):
+
+```
+/                       - Homepage
+/about                  - About page
+/contact                - Contact page
+/contact-us             - Contact us page
+/dashboard              - User dashboard
+/profile                - User profile/settings
+/settings               - Redirects to /profile
+/search                 - Search page
+/auth/*                 - Auth pages (login, register, verify-email, error)
+/admin/*                - Admin pages
+/report/*               - Report pages
+```
+
+### Cesty ktoré POUŽÍVAJÚ locale prefix:
+
+```
+/[locale]/about         - Localized about
+/[locale]/search        - Localized search
+/[locale]/report/new    - Localized report form
+/[locale]/support-us    - Localized support page
+```
+
+### ⚠️ DÔLEŽITÉ pre nové stránky:
+
+1. Ak stránka potrebuje byť na root level → pridaj ju do `rootRoutes` v `src/middleware.ts`
+2. Ak stránka potrebuje preklady → daj ju do `/[locale]/` folder struktury
+3. Dashboard/Profile/Auth pages nie sú v locale strukture - používajú hardcoded English strings
+
+---
+
+**Posledný update:** Claude Opus 4.5, 25. December 2024 (UI/UX Fixes & English Conversion)

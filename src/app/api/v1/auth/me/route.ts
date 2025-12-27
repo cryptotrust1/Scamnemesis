@@ -14,6 +14,7 @@ export const dynamic = 'force-dynamic';
 const updateProfileSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   displayName: z.string().min(1).max(100).optional(),
+  bio: z.string().max(500).optional(),
 });
 
 /**
@@ -34,9 +35,11 @@ export async function GET(request: NextRequest) {
         email: true,
         name: true,
         displayName: true,
+        bio: true,
         role: true,
         emailVerified: true,
         createdAt: true,
+        totpEnabled: true,
       },
     });
 
@@ -57,9 +60,11 @@ export async function GET(request: NextRequest) {
       email: user.email,
       name: user.name,
       displayName: user.displayName,
+      bio: user.bio,
       role: user.role,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt.toISOString(),
+      totpEnabled: user.totpEnabled,
     });
   } catch (error) {
     console.error('Get user info error:', error);
@@ -101,14 +106,14 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { name, displayName } = parsed.data;
+    const { name, displayName, bio } = parsed.data;
 
     // Check if there's anything to update
-    if (!name && !displayName) {
+    if (name === undefined && displayName === undefined && bio === undefined) {
       return NextResponse.json(
         {
           error: 'validation_error',
-          message: 'At least one field (name or displayName) must be provided',
+          message: 'At least one field (name, displayName, or bio) must be provided',
         },
         { status: 400 }
       );
@@ -121,6 +126,7 @@ export async function PATCH(request: NextRequest) {
         id: true,
         name: true,
         displayName: true,
+        bio: true,
       },
     });
 
@@ -135,9 +141,10 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Build update data
-    const updateData: { name?: string; displayName?: string } = {};
+    const updateData: { name?: string; displayName?: string; bio?: string | null } = {};
     if (name !== undefined) updateData.name = name;
     if (displayName !== undefined) updateData.displayName = displayName;
+    if (bio !== undefined) updateData.bio = bio || null;
 
     // Update user and create audit log
     const ip = getClientIp(request);
@@ -150,6 +157,7 @@ export async function PATCH(request: NextRequest) {
           email: true,
           name: true,
           displayName: true,
+          bio: true,
           role: true,
           emailVerified: true,
           createdAt: true,
@@ -165,10 +173,12 @@ export async function PATCH(request: NextRequest) {
             before: {
               name: currentUser.name,
               displayName: currentUser.displayName,
+              bio: currentUser.bio,
             },
             after: {
               name: name ?? currentUser.name,
               displayName: displayName ?? currentUser.displayName,
+              bio: bio ?? currentUser.bio,
             },
           },
           ipAddress: ip,
@@ -182,6 +192,7 @@ export async function PATCH(request: NextRequest) {
       email: updatedUser.email,
       name: updatedUser.name,
       displayName: updatedUser.displayName,
+      bio: updatedUser.bio,
       role: updatedUser.role,
       emailVerified: updatedUser.emailVerified,
       createdAt: updatedUser.createdAt.toISOString(),

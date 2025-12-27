@@ -5,9 +5,10 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, Home, Search, FileText, ArrowRight, Copy, Check, Share2 } from 'lucide-react';
+import { CheckCircle, Home, Search, FileText, ArrowRight, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ShareButton } from '@/components/ui/share-button';
 import { toast } from 'sonner';
 
 export default function ReportSuccessPage() {
@@ -42,21 +43,6 @@ export default function ReportSuccessPage() {
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Hlásenie podvodu - Scamnemesis',
-          text: 'Pozrite si toto hlásenie o podvode',
-          url: reportUrl,
-        });
-      } catch {
-        // User cancelled or error
-      }
-    } else {
-      handleCopyLink();
-    }
-  };
 
   if (!reportId) {
     return null;
@@ -138,10 +124,13 @@ export default function ReportSuccessPage() {
                   )}
                   {copied ? 'Skopírované' : 'Kopírovať'}
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleShare}>
-                  <Share2 className="h-4 w-4 mr-1" />
-                  Zdieľať
-                </Button>
+                <ShareButton
+                  url={reportUrl}
+                  title="Pozrite si toto hlásenie o podvode"
+                  description="Hlásenie podvodu - ScamNemesis"
+                  variant="outline"
+                  size="sm"
+                />
               </div>
             </div>
           </CardContent>

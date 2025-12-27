@@ -59,6 +59,101 @@
       "oldest": "Älteste",
       "amountHigh": "Höchster Betrag",
       "amountLow": "Niedrigster Betrag"
+    },
+    "filtersPanel": {
+      "title": "Suche & Filter",
+      "reset": "Zurücksetzen",
+      "searchPlaceholder": "Name, Telefon, E-Mail, IBAN, Website...",
+      "searchButton": "Suchen",
+      "searchMode": "Suchmodus",
+      "modeAuto": "Auto",
+      "modeFuzzy": "Fuzzy",
+      "modeExact": "Exakt",
+      "modeAutoDesc": "Wählt automatisch den besten Modus für Ihre Anfrage",
+      "modeFuzzyDesc": "Toleriert Tippfehler und ähnliche Begriffe",
+      "modeExactDesc": "Sucht nach exakten Übereinstimmungen",
+      "selectFraudType": "Typ auswählen",
+      "selectCountry": "Land auswählen",
+      "selectStatus": "Status auswählen",
+      "countryLocation": "Land / Standort",
+      "showAdvanced": "Datum & Betrag",
+      "hideAdvanced": "Erweiterte Filter ausblenden",
+      "amountFrom": "Betrag ab (EUR)",
+      "amountTo": "Betrag bis (EUR)",
+      "activeFilters": "Aktive Filter:",
+      "from": "Von:",
+      "to": "Bis:",
+      "min": "Min:",
+      "max": "Max:"
+    },
+    "fraudTypes": {
+      "all": "Alle Typen",
+      "INVESTMENT_FRAUD": "Anlagebetrug",
+      "ROMANCE_SCAM": "Romance Scam",
+      "PHISHING": "Phishing",
+      "IDENTITY_THEFT": "Identitätsdiebstahl",
+      "ONLINE_SHOPPING_FRAUD": "E-Commerce-Betrug",
+      "CRYPTOCURRENCY_SCAM": "Krypto-Betrug",
+      "EMPLOYMENT_SCAM": "Jobbetrug",
+      "RENTAL_SCAM": "Mietbetrug",
+      "ADVANCE_FEE_FRAUD": "Vorschussbetrug",
+      "FAKE_CHARITY": "Falsche Wohltätigkeit",
+      "TECH_SUPPORT_SCAM": "Tech-Support-Betrug",
+      "LOTTERY_PRIZE_SCAM": "Lotteriebetrug",
+      "PYRAMID_MLM_SCHEME": "Pyramiden-/MLM-Schema",
+      "INSURANCE_FRAUD": "Versicherungsbetrug",
+      "CREDIT_CARD_FRAUD": "Kreditkartenbetrug",
+      "WIRE_FRAUD": "Überweisungsbetrug",
+      "MONEY_MULE": "Finanzagent",
+      "BUSINESS_EMAIL_COMPROMISE": "Geschäfts-E-Mail-Kompromittierung",
+      "SOCIAL_ENGINEERING": "Social Engineering",
+      "GOVERNMENT_IMPERSONATION": "Behörden-Nachahmung",
+      "UTILITY_SCAM": "Energiebetrug",
+      "GRANDPARENT_SCAM": "Enkeltrick",
+      "SEXTORTION": "Sextortion",
+      "RANSOMWARE": "Ransomware",
+      "ACCOUNT_TAKEOVER": "Kontoübernahme",
+      "SIM_SWAPPING": "SIM-Swapping",
+      "CATFISHING": "Catfishing",
+      "PONZI_SCHEME": "Schneeballsystem",
+      "OTHER": "Andere"
+    },
+    "perpetratorTypes": {
+      "INDIVIDUAL": "Einzelperson",
+      "COMPANY": "Firma / Organisation",
+      "UNKNOWN": "Unbekannt"
+    },
+    "blockchainLabels": {
+      "BITCOIN": "Bitcoin (BTC)",
+      "ETHEREUM": "Ethereum (ETH)",
+      "TRON": "Tron (TRX)",
+      "SOLANA": "Solana (SOL)",
+      "BINANCE_SMART_CHAIN": "Binance Smart Chain (BSC)",
+      "POLYGON": "Polygon (MATIC)",
+      "CARDANO": "Cardano (ADA)",
+      "RIPPLE": "Ripple (XRP)",
+      "LITECOIN": "Litecoin (LTC)",
+      "POLKADOT": "Polkadot (DOT)",
+      "OTHER": "Andere Blockchain"
+    },
+    "countries": {
+      "all": "Alle Länder",
+      "SK": "Slowakei",
+      "CZ": "Tschechien",
+      "PL": "Polen",
+      "HU": "Ungarn",
+      "AT": "Österreich",
+      "DE": "Deutschland",
+      "OTHER": "Andere"
+    },
+    "statuses": {
+      "all": "Alle Status",
+      "PENDING": "Ausstehend",
+      "UNDER_REVIEW": "In Prüfung",
+      "APPROVED": "Genehmigt",
+      "REJECTED": "Abgelehnt",
+      "MERGED": "Zusammengeführt",
+      "ARCHIVED": "Archiviert"
     }
   },
   "report": {
@@ -120,6 +215,20 @@
       "reporterEmail": "Ihre E-Mail",
       "reporterPhone": "Ihre Telefonnummer"
     },
+    "placeholders": {
+      "title": "Kurzer und aussagekräftiger Titel (z.B. 'Bitcoin-Investitionsbetrug')",
+      "description": "Beschreiben Sie, was passiert ist, wie Sie kontaktiert wurden, welche Beträge involviert waren usw...",
+      "city": "Zum Beispiel Berlin",
+      "postalCode": "Zum Beispiel 10115",
+      "amount": "0.00",
+      "selectCountry": "Land auswählen",
+      "selectCurrency": "Währung auswählen"
+    },
+    "hints": {
+      "descriptionCount": "{{count}} / 10.000 Zeichen (mindestens 50)",
+      "allCountries": "Alle Länder",
+      "allCurrencies": "Alle Währungen"
+    },
     "consent": {
       "terms": "Ich stimme den Nutzungsbedingungen zu",
       "gdpr": "Ich stimme der Datenverarbeitung zu",
@@ -130,6 +239,216 @@
     "success": {
       "title": "Meldung erfolgreich gesendet!",
       "description": "Vielen Dank für Ihren Beitrag zum Schutz anderer."
+    },
+    "financialDetails": {
+      "title": "Finanzdaten",
+      "subtitle": "Geben Sie Details zu Finanzkonten ein, wohin Sie Geld gesendet haben",
+      "infoTitle": "Wichtige Informationen",
+      "infoItems": ["Füllen Sie mindestens einen Abschnitt aus", "Diese Daten helfen bei der Identifizierung", "Sensible Daten sind verschlüsselt"],
+      "banking": { "title": "Bankinformationen", "description": "IBAN, Kontonummer, SWIFT/BIC-Code" },
+      "iban": "IBAN", "ibanHint": "IBAN beginnt mit Ländercode",
+      "accountHolder": "Kontoinhaber", "accountHolderPlaceholder": "Z.B. Max Betrüger",
+      "accountNumber": "Kontonummer", "accountNumberPlaceholder": "Kontonummer", "accountNumberHint": "Kontonummer",
+      "bankName": "Bankname", "bankNamePlaceholder": "Bankname",
+      "bankCountry": "Land der Bank", "bankCountryPlaceholder": "Land auswählen", "allCountries": "Alle Länder",
+      "swiftBic": "SWIFT/BIC-Code", "swiftBicPlaceholder": "SWIFT-Code", "swiftBicHint": "8-11 Zeichen",
+      "regionalCodes": "Regionale Codes",
+      "routingNumber": "Routing Number", "routingNumberPlaceholder": "9-stellige Nummer",
+      "bsbCode": "BSB Code", "bsbCodePlaceholder": "6-stelliger Code",
+      "sortCode": "Sort Code", "sortCodePlaceholder": "6-stelliger Code",
+      "ifscCode": "IFSC Code", "ifscCodePlaceholder": "11-stelliger Code",
+      "cnapsCode": "CNAPS Code", "cnapsCodePlaceholder": "12-stelliger Code",
+      "otherBankingDetails": "Weitere Details", "otherBankingDetailsPlaceholder": "Weitere Notizen",
+      "crypto": { "title": "Kryptowährungsdaten", "description": "Wallet-Adressen, Blockchain, Börsen" },
+      "blockchain": "Blockchain", "blockchainPlaceholder": "Blockchain auswählen", "blockchainHint": "Blockchain auswählen",
+      "walletAddress": "Wallet-Adresse", "walletAddressPlaceholder": "Wallet-Adresse",
+      "exchangeName": "Börse", "exchangeNamePlaceholder": "Binance, Coinbase...", "exchangeNameHint": "Verwendete Börse",
+      "transactionHash": "Transaktions-Hash", "transactionHashPlaceholder": "0x...", "transactionHashHint": "Transaktions-ID",
+      "paypal": { "title": "PayPal", "description": "PayPal-Konto" },
+      "paypalAccount": "PayPal-Konto", "paypalAccountPlaceholder": "email@example.com", "paypalAccountHint": "PayPal-E-Mail",
+      "tipTitle": "Tipp: Wie bekommt man diese Daten?", "tipItems": ["Transaktionsverlauf prüfen", "Block Explorer verwenden", "E-Mails prüfen"]
+    },
+    "contact": {
+      "title": "Kontaktdaten und Zustimmungen", "subtitle": "Daten sind optional",
+      "contactInfo": "Kontaktdaten", "yourName": "Ihr Name", "yourNamePlaceholder": "Vor- und Nachname",
+      "yourNameHint": "Name wird nicht veröffentlicht", "yourEmail": "E-Mail", "yourEmailPlaceholder": "ihre@email.de",
+      "yourPhone": "Telefon", "yourPhonePlaceholder": "+49 170 123 4567",
+      "notifications": "Benachrichtigungen", "wantUpdates": "Updates erhalten", "wantUpdatesDesc": "Wir informieren Sie",
+      "consents": "Erforderliche Zustimmungen", "agreeToTerms": "Nutzungsbedingungen akzeptieren", "agreeToTermsDesc": "Ich bestätige",
+      "termsLink": "Nutzungsbedingungen", "agreeToGDPR": "Datenverarbeitung zustimmen", "agreeToGDPRDesc": "GDPR-Zustimmung",
+      "gdprLink": "Datenschutz (DSGVO)", "infoTitle": "Was passiert nach dem Absenden?", "infoItems": ["Meldung wird geprüft", "Wird veröffentlicht", "Hilft anderen"]
+    },
+    "review": {
+      "title": "Meldung überprüfen", "subtitle": "Prüfen Sie die Daten vor dem Absenden", "edit": "Bearbeiten",
+      "fraudType": "Betrugsart", "notSelected": "Nicht ausgewählt", "basicInfo": "Grundinformationen",
+      "noTitle": "Kein Titel", "noDescription": "Keine Beschreibung", "incidentDate": "Vorfallsdatum",
+      "location": "Ort", "damageAmount": "Schadenshöhe", "perpetratorInfo": "Täterinformationen",
+      "unknown": "Unbekannt", "nameTitle": "Name / Titel", "phone": "Telefon", "email": "E-Mail",
+      "socialMedia": "Soziale Medien", "address": "Adresse", "noPerpetratorData": "Keine Täterdaten",
+      "digitalFootprints": "Digitale Spuren", "website": "Website", "domain": "Domain",
+      "ipAddress": "IP-Adresse", "ipCountry": "IP-Land", "noDigitalData": "Keine digitalen Spuren",
+      "financialData": "Finanzdaten", "bankingData": "Bankdaten", "accountHolder": "Kontoinhaber",
+      "accountNumber": "Kontonummer", "bank": "Bank", "bankCountry": "Land der Bank",
+      "cryptoData": "Kryptowährungsdaten", "walletAddress": "Wallet-Adresse", "exchange": "Börse",
+      "transactionHash": "Transaktions-Hash", "paypalAccount": "PayPal-Konto", "noFinancialData": "Keine Finanzdaten",
+      "companyVehicle": "Firma und Fahrzeug", "companyInfo": "Firmeninformationen", "companyName": "Firmenname",
+      "vatTaxId": "USt-IdNr. / Steuernummer", "street": "Straße", "city": "Stadt", "postalCode": "PLZ", "country": "Land",
+      "vehicleInfo": "Fahrzeuginformationen", "vehicleMake": "Marke", "vehicleModel": "Modell",
+      "vehicleColor": "Farbe", "licensePlate": "Kennzeichen", "vin": "FIN", "registeredOwner": "Halter",
+      "noCompanyVehicleData": "Keine Firmen-/Fahrzeugdaten", "evidence": "Beweise und Anhänge",
+      "noEvidence": "Keine Anhänge", "contactData": "Kontaktdaten", "yourName": "Ihr Name",
+      "yourEmail": "Ihre E-Mail", "yourPhone": "Ihre Telefonnummer", "wantUpdates": "Updates erhalten",
+      "agreeToTerms": "Nutzungsbedingungen", "agreeToGDPR": "Datenverarbeitung",
+      "anonymousReport": "Anonyme Meldung", "warningTitle": "Vor dem Absenden überprüfen:",
+      "warningItems": ["Informationen sind wahrheitsgemäß", "Keine Daten Dritter ohne Einwilligung", "Berechtigung zum Teilen der Beweise"]
+    },
+    "digitalFootprints": {
+      "title": "Digitale Spuren",
+      "subtitle": "Geben Sie Online-Profile und technische Informationen über den Täter ein",
+      "socialMedia": {
+        "title": "Social-Media-Konten",
+        "description": "Profile des Täters auf sozialen Plattformen"
+      },
+      "telegram": "Telegram",
+      "telegramHint": "Benutzernamen mit @ eingeben",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "Telefonnummer mit Ländervorwahl",
+      "signal": "Signal",
+      "signalHint": "Telefonnummer mit Ländervorwahl",
+      "instagram": "Instagram",
+      "instagramHint": "Benutzernamen mit @ eingeben",
+      "facebook": "Facebook",
+      "facebookPlaceholder": "Profilname oder URL",
+      "facebookHint": "Profilnamen oder vollständige URL eingeben",
+      "tiktok": "TikTok",
+      "tiktokHint": "Benutzernamen mit @ eingeben",
+      "twitter": "X / Twitter",
+      "twitterHint": "Benutzernamen mit @ eingeben",
+      "usernamePlaceholder": "@username",
+      "phonePlaceholder": "+1234567890",
+      "website": {
+        "title": "Website & Domain",
+        "description": "Informationen über beim Betrug verwendete Websites"
+      },
+      "websiteUrl": "Website-URL",
+      "websiteUrlPlaceholder": "https://example.com",
+      "websiteUrlHint": "Vollständige URL mit https:// eingeben",
+      "domainName": "Domainname",
+      "domainNamePlaceholder": "example.com",
+      "domainNameHint": "Nur der Domainname ohne http://",
+      "domainCreationDate": "Domain-Erstellungsdatum",
+      "domainCreationDateHint": "Wann wurde die Domain registriert (falls bekannt)",
+      "ip": {
+        "title": "IP-Adress-Informationen",
+        "description": "Technische Details über den Ursprung des Betrugs"
+      },
+      "ipAddress": "IP-Adresse",
+      "ipAddressPlaceholder": "192.168.1.1",
+      "ipAddressHint": "IPv4-Adresse im Format xxx.xxx.xxx.xxx",
+      "ipCountry": "IP-Land",
+      "ipCountryPlaceholder": "Land auswählen",
+      "ipCountryHint": "Aus welchem Land stammte die IP-Adresse",
+      "allCountries": "Alle Länder",
+      "ispProvider": "Internetanbieter (ISP)",
+      "ispProviderPlaceholder": "Zum Beispiel: Comcast, Verizon, Deutsche Telekom...",
+      "ispProviderHint": "Name des Internetanbieters",
+      "ipAbuseScore": "IP-Missbrauchsbewertung (0-100)",
+      "ipAbuseScorePlaceholder": "50",
+      "ipAbuseScoreHint": "IP-Risikobewertung (höher = gefährlicher)",
+      "infoTitle": "Warum sind digitale Spuren wichtig?",
+      "infoText": "Diese Informationen helfen dabei, ein digitales Profil des Täters zu erstellen und ermöglichen es den Strafverfolgungsbehörden, Betrüger über mehrere Plattformen hinweg zu verfolgen und zu identifizieren. Alle sensiblen Daten sind geschützt und entsprechend Ihrer Zugriffsebene maskiert."
+    },
+    "perpetrator": {
+      "title": "Täterinformationen",
+      "subtitle": "Geben Sie alle verfügbaren Informationen über die Person oder Firma an, die den Betrug begangen hat",
+      "typeLabel": "Art des Täters",
+      "types": {
+        "individual": "Einzelperson",
+        "individualDesc": "Eine Person, die den Betrug begangen hat",
+        "company": "Firma / Organisation",
+        "companyDesc": "Ein Unternehmen oder eine Organisation",
+        "unknown": "Unbekannt",
+        "unknownDesc": "Konnte den Täter nicht identifizieren"
+      },
+      "nameLabel": "Vollständiger Name",
+      "companyNameLabel": "Firmenname",
+      "namePlaceholder": "Zum Beispiel: Max Betrüger",
+      "companyNamePlaceholder": "Zum Beispiel: Scam GmbH",
+      "businessName": "Handelsname (falls abweichend)",
+      "businessNamePlaceholder": "Zum Beispiel: Scam Trading",
+      "companyId": "Handelsregisternummer (optional)",
+      "companyIdPlaceholder": "Zum Beispiel: HRB 12345",
+      "nickname": "Spitzname / Alias",
+      "nicknamePlaceholder": "Spitzname oder falscher Name",
+      "username": "Benutzername",
+      "usernamePlaceholder": "Verwendet auf Websites/Apps",
+      "approxAge": "Ungefähres Alter",
+      "approxAgePlaceholder": "Zum Beispiel: 35",
+      "nationality": "Nationalität",
+      "nationalityPlaceholder": "Zum Beispiel: Deutsch, Österreichisch...",
+      "physicalDescription": "Physische Beschreibung",
+      "physicalDescriptionPlaceholder": "Beschreiben Sie das Aussehen des Täters - Größe, Statur, Haar-/Augenfarbe, besondere Merkmale...",
+      "physicalDescriptionHint": "Wenn Sie den Täter persönlich oder auf Video gesehen haben, beschreiben Sie sein Aussehen",
+      "contactInfo": "Kontaktdaten des Täters",
+      "phone": "Telefonnummer",
+      "phonePlaceholder": "+49 170 123 4567",
+      "email": "E-Mail",
+      "emailPlaceholder": "betrueger@example.com",
+      "socialMedia": "Soziale Medien (Facebook, Instagram, WhatsApp)",
+      "socialMediaPlaceholder": "Facebook: xyz, Instagram: @handle, WhatsApp: +49...",
+      "socialMediaHint": "Geben Sie Profillinks durch Kommas getrennt ein (Format: Plattform: Handle)",
+      "address": "Adresse (falls bekannt)",
+      "addressPlaceholder": "Straße, Hausnummer, Stadt, PLZ",
+      "tip": "Je mehr Informationen Sie angeben, desto besser können wir andere warnen. Alle sensiblen Daten sind geschützt und entsprechend Ihrer Zugriffsebene maskiert."
+    },
+    "companyVehicle": {
+      "title": "Firmen- und Fahrzeuginformationen",
+      "subtitle": "Geben Sie Informationen über die Firma und das Fahrzeug im Zusammenhang mit dem Betrug ein",
+      "companySection": {
+        "title": "Firmeninformationen"
+      },
+      "companyName": "Firmenname",
+      "companyNamePlaceholder": "Zum Beispiel: Example Trading GmbH",
+      "vatTaxId": "USt-IdNr. / Steuernummer / HRB",
+      "vatTaxIdPlaceholder": "Zum Beispiel: DE123456789 oder HRB 12345",
+      "vatTaxIdHint": "Umsatzsteuer-Identifikationsnummer oder Handelsregisternummer",
+      "companyAddress": {
+        "title": "Firmenadresse"
+      },
+      "street": "Straße und Hausnummer",
+      "streetPlaceholder": "Zum Beispiel: Hauptstraße 123",
+      "city": "Stadt",
+      "cityPlaceholder": "Zum Beispiel: Berlin",
+      "postalCode": "PLZ",
+      "postalCodePlaceholder": "Zum Beispiel: 10115",
+      "country": "Land",
+      "countryPlaceholder": "Land auswählen",
+      "allCountries": "Alle Länder",
+      "vehicleSection": {
+        "title": "Fahrzeuginformationen"
+      },
+      "vehicleMake": "Marke",
+      "vehicleMakePlaceholder": "Zum Beispiel: Toyota, BMW, Mercedes",
+      "vehicleModel": "Modell",
+      "vehicleModelPlaceholder": "Zum Beispiel: Camry, X5, C-Klasse",
+      "vehicleColor": "Farbe",
+      "vehicleColorPlaceholder": "Zum Beispiel: Silber, Schwarz, Weiß",
+      "licensePlate": "Kennzeichen",
+      "licensePlatePlaceholder": "Zum Beispiel: B-AB 1234",
+      "vin": "FIN (Fahrzeug-Identifizierungsnummer)",
+      "vinPlaceholder": "17-stellige Fahrzeugkennung",
+      "vinError": "FIN muss genau 17 Zeichen enthalten (Buchstaben A-Z außer I, O, Q und Ziffern 0-9)",
+      "registeredOwner": "Halter",
+      "registeredOwnerPlaceholder": "Vollständiger Name oder Firmenname",
+      "registeredOwnerHint": "Geben Sie den Namen des Halters wie im Fahrzeugschein angegeben ein",
+      "importantInfo": {
+        "title": "Wichtige Informationen:",
+        "items": [
+          "Firmen- und Fahrzeugdaten sind optional, können aber erheblich bei der Identifizierung des Betrügers helfen",
+          "Alle sensiblen Daten sind geschützt und werden nur autorisierten Personen angezeigt",
+          "Wenn Sie Dokumente (Rechnungen, Verträge) haben, fügen Sie diese im Abschnitt Beweise hinzu"
+        ]
+      }
     },
     "evidence": {
       "title": "Beweise & Anhänge",
@@ -214,6 +533,58 @@
       "invalidCredentials": "Ungültige Anmeldedaten",
       "emailExists": "E-Mail existiert bereits",
       "weakPassword": "Passwort ist zu schwach"
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen",
+      "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "submit": "Passwort zurücksetzen",
+      "submitting": "Wird gesendet...",
+      "rememberPassword": "Passwort eingefallen?",
+      "signIn": "Anmelden",
+      "success": {
+        "title": "E-Mail gesendet",
+        "description": "Wenn ein Konto mit der E-Mail {{email}} existiert, erhalten Sie Anweisungen zum Zurücksetzen des Passworts.",
+        "checkSpam": "Bitte überprüfen Sie auch Ihren SPAM-Ordner. Der Link ist 1 Stunde gültig.",
+        "backToLogin": "Zurück zur Anmeldung",
+        "tryAnotherEmail": "Andere E-Mail versuchen"
+      },
+      "errors": {
+        "tooManyAttempts": "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
+        "sendError": "Fehler beim Senden. Bitte versuchen Sie es erneut."
+      }
+    },
+    "resetPassword": {
+      "title": "Neues Passwort",
+      "subtitle": "Geben Sie ein neues Passwort für Ihr Konto ein",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "submit": "Passwort ändern",
+      "submitting": "Passwort wird geändert...",
+      "backToLogin": "Zurück zur Anmeldung",
+      "requirements": {
+        "minLength": "Mindestens 8 Zeichen",
+        "uppercase": "Enthält Großbuchstaben",
+        "lowercase": "Enthält Kleinbuchstaben",
+        "number": "Enthält Zahl"
+      },
+      "errors": {
+        "passwordMismatch": "Passwörter stimmen nicht überein",
+        "requirementsNotMet": "Passwort erfüllt nicht alle Anforderungen",
+        "invalidToken": "Ungültiger oder fehlender Token. Bitte fordern Sie einen neuen Reset-Link an.",
+        "tokenExpired": "Token abgelaufen oder ungültig. Bitte fordern Sie einen neuen Reset-Link an.",
+        "serverError": "Fehler bei der Kommunikation mit dem Server. Bitte versuchen Sie es erneut."
+      },
+      "success": {
+        "title": "Passwort geändert",
+        "description": "Ihr Passwort wurde erfolgreich geändert. Sie können sich jetzt mit Ihrem neuen Passwort anmelden.",
+        "signIn": "Anmelden"
+      },
+      "invalidLink": {
+        "title": "Ungültiger Link",
+        "requestNew": "Neuen Link anfordern"
+      }
     }
   },
   "admin": {
@@ -223,6 +594,18 @@
     "duplicates": "Duplikate",
     "comments": "Kommentare",
     "settings": "Einstellungen",
+    "login": {
+      "title": "Admin-Anmeldung",
+      "subtitle": "Melden Sie sich im Administrationsbereich an, um das System zu verwalten",
+      "email": "E-Mail",
+      "emailPlaceholder": "admin@scamnemesis.com",
+      "password": "Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung...",
+      "error": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.",
+      "backToHome": "Zurück zur Startseite"
+    },
     "actions": {
       "approve": "Genehmigen",
       "reject": "Ablehnen",
@@ -234,7 +617,17 @@
     "notFound": "Seite nicht gefunden",
     "serverError": "Serverfehler",
     "unauthorized": "Nicht autorisiert",
-    "forbidden": "Zugriff verweigert"
+    "forbidden": "Zugriff verweigert",
+    "errorPage": {
+      "title": "Etwas ist schief gelaufen",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "tryAgain": "Erneut versuchen"
+    },
+    "notFoundPage": {
+      "title": "Seite nicht gefunden",
+      "description": "Die Seite, die Sie suchen, existiert nicht.",
+      "goHome": "Zur Startseite"
+    }
   },
   "footer": {
     "about": "Über uns",
@@ -242,5 +635,811 @@
     "terms": "Nutzungsbedingungen",
     "contact": "Kontakt",
     "copyright": "Alle Rechte vorbehalten"
+  },
+  "supportUs": {
+    "hero": {
+      "title": "Unterstützen Sie unsere Mission –",
+      "titleHighlight": "Helfen Sie uns, Gerechtigkeit und Sicherheit für alle zu bringen",
+      "description": "Unsere Vision ist, dass Gerechtigkeit und Sicherheit nicht nur denjenigen vorbehalten sein sollten, die sie sich finanziell leisten können. Wir möchten, dass unsere Dienste für alle kostenlos verfügbar sind – denn jeder Mensch verdient Schutz, eine Chance auf einen Neuanfang und faire Behandlung.",
+      "subdescription": "Um unabhängig und nachhaltig zu bleiben, müssen einige unserer Dienste kostenpflichtig sein. Wir tun jedoch alles, damit die Mehrheit unserer Aktivitäten für Betrugsopfer und für diejenigen, die eine zweite Chance suchen, völlig kostenlos bleibt."
+    },
+    "howToHelp": {
+      "badge": "Wie Sie helfen können",
+      "title": "Ihr Beitrag ermöglicht es uns, die Arbeit fortzusetzen, die",
+      "titleHighlight": "echte Wirkung zeigt",
+      "description": "Sie können uns mit einer einmaligen oder wiederkehrenden Spende unterstützen – per Kreditkarte oder Kryptowährung – und wählen, welches unserer beiden Programme Sie unterstützen möchten:"
+    },
+    "program1": {
+      "badge": "PROGRAMM 1",
+      "title": "Öffentlicher Schutz und Bekämpfung von Betrügern",
+      "features": [
+        "Entwicklung und Verbesserung unseres kostenlosen Betrugserkennungssystems",
+        "Marketing- und Aufklärungskampagnen, um so viele Menschen wie möglich zu erreichen",
+        "Rechtsdienstleistungen, die uns helfen, eine sichere und effektive Umgebung zu schaffen"
+      ],
+      "impact": "Ihre Unterstützung in diesem Fonds bedeutet weniger Betrugsopfer und stärkeren öffentlichen Schutz."
+    },
+    "program2": {
+      "badge": "PROGRAMM 2",
+      "title": "Eine zweite Chance für Menschen, die die Kriminalität hinter sich lassen wollen",
+      "features": [
+        "Umschulungskurse und Bildungsprogramme für aus dem Gefängnis entlassene Personen",
+        "Finanzielle Unterstützung bei der Jobsuche und Wiedereingliederung in die Gesellschaft",
+        "Hilfe bei grundlegenden Bedürfnissen beim Start in ein neues Leben"
+      ],
+      "impact": "Ihre Unterstützung hier verändert Leben – sie gibt denjenigen eine Chance, die kriminelle Umgebungen verlassen und ehrlich leben wollen."
+    },
+    "buttons": {
+      "payByCard": "Mit Karte bezahlen",
+      "payWithCrypto": "Mit Krypto bezahlen"
+    },
+    "cta": {
+      "title": "Unterstützen Sie uns noch heute und werden Sie Teil der Veränderung.",
+      "description": "Ihr Beitrag – egal wie groß oder klein – bedeutet mehr, als Sie sich vorstellen können. Gemeinsam können wir eine Welt aufbauen, in der Gerechtigkeit für alle zugänglich ist.",
+      "transparent": "100% Transparent",
+      "securePayments": "Sichere Zahlungen",
+      "everyDonationCounts": "Jede Spende zählt",
+      "haveQuestions": "Haben Sie Fragen?",
+      "contactUs": "Kontaktieren Sie uns",
+      "learnMore": "um mehr über unsere Arbeit zu erfahren."
+    }
+  },
+  "scammerRemoval": {
+    "hero": {
+      "title": "Antrag auf Löschung aus der Datenbank",
+      "titleHighlight": "Eine zweite Chance",
+      "subtitle": "Hilfe für einen Neuanfang im Leben",
+      "description": "Wir glauben an Privatsphäre und zweite Chancen. Unsere Plattform bietet Personen mit krimineller Vergangenheit die Möglichkeit, die Löschung aus unserer Betrügerdatenbank zu beantragen und Unterstützung für die Wiedereingliederung ins Leben zu erhalten.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "learnMore": "Mehr erfahren"
+    },
+    "quote": {
+      "text": "Jeder verdient eine zweite Chance. Es kommt nicht darauf an, wo Sie angefangen haben, sondern wohin Sie gehen.",
+      "author": "ScamNemesis"
+    },
+    "terms": {
+      "badge": "Anforderungen & Bedingungen",
+      "title": "Geschäftsbedingungen",
+      "subtitle": "Bitte lesen Sie diese Anforderungen sorgfältig durch, bevor Sie Ihren Antrag einreichen",
+      "basicRequirements": {
+        "title": "Grundvoraussetzungen",
+        "items": [
+          "Ihre Fall-/Betrüger-ID aus unserer Datenbank",
+          "Gültige Ausweisdokumente",
+          "Detaillierte Erläuterung Ihrer Situation",
+          "Verpflichtungserklärung für zukünftiges rechtmäßiges Verhalten"
+        ]
+      },
+      "importantNotices": {
+        "title": "Wichtige Hinweise",
+        "items": [
+          "Eine Chance pro Person — nutzen Sie sie weise",
+          "Jede zukünftige kriminelle Aktivität schließt diese Tür dauerhaft",
+          "Prüfungszeitraum: 14-30 Tage",
+          "Alle Anträge werden individuell nach Schwere des Falls bewertet"
+        ]
+      }
+    },
+    "howToRequest": {
+      "badge": "Schritt-für-Schritt-Prozess",
+      "title": "So beantragen Sie die Löschung",
+      "subtitle": "Befolgen Sie diese einfachen Schritte, um Ihren Antrag auf Löschung aus der Datenbank einzureichen",
+      "steps": [
+        { "title": "Kontaktieren Sie uns", "description": "Senden Sie Ihren Antrag an info@scamnemesis.com" },
+        { "title": "Dokumente einreichen", "description": "Stellen Sie die erforderlichen Unterlagen und Erklärungen bereit" },
+        { "title": "Auf Prüfung warten", "description": "Unser Team wird Ihren Fall prüfen (14-30 Tage)" },
+        { "title": "Entscheidung erhalten", "description": "Werden Sie über das Ergebnis Ihres Antrags benachrichtigt" }
+      ]
+    },
+    "pdfGuide": {
+      "badge": "Kostenlose Ressource",
+      "title": "PDF-Leitfaden: Der Weg aus der Kriminalität",
+      "subtitle": "Praktische Anleitung für diejenigen, die kriminelle Umgebungen verlassen möchten",
+      "insideTitle": "Was im Leitfaden enthalten ist",
+      "features": [
+        "Schritt-für-Schritt-Anleitung zum sicheren Verlassen krimineller Umgebungen",
+        "Ressourcen für psychische Gesundheit und Suchtgenesung",
+        "Beschäftigungsstrategien für Personen mit Vorstrafen",
+        "Rechtsrechte und Wiedereingliederungsinformationen nach Land"
+      ],
+      "downloadButton": "Kostenlosen PDF-Leitfaden herunterladen"
+    },
+    "breakCycle": {
+      "badge": "Sich befreien",
+      "title": "Den Kreislauf durchbrechen",
+      "importantMessage": "Wichtige Nachricht",
+      "content": "Wenn Sie derzeit Teil einer kriminellen Organisation sind und aussteigen möchten, wissen Sie, dass es immer einen Weg hinaus gibt. Ihr erster Schritt ist, Hilfe zu suchen — sei es von Strafverfolgungsbehörden, Hilfsorganisationen oder vertrauenswürdigen Personen. Der Weg zu einem neuen Leben beginnt mit einer einzigen Entscheidung.",
+      "reminder": "Denken Sie daran: Es ist nie zu spät, Ihren Weg zu ändern."
+    },
+    "vision": {
+      "badge": "Zukunftspläne",
+      "title": "Unsere Vision der Hilfe",
+      "subtitle": "Wir entwickeln umfassende Programme zur Unterstützung von Personen, die ihre kriminelle Vergangenheit hinter sich lassen möchten. Hier sind drei Initiativen, die wir umsetzen wollen:",
+      "plannedInitiative": "Geplante Initiative",
+      "initiatives": [
+        { "title": "Finanzielle Unterstützung", "description": "Hilfe für Entlassene während der Übergangszeit" },
+        { "title": "Familienunterstützung", "description": "Unterstützungsdienste für Familien derjenigen, die einen Neuanfang suchen" },
+        { "title": "Bildung & Umschulung", "description": "Möglichkeiten zur Kompetenzentwicklung und Karrierewechsel" }
+      ]
+    },
+    "donation": {
+      "title": "Unterstützen Sie das Zweite-Chance-Programm",
+      "description": "Ihr Beitrag hilft uns, Ressourcen, Beratung und Unterstützung für Personen bereitzustellen, die kriminelle Lebensstile hinter sich lassen und eine bessere Zukunft aufbauen möchten.",
+      "cryptoButton": "Mit Kryptowährung spenden",
+      "cardButton": "Mit Karte spenden",
+      "securePayment": "Sichere Zahlung",
+      "goesToPrograms": "100% geht an Programme",
+      "makeDifference": "Machen Sie einen Unterschied"
+    },
+    "contact": {
+      "badge": "Kontaktieren Sie uns",
+      "title": "Bereit, Ihre neue Reise zu beginnen?",
+      "description": "Kontaktieren Sie uns unter",
+      "descriptionEnd": "um den Prozess Ihres Löschungsantrags zu beginnen. Wir sind hier, um Ihnen bei jedem Schritt zu helfen.",
+      "submitRequest": "Löschungsantrag einreichen",
+      "contactPage": "Kontaktseite"
+    },
+    "finalMessage": {
+      "quote": "Die Vergangenheit ist Ihre Lektion. Die Gegenwart ist Ihr Geschenk. Die Zukunft ist Ihre Motivation.",
+      "message": "Jeder verdient eine zweite Chance."
+    }
+  },
+  "trainingCourses": {
+    "hero": {
+      "title": "Erstklassige, von Experten geleitete Cybersicherheitsschulungen von den weltweit",
+      "titleHighlight": "führenden Sicherheitsexperten.",
+      "description": "Verhindern Sie Betrug und Angriffe — sichern Sie Ihre Umgebung und stärken Sie die Cyberresilienz mit Scamnemesis.",
+      "comingSoon": "Demnächst verfügbar",
+      "comingSoonText": "Unsere Schulungskurse befinden sich derzeit in der Entwicklung. Kontaktieren Sie uns unter",
+      "comingSoonTextEnd": "um benachrichtigt zu werden, wenn sie starten."
+    },
+    "programs": {
+      "badge": "Unsere Programme",
+      "title": "Cybersicherheitskurse",
+      "description": "Wir bieten Schulungen und Bildungsinhalte, die auf verschiedene Zielgruppen zugeschnitten sind — von der allgemeinen Öffentlichkeit, die grundlegenden Schutz sucht, bis hin zu spezialisierten Fachleuten und Organisationen, die fortgeschrittene Anleitungen benötigen."
+    },
+    "freeCourses": {
+      "badge": "KOSTENLOS",
+      "title": "Kostenlose Kurse für die Öffentlichkeit",
+      "description": "Kurze, praktische Lektionen zum Schutz von sich selbst und Ihren Lieben online:",
+      "items": [
+        "Wie man einen Betrug erkennt — wichtige Warnsignale und rote Flaggen",
+        "Was tun, wenn Sie betrogen wurden — ein schneller, effektiver Reaktionsleitfaden",
+        "Wie Sie Ihr Telefon und Ihren Computer sicher einrichten",
+        "Wie man sich online sicher verhält — praktische Gewohnheiten und Richtlinien",
+        "Wie Sie Ihre Kinder online schützen"
+      ]
+    },
+    "professionalVideos": {
+      "badge": "PROFESSIONELL",
+      "title": "Professionelle Videos",
+      "description": "OPSEC und Cybersicherheit für Profis — Schulungen für Spezialisten, die Bedrohungen erkennen, verhindern und darauf reagieren müssen:",
+      "audiences": [
+        { "title": "AML-Spezialisten", "description": "Tiefgehende Module zur Transaktionsüberwachung, roten Flaggen und Ermittlungstechniken." },
+        { "title": "Polizeibeamte", "description": "Fokussiert auf Ermittlungsmethodik, Beweissammlung und Reaktion auf cyber-gestützte Kriminalität." },
+        { "title": "Buchhalter", "description": "Betrugsindika​toren in Finanzunterlagen, interne Kontrollen und Best Practices für Whistleblower." },
+        { "title": "IT- und Sicherheitspersonal", "description": "Netzwerkverteidigung, Phishing-Simulationen, sichere Infrastrukturkonfiguration." },
+        { "title": "Ermittler", "description": "OSINT-Techniken, Grundlagen der digitalen Forensik und Falldokumentation." }
+      ]
+    },
+    "companyTraining": {
+      "badge": "INDIVIDUELL",
+      "title": "Unternehmensschulungen und Sicherheitsmethodik",
+      "description1": "Wir schulen Mitarbeiter und helfen bei der Implementierung einer vollständigen Sicherheitsmethodik — damit jedes Teammitglied weiß, was zu tun ist und wen es im Falle einer Bedrohung kontaktieren soll.",
+      "description2": "Unsere Unternehmensprogramme umfassen Richtlinienimplementierung, Rollenklärug, Verfahren zur Reaktion auf Vorfälle und laufende Unterstützung.",
+      "button": "Individuelle Schulung anfordern"
+    },
+    "differentiators": {
+      "badge": "Warum uns wählen",
+      "title": "Was macht unsere Schulungen einzigartig?",
+      "items": [
+        { "emoji": "📡", "title": "Live-Bedrohungsintelligenz", "description": "Wir arbeiten täglich an aktiven Krypto- und Investitionsbetrugsfällen, sodass unsere Inhalte immer die neuesten von Kriminellen verwendeten Taktiken widerspiegeln." },
+        { "emoji": "🔄", "title": "Kontinuierlich aktualisierter Lehrplan", "description": "Wenn neue Betrugsmethoden auftauchen, entwickeln sich unsere Kurse weiter und stellen sicher, dass Sie nie ins Hintertreffen geraten." },
+        { "emoji": "🛡️", "title": "Praktisch, nicht nur theoretisch", "description": "Wir lehren tatsächliche Schutzstrategien, nicht nur abstrakte Konzepte." },
+        { "emoji": "💡", "title": "Von Opfern zu Experten", "description": "Unsere Perspektive umfasst tiefe Einblicke sowohl in die Psychologie der Opfer als auch in das Verhalten der Betrüger, was Ihnen ein 360°-Verständnis gibt." }
+      ]
+    },
+    "certifications": {
+      "title": "Zertifizierungen und Berechtigungsnachweise",
+      "description": "Unsere Ausbilder und Inhaltsersteller verfügen über anerkannte Zertifizierungen in Cybersicherheit, Betrugsermittlung und Compliance — und bringen Glaubwürdigkeit und Fachwissen in jede Lektion ein."
+    },
+    "cta": {
+      "title": "Buchen Sie eine kostenlose Beratung",
+      "description": "Ob Sie eine Einzelperson sind, die lernen möchte, ein Fachmann, der eine Schulung mit Zertifizierungspfad sucht, oder eine Organisation, die an einem maßgeschneiderten Sicherheitsprogramm interessiert ist — wir sind hier, um zu helfen.",
+      "button": "Kostenlose Beratung buchen",
+      "freeConsultation": "Kostenlose Beratung",
+      "expertInstructors": "Experten-Ausbilder",
+      "updatedContent": "Aktualisierte Inhalte"
+    }
+  },
+  "scamPrevention": {
+    "hero": {
+      "badge": "Komplette Sicherheitsressource",
+      "title": "Umfassender Anti-Betrugs-Leitfaden",
+      "description": "Ihr praktischer Sicherheitsleitfaden zur Identifizierung von Bedrohungen, Verhinderung finanzieller Verluste und effektiver Reaktion auf Betrug. Wissen und Vorbereitung sind Ihre stärkste Verteidigung.",
+      "sections": "Abschnitte",
+      "scamTypes": "Betrugsarten",
+      "warningSigns": "Warnzeichen",
+      "actionSteps": "Handlungsschritte",
+      "checkButton": "Jetzt jemanden überprüfen"
+    },
+    "toc": {
+      "title": "Inhaltsverzeichnis",
+      "subtitle": "Springen Sie zu einem beliebigen Abschnitt dieses Leitfadens",
+      "items": [
+        "Notfallreaktion",
+        "Risikobewertung",
+        "Betrug verstehen",
+        "Psychologie der Betrüger",
+        "Betrugskategorien",
+        "Sofortmaßnahmen",
+        "Beweissammlung",
+        "Fondsrückgewinnung",
+        "Unterstützungsressourcen"
+      ]
+    },
+    "emergency": {
+      "title": "Notfallreaktion: ScamNemesis-Bericht einreichen",
+      "subtitle": "Wenn Sie vermuten, dass Sie gerade betrogen werden oder Opfer geworden sind, handeln Sie sofort.",
+      "actions": [
+        { "title": "Stoppen Sie sofort jegliche Kommunikation", "description": "Brechen Sie den Kontakt mit dem verdächtigen Betrüger ab. Reagieren Sie nicht auf Anrufe, E-Mails oder Nachrichten." },
+        { "title": "Stoppen Sie alle Finanztransaktionen", "description": "Stoppen Sie sofort alle ausstehenden Überweisungen, Zahlungen oder Sendungen. Kontaktieren Sie Ihre Bank oder Ihren Zahlungsanbieter." },
+        { "title": "Reichen Sie einen ScamNemesis-Bericht ein", "description": "Dokumentieren Sie den Vorfall in unserem System, um andere zu warnen und einen offiziellen Bericht zu erstellen." }
+      ],
+      "fileReportButton": "Jetzt Bericht einreichen"
+    },
+    "riskAssessment": {
+      "badge": "Schnelle Bewertung",
+      "title": "60-Sekunden-Risikobewertung",
+      "subtitle": "Wenn Sie auf eines dieser 8 Warnzeichen stoßen, gehen Sie mit äußerster Vorsicht vor oder gehen Sie vollständig. Vertrauen Sie Ihren Instinkten.",
+      "signs": [
+        "Druck, schnell zu handeln oder Geheimhaltung zu wahren",
+        "Anforderungen für unkonventionelle Zahlungsmethoden",
+        "Unrealistische Versprechen oder Garantien",
+        "Fehlende behördliche Überprüfung oder Berechtigungsnachweise",
+        "Warnsignale in der Kommunikation (Grammatikfehler, verdächtige Domains)",
+        "Bestehen auf bestimmten Kommunikationskanälen",
+        "Anfragen nach sensiblen Informationen",
+        "Widerstand gegen unabhängige Überprüfung oder Einbeziehung Dritter"
+      ]
+    },
+    "understanding": {
+      "badge": "Wissen ist Macht",
+      "title": "Betrug verstehen: Definition und Mechanismen",
+      "subtitle": "Das Verständnis, wie Betrug funktioniert, ist der erste Schritt zum Schutz von sich selbst und anderen.",
+      "whatIsScam": {
+        "title": "Was ist Betrug?",
+        "content1": "Betrug ist ein betrügerisches Schema, das darauf abzielt, Personen durch falsche Versprechen, Täuschung oder Manipulation dazu zu bringen, Geld, persönliche Informationen oder Vermögenswerte abzugeben.",
+        "content2": "Betrügereien nutzen menschliche Psychologie, Vertrauen und emotionale Verletzlichkeiten aus, um rationale Entscheidungsfindung zu umgehen."
+      },
+      "howScamsWork": {
+        "title": "Wie Betrug funktioniert",
+        "steps": [
+          { "step": "Kontakt", "desc": "Erste Kontaktaufnahme per Telefon, E-Mail, Social Media oder persönlich" },
+          { "step": "Der Köder", "desc": "Angebot von etwas Begehrenswertem oder Erzeugung von Angst/Dringlichkeit" },
+          { "step": "Vertrauensaufbau", "desc": "Aufbau von Glaubwürdigkeit durch gefälschte Referenzen oder emotionale Verbindung" },
+          { "step": "Die Anfrage", "desc": "Anforderung von Geld, Informationen oder Zugang" },
+          { "step": "Verschwinden", "desc": "Abbruch des Kontakts nach Erhalt des Gewünschten" }
+        ]
+      }
+    },
+    "psychology": {
+      "badge": "Psychologie",
+      "title": "Psychologie der Betrugsopfer",
+      "subtitle": "Betrüger nutzen 6 primäre psychologische Manipulationsmethoden, um menschliches Verhalten auszunutzen und kritisches Denken zu umgehen.",
+      "tactics": [
+        { "title": "Vertrauensaufbau", "description": "Betrüger investieren Zeit in den Aufbau von Beziehungen und Glaubwürdigkeit, bevor sie um Geld bitten." },
+        { "title": "Dringlichkeit erzeugen", "description": "Sie schaffen künstliche Dringlichkeit, um Opfer am sorgfältigen Nachdenken zu hindern." },
+        { "title": "Knappheitsmanipulation", "description": "Sie verwenden Taktiken wie \"begrenztes Angebot\" oder \"exklusive Gelegenheit\"." },
+        { "title": "Autoritätsmissbrauch", "description": "Sie geben sich als Vertrauenspersonen aus – Polizisten, Bankangestellte oder Beamte." },
+        { "title": "Sozialer Beweis", "description": "Sie zeigen gefälschte Bewertungen, Referenzen oder Testimonials." },
+        { "title": "Angst und Einschüchterung", "description": "Sie drohen mit rechtlichen Schritten, Verhaftung oder Verlust von Möglichkeiten." }
+      ]
+    },
+    "scamCategories": {
+      "badge": "Kenne deinen Feind",
+      "title": "12 häufigste Betrugskategorien",
+      "subtitle": "Machen Sie sich mit diesen häufigen Betrugsmaschen vertraut, um sie zu erkennen und zu vermeiden.",
+      "protectionTip": "Schutztipp:",
+      "types": [
+        { "name": "Anlagebetrug", "description": "Gefälschte Investitionsmöglichkeiten, die garantierte hohe Renditen mit wenig oder keinem Risiko versprechen.", "tip": "Überprüfen Sie alle Investitionen über offizielle Regulierungsdatenbanken, bevor Sie Geld investieren." },
+        { "name": "Romantik-Betrug", "description": "Kriminelle bauen falsche romantische Beziehungen auf, um Geld von Opfern zu erhalten.", "tip": "Senden Sie niemals Geld an jemanden, den Sie nicht persönlich getroffen haben, unabhängig von der Geschichte." },
+        { "name": "Phishing-Angriffe", "description": "Gefälschte E-Mails, Textnachrichten oder Websites, die darauf ausgelegt sind, Anmeldedaten und persönliche Daten zu stehlen.", "tip": "Überprüfen Sie immer die Absenderadressen und navigieren Sie direkt zu offiziellen Websites, niemals über Links." },
+        { "name": "E-Commerce-Betrug", "description": "Gefälschte Online-Shops, Nichtlieferung von Waren oder Verkauf gefälschter Produkte.", "tip": "Recherchieren Sie Verkäufer, überprüfen Sie Bewertungen aus mehreren Quellen und verwenden Sie sichere Zahlungsmethoden." },
+        { "name": "Tech-Support-Betrug", "description": "Betrüger geben sich als technischer Support aus und behaupten, Ihr Computer habe Probleme, die sofortige Behebung erfordern.", "tip": "Seriöse Unternehmen rufen nicht unaufgefordert an. Legen Sie auf und kontaktieren Sie den offiziellen Support direkt." },
+        { "name": "Jobbetrug", "description": "Gefälschte Stellenangebote, die Vorauszahlungen für Schulung, Ausrüstung oder Hintergrundprüfungen verlangen.", "tip": "Echte Arbeitgeber verlangen nie, dass Sie für die Möglichkeit bezahlen, für sie zu arbeiten." },
+        { "name": "Mietbetrug", "description": "Gefälschte Immobilienanzeigen mit Preisen unter dem Marktwert, die Anzahlungen vor der Besichtigung verlangen.", "tip": "Besichtigen Sie Immobilien immer persönlich und überprüfen Sie das Eigentum, bevor Sie Geld überweisen." },
+        { "name": "Lotterie-/Gewinnbetrug", "description": "Benachrichtigungen über gefälschte Gewinne, die Gebühren oder Steuern vor dem Erhalt des Preises verlangen.", "tip": "Seriöse Lotterien ziehen Gebühren von den Gewinnen ab. Sie können keine Wettbewerbe gewinnen, an denen Sie nicht teilgenommen haben." },
+        { "name": "Wohltätigkeitsbetrug", "description": "Gefälschte Wohltätigkeitsorganisationen, die Katastrophen, Feiertage oder emotionale Anliegen ausnutzen.", "tip": "Recherchieren Sie Wohltätigkeitsorganisationen über offizielle Datenbanken und spenden Sie direkt über verifizierte Websites." },
+        { "name": "Regierungsimitation", "description": "Kriminelle geben sich als Finanzamt, Sozialversicherung, Einwanderungsbehörde oder Polizei aus.", "tip": "Behörden kommunizieren über offizielle Post, nicht durch drohende Anrufe, die sofortige Zahlung verlangen." },
+        { "name": "Gesundheitsbetrug", "description": "Gefälschte medizinische Behandlungen, Wunderheilmittel oder betrügerische Krankenversicherungssysteme.", "tip": "Konsultieren Sie lizenzierte Gesundheitsdienstleister und überprüfen Sie die Versicherung über offizielle Unternehmenskanäle." },
+        { "name": "Hausdienstleistungsbetrug", "description": "Gefälschte Auftragnehmer, die große Anzahlungen verlangen und dann verschwinden, ohne die Arbeit zu beenden.", "tip": "Überprüfen Sie Lizenzen, prüfen Sie Referenzen und zahlen Sie niemals den vollen Betrag im Voraus." }
+      ]
+    },
+    "immediateAction": {
+      "badge": "Handeln Sie schnell",
+      "title": "Sofortmaßnahmen-Protokoll: Die ersten 24 Stunden",
+      "subtitle": "Wenn Sie betrogen wurden, führen Sie diese 5 kritischen Schritte innerhalb von 24 Stunden durch, um die Chancen auf Rückgewinnung zu maximieren und weitere Schäden zu verhindern.",
+      "steps": [
+        { "title": "Stoppen Sie sofort alle Kommunikation und Überweisungen", "description": "Brechen Sie den Kontakt mit dem verdächtigen Betrüger ab und stoppen Sie alle laufenden Transaktionen." },
+        { "title": "Kontaktieren Sie Ihr Finanzinstitut innerhalb von 24 Stunden", "description": "Melden Sie betrügerische Transaktionen und fordern Sie bei Bedarf Sperrung, Stornierung oder Kontoeinfrierung an." },
+        { "title": "Sichern Sie alle Konten mit neuen Passwörtern", "description": "Ändern Sie die Passwörter für alle potenziell kompromittierten Konten mit starken, einzigartigen Anmeldedaten." },
+        { "title": "Dokumentieren Sie alles umfassend", "description": "Speichern Sie alle Kommunikation, Quittungen, Screenshots und Transaktionsaufzeichnungen, bevor sie verschwinden." },
+        { "title": "Erstatten Sie offizielle Anzeigen bei Behörden", "description": "Melden Sie bei der örtlichen Polizei und den zuständigen Aufsichtsbehörden, um einen offiziellen Bericht zu erstellen." }
+      ],
+      "fileReportButton": "ScamNemesis-Bericht einreichen"
+    },
+    "evidence": {
+      "badge": "Dokumentation",
+      "title": "Standards für Beweissammlung und Dokumentation",
+      "subtitle": "Ordnungsgemäße Dokumentation ist entscheidend für Strafverfolgungsermittlungen und potenzielle Fondsrückgewinnung. Bewahren Sie alles auf.",
+      "types": [
+        { "title": "Alle Kommunikation", "items": ["E-Mails, Textnachrichten, Chat-Protokolle", "Telefonaufzeichnungen", "Social-Media-Nachrichten", "Sprachnachrichten (aufnehmen/speichern)"] },
+        { "title": "Visuelle Dokumentation", "items": ["Screenshots von Websites", "Fotos erhaltener Dokumente", "Kontoauszüge", "Profilbilder"] },
+        { "title": "Transaktionsaufzeichnungen", "items": ["Kontoauszüge", "Überweisungsbestätigungen", "Kryptowährungs-Transaktions-IDs", "Geschenkkarten-Belege und -Codes"] },
+        { "title": "Identitätsinformationen", "items": ["Vom Betrüger verwendete Namen", "Telefonnummern und E-Mail-Adressen", "Website-URLs", "Social-Media-Profile"] }
+      ],
+      "bestPractices": {
+        "title": "Best Practices für Dokumentation",
+        "items": [
+          "Erstellen Sie Zeitstempel-Backups aller Beweise",
+          "Organisieren Sie Dateien nach Datum und Kategorie",
+          "Bewahren Sie digitale und physische Kopien auf",
+          "Bearbeiten Sie keine Originaldateien (erstellen Sie Kopien für Notizen)",
+          "Speichern Sie Beweise sicher mit eingeschränktem Zugriff"
+        ]
+      }
+    },
+    "fundRecovery": {
+      "badge": "Rückgewinnungs-Leitfaden",
+      "title": "Rückgewinnungsverfahren nach Zahlungsmethode",
+      "subtitle": "Der Erfolg der Rückgewinnung hängt stark davon ab, wie Sie bezahlt haben und wie schnell Sie handeln. Zeit ist kritisch.",
+      "methods": [
+        { "method": "Kredit-/Debitkarten", "timeline": "Handeln Sie innerhalb von 60 Tagen", "steps": ["Kontaktieren Sie sofort den Kartenaussteller", "Fechten Sie die Gebühren als unberechtigt an", "Beantragen Sie ein Chargeback", "Erstatten Sie bei Bedarf Polizeianzeige"] },
+        { "method": "Banküberweisungen", "timeline": "Handeln Sie innerhalb von 24 Stunden", "steps": ["Kontaktieren Sie sowohl die sendende als auch die empfangende Bank", "Beantragen Sie den Rückruf der Überweisung", "Reichen Sie eine Betrugsreklamation bei der Bank ein", "Kontaktieren Sie bei internationalen Überweisungen SWIFT"] },
+        { "method": "Kryptowährungen", "timeline": "Handeln Sie sofort", "steps": ["Kontaktieren Sie die Börse/den Wallet-Anbieter", "Melden Sie Transaktions-IDs", "Erstatten Sie Polizeianzeige", "Überwachen Sie die Blockchain auf Geldbewegungen"] },
+        { "method": "Geschenkkarten", "timeline": "Sehr begrenzte Rückgewinnung", "steps": ["Kontaktieren Sie sofort den Kartenaussteller", "Geben Sie Kartennummern und Belege an", "Erstatten Sie Polizeianzeige", "Melden Sie (Rückgewinnung unwahrscheinlich)"] },
+        { "method": "Bargeld/Zahlungsanweisungen", "timeline": "Extrem schwierig", "steps": ["Kontaktieren Sie den Geldtransferdienst", "Erstatten Sie sofort Polizeianzeige", "Beantragen Sie eine Untersuchung", "Rückgewinnung sehr unwahrscheinlich"] }
+      ]
+    },
+    "supportResources": {
+      "badge": "Hilfe erhalten",
+      "title": "Unterstützungsressourcen und Meldekanäle",
+      "subtitle": "Melden Sie Betrug bei mehreren Behörden, um einen offiziellen Bericht zu erstellen und zu Ermittlungen beizutragen.",
+      "channels": [
+        { "name": "Verbraucherzentrale", "url": "verbraucherzentrale.de", "description": "Hauptanlaufstelle für Betrugsmeldungen" },
+        { "name": "Polizei - Cyberkriminalität", "url": "polizei.de", "description": "Für Computerkriminalität und Online-Betrug" },
+        { "name": "Örtliche Polizeidienststelle", "url": "N/A", "description": "Erstatten Sie eine offizielle Anzeige für rechtliche Schritte" },
+        { "name": "BaFin", "url": "bafin.de", "description": "Für Finanzbetrug" },
+        { "name": "Telefonseelsorge", "url": "0800 111 0 111", "description": "Unterstützung für Opfer" },
+        { "name": "Europäisches Verbraucherzentrum", "url": "evz.de", "description": "Für grenzüberschreitenden Betrug in der EU" }
+      ],
+      "additionalSupport": {
+        "title": "Zusätzliche Unterstützung",
+        "items": [
+          "Telefonseelsorge: 0800 111 0 111 (wenn Sie in einer Krise sind)",
+          "Kreditauskunfteien: Setzen Sie Betrugswarnungen",
+          "Verbraucherzentrale: Kostenlose Rechtsberatung",
+          "Weißer Ring: 116 006 (Opferhilfe)"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Bleiben Sie wachsam, bleiben Sie geschützt",
+      "description": "Verwenden Sie unseren kostenlosen Betrugs-Checker, bevor Sie sich mit jemandem online einlassen. Wenige Sekunden der Überprüfung können Ihnen Tausende von Euro und enormen emotionalen Stress ersparen.",
+      "scamCheckerButton": "Betrugs-Checker verwenden",
+      "freeTrainingButton": "Kostenloses Training"
+    }
+  },
+  "pages": {
+    "contactUs": {
+      "badge": "Kontaktieren Sie uns",
+      "title": "Kontaktieren Sie",
+      "titleHighlight": "uns",
+      "description": "Sie können uns per E-Mail kontaktieren. Wenn Sie jedoch einen Betrug melden möchten, klicken Sie bitte auf die Schaltfläche unten und füllen Sie das Formular aus — ohne dieses können wir Ihnen nicht effektiv helfen.",
+      "emailLabel": "Schreiben Sie uns an",
+      "reportPrompt": "Müssen Sie einen Betrug melden?",
+      "reportButton": "Betrug melden",
+      "quickResponse": {
+        "title": "Schnelle Antwort",
+        "description": "Wir beantworten alle Anfragen innerhalb von 24-48 Stunden"
+      },
+      "confidential": {
+        "title": "Vertraulich",
+        "description": "Ihre Informationen sind geschützt und streng vertraulich"
+      },
+      "expertSupport": {
+        "title": "Expertenunterstützung",
+        "description": "Unser Spezialistenteam steht Ihnen zur Verfügung"
+      },
+      "cta": {
+        "title": "Bereit zu handeln?",
+        "description": "Wenn Sie von Betrug betroffen sind, warten Sie nicht. Reichen Sie einen detaillierten Bericht ein, damit unser Team mit der Untersuchung Ihres Falls beginnen kann.",
+        "button": "Betrug melden"
+      }
+    },
+    "verifyService": {
+      "badge": "Professionelle Due Diligence Dienste",
+      "heroTitle": "Investigative Due Diligence & Geschäftspartnerprüfung",
+      "heroSubtitle": "Minimieren Sie das Risiko Vor dem Engagement",
+      "heroDescription": "Überprüfen Sie die Integrität Ihres Nächsten Geschäftspartners, Lieferanten oder Investments",
+      "orderNow": "Service Bestellen",
+      "learnMore": "Mehr Erfahren",
+      "useCasesTitle": "Wann Ist Dieser Service Unerlässlich?",
+      "useCases": [
+        {
+          "title": "Bewertung Strategischer Partnerschaften & Joint Ventures",
+          "description": "Vor der Investition von Kapital ist es unerlässlich, die operative, finanzielle und reputationsbezogene Integrität zu überprüfen."
+        },
+        {
+          "title": "Onboarding von Schlüssellieferanten",
+          "description": "Eine widerstandsfähige und ethische Lieferkette ist ein kritisches Geschäftsvermögen."
+        },
+        {
+          "title": "Pre-Investment & M&A Screening",
+          "description": "Für Private-Equity-Firmen bieten wir eine Schicht der vorläufigen Integritäts- und Reputationsprüfung."
+        },
+        {
+          "title": "Kundenprüfung (KYB Compliance)",
+          "description": "Schützen Sie Ihr Unternehmen vor Finanzkriminalität mit unserer Know Your Business Verifizierung."
+        }
+      ],
+      "pillarsTitle": "Unsere Vier Säulen der Untersuchung",
+      "pillars": [
+        { "number": "1", "title": "Unternehmensidentität & Rechtsstruktur", "description": "Wir überprüfen die rechtliche Existenz, Eigentümerstruktur und regulatorischen Status." },
+        { "number": "2", "title": "Finanzielle Integrität & Reputationsrisiken", "description": "Wir untersuchen öffentliche Aufzeichnungen, Gerichtsunterlagen und Medienquellen." },
+        { "number": "3", "title": "Digitaler Fußabdruck & Asset-Mapping", "description": "Mit fortschrittlichen OSINT-Tools verfolgen wir die Online-Präsenz." },
+        { "number": "4", "title": "Menschlicher Faktor & Führungsscreening", "description": "Wir führen gründliche Hintergrundermittlungen durch." }
+      ],
+      "whatYouGet": "Was Sie Bekommen",
+      "reportTitle": "Due Diligence Bericht",
+      "reportDescription": "Umfassender und Praktischer Bericht",
+      "reportDetails": "Sie erhalten einen umfassenden PDF-Bericht per E-Mail innerhalb von 30 Tagen.",
+      "reportIncludes": "Bericht Enthält:",
+      "deliverables": [
+        "Überprüfung der Unternehmensidentität und des rechtlichen Status",
+        "Analyse der Eigentümerstruktur inkl. UBO",
+        "Bewertung der finanziellen Integrität",
+        "Reputations- und Risikoanalyse",
+        "Audit des digitalen Fußabdrucks"
+      ],
+      "transparentPricing": "Transparente Preisgestaltung",
+      "noSurprises": "Keine versteckten Gebühren. Festpreis für komplette Untersuchung.",
+      "processTitle": "Einfacher 3-Schritte-Prozess",
+      "steps": [
+        { "title": "Online-Formular Ausfüllen", "description": "Geben Sie grundlegende Informationen über das Unternehmen an." },
+        { "title": "Sicher Bezahlen", "description": "Bezahlen Sie sicher online. Wir akzeptieren alle gängigen Zahlungsmethoden." },
+        { "title": "Bericht Erhalten", "description": "Erhalten Sie Ihren umfassenden Bericht innerhalb von 30 Tagen." }
+      ],
+      "whyChooseTitle": "Warum ScamNemesis Wählen?",
+      "whyChoose": [
+        { "title": "Nachrichtendienstliche Expertise", "description": "Unser Team kombiniert Erfahrungen aus dem militärischen Nachrichtendienst und OSINT-Operationen." },
+        { "title": "Zertifizierte Spezialisten", "description": "CFE®, CAMS®, CISA®, CISM®, OSCP® zertifizierte Fachleute führen jede Untersuchung durch." },
+        { "title": "Fortgeschrittene OSINT-Techniken", "description": "Wir verwenden modernste Open-Source Intelligence mit Zugang zu Hunderten globaler Datenbanken." },
+        { "title": "Transparente Preise", "description": "Keine versteckten Gebühren. Alle Daten werden nach strengen Vertraulichkeitsstandards behandelt." }
+      ],
+      "ctaTitle": "Schützen Sie Ihr Unternehmen Heute",
+      "ctaDescription": "Machen Sie Ihren nächsten strategischen Schritt mit Zuversicht. Bestellen Sie Ihren Due Diligence Bericht jetzt.",
+      "ctaButton": "Due Diligence Bericht Bestellen"
+    },
+    "about": {
+      "hero": {
+        "title": "Über ScamNemesis",
+        "description": "Wir sind ein Team aus Anwälten, forensischen Analysten und ethischen Hackern, die sich der Hilfe für Opfer von Krypto-Betrug und Investitionsbetrug widmen. Unsere Mission ist es, Menschen vor Betrug zu schützen und denjenigen zu helfen, die Opfer geworden sind."
+      },
+      "mission": {
+        "title": "Unsere Mission",
+        "text1": "Eine sicherere digitale Umgebung zu schaffen, indem wir zugängliche Werkzeuge zur Betrugsprävention, professionelle Ermittlungsdienste und Unterstützung für Opfer von Online-Betrug bereitstellen.",
+        "text2": "Wir glauben, dass jeder Schutz vor Betrug verdient, unabhängig von seiner finanziellen Situation. Deshalb bieten wir kostenlose Tools neben unseren professionellen Dienstleistungen an.",
+        "imageAlt": "Unser Team"
+      },
+      "values": {
+        "title": "Unsere Werte",
+        "items": [
+          { "title": "Transparenz", "description": "Wir sind ehrlich darüber, was wir tun können und was nicht. Keine falschen Versprechen, nur professionelle Ermittlung." },
+          { "title": "Expertise", "description": "Unser Team umfasst zertifizierte Betrugsermittler, OSINT-Spezialisten und Rechtsexperten." },
+          { "title": "Zugänglichkeit", "description": "Gerechtigkeit und Sicherheit sollten nicht nur denen vorbehalten sein, die sie sich finanziell leisten können." },
+          { "title": "Mitgefühl", "description": "Wir verstehen die emotionale Auswirkung von Betrug und behandeln jedes Opfer mit Respekt." }
+        ]
+      },
+      "team": {
+        "title": "Expertenteam",
+        "description": "Unser Team verfügt über Zertifizierungen von führenden Institutionen mit Hintergründen in der Untersuchung von Finanzkriminalität, militärischer Aufklärung und Big 4 Beratung.",
+        "credentials": [
+          "Zertifizierte Betrugsermittler (CFE®)",
+          "Zertifizierte Anti-Geldwäsche-Spezialisten (CAMS®)",
+          "Zertifizierte Informationssystem-Auditoren (CISA®)",
+          "Zertifizierte Informationssicherheits-Manager (CISM®)",
+          "Offensive Security Certified Professionals (OSCP®)",
+          "Militärischer Nachrichtendienst-Hintergrund",
+          "Big 4 Beratungserfahrung"
+        ]
+      },
+      "services": {
+        "title": "Was wir anbieten",
+        "items": [
+          { "name": "Betrugscheck", "description": "Kostenloses Tool zur Identitätsverifizierung und Überprüfung von Betrugsindikatoren" },
+          { "name": "Betrugsmeldung", "description": "Umfassendes Formular zur Dokumentation und Meldung von Betrugsfällen" },
+          { "name": "Geldwiederherstellung", "description": "Professionelle Ermittlung und Dienstleistungen zur Rückgewinnung von Geldern" },
+          { "name": "Due Diligence", "description": "Überprüfung von Geschäftspartnern und Unternehmensverifizierung" },
+          { "name": "Schulungen", "description": "Kurse zu Cybersicherheit und Betrugsprävention (demnächst)" },
+          { "name": "Zweite-Chance-Programm", "description": "Rehabilitationsunterstützung für ehemalige Straftäter" }
+        ]
+      },
+      "certifications": { "title": "Unsere Zertifizierungen" },
+      "cta": {
+        "title": "Brauchen Sie Hilfe?",
+        "description": "Ob Sie die Legitimität einer Person überprüfen, einen Betrug melden oder Hilfe bei der Rückholung Ihres Geldes benötigen — wir sind für Sie da.",
+        "scamChecker": "Betrugscheck verwenden",
+        "contact": "Kontaktieren Sie uns"
+      }
+    },
+    "developers": {
+      "badge": "Partner API",
+      "title": "ScamNemesis Developer API",
+      "description": "Greifen Sie programmgesteuert auf die Betrugsdatenbank zu. Unsere API bietet sicheren Zugang zu genehmigten Betrugsmeldungen für Ihre Anwendung oder Ihren Dienst.",
+      "features": {
+        "fraudData": {
+          "title": "Betrugsdaten",
+          "description": "Zugriff auf Tausende von genehmigten Betrugsmeldungen mit detaillierten Informationen."
+        },
+        "secureApi": {
+          "title": "Sichere API",
+          "description": "API-Schlüssel mit eingeschränkten Berechtigungen, Rate Limiting und verschlüsselte Kommunikation."
+        },
+        "fastResponses": {
+          "title": "Schnelle Antworten",
+          "description": "Optimierte Endpunkte mit einer durchschnittlichen Antwortzeit unter 100ms."
+        },
+        "restfulJson": {
+          "title": "RESTful JSON",
+          "description": "Standard REST API mit JSON-Antworten. Einfach zu verwenden in jeder Programmiersprache."
+        }
+      },
+      "quickStart": {
+        "title": "Schnellstart",
+        "description": "Beginnen Sie in wenigen Minuten mit der API",
+        "step1": {
+          "title": "1. API-Schlüssel erhalten",
+          "description": "Kontaktieren Sie uns unter",
+          "descriptionEnd": "um eine Partnervereinbarung und einen API-Schlüssel zu erhalten."
+        },
+        "step2": {
+          "title": "2. Authentifizierung",
+          "description": "Verwenden Sie Ihren API-Schlüssel im Header"
+        },
+        "step3": {
+          "title": "3. Ihre erste Anfrage"
+        },
+        "codeComment": "// JavaScript / Node.js Beispiel",
+        "arrayComment": "// Array von Meldungen"
+      },
+      "apiReference": {
+        "title": "API-Referenz",
+        "description": "Vollständige Dokumentation aller Endpunkte",
+        "tabs": {
+          "reports": "Meldungen",
+          "search": "Suche",
+          "stats": "Statistiken"
+        },
+        "reports": {
+          "endpoint": "/api/v1/partner/reports",
+          "description": "Erhalten Sie eine Liste genehmigter Betrugsmeldungen. Sensible Daten sind maskiert.",
+          "queryParams": "Abfrageparameter",
+          "columns": {
+            "parameter": "Parameter",
+            "type": "Typ",
+            "description": "Beschreibung"
+          },
+          "params": {
+            "limit": "Anzahl der Ergebnisse (1-100, Standard: 20)",
+            "offset": "Offset für Paginierung",
+            "fraudType": "Nach Betrugsart filtern",
+            "country": "Nach Land filtern (ISO 3166-1 alpha-2)",
+            "dateFrom": "Von Datum filtern",
+            "dateTo": "Bis Datum filtern"
+          },
+          "exampleResponse": "Beispielantwort"
+        },
+        "search": {
+          "endpoint": "/api/v1/partner/search",
+          "description": "Durchsuchen Sie die Betrugsdatenbank nach E-Mail, Telefon, IBAN, Website oder Name.",
+          "queryParams": "Abfrageparameter",
+          "params": {
+            "q": "Suchbegriff (min. 3 Zeichen)",
+            "qRequired": "erforderlich",
+            "field": "Suchfeld: email, phone, iban, website, name, all"
+          },
+          "example": "Beispiel"
+        },
+        "stats": {
+          "endpoint": "/api/v1/partner/stats",
+          "description": "Erhalten Sie aggregierte Betrugsstatistiken - Anzahl, Typen, Länder, finanzielle Verluste.",
+          "exampleResponse": "Beispielantwort"
+        }
+      },
+      "rateLimiting": {
+        "title": "Rate Limiting",
+        "description": "API hat Limits zum Schutz vor Missbrauch:",
+        "columns": {
+          "endpoint": "Endpunkt",
+          "limit": "Limit"
+        },
+        "limits": {
+          "reports": "100 Anf/Std",
+          "search": "50 Anf/Std",
+          "stats": "100 Anf/Std"
+        },
+        "note": "Bei Überschreitung erhalten Sie HTTP 429. Überprüfen Sie die Header"
+      },
+      "errors": {
+        "title": "Fehlerantworten",
+        "columns": {
+          "code": "Code",
+          "description": "Beschreibung"
+        },
+        "codes": {
+          "400": "Ungültige Anfrage (Validierungsfehler)",
+          "401": "Fehlender oder ungültiger API-Schlüssel",
+          "403": "Unzureichende Berechtigungen (Scope)",
+          "429": "Rate Limit überschritten",
+          "500": "Interner Serverfehler"
+        }
+      },
+      "cta": {
+        "title": "Möchten Sie Partner werden?",
+        "description": "Wenn Sie unsere Betrugsdatenbank in Ihren Dienst integrieren möchten, kontaktieren Sie uns für einen API-Schlüssel und eine Partnervereinbarung.",
+        "contactButton": "Kontaktieren Sie uns",
+        "swaggerButton": "Swagger-Dokumentation"
+      }
+    }
+  },
+  "iWasScammed": {
+    "hero": {
+      "badges": {
+        "urgent": "Dringende Hilfe",
+        "expert": "Expertenberatung",
+        "timeCritical": "Zeitkritische Schritte"
+      },
+      "title": "Ich wurde betrogen: Holen Sie Ihr Geld zurück.",
+      "titleHighlight": "Melden Sie den Betrug jetzt.",
+      "description": "Wenn Sie Opfer eines Online-Betrugs, Investitionsbetrugs oder einer anderen Form von Täuschung geworden sind, sind Sie nicht allein. Die ersten Momente nach der Erkenntnis, dass Sie betrogen wurden, sind entscheidend. Unser System wurde speziell für solche Fälle entwickelt, um Ihnen effektive Hilfe zu bieten.",
+      "followGuide": "Bitte folgen Sie zuerst der unten stehenden Schritt-für-Schritt-Anleitung und kontaktieren Sie uns erst dann.",
+      "contactButton": "Kontaktieren Sie uns",
+      "fillFormButton": "Formular ausfüllen",
+      "stats": {
+        "steps": { "value": "7", "label": "Kritische Schritte" },
+        "time": { "value": "24h", "label": "Zeitkritisch" },
+        "report": { "value": "Kostenlos", "label": "PDF-Bericht" },
+        "database": { "value": "612M+", "label": "Datenbank" }
+      }
+    },
+    "intro": {
+      "title": "Was tun nach einem Betrug? Ein praktischer Leitfaden",
+      "description": "Wenn Sie Opfer eines Betrugs geworden sind, ist es wichtig, schnell und systematisch zu handeln. Unten finden Sie das genaue Schritt-für-Schritt-Verfahren, das Sie befolgen sollten — es wurde speziell von Experten entwickelt und jeder Schritt hat seinen Zweck und ist entscheidend.",
+      "findBelow": "— finden Sie unten."
+    },
+    "steps": {
+      "step1": {
+        "label": "Schritt 1",
+        "title": "Blockieren Sie sofort den Zugang des Betrügers zu Ihrem Geld",
+        "description": "Der erste und wichtigste Schritt ist, weitere Verluste so schnell wie möglich zu stoppen.",
+        "actions": [
+          { "icon": "card", "text": "Wenn Ihre Kartendaten gestohlen wurden, sperren Sie die Karte sofort — über die mobile Banking-App oder durch Anruf bei der Hotline." },
+          { "icon": "lock", "text": "Wenn Ihr Krypto-Konto gehackt wurde, kontaktieren Sie sofort die Börse per E-Mail und bitten Sie um Sperrung Ihres Kontos." },
+          { "icon": "shield", "text": "Tun Sie alles Mögliche, damit der Betrüger keinen Zugang mehr zu Ihren Mitteln hat." }
+        ],
+        "tip": {
+          "title": "⚠️ Wichtiger Tipp:",
+          "text": "Wenn Sie noch in Kontakt mit dem Betrüger sind, verraten Sie nicht, dass Sie wissen, dass Sie betrogen wurden. Tun Sie so, als würden Sie nicht verstehen, warum etwas nicht funktioniert (z.B. ein Zahlungsversuch). Das hält den Betrüger im Gespräch und gibt Ihnen mehr Zeit zu handeln."
+        },
+        "imageAlt": "Ich wurde betrogen – Sofortmaßnahmen und Betrüger blockieren",
+        "imageCaption": "Geschwindigkeit ist alles bei der Betrugsbekämpfung. Je schneller Sie handeln, desto höher sind Ihre Chancen, weitere Schäden zu stoppen und möglicherweise Ihr Geld zurückzubekommen."
+      },
+      "step2": {
+        "label": "Schritt 2",
+        "title": "Schaffen Sie eine konzentrierte Umgebung zur Problemlösung",
+        "description": "Der Umgang mit einem Betrug erfordert Ihre volle Aufmerksamkeit und einen klaren Kopf.",
+        "actions": [
+          { "icon": "users", "text": "Wenn Sie Kinder haben, bitten Sie Verwandte oder Freunde, sich für ein paar Stunden um sie zu kümmern" },
+          { "icon": "clock", "text": "Wenn Sie bei der Arbeit sind, sprechen Sie mit Ihrem Arbeitgeber und bitten Sie darum, früher gehen zu dürfen." }
+        ],
+        "note": "Je weniger Ablenkungen Sie haben, desto schneller und effektiver können Sie handeln. In solchen Fällen zählt jede Minute — je früher Sie reagieren, desto höher die Chance, Überweisungen zu blockieren und den Betrüger zu stoppen.",
+        "imageCaption": "Wie man sich konzentriert und nach einem Betrug effektiv handelt"
+      },
+      "step3": {
+        "label": "Schritt 3",
+        "title": "Melden Sie den Vorfall offiziell",
+        "description": "Auch wenn Sie Ihre Karte oder Ihr Konto bereits über die App gesperrt haben, müssen Sie den Vorfall auch offiziell melden:",
+        "actions": [
+          { "icon": "phone", "text": "Kontaktieren Sie Ihre Bank oder Börse direkt telefonisch oder per E-Mail" },
+          { "icon": "file", "text": "Beschreiben Sie die gesamte Situation im Detail" },
+          { "icon": "check", "text": "Fordern Sie eine schriftliche Bestätigung Ihrer Meldung an" }
+        ],
+        "important": "Schließen Sie diesen Schritt ab, auch wenn der Betrüger bereits Ihr Geld hat, Sie es aber noch nicht gemeldet haben.",
+        "imageCaption": "Offizielle Meldung eines Betrugs bei Polizei und Bank"
+      },
+      "step4": {
+        "label": "SCHRITT 4",
+        "title": "Beginnen Sie mit der Beweissammlung und füllen Sie unser Formular aus",
+        "description": "Sobald Sie weitere Zahlungen gestoppt haben, beginnen Sie systematisch alle verfügbaren Beweise zu sammeln — dies erhöht Ihre Chancen erheblich, den Betrüger zu identifizieren und Ihr Geld zurückzubekommen:",
+        "evidenceItems": [
+          { "icon": "file", "title": "Füllen Sie unser Formular so gründlich wie möglich aus.", "text": "Es dient als praktischer Leitfaden, um alle wesentlichen Informationen zu erfassen und generiert automatisch einen vollständigen PDF-Bericht für die Polizei." },
+          { "icon": "camera", "title": "Bewahren Sie alle Gespräche auf:", "text": "machen Sie Screenshots von Chats, E-Mails (einschließlich vollständiger E-Mail-Header) und anderen Nachrichten." },
+          { "icon": "card", "title": "Sichern Sie Bankaufzeichnungen:", "text": "archivieren Sie alle relevanten Kontoauszüge, Zahlungsbestätigungen und Transaktionsdetails." },
+          { "icon": "phone", "title": "Dokumentieren Sie Telefonanrufe:", "text": "notieren Sie Datum, Uhrzeit und eine kurze Zusammenfassung des Gesprächs. (Hinweis: Überprüfen Sie immer lokale Gesetze vor der Aufnahme.)" },
+          { "icon": "video", "title": "Sammeln Sie Videobeweise in Originalqualität.", "text": "Wenn Sie den Betrüger persönlich getroffen haben und es sicher ist, erstellen Sie eine Videoaufnahme." },
+          { "icon": "fingerprint", "title": "Notieren Sie die Identifikatoren des Betrügers:", "text": "speichern Sie alle verfügbaren Daten wie Domains, E-Mail-Adressen, Telefonnummern, Social-Media-Profile und IP-Adressen." },
+          { "icon": "ban", "title": "Verraten Sie dem Betrüger nicht, dass Sie vom Betrug wissen.", "text": "Halten Sie den Kontakt nur aufrecht, wenn es strategisch notwendig und sicher ist." },
+          { "icon": "harddrive", "title": "Bewahren Sie Metadaten:", "text": "behalten Sie beim Speichern von Screenshots und Dateien die Originale, um Zeitstempel und forensische Details zu erhalten." },
+          { "icon": "filecheck", "title": "Behandeln Sie alle Beweise mit größter Sorgfalt:", "text": "jeder Fall kann verschiedene Arten von Beweisen umfassen — digitale und physische. Dokumentieren Sie alles gründlich." },
+          { "icon": "scale", "title": "Rechtlicher und Sicherheitshinweis:", "text": "wenn Sie auf sensible oder potenziell gefährliche Informationen stoßen, konsultieren Sie einen erfahrenen Anwalt." }
+        ],
+        "whyUseForm": {
+          "title": "Warum das ScamNemesis-Formular verwenden?",
+          "text": "Unser Formular sammelt Ihre Daten in einem übersichtlichen, herunterladbaren PDF-Bericht und durchsucht gleichzeitig unsere Datenbank nach ähnlichen Fällen. Wenn Verbindungen gefunden werden, wird Ihr Fall mit anderen Datensätzen verknüpft — völlig kostenlos.",
+          "button": "Formular jetzt ausfüllen"
+        },
+        "imageCaption": "Beweise sammeln und das ScamNemesis-Formular ausfüllen"
+      },
+      "step5": {
+        "label": "Schritt 5",
+        "title": "Melden Sie den Betrug bei der Polizei und erhalten Sie offizielle Dokumente",
+        "paragraphs": [
+          "Besuchen Sie sofort die Polizei und bringen Sie alle Dokumente und Beweise mit, die Sie bisher gesammelt haben. Bitten Sie um eine Bestätigung der Meldung und eine Kopie des offiziellen Protokolls.",
+          "Wenn Kommunikation auf Englisch erforderlich ist, lassen Sie den Polizeibericht offiziell ins Englische übersetzen. Die meisten Banken akzeptieren nur zertifizierte Übersetzungen."
+        ],
+        "note": "Bedenken Sie, dass die Polizei, besonders in EU-Ländern, oft mit Betrugsfällen überlastet ist. Es kann notwendig sein, hartnäckig zu bleiben."
+      },
+      "step6": {
+        "label": "Schritt 6",
+        "title": "Setzen Sie gezielte Aktionen und Beweissammlung fort",
+        "paragraphs": [
+          "Die nächsten Schritte sind spezifischer für Ihren individuellen Fall und hängen von Ihren Möglichkeiten, Ihrer Situation und Ihren verfügbaren Ressourcen ab. Eine Sache gilt immer: Sammeln Sie weiter Beweise.",
+          "Wenn der Betrüger weiß, dass Sie kein weiteres Geld senden werden, können Sie erwägen, Ihre Geschichte in Online-Foren zu teilen. Tun Sie dies jedoch nur, wenn Sie nicht mehr in Kontakt mit dem Betrüger sind.",
+          "Wenn der Betrüger noch mit Ihnen kommuniziert, versuchen Sie, das Gespräch aufrechtzuerhalten und nutzen Sie es als Gelegenheit, mehr Informationen zu sammeln."
+        ],
+        "platformNote": "Auf der ScamNemesis-Plattform wird Ihr Fall automatisch mit anderen Opfern desselben Betrügers verknüpft und die Beweise werden kontinuierlich aktualisiert.",
+        "imageCaption": "Professionelle Hilfe bei der Geldrückgewinnung nach einem Betrug"
+      },
+      "step7": {
+        "label": "Schritt 7",
+        "title": "Die Wahrheit über \"Geldrückgewinnungs\"-Dienste – Brauchen Sie professionelle Hilfe?",
+        "paragraphs": [
+          "Die Realität sogenannter \"Geldrückgewinnungs\"-Dienste ist oft sehr anders als ihre Marketingaussagen. In den meisten Fällen handelt es sich um Betrug oder höchst unethische Praktiken.",
+          "Die Wahrheit ist, dass kein Dienst Ihnen eine 100%ige Garantie geben kann, dass Ihr Geld zurückgegeben wird. Was Sie beeinflussen können, ist die Erfolgswahrscheinlichkeit.",
+          "Als Reaktion auf die Ausbeutung von Opfern durch diese Unternehmen haben wir unseren eigenen Money Recovery-Service geschaffen, der ethisch und erschwinglich ist."
+        ],
+        "warning": "Diese Unternehmen verlangen typischerweise 3.000 bis 10.000 Dollar, aber ihre \"Arbeit\" besteht oft nur aus grundlegender Hilfe bei der Betrugsmeldung — etwas, das Sie selbst erledigen können.",
+        "readMore": "Lesen Sie mehr über unseren Ansatz"
+      }
+    },
+    "whatElse": {
+      "title": "Was kann ich sonst noch tun?",
+      "optionA": {
+        "title": "Verwenden Sie den Scam Checker-Service",
+        "description": "Versuchen Sie, den Betrüger mit unserem Scam Checker zu identifizieren. Dies kann Ihnen helfen, Informationen zu sammeln und sich mit anderen Opfern zu verbinden.",
+        "button": "Scam Checker öffnen"
+      },
+      "optionB": {
+        "title": "Konsultieren Sie einen qualifizierten Anwalt",
+        "description": "Kontaktieren Sie einen erfahrenen Anwalt in Ihrem Land und fordern Sie eine Erstberatung an."
+      },
+      "lawyerTips": {
+        "title": "Wichtige Tipps zu Anwälten:",
+        "intro": "Seien Sie vorsichtig und wählen Sie einen wirklich erfahrenen Fachmann.",
+        "examples": [
+          { "type": "info", "title": "Beispiel 1:", "text": "Wenn Ihre Kreditkarte gestohlen wurde, aber der SMS-Verifizierungscode nicht verwendet wurde, wird die Bank Ihnen höchstwahrscheinlich das Geld zurückerstatten." },
+          { "type": "warning", "title": "Beispiel 2:", "text": "Wenn der Betrüger Ihre Karte erhalten und Sie dazu gebracht hat, den Verifizierungscode herauszugeben, sind alternative Rückforderungsmethoden erforderlich." },
+          { "type": "error", "title": "Beispiel 3:", "text": "Wenn Sie eine Standard-Banküberweisung an einen Online-Shop getätigt haben, aber keine Waren erhalten haben, kann die Bank dies als Handelsstreit betrachten." }
+        ]
+      }
+    },
+    "cta": {
+      "title": "Wenn Sie diese Schritte befolgen, können Sie Ihre Chancen auf Rückgewinnung gestohlener Gelder maximieren.",
+      "description": "Beginnen Sie mit dem Ausfüllen unseres umfassenden Meldeformulars. Es ist kostenlos und hilft Ihnen, Ihre Beweise zu organisieren.",
+      "fillFormButton": "Meldeformular ausfüllen",
+      "contactButton": "Kontaktieren Sie uns für Hilfe"
+    }
   }
 }

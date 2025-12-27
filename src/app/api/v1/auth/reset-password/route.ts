@@ -1,34 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { jwtVerify } from 'jose';
 import { prisma } from '@/lib/db';
-import { hashPassword } from '@/lib/auth/jwt';
+import {
+  hashPassword,
+  PASSWORD_REGEX,
+  PASSWORD_REQUIREMENTS,
+  verifySpecialToken,
+} from '@/lib/auth/jwt';
 import { checkRateLimit, getClientIp } from '@/lib/middleware/auth';
+import { emailService } from '@/lib/services/email';
+import { AUTH_RATE_LIMITS, getRateLimitKey } from '@/lib/auth/rate-limits';
 
 export const dynamic = 'force-dynamic';
-
-// JWT_SECRET validation at runtime to avoid build-time failures
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required.');
-  }
-  return secret;
-}
-
-// Password validation - MUST match register endpoint exactly
-// Requires: 9+ chars, uppercase, lowercase, number, and special character
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,}$/;
 
 const ResetPasswordSchema = z.object({
   token: z.string().min(1, 'Reset token is required'),
   password: z
     .string()
     .min(9, 'Password must be at least 9 characters')
-    .regex(
-      PASSWORD_REGEX,
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*...)'
-    ),
+    .regex(PASSWORD_REGEX, PASSWORD_REQUIREMENTS),
 });
 
 /**
@@ -37,11 +27,14 @@ const ResetPasswordSchema = z.object({
  * Completes password reset by validating token and setting new password.
  */
 export async function POST(request: NextRequest) {
-  // Rate limiting: 10 attempts per hour per IP
+  // Rate limiting
   const ip = getClientIp(request);
-
-  const rateLimitKey = `reset-password:${ip}`;
-  const rateLimit = await checkRateLimit(rateLimitKey, 10, 3600000); // 10 per hour
+  const rateLimitKey = getRateLimitKey('reset-password', ip);
+  const rateLimit = await checkRateLimit(
+    rateLimitKey,
+    AUTH_RATE_LIMITS.RESET_PASSWORD.limit,
+    AUTH_RATE_LIMITS.RESET_PASSWORD.windowMs
+  );
 
   if (!rateLimit.allowed) {
     const retryAfter = Math.ceil((rateLimit.resetAt.getTime() - Date.now()) / 1000);
@@ -80,27 +73,13 @@ export async function POST(request: NextRequest) {
     const { token, password } = validated.data;
 
     // Verify the reset token
-    let payload;
-    try {
-      const secret = new TextEncoder().encode(getJwtSecret());
-      const result = await jwtVerify(token, secret);
-      payload = result.payload;
-    } catch {
+    const payload = await verifySpecialToken(token, 'password_reset');
+
+    if (!payload) {
       return NextResponse.json(
         {
           error: 'invalid_token',
           message: 'Invalid or expired reset token. Please request a new password reset.',
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate token payload
-    if (payload.type !== 'password_reset' || !payload.sub || typeof payload.sub !== 'string') {
-      return NextResponse.json(
-        {
-          error: 'invalid_token',
-          message: 'Invalid reset token format.',
         },
         { status: 400 }
       );
@@ -111,7 +90,7 @@ export async function POST(request: NextRequest) {
     // Find user and verify they exist and are active
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, isActive: true },
+      select: { id: true, email: true, name: true, isActive: true },
     });
 
     if (!user) {
@@ -154,6 +133,11 @@ export async function POST(request: NextRequest) {
         },
       }),
     ]);
+
+    // Send confirmation email (async, don't wait)
+    emailService.sendPasswordResetConfirmation(user.email, user.name || 'User').catch((error) => {
+      console.error('Failed to send password reset confirmation email:', error);
+    });
 
     return NextResponse.json({
       success: true,
