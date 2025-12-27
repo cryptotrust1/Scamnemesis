@@ -14,7 +14,6 @@ import {
   Globe,
   CreditCard,
   AlertTriangle,
-  Share2,
   Flag,
   Users,
   MessageSquare,
@@ -30,6 +29,7 @@ import {
   Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ShareButton } from '@/components/ui/share-button';
 import { formatDate, formatCurrency } from '@/lib/utils';
 import { CommentSection } from '@/components/report/comment-section';
 
@@ -388,31 +388,6 @@ export default function ReportDetailPage() {
     fetchReport();
   }, [reportId]);
 
-  const [isSharing, setIsSharing] = useState(false);
-
-  const handleShare = async () => {
-    if (isSharing) return; // Prevent double-clicks
-    setIsSharing(true);
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: report?.title,
-          url: window.location.href,
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert('Link skopírovaný do schránky');
-      }
-    } catch (error) {
-      // User cancelled share or error occurred - ignore AbortError
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Share failed:', error);
-      }
-    } finally {
-      setIsSharing(false);
-    }
-  };
 
   const handleDownloadPDF = async () => {
     if (!report) return;
@@ -586,10 +561,12 @@ export default function ReportDetailPage() {
                   <Download className="h-4 w-4 mr-2" />
                   {isDownloading ? 'Generujem...' : 'Stiahnuť PDF'}
                 </Button>
-                <Button variant="outline" onClick={handleShare} disabled={isSharing} className="border-slate-200 hover:bg-slate-50">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Zdieľať
-                </Button>
+                <ShareButton
+                  title={report.title}
+                  description="Hlásenie podvodu na ScamNemesis"
+                  variant="outline"
+                  className="border-slate-200 hover:bg-slate-50"
+                />
                 <Button variant="outline" className="border-slate-200 hover:bg-slate-50 text-rose-600 hover:text-rose-700 hover:border-rose-200">
                   <Flag className="h-4 w-4 mr-2" />
                   Nahlásiť
