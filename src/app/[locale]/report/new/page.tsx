@@ -1166,7 +1166,7 @@ export default function NewReportPage() {
 
             // Map uploaded files to evidence format
             uploadedEvidence = uploadResult.uploaded.map(
-              (uploaded: { fileKey: string; mimeType: string }, index: number) => {
+              (uploaded: { fileKey: string; mimeType: string; size: number }, index: number) => {
                 const originalFile = filesToUpload[index];
                 // Map MIME type and category to EvidenceType enum values (must match Prisma enum)
                 // Prisma enum: IMAGE, DOCUMENT, VIDEO, AUDIO, PAYMENT_EVIDENCE, FRAUDSTER_PHOTO,
@@ -1195,6 +1195,8 @@ export default function NewReportPage() {
                 return {
                   type: evidenceType,
                   file_key: uploaded.fileKey,
+                  mime_type: uploaded.mimeType,
+                  file_size: uploaded.size,
                   description: originalFile?.description,
                 };
               }

@@ -267,6 +267,11 @@ export interface CommentsResponse {
   total: number;
   page: number;
   pageSize: number;
+  stats?: {
+    pending: number;
+    reported: number;
+    total: number;
+  };
 }
 
 export interface CommentFilters {

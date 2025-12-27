@@ -213,6 +213,8 @@ export async function GET(
             externalUrl: true,
             thumbnailUrl: true,
             description: true,
+            mimeType: true,
+            fileSize: true,
           },
         },
         comments: {
@@ -350,6 +352,8 @@ export async function GET(
           file_url,
           thumbnail_url: e.thumbnailUrl || file_url,
           description: e.description,
+          mime_type: e.mimeType,
+          file_size: e.fileSize,
         };
       }),
 
