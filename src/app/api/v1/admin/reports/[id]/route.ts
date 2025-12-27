@@ -214,12 +214,31 @@ export async function GET(
         email: p.email,
         phone: p.phone,
       })),
-      evidence: report.evidence.map(e => ({
-        id: e.id,
-        type: e.type.toLowerCase(),
-        url: e.url,
-        hash: e.hash,
-      })),
+      evidence: report.evidence.map((e) => {
+        // Generate URL from fileKey (same logic as public API)
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+        let fileUrl = e.url || e.externalUrl || '';
+
+        if (e.fileKey && !fileUrl) {
+          fileUrl = siteUrl
+            ? `${siteUrl}/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`
+            : `/api/v1/evidence/files/${encodeURIComponent(e.fileKey)}`;
+        }
+
+        return {
+          id: e.id,
+          type: e.type.toLowerCase(),
+          url: fileUrl,
+          fileKey: e.fileKey,
+          externalUrl: e.externalUrl,
+          description: e.description,
+          mimeType: e.mimeType,
+          fileSize: e.fileSize,
+          thumbnailUrl: e.thumbnailUrl || (fileUrl && e.mimeType?.startsWith('image/') ? fileUrl : null),
+          hash: e.hash,
+          createdAt: e.createdAt.toISOString(),
+        };
+      }),
       comments: report.comments.map(c => ({
         id: c.id,
         content: c.content,
